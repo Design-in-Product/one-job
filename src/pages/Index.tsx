@@ -1,11 +1,104 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState, useEffect } from 'react';
+import TaskStack from '@/components/TaskStack';
+import TaskForm from '@/components/TaskForm';
+import CompletedTasks from '@/components/CompletedTasks';
+import { Task } from '@/types/task';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from '@/components/ui/sonner';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Index = () => {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('taskStack');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('taskStack', JSON.stringify(tasks));
+  }, [tasks]);
+
+  const handleAddTask = (newTask: Task) => {
+    setTasks(prevTasks => [newTask, ...prevTasks]);
+    toast.success('Task added!');
+  };
+
+  const handleCompleteTask = (taskId: string) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === taskId
+          ? { ...task, completed: true, completedAt: new Date() }
+          : task
+      )
+    );
+    toast.success('Task completed!');
+  };
+
+  const handleDeferTask = (taskId: string) => {
+    setTasks(prevTasks => {
+      const taskToMove = prevTasks.find(task => task.id === taskId);
+      if (!taskToMove) return prevTasks;
+      
+      const otherTasks = prevTasks.filter(task => task.id !== taskId);
+      return [...otherTasks, taskToMove];
+    });
+    toast.info('Task moved to the bottom of stack');
+  };
+
+  const activeTasks = tasks.filter(task => !task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4">
+      <div className="max-w-md mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
+            Task Stack
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Swipe right to complete, left to defer
+          </p>
+        </header>
+
+        <Tabs defaultValue="stack" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
+            <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="stack" className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <TaskStack 
+                  tasks={tasks} 
+                  onComplete={handleCompleteTask} 
+                  onDefer={handleDeferTask} 
+                />
+                
+                <TaskForm onAddTask={handleAddTask} />
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+          
+          <TabsContent value="completed" className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <CompletedTasks tasks={tasks} />
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
