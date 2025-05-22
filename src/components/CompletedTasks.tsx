@@ -33,11 +33,18 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
           {task.description && (
             <p className="text-sm text-white/90 mt-1">{task.description}</p>
           )}
-          {task.completedAt && (
-            <p className="text-xs text-white/70 mt-2">
-              Completed {formatDistanceToNow(task.completedAt, { addSuffix: true })}
-            </p>
-          )}
+          <div className="flex justify-between items-center mt-2 text-xs text-white/70">
+            <span>
+              {task.completedAt && 
+                `Completed ${formatDistanceToNow(task.completedAt, { addSuffix: true })}`
+              }
+            </span>
+            {task.source && (
+              <span className="bg-white/20 px-2 py-0.5 rounded-full">
+                {task.source}
+              </span>
+            )}
+          </div>
         </div>
       ))}
     </div>

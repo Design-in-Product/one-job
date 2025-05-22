@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TaskStack from '@/components/TaskStack';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
+import TaskIntegration from '@/components/TaskIntegration';
 import { Task } from '@/types/task';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from '@/components/ui/sonner';
@@ -22,6 +23,10 @@ const Index = () => {
   const handleAddTask = (newTask: Task) => {
     setTasks(prevTasks => [newTask, ...prevTasks]);
     toast.success('Task added!');
+  };
+
+  const handleImportTasks = (importedTasks: Task[]) => {
+    setTasks(prevTasks => [...importedTasks, ...prevTasks]);
   };
 
   const handleCompleteTask = (taskId: string) => {
@@ -62,9 +67,10 @@ const Index = () => {
         </header>
 
         <Tabs defaultValue="stack" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
             <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
+            <TabsTrigger value="integrate">Integrate</TabsTrigger>
           </TabsList>
           
           <TabsContent value="stack" className="relative">
@@ -95,6 +101,19 @@ const Index = () => {
                 transition={{ duration: 0.2 }}
               >
                 <CompletedTasks tasks={tasks} />
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+          
+          <TabsContent value="integrate" className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <TaskIntegration onImportTasks={handleImportTasks} />
               </motion.div>
             </AnimatePresence>
           </TabsContent>

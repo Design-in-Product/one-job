@@ -6,4 +6,6 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   completedAt?: Date;
+  source?: string;
+  externalId?: string;
 }
