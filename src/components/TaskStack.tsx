@@ -8,15 +8,16 @@ interface TaskStackProps {
   tasks: Task[];
   onComplete: (taskId: string) => void;
   onDefer: (taskId: string) => void;
+  onCardClick: (task: Task) => void;
 }
 
-const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer }) => {
+const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick }) => {
   // Only show active (incomplete) tasks
   const activeTasks = tasks.filter(task => !task.completed);
 
   if (activeTasks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-60 p-6 text-center">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center border-2 border-dashed border-gray-300 rounded-xl mx-4 mb-4">
         <h3 className="text-xl font-semibold mb-2">All done! 🎉</h3>
         <p className="text-muted-foreground">
           Add a new task to get started again.
@@ -29,27 +30,27 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer }) => 
   const visibleTasks = activeTasks.slice(0, 3);
 
   return (
-    <div className="relative h-80 w-full max-w-md mx-auto">
-      {/* Container has fixed height to maintain layout when cards are swiped */}
-      <div className="relative h-full w-full flex items-center justify-center">
-        {visibleTasks.map((task, index) => (
-          <AnimatePresence key={task.id}>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <TaskCard
-                task={task}
-                onSwipeRight={onComplete}
-                onSwipeLeft={onDefer}
-                isTop={index === 0}
-              />
-            </motion.div>
-          </AnimatePresence>
-        ))}
-      </div>
+    <div className="flex-1 relative mx-4 mb-4">
+      {/* Container has flex-1 to fill available space */}
+      {visibleTasks.map((task, index) => (
+        <AnimatePresence key={task.id}>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0"
+          >
+            <TaskCard
+              task={task}
+              onSwipeRight={onComplete}
+              onSwipeLeft={onDefer}
+              onCardClick={onCardClick}
+              isTop={index === 0}
+            />
+          </motion.div>
+        </AnimatePresence>
+      ))}
     </div>
   );
 };

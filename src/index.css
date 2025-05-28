@@ -102,17 +102,6 @@
 }
 
 @layer components {
-  .task-card {
-    @apply relative w-full max-w-md bg-white rounded-xl shadow-lg p-6 mx-auto transition-all duration-300 
-    bg-gradient-to-br from-taskGradient-start to-taskGradient-end text-white;
-    touch-action: none;
-    transform-origin: center;
-  }
-  
-  .task-card-content {
-    @apply h-full flex flex-col justify-between;
-  }
-
   .completed-task-card {
     @apply bg-gradient-to-br from-completedGradient-start to-completedGradient-end;
   }

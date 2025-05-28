@@ -7,6 +7,7 @@ interface TaskCardProps {
   task: Task;
   onSwipeRight: (id: string) => void;
   onSwipeLeft: (id: string) => void;
+  onCardClick: (task: Task) => void;
   isTop?: boolean;
 }
 
@@ -14,6 +15,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   task, 
   onSwipeRight, 
   onSwipeLeft,
+  onCardClick,
   isTop = false 
 }) => {
   const [startX, setStartX] = useState(0);
@@ -66,6 +68,21 @@ const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger click if we're swiping
+    if (Math.abs(currentX) > 5) return;
+    
+    // Don't trigger if click is on swipe area
+    if (swiping) return;
+    
+    onCardClick(task);
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
   const style: React.CSSProperties = swiping
     ? {
         transform: `translateX(${currentX}px) rotate(${currentX * 0.1}deg)`,
@@ -81,13 +98,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
     <div
       ref={cardRef}
       className={cn(
-        "task-card", 
+        "absolute inset-4 bg-white rounded-xl shadow-lg border-2 border-gray-200 cursor-pointer",
+        "flex flex-col p-6 touch-none select-none",
         !isTop && "pointer-events-none"
       )}
       style={{
         ...style,
         zIndex: isTop ? 10 : 5,
-        position: 'absolute',
         opacity: isTop ? 1 : 0.9,
         transform: `${style.transform || ''} scale(${isTop ? 1 : 0.95})`,
       }}
@@ -98,16 +115,31 @@ const TaskCard: React.FC<TaskCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleSwipeEnd}
       onMouseLeave={handleSwipeEnd}
+      onClick={handleCardClick}
     >
-      <div className="task-card-content">
-        <h3 className="text-xl font-bold mb-2 break-words">{task.title}</h3>
+      <div className="flex flex-col h-full">
+        <h3 className="text-2xl font-bold text-gray-800 mb-4 break-words">
+          {task.title}
+        </h3>
+        
         {task.description && (
-          <p className="text-white/90 mb-4 break-words">{task.description}</p>
+          <p className="text-gray-600 text-base mb-6 break-words flex-1">
+            {truncateText(task.description, 200)}
+          </p>
         )}
-        <div className="text-sm text-white/75 mt-auto">
+        
+        <div className="mt-auto">
+          {task.source && (
+            <div className="mb-4">
+              <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                {task.source}
+              </span>
+            </div>
+          )}
+          
           {isTop && (
-            <div className="mt-4 text-center text-sm opacity-75">
-              Swipe right to complete, left to defer
+            <div className="text-center text-sm text-gray-500 border-t pt-4">
+              Swipe right to complete, left to defer, or tap to view details
             </div>
           )}
         </div>

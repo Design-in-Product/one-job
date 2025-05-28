@@ -4,6 +4,7 @@ import TaskStack from '@/components/TaskStack';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
 import TaskIntegration from '@/components/TaskIntegration';
+import TaskDetails from '@/components/TaskDetails';
 import { Task } from '@/types/task';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from '@/components/ui/sonner';
@@ -14,6 +15,9 @@ const Index = () => {
     const savedTasks = localStorage.getItem('taskStack');
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
+
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false);
 
   // Save tasks to localStorage whenever they change
   useEffect(() => {
@@ -51,13 +55,18 @@ const Index = () => {
     toast.info('Task moved to the bottom of stack');
   };
 
+  const handleCardClick = (task: Task) => {
+    setSelectedTask(task);
+    setIsTaskDetailsOpen(true);
+  };
+
   const activeTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4">
-      <div className="max-w-md mx-auto">
-        <header className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
+      <div className="max-w-md mx-auto flex flex-col h-screen">
+        <header className="text-center py-8 px-4">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
             Task Stack
           </h1>
@@ -66,33 +75,37 @@ const Index = () => {
           </p>
         </header>
 
-        <Tabs defaultValue="stack" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+        <Tabs defaultValue="stack" className="flex flex-col flex-1">
+          <TabsList className="grid w-full grid-cols-3 mx-4 mb-4">
             <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
             <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
             <TabsTrigger value="integrate">Integrate</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="stack" className="relative">
+          <TabsContent value="stack" className="flex flex-col flex-1">
             <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
+                className="flex flex-col flex-1"
               >
                 <TaskStack 
                   tasks={tasks} 
                   onComplete={handleCompleteTask} 
-                  onDefer={handleDeferTask} 
+                  onDefer={handleDeferTask}
+                  onCardClick={handleCardClick}
                 />
                 
-                <TaskForm onAddTask={handleAddTask} />
+                <div className="px-4 pb-4">
+                  <TaskForm onAddTask={handleAddTask} />
+                </div>
               </motion.div>
             </AnimatePresence>
           </TabsContent>
           
-          <TabsContent value="completed" className="relative">
+          <TabsContent value="completed" className="flex-1 overflow-y-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -105,7 +118,7 @@ const Index = () => {
             </AnimatePresence>
           </TabsContent>
           
-          <TabsContent value="integrate" className="relative">
+          <TabsContent value="integrate" className="flex-1 overflow-y-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -118,6 +131,12 @@ const Index = () => {
             </AnimatePresence>
           </TabsContent>
         </Tabs>
+
+        <TaskDetails 
+          task={selectedTask}
+          isOpen={isTaskDetailsOpen}
+          onClose={() => setIsTaskDetailsOpen(false)}
+        />
       </div>
     </div>
   );
