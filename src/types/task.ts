@@ -8,4 +8,12 @@ export interface Task {
   completedAt?: Date;
   source?: string;
   externalId?: string;
+  substacks?: Substack[];
+}
+
+export interface Substack {
+  id: string;
+  name: string;
+  tasks: Task[];
+  createdAt: Date;
 }

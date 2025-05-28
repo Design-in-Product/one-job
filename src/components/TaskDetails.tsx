@@ -1,17 +1,37 @@
 
 import React from 'react';
-import { Task } from '@/types/task';
+import { Task, Substack } from '@/types/task';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
+import { ChevronRight } from 'lucide-react';
+import SubstackCreator from './SubstackCreator';
 
 interface TaskDetailsProps {
   task: Task | null;
   isOpen: boolean;
   onClose: () => void;
+  onCreateSubstack: (taskId: string, name: string) => void;
+  onOpenSubstack: (task: Task, substack: Substack) => void;
 }
 
-const TaskDetails: React.FC<TaskDetailsProps> = ({ task, isOpen, onClose }) => {
+const TaskDetails: React.FC<TaskDetailsProps> = ({ 
+  task, 
+  isOpen, 
+  onClose, 
+  onCreateSubstack,
+  onOpenSubstack 
+}) => {
   if (!task) return null;
+
+  const handleCreateSubstack = (name: string) => {
+    onCreateSubstack(task.id, name);
+  };
+
+  const handleOpenSubstack = (substack: Substack) => {
+    onOpenSubstack(task, substack);
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -65,6 +85,33 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({ task, isOpen, onClose }) => {
               </p>
             </div>
           )}
+
+          <div>
+            <h4 className="font-semibold text-gray-700 mb-3">Substacks</h4>
+            
+            {task.substacks && task.substacks.length > 0 && (
+              <div className="space-y-2 mb-3">
+                {task.substacks.map((substack) => (
+                  <Button
+                    key={substack.id}
+                    variant="outline"
+                    className="w-full justify-between"
+                    onClick={() => handleOpenSubstack(substack)}
+                  >
+                    <span>{substack.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">
+                        {substack.tasks.filter(t => !t.completed).length} tasks
+                      </span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            )}
+            
+            <SubstackCreator onCreateSubstack={handleCreateSubstack} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
