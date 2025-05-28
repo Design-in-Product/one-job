@@ -205,6 +205,15 @@ const Index = () => {
   const activeTasks = currentTasks.filter(task => !task.completed);
   const completedTasks = currentTasks.filter(task => task.completed);
 
+  // Get the current version of the selected task (with any updates like new substacks)
+  const getCurrentSelectedTask = () => {
+    if (!selectedTask) return null;
+    if (currentSubstack) {
+      return currentSubstack.substack.tasks.find(task => task.id === selectedTask.id) || selectedTask;
+    }
+    return tasks.find(task => task.id === selectedTask.id) || selectedTask;
+  };
+
   // If we're in a substack view, show that instead
   if (currentSubstack) {
     return (
@@ -213,7 +222,7 @@ const Index = () => {
           <SubstackView
             parentTask={currentSubstack.parentTask}
             substack={currentSubstack.substack}
-            selectedTask={selectedTask}
+            selectedTask={getCurrentSelectedTask()}
             isTaskDetailsOpen={isTaskDetailsOpen}
             onBack={handleBackToParent}
             onAddTask={handleAddTask}
@@ -299,7 +308,7 @@ const Index = () => {
         </Tabs>
 
         <TaskDetails 
-          task={selectedTask}
+          task={getCurrentSelectedTask()}
           isOpen={isTaskDetailsOpen}
           onClose={() => setIsTaskDetailsOpen(false)}
           onCreateSubstack={handleCreateSubstack}
