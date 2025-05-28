@@ -180,16 +180,28 @@ const Index = () => {
       createdAt: new Date()
     };
 
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === taskId
-          ? {
-              ...task,
-              substacks: [...(task.substacks || []), newSubstack]
-            }
-          : task
-      )
-    );
+    // Force re-render by creating a completely new tasks array
+    setTasks(prevTasks => {
+      const newTasks = prevTasks.map(task => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            substacks: [...(task.substacks || []), newSubstack]
+          };
+        }
+        return task;
+      });
+      return [...newTasks]; // Force new array reference
+    });
+    
+    // Also update selectedTask if it's the one we're modifying
+    if (selectedTask && selectedTask.id === taskId) {
+      setSelectedTask(prev => prev ? {
+        ...prev,
+        substacks: [...(prev.substacks || []), newSubstack]
+      } : null);
+    }
+    
     toast.success(`Substack "${name}" created!`);
   };
 
@@ -217,105 +229,123 @@ const Index = () => {
   // If we're in a substack view, show that instead
   if (currentSubstack) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
-        <div className="max-w-md mx-auto flex flex-col h-screen">
-          <SubstackView
-            parentTask={currentSubstack.parentTask}
-            substack={currentSubstack.substack}
-            selectedTask={getCurrentSelectedTask()}
-            isTaskDetailsOpen={isTaskDetailsOpen}
-            onBack={handleBackToParent}
-            onAddTask={handleAddTask}
-            onCompleteTask={handleCompleteTask}
-            onDeferTask={handleDeferTask}
-            onCardClick={handleCardClick}
-            onCloseTaskDetails={() => setIsTaskDetailsOpen(false)}
-            onCreateSubstack={handleCreateSubstack}
-            onOpenSubstack={handleOpenSubstack}
-          />
-        </div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key="substack-view"
+          initial={{ x: "100%", opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: "-100%", opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
+        >
+          <div className="max-w-md mx-auto flex flex-col h-screen">
+            <SubstackView
+              parentTask={currentSubstack.parentTask}
+              substack={currentSubstack.substack}
+              selectedTask={getCurrentSelectedTask()}
+              isTaskDetailsOpen={isTaskDetailsOpen}
+              onBack={handleBackToParent}
+              onAddTask={handleAddTask}
+              onCompleteTask={handleCompleteTask}
+              onDeferTask={handleDeferTask}
+              onCardClick={handleCardClick}
+              onCloseTaskDetails={() => setIsTaskDetailsOpen(false)}
+              onCreateSubstack={handleCreateSubstack}
+              onOpenSubstack={handleOpenSubstack}
+            />
+          </div>
+        </motion.div>
+      </AnimatePresence>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
-      <div className="max-w-md mx-auto flex flex-col h-screen">
-        <header className="text-center py-8 px-4">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
-            Task Stack
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Swipe right to complete, left to defer
-          </p>
-        </header>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="main-view"
+        initial={{ x: "-100%", opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: "100%", opacity: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
+      >
+        <div className="max-w-md mx-auto flex flex-col h-screen">
+          <header className="text-center py-8 px-4">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
+              Task Stack
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Swipe right to complete, left to defer
+            </p>
+          </header>
 
-        <Tabs defaultValue="stack" className="flex flex-col flex-1">
-          <TabsList className="grid w-full grid-cols-3 mx-4 mb-4">
-            <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
-            <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
-            <TabsTrigger value="integrate">Integrate</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="stack" className="flex flex-col flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="flex flex-col flex-1"
-              >
-                <TaskStack 
-                  tasks={tasks} 
-                  onComplete={handleCompleteTask} 
-                  onDefer={handleDeferTask}
-                  onCardClick={handleCardClick}
-                />
-                
-                <div className="px-4 pb-4">
-                  <TaskForm onAddTask={handleAddTask} />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-          
-          <TabsContent value="completed" className="flex-1 overflow-y-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <CompletedTasks tasks={tasks} />
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-          
-          <TabsContent value="integrate" className="flex-1 overflow-y-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <TaskIntegration onImportTasks={handleImportTasks} />
-              </motion.div>
-            </AnimatePresence>
-          </TabsContent>
-        </Tabs>
+          <Tabs defaultValue="stack" className="flex flex-col flex-1">
+            <TabsList className="grid w-full grid-cols-3 mx-4 mb-4">
+              <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
+              <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
+              <TabsTrigger value="integrate">Integrate</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="stack" className="flex flex-col flex-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col flex-1"
+                >
+                  <TaskStack 
+                    tasks={tasks} 
+                    onComplete={handleCompleteTask} 
+                    onDefer={handleDeferTask}
+                    onCardClick={handleCardClick}
+                  />
+                  
+                  <div className="px-4 pb-4">
+                    <TaskForm onAddTask={handleAddTask} />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
+            
+            <TabsContent value="completed" className="flex-1 overflow-y-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <CompletedTasks tasks={tasks} />
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
+            
+            <TabsContent value="integrate" className="flex-1 overflow-y-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <TaskIntegration onImportTasks={handleImportTasks} />
+                </motion.div>
+              </AnimatePresence>
+            </TabsContent>
+          </Tabs>
 
-        <TaskDetails 
-          task={getCurrentSelectedTask()}
-          isOpen={isTaskDetailsOpen}
-          onClose={() => setIsTaskDetailsOpen(false)}
-          onCreateSubstack={handleCreateSubstack}
-          onOpenSubstack={handleOpenSubstack}
-        />
-      </div>
-    </div>
+          <TaskDetails 
+            task={getCurrentSelectedTask()}
+            isOpen={isTaskDetailsOpen}
+            onClose={() => setIsTaskDetailsOpen(false)}
+            onCreateSubstack={handleCreateSubstack}
+            onOpenSubstack={handleOpenSubstack}
+          />
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
