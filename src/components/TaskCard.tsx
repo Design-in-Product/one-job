@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/task';
@@ -100,15 +101,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
     <div
       ref={cardRef}
       className={cn(
-        "absolute inset-4 bg-white rounded-xl shadow-lg border-2 border-gray-200 cursor-pointer",
+        "absolute bg-white rounded-xl shadow-lg border-2 border-gray-200 cursor-pointer",
         "flex flex-col p-6 touch-none select-none",
+        // Fixed dimensions - playing card aspect ratio (63mm x 88mm ≈ 5:7)
+        "w-72 h-96",
+        // Center the card horizontally
+        "left-1/2 transform -translate-x-1/2",
         !isTop && "pointer-events-none"
       )}
       style={{
         ...style,
         zIndex: isTop ? 10 : 5,
         opacity: isTop ? 1 : 0.9,
-        transform: `${style.transform || ''} scale(${isTop ? 1 : 0.95})`,
+        transform: `translateX(-50%) ${style.transform || ''} scale(${isTop ? 1 : 0.95})`,
+        top: '1rem', // Position from top
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -121,11 +127,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
     >
       <div className="flex flex-col h-full">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="text-2xl font-bold text-gray-800 break-words flex-1">
+          <h3 className="text-xl font-bold text-gray-800 break-words flex-1 leading-tight">
             {task.title}
           </h3>
           {hasSubstacks && (
-            <div className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full">
+            <div className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full flex-shrink-0">
               <Layers className="w-4 h-4 text-blue-600" />
               <span className="text-xs text-blue-600 font-medium">
                 {task.substacks.length}
@@ -135,8 +141,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </div>
         
         {task.description && (
-          <p className="text-gray-600 text-base mb-6 break-words flex-1">
-            {truncateText(task.description, 200)}
+          <p className="text-gray-600 text-sm mb-4 break-words flex-1 overflow-hidden">
+            {truncateText(task.description, 180)}
           </p>
         )}
         
@@ -150,7 +156,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           )}
           
           {isTop && (
-            <div className="text-center text-sm text-gray-500 border-t pt-4">
+            <div className="text-center text-xs text-gray-500 border-t pt-3">
               Swipe right to complete, left to defer, or tap to view details
             </div>
           )}

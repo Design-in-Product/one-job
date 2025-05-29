@@ -17,7 +17,7 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
 
   if (activeTasks.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center border-2 border-dashed border-gray-300 rounded-xl mx-4 mb-4">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center border-2 border-dashed border-gray-300 rounded-xl mx-4 mb-4 min-h-96">
         <h3 className="text-xl font-semibold mb-2">All done! 🎉</h3>
         <p className="text-muted-foreground">
           Add a new task to get started again.
@@ -30,8 +30,8 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
   const visibleTasks = activeTasks.slice(0, 3);
 
   return (
-    <div className="flex-1 relative mx-4 mb-4">
-      {/* Container has flex-1 to fill available space */}
+    <div className="flex-1 relative mx-4 mb-4 min-h-96">
+      {/* Container sized to accommodate fixed card dimensions */}
       {visibleTasks.map((task, index) => (
         <AnimatePresence key={task.id}>
           <motion.div
