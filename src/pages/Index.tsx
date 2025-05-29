@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import TaskStack from '@/components/TaskStack';
 import TaskForm from '@/components/TaskForm';
@@ -180,21 +179,15 @@ const Index = () => {
       createdAt: new Date()
     };
 
-    // Force re-render by creating a completely new tasks array
-    setTasks(prevTasks => {
-      const newTasks = prevTasks.map(task => {
-        if (task.id === taskId) {
-          return {
-            ...task,
-            substacks: [...(task.substacks || []), newSubstack]
-          };
-        }
-        return task;
-      });
-      return [...newTasks]; // Force new array reference
-    });
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === taskId
+          ? { ...task, substacks: [...(task.substacks || []), newSubstack] }
+          : task
+      )
+    );
     
-    // Also update selectedTask if it's the one we're modifying
+    // Update selectedTask if it's the one we're modifying
     if (selectedTask && selectedTask.id === taskId) {
       setSelectedTask(prev => prev ? {
         ...prev,
@@ -229,16 +222,14 @@ const Index = () => {
   // If we're in a substack view, show that instead
   if (currentSubstack) {
     return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="substack-view"
-          initial={{ x: "100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
-        >
-          <div className="max-w-md mx-auto flex flex-col h-screen">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
+        <div className="max-w-md mx-auto flex flex-col h-screen">
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
             <SubstackView
               parentTask={currentSubstack.parentTask}
               substack={currentSubstack.substack}
@@ -253,9 +244,9 @@ const Index = () => {
               onCreateSubstack={handleCreateSubstack}
               onOpenSubstack={handleOpenSubstack}
             />
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </div>
+      </div>
     );
   }
 
@@ -272,7 +263,7 @@ const Index = () => {
         <div className="max-w-md mx-auto flex flex-col h-screen">
           <header className="text-center py-8 px-4">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
-              Task Stack
+              One Job
             </h1>
             <p className="text-muted-foreground mt-2">
               Swipe right to complete, left to defer

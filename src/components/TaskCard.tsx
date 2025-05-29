@@ -1,7 +1,7 @@
-
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/task';
+import { Layers } from 'lucide-react';
 
 interface TaskCardProps {
   task: Task;
@@ -94,6 +94,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
     ? { animation: 'swipe-left 0.5s forwards' }
     : { transform: 'translateX(0)', transition: 'transform 0.3s ease' };
 
+  const hasSubstacks = task.substacks && task.substacks.length > 0;
+
   return (
     <div
       ref={cardRef}
@@ -118,9 +120,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
       onClick={handleCardClick}
     >
       <div className="flex flex-col h-full">
-        <h3 className="text-2xl font-bold text-gray-800 mb-4 break-words">
-          {task.title}
-        </h3>
+        <div className="flex items-start justify-between mb-4">
+          <h3 className="text-2xl font-bold text-gray-800 break-words flex-1">
+            {task.title}
+          </h3>
+          {hasSubstacks && (
+            <div className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full">
+              <Layers className="w-4 h-4 text-blue-600" />
+              <span className="text-xs text-blue-600 font-medium">
+                {task.substacks.length}
+              </span>
+            </div>
+          )}
+        </div>
         
         {task.description && (
           <p className="text-gray-600 text-base mb-6 break-words flex-1">
