@@ -1,3 +1,5 @@
+// src/components/TaskCard.tsx
+// (Corrected placement of console.log for debugging)
 
 import React, { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
@@ -12,13 +14,16 @@ interface TaskCardProps {
   isTop?: boolean;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ 
-  task, 
-  onSwipeRight, 
+const TaskCard: React.FC<TaskCardProps> = ({
+  task,
+  onSwipeRight,
   onSwipeLeft,
   onCardClick,
-  isTop = false 
+  isTop = false
 }) => {
+  // THIS IS THE CORRECT PLACE FOR THE console.log
+  console.log(`TaskCard rendered: "${task.title}" (ID: ${task.id.slice(0, 8)}...) - isTop: ${isTop}`);
+
   const [startX, setStartX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
   const [swiping, setSwiping] = useState(false);
@@ -51,18 +56,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleSwipeEnd = () => {
     if (!swiping || !isTop) return;
-    
+
     setSwiping(false);
-    
+
     // Determine if swipe was significant enough
     if (currentX > 100) {
       setSwipeDirection('right');
+      console.log(`Attempting to complete task: "${task.title}" (ID: ${task.id})`);
       setTimeout(() => onSwipeRight(task.id), 500);
     } else if (currentX < -100) {
       setSwipeDirection('left');
+      console.log(`Attempting to defer task: "${task.title}" (ID: ${task.id})`);
       setTimeout(() => onSwipeLeft(task.id), 500);
     }
-    
+
     // Reset if not a full swipe
     if (currentX <= 100 && currentX >= -100) {
       setCurrentX(0);
@@ -72,10 +79,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't trigger click if we're swiping
     if (Math.abs(currentX) > 5) return;
-    
+
     // Don't trigger if click is on swipe area
     if (swiping) return;
-    
+
     onCardClick(task);
   };
 
@@ -86,7 +93,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const style: React.CSSProperties = swiping
     ? {
-        transform: `translateX(${currentX}px) rotate(${currentX * 0.1}deg)`,
+        transform: `translateX(<span class="math-inline">\{currentX\}px\) rotate\(</span>{currentX * 0.1}deg)`,
         transition: 'none'
       }
     : swipeDirection === 'right'
@@ -113,7 +120,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         ...style,
         zIndex: isTop ? 10 : 5,
         opacity: isTop ? 1 : 0.9,
-        transform: `translateX(-50%) ${style.transform || ''} scale(${isTop ? 1 : 0.95})`,
+        transform: `translateX(-50%) <span class="math-inline">\{style\.transform \|\| ''\} scale\(</span>{isTop ? 1 : 0.95})`,
         top: '1rem', // Position from top
       }}
       onTouchStart={handleTouchStart}
@@ -139,13 +146,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           )}
         </div>
-        
+
         {task.description && (
           <p className="text-gray-600 text-sm mb-4 break-words flex-1 overflow-hidden">
             {truncateText(task.description, 180)}
           </p>
         )}
-        
+
         <div className="mt-auto">
           {task.source && (
             <div className="mb-4">
@@ -154,7 +161,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               </span>
             </div>
           )}
-          
+
           {isTop && (
             <div className="text-center text-xs text-gray-500 border-t pt-3">
               Swipe right to complete, left to defer, or tap to view details
