@@ -1,3 +1,5 @@
+// frontend/src/components/TaskStack.tsx
+// 06-06-2025 Added support for task deferral
 
 import React from 'react';
 import { Task } from '@/types/task';
@@ -12,8 +14,8 @@ interface TaskStackProps {
 }
 
 const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick }) => {
-  // Only show active (incomplete) tasks
-  const activeTasks = tasks.filter(task => !task.completed);
+  // Only show active (incomplete) tasks. Sorting for deferred tasks is now handled by backend.
+  const activeTasks = tasks.filter(task => !task.completed); // <--- REVERTED TO THIS LINE
 
   if (activeTasks.length === 0) {
     return (
@@ -45,7 +47,7 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
               task={task}
               onSwipeRight={onComplete}
               onSwipeLeft={onDefer}
-              onCardClick={onCardClick}
+              onCardClick={() => onCardClick(task)}
               isTop={index === 0}
             />
           </motion.div>

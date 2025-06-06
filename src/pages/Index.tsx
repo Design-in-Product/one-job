@@ -6,8 +6,16 @@
 //             - Added useEffect hook to fetch tasks from http://127.0.0.1:8000/tasks.
 //             - Implemented mapBackendTaskToFrontendTask to convert backend's 'status' to frontend's 'completed' boolean.
 //             - Added console.log statements for debugging fetched data.
+// 2025-06-05: Integrated frontend actions with backend API.
+//             - Removed localStorage saving useEffect.
+//             - Added `refreshTasks` function to re-fetch tasks after CUD operations.
+//             - Modified `handleAddTask` to send POST request to FastAPI.
+//             - Modified `handleCompleteTask` to send PUT request to FastAPI (status: 'done').
+//             - Modified `handleDeferTask` to send PUT request to FastAPI (status: 'todo').
+//             - modified mapBackendTaskToFrontendTask to support deferred tasks.
+// 2025-06-06  - Added backedTask.sortOrder to mapBackendTasktoFrontendTask
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
 import TaskStack from '@/components/TaskStack';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
@@ -21,33 +29,27 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 
 // Helper function to convert backend's task format to frontend's Task interface
-// This handles the `status` to `completed` conversion and adds placeholders for dates.
 const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
   return {
     id: backendTask.id,
     title: backendTask.title,
     description: backendTask.description,
-    // Convert backend 'status' to frontend 'completed' boolean
-    completed: backendTask.status === 'done',
-    // Placeholder for createdAt - ideally, this comes from the backend
-    createdAt: new Date(),
-    // Placeholder for completedAt - set if status is 'done'
-    completedAt: backendTask.status === 'done' ? new Date() : undefined,
-    // source, externalId, and substacks will be undefined/null for now
-    // as the current backend dummy data doesn't provide them in this structure.
-    // If you need to keep metadata from backend, you'd add it to Task interface.
+    completed: backendTask.completed,
+    status: backendTask.status,
+    createdAt: new Date(backendTask.createdAt),
+    completedAt: backendTask.completedAt ? new Date(backendTask.completedAt) : undefined,
+    deferredAt: backendTask.deferredAt ? new Date(backendTask.deferredAt) : undefined,
+    sortOrder: backendTask.sortOrder, // <--- ADDED THIS LINE
+    source: backendTask.source,
+    externalId: backendTask.externalId,
+    substacks: backendTask.substacks || []
   };
 };
 
-
 const Index = () => {
-  // Initialize tasks state as an empty array.
-  // It will be populated from the backend.
-  // We're removing the localStorage initialization here.
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false);
@@ -56,51 +58,74 @@ const Index = () => {
     substack: Substack;
   } | null>(null);
 
-  // --- NEW: useEffect for fetching tasks from backend ---
+  // --- NEW: refreshTasks function ---
+  const refreshTasks = useCallback(async () => {
+    setLoading(true);
+    setError(null); // Clear previous errors
+    try {
+      const response = await fetch('http://127.0.0.1:8000/tasks');
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const backendData: any[] = await response.json();
+      const frontendTasks: Task[] = backendData.map(mapBackendTaskToFrontendTask);
+
+      console.log("Fetched Backend Data (raw):", backendData);
+      console.log("Transformed Frontend Tasks:", frontendTasks);
+
+      setTasks(frontendTasks);
+    } catch (err) {
+      console.error("Could not fetch tasks from backend:", err);
+      setError((err as Error).message);
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []); // No dependencies, so this function doesn't change on re-renders
+
+  // --- MODIFIED: useEffect for initial fetching tasks from backend ---
   useEffect(() => {
-    const fetchTasksFromBackend = async () => {
+    refreshTasks(); // Call the new refresh function on mount
+  }, [refreshTasks]); // Dependency added: refreshTasks (due to useCallback)
+
+  // --- REMOVED: useEffect for saving tasks to localStorage ---
+  // This useEffect is no longer needed as tasks are now persisted in the database.
+  // localStorage.setItem('taskStack', JSON.stringify(tasks));
+
+
+  // --- MODIFIED: handleAddTask to send POST request ---
+  const handleAddTask = async (newTask: Task) => {
+    // Only add to backend if it's a main task (not part of a substack yet)
+    // Substack tasks will be handled via task details.
+    if (!currentSubstack) {
       try {
-        const response = await fetch('http://127.0.0.1:8000/tasks');
+        const response = await fetch('http://127.0.0.1:8000/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: newTask.title,
+            description: newTask.description,
+          }),
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const backendData: any[] = await await response.json();
-        // Transform backend data to frontend Task interface
-        const frontendTasks: Task[] = backendData.map(mapBackendTaskToFrontendTask);
-
-        // --- Console logs for debugging ---
-        console.log("Fetched Backend Data (raw):", backendData);
-        console.log("Transformed Frontend Tasks:", frontendTasks);
-        // --- End console logs ---
-
-        setTasks(frontendTasks); // Update the tasks state with data from the backend
+        const addedTask = await response.json();
+        console.log("Task added to backend:", addedTask);
+        toast.success('Task added!');
+        refreshTasks(); // Re-fetch all tasks to update the UI
       } catch (err) {
-        console.error("Could not fetch tasks from backend:", err);
-        setError((err as Error).message);
-        setTasks([]); // Set to empty array on error
-      } finally {
-        setLoading(false);
+        console.error("Failed to add task to backend:", err);
+        toast.error(`Failed to add task: ${(err as Error).message}`);
       }
-    };
-
-    fetchTasksFromBackend();
-  }, []); // Empty dependency array means this runs once on component mount
-
-  // --- EXISTING: useEffect for saving tasks to localStorage ---
-  // We keep this for now so local state changes still persist locally,
-  // but the initial load now comes from the backend.
-  useEffect(() => {
-    localStorage.setItem('taskStack', JSON.stringify(tasks));
-  }, [tasks]);
-
-
-  const handleAddTask = (newTask: Task) => {
-    // This function currently adds tasks to local state.
-    // NEXT STEP: This will send a POST request to your FastAPI backend.
-    if (currentSubstack) {
-      // Add task to current substack
+    } else {
+      // For now, substack task adding remains local. Will integrate later.
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -115,7 +140,6 @@ const Index = () => {
             : task
         )
       );
-      // Update current substack state
       setCurrentSubstack(prev => prev ? {
         ...prev,
         substack: {
@@ -123,22 +147,21 @@ const Index = () => {
           tasks: [newTask, ...prev.substack.tasks]
         }
       } : null);
-    } else {
-      // Add task to main stack
-      setTasks(prevTasks => [newTask, ...prevTasks]);
+      toast.success('Task added to substack (local only)');
     }
-    toast.success('Task added!');
   };
 
   const handleImportTasks = (importedTasks: Task[]) => {
+    // This will eventually also send to backend
     setTasks(prevTasks => [...importedTasks, ...prevTasks]);
+    toast.info('Tasks imported (local only for now)');
   };
 
-  const handleCompleteTask = (taskId: string) => {
-    // This function currently updates local state.
-    // NEXT STEP: This will send a PUT request to your FastAPI backend to update task status.
+
+  // --- MODIFIED: handleCompleteTask to send PUT request ---
+  const handleCompleteTask = async (taskId: string) => {
     if (currentSubstack) {
-      // Complete task in current substack
+      // Substack task completion remains local for now
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -160,7 +183,6 @@ const Index = () => {
             : task
         )
       );
-      // Update current substack state
       setCurrentSubstack(prev => prev ? {
         ...prev,
         substack: {
@@ -172,24 +194,37 @@ const Index = () => {
           )
         }
       } : null);
+      toast.success('Substack task completed (local only)!');
     } else {
-      // Complete task in main stack
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
-          task.id === taskId
-            ? { ...task, completed: true, completedAt: new Date() }
-            : task
-        )
-      );
+      // Main task completion
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'done' }), // Update status to 'done'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const updatedTask = await response.json();
+        console.log("Task completed in backend:", updatedTask);
+        toast.success('Task completed!');
+        refreshTasks(); // Re-fetch all tasks to update the UI
+      } catch (err) {
+        console.error("Failed to complete task in backend:", err);
+        toast.error(`Failed to complete task: ${(err as Error).message}`);
+      }
     }
-    toast.success('Task completed!');
   };
 
-  const handleDeferTask = (taskId: string) => {
-    // This function currently updates local state.
-    // NEXT STEP: This will send a PUT request to your FastAPI backend to update task status.
+  // --- MODIFIED: handleDeferTask to send PUT request ---
+  const handleDeferTask = async (taskId: string) => {
     if (currentSubstack) {
-      // Defer task in current substack
+      // Substack task deferral remains local for now
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -212,7 +247,6 @@ const Index = () => {
             : task
         )
       );
-      // Update current substack state
       setCurrentSubstack(prev => {
         if (!prev) return null;
         const taskToMove = prev.substack.tasks.find(t => t.id === taskId);
@@ -226,17 +260,31 @@ const Index = () => {
           }
         };
       });
+      toast.info('Substack task moved to the bottom (local only)!');
     } else {
-      // Defer task in main stack
-      setTasks(prevTasks => {
-        const taskToMove = prevTasks.find(task => task.id === taskId);
-        if (!taskToMove) return prevTasks;
+      // Main task deferral
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'deferred' }), // Set status back to 'todo'
+        });
 
-        const otherTasks = prevTasks.filter(task => task.id !== taskId);
-        return [...otherTasks, taskToMove];
-      });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const updatedTask = await response.json();
+        console.log("Task deferred in backend:", updatedTask);
+        toast.info('Task moved to the bottom of stack!');
+        refreshTasks(); // Re-fetch all tasks to update the UI
+      } catch (err) {
+        console.error("Failed to defer task in backend:", err);
+        toast.error(`Failed to defer task: ${(err as Error).message}`);
+      }
     }
-    toast.info('Task moved to the bottom of stack');
   };
 
   const handleCardClick = (task: Task) => {
@@ -260,7 +308,6 @@ const Index = () => {
       )
     );
 
-    // Update selectedTask if it's the one we're modifying
     if (selectedTask && selectedTask.id === taskId) {
       setSelectedTask(prev => prev ? {
         ...prev,
@@ -283,7 +330,6 @@ const Index = () => {
   const activeTasks = currentTasks.filter(task => !task.completed);
   const completedTasks = currentTasks.filter(task => task.completed);
 
-  // Get the current version of the selected task (with any updates like new substacks)
   const getCurrentSelectedTask = () => {
     if (!selectedTask) return null;
     if (currentSubstack) {
@@ -292,7 +338,6 @@ const Index = () => {
     return tasks.find(task => task.id === selectedTask.id) || selectedTask;
   };
 
-  // If we're in a substack view, show that instead
   if (currentSubstack) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
@@ -359,7 +404,6 @@ const Index = () => {
                   transition={{ duration: 0.2 }}
                   className="flex flex-col flex-1"
                 >
-                  {/* Pass the tasks state directly to TaskStack */}
                   {loading && <p className="text-center mt-8">Loading tasks from backend...</p>}
                   {error && <p className="text-center mt-8 text-red-500">Error loading tasks: {error}</p>}
                   {!loading && !error && activeTasks.length === 0 && <p className="text-center mt-8">All done! Add a new task or check completed/integrations.</p>}
