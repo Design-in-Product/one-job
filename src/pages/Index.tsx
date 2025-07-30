@@ -15,7 +15,7 @@
 //             - modified mapBackendTaskToFrontendTask to support deferred tasks.
 // 2025-06-06  - Added backedTask.sortOrder to mapBackendTasktoFrontendTask
 
-import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
+import React, { useState, useEffect, useCallback } from 'react';
 import TaskStack from '@/components/TaskStack';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
@@ -28,6 +28,7 @@ import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 
+
 // Helper function to convert backend's task format to frontend's Task interface
 const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
   return {
@@ -36,12 +37,12 @@ const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
     description: backendTask.description,
     completed: backendTask.completed,
     status: backendTask.status,
-    createdAt: new Date(backendTask.createdAt),
-    completedAt: backendTask.completedAt ? new Date(backendTask.completedAt) : undefined,
-    deferredAt: backendTask.deferredAt ? new Date(backendTask.deferredAt) : undefined,
-    sortOrder: backendTask.sortOrder, // <--- ADDED THIS LINE
+    createdAt: new Date(backendTask.created_at),
+    completedAt: backendTask.completed_at ? new Date(backendTask.completed_at) : undefined,
+    deferredAt: backendTask.deferred_at ? new Date(backendTask.deferred_at) : undefined,
+    sortOrder: backendTask.sort_order,
     source: backendTask.source,
-    externalId: backendTask.externalId,
+    externalId: backendTask.external_id,
     substacks: backendTask.substacks || []
   };
 };
@@ -57,6 +58,7 @@ const Index = () => {
     parentTask: Task;
     substack: Substack;
   } | null>(null);
+  const [isCreatingSubstack, setIsCreatingSubstack] = useState(false);
 
   // --- NEW: refreshTasks function ---
   const refreshTasks = useCallback(async () => {
@@ -83,22 +85,43 @@ const Index = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies, so this function doesn't change on re-renders
+  }, []);
 
   // --- MODIFIED: useEffect for initial fetching tasks from backend ---
   useEffect(() => {
-    refreshTasks(); // Call the new refresh function on mount
-  }, [refreshTasks]); // Dependency added: refreshTasks (due to useCallback)
+    refreshTasks();
+  }, [refreshTasks]);
 
-  // --- REMOVED: useEffect for saving tasks to localStorage ---
-  // This useEffect is no longer needed as tasks are now persisted in the database.
-  // localStorage.setItem('taskStack', JSON.stringify(tasks));
+  // --- NEW: handleUpdateTask function to send PUT request for title/description ---
+  const handleUpdateTask = async (taskId: string, updates: { title?: string; description?: string }) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const updatedTask = await response.json();
+      console.log("Task updated in backend:", updatedTask);
+      toast.success('Task updated!');
+      refreshTasks();
+      setIsTaskDetailsOpen(false);
+      setSelectedTask(null);
+    } catch (err) {
+      console.error("Failed to update task in backend:", err);
+      toast.error(`Failed to update task: ${(err as Error).message}`);
+    }
+  };
 
 
   // --- MODIFIED: handleAddTask to send POST request ---
   const handleAddTask = async (newTask: Task) => {
-    // Only add to backend if it's a main task (not part of a substack yet)
-    // Substack tasks will be handled via task details.
     if (!currentSubstack) {
       try {
         const response = await fetch('http://127.0.0.1:8000/tasks', {
@@ -119,13 +142,12 @@ const Index = () => {
         const addedTask = await response.json();
         console.log("Task added to backend:", addedTask);
         toast.success('Task added!');
-        refreshTasks(); // Re-fetch all tasks to update the UI
+        refreshTasks();
       } catch (err) {
         console.error("Failed to add task to backend:", err);
         toast.error(`Failed to add task: ${(err as Error).message}`);
       }
     } else {
-      // For now, substack task adding remains local. Will integrate later.
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -152,7 +174,6 @@ const Index = () => {
   };
 
   const handleImportTasks = (importedTasks: Task[]) => {
-    // This will eventually also send to backend
     setTasks(prevTasks => [...importedTasks, ...prevTasks]);
     toast.info('Tasks imported (local only for now)');
   };
@@ -161,7 +182,6 @@ const Index = () => {
   // --- MODIFIED: handleCompleteTask to send PUT request ---
   const handleCompleteTask = async (taskId: string) => {
     if (currentSubstack) {
-      // Substack task completion remains local for now
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -196,14 +216,13 @@ const Index = () => {
       } : null);
       toast.success('Substack task completed (local only)!');
     } else {
-      // Main task completion
       try {
         const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ status: 'done' }), // Update status to 'done'
+          body: JSON.stringify({ status: 'done' }),
         });
 
         if (!response.ok) {
@@ -213,7 +232,7 @@ const Index = () => {
         const updatedTask = await response.json();
         console.log("Task completed in backend:", updatedTask);
         toast.success('Task completed!');
-        refreshTasks(); // Re-fetch all tasks to update the UI
+        refreshTasks();
       } catch (err) {
         console.error("Failed to complete task in backend:", err);
         toast.error(`Failed to complete task: ${(err as Error).message}`);
@@ -224,7 +243,6 @@ const Index = () => {
   // --- MODIFIED: handleDeferTask to send PUT request ---
   const handleDeferTask = async (taskId: string) => {
     if (currentSubstack) {
-      // Substack task deferral remains local for now
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === currentSubstack.parentTask.id
@@ -262,14 +280,13 @@ const Index = () => {
       });
       toast.info('Substack task moved to the bottom (local only)!');
     } else {
-      // Main task deferral
       try {
         const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ status: 'deferred' }), // Set status back to 'todo'
+          body: JSON.stringify({ status: 'deferred' }),
         });
 
         if (!response.ok) {
@@ -279,7 +296,7 @@ const Index = () => {
         const updatedTask = await response.json();
         console.log("Task deferred in backend:", updatedTask);
         toast.info('Task moved to the bottom of stack!');
-        refreshTasks(); // Re-fetch all tasks to update the UI
+        refreshTasks();
       } catch (err) {
         console.error("Failed to defer task in backend:", err);
         toast.error(`Failed to defer task: ${(err as Error).message}`);
@@ -292,30 +309,37 @@ const Index = () => {
     setIsTaskDetailsOpen(true);
   };
 
-  const handleCreateSubstack = (taskId: string, name: string) => {
-    const newSubstack: Substack = {
-      id: uuidv4(),
-      name,
-      tasks: [],
-      createdAt: new Date()
-    };
+  const handleCreateSubstack = async (taskId: string, name: string) => {
+    setIsCreatingSubstack(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}/substacks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name }),
+      });
 
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskId
-          ? { ...task, substacks: [...(task.substacks || []), newSubstack] }
-          : task
-      )
-    );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(prev => prev ? {
-        ...prev,
-        substacks: [...(prev.substacks || []), newSubstack]
-      } : null);
+      const newSubstack = await response.json();
+      console.log("Substack created in backend:", newSubstack);
+      toast.success(`Substack "${name}" created!`);
+      
+      // Refresh tasks to get the updated task with substacks
+      await refreshTasks();
+      
+      // Close task details modal since we're refreshing
+      setIsTaskDetailsOpen(false);
+      setSelectedTask(null);
+    } catch (err) {
+      console.error("Failed to create substack in backend:", err);
+      toast.error(`Failed to create substack: ${(err as Error).message}`);
+    } finally {
+      setIsCreatingSubstack(false);
     }
-
-    toast.success(`Substack "${name}" created!`);
   };
 
   const handleOpenSubstack = (parentTask: Task, substack: Substack) => {
@@ -361,6 +385,9 @@ const Index = () => {
               onCloseTaskDetails={() => setIsTaskDetailsOpen(false)}
               onCreateSubstack={handleCreateSubstack}
               onOpenSubstack={handleOpenSubstack}
+              // NOTE: onUpdateTask prop should also be handled for substack tasks
+              // if you implement update functionality for them in the future.
+              // For now, it's only passed to the main TaskDetails.
             />
           </motion.div>
         </div>
@@ -457,6 +484,7 @@ const Index = () => {
             onClose={() => setIsTaskDetailsOpen(false)}
             onCreateSubstack={handleCreateSubstack}
             onOpenSubstack={handleOpenSubstack}
+            onUpdateTask={handleUpdateTask} 
           />
         </div>
       </motion.div>

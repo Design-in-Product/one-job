@@ -2,11 +2,13 @@
 #
 # Change Log:
 # ... (previous changes) ...
-# 2025-06-05: Implemented explicit integer-based sort order for Main Stack.
-#             - Added 'sort_order' column to DBTask model.
-#             - Modified 'create_task' to manage sort_order for new tasks.
-#             - Updated GET /tasks sorting to prioritize sort_order for active tasks.
-# 2025-06-06  - Added inspect and func to SQLAlchemy Imports, added inspect and func
+# 2025-06-11: Refactored Task model for 2 states (todo/done) and deferral as action + metadata.
+#             - Removed 'deferred' as a status.
+#             - Added 'deferral_count' to DBTask.
+#             - Updated TaskUpdate Pydantic model with 'is_deferral' flag.
+# 2025-06-11: FIX: Restored 'completed' column in DBTask model and TaskResponse.
+#             - This resolves the 'UndefinedColumn' error from PostgreSQL.
+
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,14 +17,16 @@ from datetime import datetime, timezone
 import uuid
 
 # SQLAlchemy Imports
-# NOTE: Added Integer for sort_order
-from sqlalchemy import create_engine, Column, String, Boolean, DateTime, UUID, Integer, text, desc, asc, inspect, func
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, String, Boolean, DateTime, Integer, text, desc, asc, inspect, func
+from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
+import sqlalchemy.types as types
+from sqlalchemy.orm import sessionmaker, Session, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import declarative_base
 
 # Pydantic Settings for environment variables
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 # --- Configuration ---
 class Settings(BaseSettings):
@@ -33,42 +37,112 @@ class Settings(BaseSettings):
 settings = Settings()
 
 # --- Database Setup ---
-engine = create_engine(settings.DATABASE_URL)
+# Handle SQLite vs PostgreSQL differences
+if settings.DATABASE_URL.startswith("sqlite"):
+    # SQLite needs check_same_thread=False for FastAPI
+    from sqlalchemy.pool import StaticPool
+    engine = create_engine(
+        settings.DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+else:
+    engine = create_engine(settings.DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+# Custom UUID type that works with both SQLite and PostgreSQL
+class UUID(types.TypeDecorator):
+    """Platform-independent UUID type"""
+    impl = types.String(36)
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            return dialect.type_descriptor(PostgreSQLUUID(as_uuid=True))
+        else:
+            return dialect.type_descriptor(types.String(36))
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        elif dialect.name == 'postgresql':
+            return value
+        else:
+            if isinstance(value, uuid.UUID):
+                return str(value)
+            else:
+                return value
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        elif dialect.name == 'postgresql':
+            return value
+        else:
+            if isinstance(value, uuid.UUID):
+                return value
+            else:
+                return uuid.UUID(value)
 
 # SQLAlchemy Model
 class DBTask(Base):
     __tablename__ = "tasks"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    title = Column(String, index=True, nullable=False)
-    description = Column(String, nullable=True)
-    status = Column(String, default="todo", index=True) # "todo", "done", "deferred"
-    created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
-    completed_at = Column(DateTime(timezone=True), nullable=True)
-    deferred_at = Column(DateTime(timezone=True), nullable=True) # Still useful for auditing/specific deferred sorting
-    sort_order = Column(Integer, nullable=True) # <--- ADDED THIS LINE
+    id: Mapped[uuid.UUID] = mapped_column(UUID(), primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(String, index=True)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    
+    # RE-ADDED: 'completed' column. The database expects this.
+    completed: Mapped[bool] = mapped_column(Boolean, default=False) 
+    
+    status: Mapped[str] = mapped_column(String, default="todo") # 'todo' or 'done'
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    deferred_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    
+    deferral_count: Mapped[int] = mapped_column(Integer, default=0)
 
-    source = Column(String, nullable=True)
-    external_id = Column(String, nullable=True)
+    sort_order: Mapped[Optional[int]] = mapped_column(Integer, nullable=True) # Used for active tasks
+    external_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    source: Mapped[Optional[str]] = mapped_column(String, nullable=True) # e.g., "linear", "jira"
+    
+    # Relationship to substacks
+    substacks = relationship("DBSubstack", back_populates="parent_task", cascade="all, delete-orphan")
 
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "title": self.title,
-            "description": self.description,
-            "status": self.status,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
-            "deferred_at": self.deferred_at.isoformat() if self.deferred_at else None,
-            "sort_order": self.sort_order, # <--- ADDED THIS LINE
-            "source": self.source,
-            "external_id": self.external_id,
-        }
 
-# Dependency to get a DB session
+class DBSubstack(Base):
+    __tablename__ = "substacks"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String, index=True)
+    parent_task_id: Mapped[uuid.UUID] = mapped_column(UUID(), ForeignKey("tasks.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    
+    # Relationships
+    parent_task = relationship("DBTask", back_populates="substacks")
+    tasks = relationship("DBSubstackTask", back_populates="substack", cascade="all, delete-orphan")
+
+
+class DBSubstackTask(Base):
+    __tablename__ = "substack_tasks"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(), primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(String, index=True)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    substack_id: Mapped[uuid.UUID] = mapped_column(UUID(), ForeignKey("substacks.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    
+    # Relationship
+    substack = relationship("DBSubstack", back_populates="tasks")
+
+
+# Dependency to get the DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -76,14 +150,79 @@ def get_db():
     finally:
         db.close()
 
-# --- FastAPI App Setup ---
+# Pydantic Models for request/response
+class TaskBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+class TaskCreate(TaskBase):
+    pass
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None # Will only be "todo" or "done" now
+    is_deferral: Optional[bool] = None
+
+    model_config = ConfigDict(extra='ignore')
+
+
+# Substack-related Pydantic models  
+class SubstackTaskBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+class SubstackTaskCreate(SubstackTaskBase):
+    pass
+
+class SubstackTaskResponse(SubstackTaskBase):
+    id: uuid.UUID
+    completed: bool
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    sort_order: int
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class SubstackBase(BaseModel):
+    name: str
+
+class SubstackCreate(SubstackBase):
+    pass
+
+class SubstackResponse(SubstackBase):
+    id: uuid.UUID
+    parent_task_id: uuid.UUID
+    created_at: datetime
+    tasks: List['SubstackTaskResponse'] = []
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TaskResponse(TaskBase):
+    id: uuid.UUID
+    completed: bool # RE-ADDED: This field is expected by the frontend based on the error.
+    status: str
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    deferred_at: Optional[datetime] = None
+    deferral_count: int
+    sort_order: Optional[int] = None
+    external_id: Optional[str] = None
+    source: Optional[str] = None
+    substacks: List['SubstackResponse'] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- API Endpoints ---
 app = FastAPI()
 
-# Configure CORS
+# CORS configuration to allow frontend to communicate with backend
 origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    "http://localhost:8080",  # Frontend URL
+    "http://127.0.0.1:8080",  # Alternative frontend URL
+    "http://localhost:5173",  # Vite default port
 ]
 
 app.add_middleware(
@@ -94,206 +233,63 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Initial Data (Optional - for first run only) ---
-initial_tasks_data = [
-    {"title": "Set up FastAPI Backend", "description": "Successfully run the basic FastAPI app.", "status": "done"},
-    {"title": "Connect Frontend & Backend", "description": "Make React fetch data from FastAPI.", "status": "done"},
-    {"title": "Integrate PostgreSQL", "description": "Get the database running and connected to FastAPI.", "status": "todo"},
-    {"title": "Define Task API Endpoints", "description": "Create API routes for CRUD operations on tasks.", "status": "todo"},
-    {"title": "Update Frontend to Use API", "description": "Modify React components to send/receive data via new API endpoints.", "status": "todo"},
-]
-
-def create_db_and_tables():
-    # Base.metadata.drop_all(engine) # DANGER! Uncomment for a clean slate during dev ONLY IF you want to reset all data and tables.
-    Base.metadata.create_all(engine) # Create tables if they don't exist
-
-    db = SessionLocal()
-    try:
-        # Check if 'sort_order' column exists. This is a simple migration helper.
-        # A more robust solution would use Alembic.
-        inspector = inspect(db.bind)
-        columns = inspector.get_columns('tasks')
-        column_names = [col['name'] for col in columns]
-
-        if 'sort_order' not in column_names:
-            print("Adding 'sort_order' column to tasks table...")
-            db.execute(text("ALTER TABLE tasks ADD COLUMN sort_order INTEGER NULL"))
-            db.commit()
-            print("'sort_order' column added.")
-
-        if db.query(DBTask).count() == 0:
-            print("Database is empty. Populating with initial tasks...")
-            current_sort_order = 0
-            for task_data in initial_tasks_data:
-                # Assign sort_order only for 'todo' tasks initially
-                if task_data["status"] == "todo":
-                    current_sort_order += 1
-                db_task = DBTask(
-                    id=uuid.uuid4(),
-                    title=task_data["title"],
-                    description=task_data["description"],
-                    status=task_data["status"],
-                    created_at=datetime.now(timezone.utc),
-                    completed_at=datetime.now(timezone.utc) if task_data["status"] == "done" else None,
-                    deferred_at=None,
-                    sort_order=current_sort_order if task_data["status"] == "todo" else None # Assign initial sort_order
-                )
-                db.add(db_task)
-            db.commit()
-            print("Initial tasks populated.")
-        else:
-            print("Database already contains tasks. Skipping initial population.")
-            # For existing tasks that don't have sort_order yet, initialize them
-            # This is a one-time migration for existing data
-            if 'sort_order' in column_names: # Ensure column exists before trying to update
-                tasks_without_sort_order = db.query(DBTask).filter(DBTask.status.in_(["todo", "deferred"]), DBTask.sort_order.is_(None)).order_by(asc(DBTask.created_at)).all()
-                if tasks_without_sort_order:
-                    print("Initializing sort_order for existing active tasks...")
-                    # Find max existing sort_order for active tasks
-                    # Use func.max and scalar() to safely get the max value, defaulting to None if no records
-                    max_existing_sort_order = db.query(func.max(DBTask.sort_order)).filter(
-                        DBTask.status.in_(["todo", "deferred"])
-                    ).scalar() # Use scalar() to get just the value
-    
-                    # If no existing sort_order found, start from 0 for the next_sort_order calculation
-                    # The next sort_order will be (current max or 0) + 1
-                    next_sort_order = (max_existing_sort_order if max_existing_sort_order is not None else 0) + 1
-    
-                    for task in tasks_without_sort_order:
-                        task.sort_order = next_sort_order
-                        next_sort_order += 1
-                        db.add(task)
-                    db.commit()
-                    print("Sort orders initialized.")
-
-    except Exception as e:
-        print(f"Error during initial database population or migration: {e}")
-        db.rollback()
-    finally:
-        db.close()
-
-# --- FastAPI Lifespan Events ---
-@app.on_event("startup")
-async def startup_event():
-    print("FastAPI app startup: Creating database tables if they don't exist...")
-    create_db_and_tables()
-    print("Database initialization complete.")
-
-# --- Pydantic Models for Request/Response ---
-class TaskCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
-
-class TaskUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    status: Optional[str] = None
-    # We won't allow direct update of sort_order from frontend for now, it's backend-managed
-
-class TaskResponse(BaseModel):
-    id: uuid.UUID
-    title: str
-    description: Optional[str] = None
-    completed: bool
-    status: str
-    createdAt: datetime
-    completedAt: Optional[datetime] = None
-    deferredAt: Optional[datetime] = None
-    sortOrder: Optional[int] = None # <--- ADDED THIS LINE
-    source: Optional[str] = None
-    externalId: Optional[str] = None
-
-    class Config:
-        from_attributes = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat() if v else None
-        }
-
-    @classmethod
-    def from_orm_model(cls, db_task: DBTask):
-        return cls(
-            id=db_task.id,
-            title=db_task.title,
-            description=db_task.description,
-            completed=db_task.status == 'done',
-            status=db_task.status,
-            createdAt=db_task.created_at,
-            completedAt=db_task.completed_at,
-            deferredAt=db_task.deferred_at,
-            sortOrder=db_task.sort_order, # <--- ADDED THIS LINE
-            source=db_task.source,
-            externalId=db_task.external_id,
-        )
-
-
-# --- API Endpoints ---
-
-@app.get("/tasks", response_model=List[TaskResponse])
-async def get_tasks(db: Session = Depends(get_db)):
-    """
-    Retrieves all tasks from the database,
-    ordered by sort_order for active tasks (todo/deferred)
-    and by completed_at for done tasks.
-    """
-    # Fetch active tasks (todo and deferred) ordered by sort_order
-    active_tasks = db.query(DBTask).filter(DBTask.status.in_(["todo", "deferred"])).order_by(asc(DBTask.sort_order)).all()
-
-    # Fetch done tasks ordered by completed_at (newest first)
-    done_tasks = db.query(DBTask).filter(DBTask.status == "done").order_by(desc(DBTask.completed_at)).all()
-
-    # Combine active and done tasks. Frontend's TaskStack should only display active.
-    # We can separate these into two lists in the response if the frontend needs both,
-    # but for now, we'll return a single list and let the frontend filter.
-    # The crucial part is that active tasks are returned in sort_order.
-    all_tasks = active_tasks + done_tasks # Order here doesn't matter for frontend filtering, but consistent.
-    return [TaskResponse.from_orm_model(task) for task in all_tasks]
-
+# Create tables on startup
+Base.metadata.create_all(bind=engine)
 
 @app.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate, db: Session = Depends(get_db)):
-    """
-    Creates a new task in the database, assigning it sort_order 1
-    and shifting all other active tasks down.
-    """
-    # Shift existing active tasks down by 1
-    db.query(DBTask).filter(DBTask.status.in_(["todo", "deferred"])).update(
-        {DBTask.sort_order: DBTask.sort_order + 1},
-        synchronize_session=False # Important for bulk updates
-    )
-    db.commit()
+    # Find the maximum sort_order for existing active tasks
+    # Active tasks are those with status 'todo'
+    max_order_result = db.query(func.max(DBTask.sort_order)).filter(
+        DBTask.status == "todo"
+    ).scalar()
 
-    # Create the new task with sort_order 1
+    new_sort_order = (max_order_result or 0) + 1
+
     db_task = DBTask(
-        id=uuid.uuid4(),
         title=task.title,
         description=task.description,
+        # Default status for new tasks is 'todo'
         status="todo",
-        created_at=datetime.now(timezone.utc),
-        sort_order=1, # New task goes to the top (sort_order 1)
-        deferred_at=None,
-        completed_at=None
+        sort_order=new_sort_order,
+        completed=False # Ensure 'completed' is set for new tasks
     )
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
-    return TaskResponse.from_orm_model(db_task)
+    return TaskResponse.model_validate(db_task)
 
-@app.get("/tasks/{task_id}", response_model=TaskResponse)
-async def get_task(task_id: uuid.UUID, db: Session = Depends(get_db)):
-    """
-    Retrieves a single task by its ID.
-    """
-    db_task = db.query(DBTask).filter(DBTask.id == task_id).first()
-    if db_task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
-    return TaskResponse.from_orm_model(db_task)
+
+@app.get("/tasks", response_model=List[TaskResponse])
+async def get_tasks(db: Session = Depends(get_db)):
+    # Fetch all tasks with their substacks
+    tasks = db.query(DBTask).all()
+
+    # Separate tasks by status
+    todo_tasks = []
+    done_tasks = []
+    
+    for task in tasks:
+        if task.status == "todo":
+            todo_tasks.append(task)
+        elif task.status == "done":
+            done_tasks.append(task)
+
+    # Sort todo tasks by sort_order (ascending)
+    todo_tasks.sort(key=lambda t: t.sort_order if t.sort_order is not None else float('inf'))
+
+    # Sort done tasks by completed_at in descending order (most recent first)
+    done_tasks.sort(key=lambda t: (t.completed_at is not None, t.completed_at), reverse=True)
+
+    return [TaskResponse.model_validate(task) for task in todo_tasks + done_tasks]
+
 
 @app.put("/tasks/{task_id}", response_model=TaskResponse)
-async def update_task(task_id: uuid.UUID, task_update: TaskUpdate, db: Session = Depends(get_db)):
-    """
-    Updates an existing task's details or status.
-    This logic will be significantly expanded for sort_order management.
-    """
+async def update_task(
+    task_id: uuid.UUID,
+    task_update: TaskUpdate,
+    db: Session = Depends(get_db)
+):
     db_task = db.query(DBTask).filter(DBTask.id == task_id).first()
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -307,83 +303,146 @@ async def update_task(task_id: uuid.UUID, task_update: TaskUpdate, db: Session =
     if task_update.description is not None:
         db_task.description = task_update.description
 
-    # Handle status changes (This will be complex for sort_order management)
+    # --- NEW DEFERRAL LOGIC ---
+    if task_update.is_deferral:
+        # A task can only be deferred if it's currently 'todo'
+        if db_task.status == "todo":
+            db_task.deferred_at = datetime.now(timezone.utc)
+            db_task.deferral_count += 1
+
+            # 1. Shift tasks that were below the original_sort_order UP by 1
+            #    This only affects tasks that are currently 'todo'
+            if original_sort_order is not None:
+                db.query(DBTask).filter(
+                    DBTask.status == "todo",
+                    DBTask.sort_order > original_sort_order
+                ).update(
+                    {DBTask.sort_order: DBTask.sort_order - 1},
+                    synchronize_session=False
+                )
+
+            # 2. Find the maximum sort_order among all 'todo' tasks *after* the shift
+            max_order_result = db.query(func.max(DBTask.sort_order)).filter(
+                DBTask.status == "todo"
+            ).scalar()
+
+            new_sort_order = (max_order_result or 0) + 1
+
+            # 3. Assign the new maximum sort_order to the *currently deferring task*
+            db_task.sort_order = new_sort_order
+        else:
+            raise HTTPException(status_code=400, detail="Cannot defer a non-todo task.")
+        
+        db.add(db_task)
+        db.commit()
+        db.refresh(db_task)
+        return TaskResponse.model_validate(db_task)
+
+
+    # --- STATUS CHANGE LOGIC (todo <-> done) ---
     if task_update.status is not None and task_update.status != original_status:
         db_task.status = task_update.status
 
-        # If status changes FROM active (todo/deferred) TO done
-        if task_update.status == "done":
+        # Update the redundant 'completed' field for frontend compatibility
+        if db_task.status == "done":
+            db_task.completed = True
+        elif db_task.status == "todo":
+            db_task.completed = False
+
+        # If status changes FROM 'todo' TO 'done'
+        if task_update.status == "done" and original_status == "todo":
             db_task.completed_at = datetime.now(timezone.utc)
             db_task.deferred_at = None
-            # When a task is marked done, it leaves the sort_order sequence
-            # All tasks below its original sort_order need to be decremented
+            
             if original_sort_order is not None:
                 db.query(DBTask).filter(
-                    DBTask.status.in_(["todo", "deferred"]),
+                    DBTask.status == "todo",
                     DBTask.sort_order > original_sort_order
                 ).update(
                     {DBTask.sort_order: DBTask.sort_order - 1},
                     synchronize_session=False
                 )
             db_task.sort_order = None # No sort_order for done tasks
-        # If status changes FROM done TO active (todo/deferred) - re-adds to top
-        elif original_status == "done" and task_update.status in ["todo", "deferred"]:
+
+        # If status changes FROM 'done' TO 'todo' (re-activate)
+        elif task_update.status == "todo" and original_status == "done":
             db_task.completed_at = None
-            # Shift all active tasks down by 1 to make space at the top
-            db.query(DBTask).filter(DBTask.status.in_(["todo", "deferred"])).update(
+            db_task.deferred_at = None 
+            
+            db.query(DBTask).filter(DBTask.status == "todo").update(
                 {DBTask.sort_order: DBTask.sort_order + 1},
                 synchronize_session=False
             )
-            db_task.sort_order = 1 # New task goes to the top
-            if task_update.status == "deferred":
-                db_task.deferred_at = datetime.now(timezone.utc)
-            else:
-                db_task.deferred_at = None
-        # If status changes WITHIN active (e.g., todo to deferred, or deferred to todo)
-        elif task_update.status == "deferred" and original_status == "todo":
-            # Deferral: move to bottom of the active stack
-            db_task.deferred_at = datetime.now(timezone.utc)
-            db_task.completed_at = None # Ensure it's not marked completed
-
-            # 1. Decrement sort_order of tasks that were below this task
-            if original_sort_order is not None:
-                db.query(DBTask).filter(
-                    DBTask.status.in_(["todo", "deferred"]),
-                    DBTask.sort_order > original_sort_order
-                ).update(
-                    {DBTask.sort_order: DBTask.sort_order - 1},
-                    synchronize_session=False
-                )
-            # 2. Find the new maximum sort_order for active tasks
-            max_order_result = db.query(DBTask.sort_order).filter(
-                DBTask.status.in_(["todo", "deferred"])
-            ).order_by(desc(DBTask.sort_order)).first()
-            
-            new_sort_order = 1 # Default if no other active tasks
-            if max_order_result and max_order_result[0] is not None:
-                new_sort_order = max_order_result[0] + 1
-            
-            db_task.sort_order = new_sort_order
-
-        elif task_update.status == "todo" and original_status == "deferred":
-            # Moving from deferred back to todo: put it at the top (sort_order 1)
-            db_task.deferred_at = None
-            db_task.completed_at = None
-
-            # Shift all active tasks down by 1 to make space at the top
-            db.query(DBTask).filter(DBTask.status.in_(["todo", "deferred"])).update(
-                {DBTask.sort_order: DBTask.sort_order + 1},
-                synchronize_session=False
-            )
-            db_task.sort_order = 1
+            db_task.sort_order = 1 
 
 
+    # Commit changes that happened outside the is_deferral block
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
-    return TaskResponse.from_orm_model(db_task)
+    return TaskResponse.model_validate(db_task)
 
 
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to the One Job FastAPI Backend (PostgreSQL enabled)!"}
+# --- Substack API Endpoints ---
+
+@app.post("/tasks/{task_id}/substacks", response_model=SubstackResponse, status_code=status.HTTP_201_CREATED)
+async def create_substack(task_id: uuid.UUID, substack: SubstackCreate, db: Session = Depends(get_db)):
+    # Check if parent task exists
+    parent_task = db.query(DBTask).filter(DBTask.id == task_id).first()
+    if parent_task is None:
+        raise HTTPException(status_code=404, detail="Parent task not found")
+    
+    db_substack = DBSubstack(
+        name=substack.name,
+        parent_task_id=task_id
+    )
+    db.add(db_substack)
+    db.commit()
+    db.refresh(db_substack)
+    return SubstackResponse.model_validate(db_substack)
+
+
+@app.post("/substacks/{substack_id}/tasks", response_model=SubstackTaskResponse, status_code=status.HTTP_201_CREATED)
+async def create_substack_task(substack_id: uuid.UUID, task: SubstackTaskCreate, db: Session = Depends(get_db)):
+    # Check if substack exists
+    substack = db.query(DBSubstack).filter(DBSubstack.id == substack_id).first()
+    if substack is None:
+        raise HTTPException(status_code=404, detail="Substack not found")
+    
+    # Find the maximum sort_order for existing tasks in this substack
+    max_order_result = db.query(func.max(DBSubstackTask.sort_order)).filter(
+        DBSubstackTask.substack_id == substack_id
+    ).scalar()
+    
+    new_sort_order = (max_order_result or 0) + 1
+    
+    db_task = DBSubstackTask(
+        title=task.title,
+        description=task.description,
+        substack_id=substack_id,
+        sort_order=new_sort_order
+    )
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return SubstackTaskResponse.model_validate(db_task)
+
+
+@app.put("/substack-tasks/{task_id}", response_model=SubstackTaskResponse)
+async def update_substack_task(task_id: uuid.UUID, task_update: dict, db: Session = Depends(get_db)):
+    db_task = db.query(DBSubstackTask).filter(DBSubstackTask.id == task_id).first()
+    if db_task is None:
+        raise HTTPException(status_code=404, detail="Substack task not found")
+    
+    if "completed" in task_update:
+        db_task.completed = task_update["completed"]
+        if task_update["completed"]:
+            db_task.completed_at = datetime.now(timezone.utc)
+        else:
+            db_task.completed_at = None
+    
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return SubstackTaskResponse.model_validate(db_task)
+
