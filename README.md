@@ -1,73 +1,197 @@
-# Welcome to your Lovable project
+# One Job
 
-## Project info
+> Focus on one task at a time with a beautiful, swipe-to-interact mobile-first interface.
 
-**URL**: https://lovable.dev/projects/2b260b2a-18b9-489e-96b9-b751dee5eb9a
+**One Job** is a task management application built with domain-driven design principles. It implements a card-based interface where users see one task at a time, can swipe right to complete or left to defer tasks, and organize complex work into hierarchical substacks.
 
-## How can I edit this code?
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+### 🎯 **Core Task Management**
+- **One-at-a-time focus**: See only the current task to maintain concentration
+- **Swipe interactions**: Right to complete, left to defer
+- **Smart task ordering**: Deferred tasks move to bottom of stack
+- **Real-time persistence**: All changes immediately saved to backend
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2b260b2a-18b9-489e-96b9-b751dee5eb9a) and start prompting.
+### 📚 **Hierarchical Organization** 
+- **Substacks**: Break complex tasks into organized sub-projects
+- **Nested task management**: Each substack is a mini task-stack
+- **Visual hierarchy**: Clear parent-child relationships
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🔄 **Integration Ready**
+- **External system imports**: Architecture supports Linear, Jira, etc.
+- **RESTful API**: Complete backend API for all operations
+- **Domain-driven design**: Clean separation for easy extension
 
-**Use your preferred IDE**
+### 📱 **Modern UX**
+- **Mobile-first**: Optimized for phone use with touch gestures
+- **Smooth animations**: Framer Motion powered transitions
+- **Beautiful UI**: shadcn/ui components with Tailwind CSS
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🚀 Quick Start
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
+- **Node.js** 16+ (for frontend)
+- **Python** 3.9+ (for backend)
+- **Git** (for cloning)
 
-Follow these steps:
+### 1. Clone & Setup
+```bash
+git clone <repository-url>
+cd one-job
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install frontend dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Setup Python backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+pip install -r requirements.txt
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 2. Start Development Servers
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+**Terminal 1 - Backend:**
+```bash
+cd backend
+source ../venv/bin/activate
+uvicorn main:app --reload --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 3. Open & Use
+- **Frontend**: http://localhost:8080
+- **API Docs**: http://127.0.0.1:8000/docs
+- **Ready to use!** The SQLite database auto-creates
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🏗️ Architecture
 
-**Use GitHub Codespaces**
+One Job follows **domain-driven design** with clear separation of concerns:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
+┌─────────────────────────┐
+│       Frontend          │
+│   React + TypeScript    │
+│     (Port 8080)        │
+└─────────┬───────────────┘
+          │ HTTP API
+          │
+┌─────────▼───────────────┐
+│       Backend           │
+│   FastAPI + SQLAlchemy  │
+│     (Port 8000)        │
+└─────────┬───────────────┘
+          │ ORM
+          │
+┌─────────▼───────────────┐
+│      Database           │
+│ SQLite (dev) / PG (prod)│
+└─────────────────────────┘
+```
 
-## What technologies are used for this project?
+**Key Design Principles:**
+- **API-First**: All functionality exposed via REST API
+- **Mobile-First**: Touch-optimized responsive design  
+- **Test-Driven**: Comprehensive test coverage
+- **Integration-Ready**: Clean interfaces for external systems
 
-This project is built with:
+## 📖 Documentation
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+| Document | Description |
+|----------|-------------|
+| [Architecture Guide](docs/ARCHITECTURE.md) | Detailed system design and patterns |
+| [API Specification](docs/API.md) | Complete REST API reference |
+| [Developer Guide](docs/DEVELOPMENT.md) | How to extend and contribute |
+| [Deployment Guide](docs/DEPLOYMENT.md) | Production deployment options |
+| [Testing Guide](docs/TESTING.md) | Testing strategy and examples |
 
-## How can I deploy this project?
+## 🛠️ Technology Stack
 
-Simply open [Lovable](https://lovable.dev/projects/2b260b2a-18b9-489e-96b9-b751dee5eb9a) and click on Share -> Publish.
+### Frontend
+- **React 18** - Modern React with hooks
+- **TypeScript** - Type safety and developer experience
+- **Vite** - Fast build tool and dev server
+- **TailwindCSS** - Utility-first styling
+- **shadcn/ui** - High-quality component library
+- **Framer Motion** - Smooth animations
+- **React Query** - Server state management
 
-## Can I connect a custom domain to my Lovable project?
+### Backend  
+- **FastAPI** - Modern Python web framework
+- **SQLAlchemy** - Python ORM with relationship support
+- **Pydantic** - Data validation and serialization
+- **pytest** - Testing framework
+- **SQLite/PostgreSQL** - Database options
 
-Yes, you can!
+### Development
+- **Domain-Driven Design** - Clean architecture patterns
+- **Test-Driven Development** - Comprehensive test coverage
+- **API-First Design** - All features exposed via REST API
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🧪 Testing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Run the comprehensive test suite:
+
+```bash
+# Backend tests
+cd backend
+source ../venv/bin/activate
+python -m pytest -v
+
+# Frontend tests (when implemented)
+npm test
+```
+
+Current test coverage:
+- ✅ Unit tests for all API endpoints
+- ✅ Integration tests for complete workflows  
+- ✅ Task management operations
+- ✅ Substack functionality
+- ✅ Data persistence
+
+## 🎯 Project Status
+
+**Current Phase: MVP Complete** ✅
+- [x] Core task management working
+- [x] Substack system implemented
+- [x] Full backend-frontend integration
+- [x] Comprehensive test coverage
+- [x] Development documentation
+
+**Next Phase: Integration** 🚧
+- [ ] Linear/Jira import functionality
+- [ ] Advanced task filtering
+- [ ] User authentication
+- [ ] Multi-user support
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for:
+- Development setup
+- Code style guidelines
+- Pull request process
+- Issue reporting
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with assistance from Claude Code
+- Inspired by domain-driven design principles
+- UI components from shadcn/ui
+- Icons from Lucide React
+
+---
+
+**Ready to focus on one job at a time?** Clone, run, and start organizing your work with intention.
+
+For questions or support, please open an issue in the repository.
