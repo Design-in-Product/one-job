@@ -89,7 +89,9 @@ class WSGIResponder:
         self.scope = scope
         self.status = None
         self.response_headers = None
-        self.stream_send, self.stream_receive = anyio.create_memory_object_stream(math.inf)
+        self.stream_send, self.stream_receive = anyio.create_memory_object_stream(
+            math.inf
+        )
         self.response_started = False
         self.exc_info: typing.Any = None
 
@@ -121,7 +123,7 @@ class WSGIResponder:
         exc_info: typing.Any = None,
     ) -> None:
         self.exc_info = exc_info
-        if not self.response_started:  # pragma: no branch
+        if not self.response_started:
             self.response_started = True
             status_code_string, _ = status.split(" ", 1)
             status_code = int(status_code_string)
@@ -149,4 +151,6 @@ class WSGIResponder:
                 {"type": "http.response.body", "body": chunk, "more_body": True},
             )
 
-        anyio.from_thread.run(self.stream_send.send, {"type": "http.response.body", "body": b""})
+        anyio.from_thread.run(
+            self.stream_send.send, {"type": "http.response.body", "body": b""}
+        )

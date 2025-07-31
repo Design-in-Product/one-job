@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/xian/OneJob/one-job/one-job/backend/venv"
+VIRTUAL_ENV="/Users/xian/Development/one-job/backend/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
