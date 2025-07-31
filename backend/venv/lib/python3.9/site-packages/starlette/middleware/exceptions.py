@@ -18,7 +18,10 @@ class ExceptionMiddleware:
     def __init__(
         self,
         app: ASGIApp,
-        handlers: typing.Mapping[typing.Any, typing.Callable[[Request, Exception], Response]] | None = None,
+        handlers: typing.Mapping[
+            typing.Any, typing.Callable[[Request, Exception], Response]
+        ]
+        | None = None,
         debug: bool = False,
     ) -> None:
         self.app = app
@@ -28,7 +31,7 @@ class ExceptionMiddleware:
             HTTPException: self.http_exception,
             WebSocketException: self.websocket_exception,
         }
-        if handlers is not None:  # pragma: no branch
+        if handlers is not None:
             for key, value in handlers.items():
                 self.add_exception_handler(key, value)
 
@@ -65,7 +68,9 @@ class ExceptionMiddleware:
         assert isinstance(exc, HTTPException)
         if exc.status_code in {204, 304}:
             return Response(status_code=exc.status_code, headers=exc.headers)
-        return PlainTextResponse(exc.detail, status_code=exc.status_code, headers=exc.headers)
+        return PlainTextResponse(
+            exc.detail, status_code=exc.status_code, headers=exc.headers
+        )
 
     async def websocket_exception(self, websocket: WebSocket, exc: Exception) -> None:
         assert isinstance(exc, WebSocketException)

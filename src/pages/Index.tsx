@@ -286,7 +286,7 @@ const Index = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ status: 'deferred' }),
+          body: JSON.stringify({ is_deferral: true }),
         });
 
         if (!response.ok) {
