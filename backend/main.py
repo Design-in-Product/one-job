@@ -223,6 +223,9 @@ origins = [
     "http://localhost:8080",  # Frontend URL
     "http://127.0.0.1:8080",  # Alternative frontend URL
     "http://localhost:5173",  # Vite default port
+    "https://onejob.co",      # Production domain
+    "https://www.onejob.co",  # Production www domain
+    "https://design-in-product.github.io",  # GitHub Pages domain
 ]
 
 app.add_middleware(
