@@ -40,6 +40,7 @@ jobs:
           cp index.html deploy/
           cp demo.html deploy/
           cp -r app deploy/
+          cp -r assets deploy/ 2>/dev/null || true
           cp favicon.ico deploy/ 2>/dev/null || true
           cp one-job.png deploy/ 2>/dev/null || true
           cp robots.txt deploy/ 2>/dev/null || true
