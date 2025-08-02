@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clean minimal design -->
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Single focused card with gradient -->
+  <g transform="translate(128, 128)">
+    <!-- Card shadow -->
+    <rect x="-70" y="-50" width="140" height="100" rx="12" fill="rgba(99,102,241,0.2)" transform="translate(8, 8)"/>
+    
+    <!-- Main card -->
+    <rect x="-70" y="-50" width="140" height="100" rx="12" fill="url(#iconGradient)"/>
+    
+    <!-- Focus dot indicator -->
+    <circle cx="0" cy="0" r="8" fill="white"/>
+    
+    <!-- Swipe indicators -->
+    <path d="M 45 0 L 55 -10 M 45 0 L 55 10" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    <path d="M -45 0 L -55 -10 M -45 0 L -55 10" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+  </g>
+</svg>
