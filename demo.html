@@ -41,6 +41,16 @@
             cursor: pointer;
             font-size: 12px;
         ">Reset Demo</button>
+        <button onclick="hideInstructions()" style="
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 4px; 
+            margin-left: 8px; 
+            cursor: pointer;
+            font-size: 12px;
+        ">Debug Hide</button>
         <a href="/" style="
             color: white; 
             text-decoration: none; 
@@ -103,6 +113,10 @@
 
     <!-- Demo Scripts -->
     <script>
+        // Debug: Initial page state
+        console.log('=== DEMO PAGE DEBUG STARTING ===');
+        console.log('Page loaded, checking initial state...');
+        
         // Force demo mode by adding URL parameter
         if (!window.location.search.includes('demo')) {
             const newUrl = window.location.pathname + '?demo=true' + window.location.hash;
@@ -117,10 +131,19 @@
         }
 
         function hideInstructions() {
-            document.getElementById('instructions').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('instructions').style.display = 'none';
-            }, 300);
+            console.log('hideInstructions called');
+            const instructions = document.getElementById('instructions');
+            console.log('instructions element:', instructions);
+            if (instructions) {
+                console.log('Setting opacity to 0');
+                instructions.style.opacity = '0';
+                setTimeout(() => {
+                    console.log('Setting display to none');
+                    instructions.style.display = 'none';
+                }, 300);
+            } else {
+                console.error('Instructions element not found!');
+            }
         }
 
         // Auto-hide instructions after 30 seconds
@@ -137,25 +160,46 @@
             // Instructions are shown by default
         }
 
+        // Debug: Check if DOM is already ready and if instructions element exists
+        console.log('Document ready state:', document.readyState);
+        console.log('Instructions element at script execution:', document.getElementById('instructions'));
+        
         // Wait for DOM to be ready before attaching event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded fired');
+            
+            // Debug: Check if instructions element exists
+            const instructions = document.getElementById('instructions');
+            console.log('Instructions element found on DOMContentLoaded:', instructions);
+            
             // Add outside click to dismiss instructions
             document.addEventListener('click', function(event) {
+                console.log('Document click detected, target:', event.target);
                 const instructions = document.getElementById('instructions');
+                console.log('Instructions element during click:', instructions);
+                console.log('Instructions display:', instructions ? instructions.style.display : 'N/A');
+                console.log('Instructions opacity:', instructions ? instructions.style.opacity : 'N/A');
+                
                 if (instructions && instructions.style.display !== 'none' && instructions.style.opacity !== '0') {
                     // Check if click is outside the instructions panel
-                    if (!instructions.contains(event.target)) {
+                    const isOutside = !instructions.contains(event.target);
+                    console.log('Click is outside instructions:', isOutside);
+                    if (isOutside) {
+                        console.log('Calling hideInstructions from outside click');
                         hideInstructions();
                     }
                 }
             });
 
             // Prevent clicks inside the instructions panel from closing it
-            const instructions = document.getElementById('instructions');
             if (instructions) {
+                console.log('Adding click listener to instructions panel');
                 instructions.addEventListener('click', function(event) {
+                    console.log('Instructions panel clicked, stopping propagation');
                     event.stopPropagation();
                 });
+            } else {
+                console.error('Instructions element not found when trying to add click listener');
             }
         });
     </script>
