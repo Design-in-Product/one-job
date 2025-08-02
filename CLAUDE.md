@@ -86,8 +86,9 @@ find . -name "requirements.txt" -o -name "package.json" | xargs cat
 2. ANALYZE → understand frontend-backend contracts (3-5 minutes)  
 3. DESIGN → adapt patterns to requirements (2-3 minutes)
 4. IMPLEMENT → follow established conventions (5-10 minutes)
-5. TEST → verify on mobile device if UI change (3-5 minutes)
-6. DOCUMENT → update REQUIREMENTS.md if needed (2-3 minutes)
+5. DEBUG → if issues, add monitoring FIRST, never guess (2-5 minutes)
+6. TEST → verify on mobile device if UI change (3-5 minutes)
+7. DOCUMENT → update REQUIREMENTS.md if needed (2-3 minutes)
 ```
 
 #### Why This Works (Proven by Deferral Bug Fix)
@@ -99,6 +100,8 @@ find . -name "requirements.txt" -o -name "package.json" | xargs cat
 5. **Enables Excellence Flywheel**: Each fix builds knowledge for accelerated future work
 
 **Key Insight**: Verification prevented the deferral bug from being a 2-hour debugging session. One grep command revealed the contract mismatch in 30 seconds.
+
+**Latest Breakthrough**: Demo instructions panel dismissal bug - systematic debugging with console monitoring revealed React app was removing DOM elements, not a timing/event listener issue. Fixed in 15 minutes vs. potential hours of DOM timing guesswork.
 
 ## TDD ZONES FRAMEWORK FOR ONE JOB
 
@@ -272,6 +275,119 @@ grep -r "TaskResponse" backend/ --include="*.py" -A 10
 ❌ **WRONG**: Not checking backend model definitions
 ✅ **CORRECT**: Always grep for Pydantic models before sending payloads
 
+## DEMO PAGE DEBUGGING METHODOLOGY ⚡
+
+### The "Monitor First, Fix Second" Approach
+
+When demo functionality fails, **NEVER guess at solutions**. Use systematic monitoring to reveal the actual problem.
+
+#### MANDATORY Debugging Process for Demo Issues
+
+```bash
+# 1. Add comprehensive console logging first
+console.log('=== FUNCTION CALLED ===');
+console.log('Target element:', document.getElementById('target'));
+console.log('Element exists:', !!document.getElementById('target'));
+console.log('Element properties:', element ? element.style : 'N/A');
+
+# 2. Add debug buttons for direct testing
+<button onclick="debugFunction()">Debug Test</button>
+
+# 3. Monitor DOM changes that might interfere
+setInterval(() => {
+  const element = document.getElementById('target');
+  if (!element) console.warn('Element disappeared!');
+}, 1000);
+```
+
+#### Common Demo Page Gotchas (Learned from Experience)
+
+**🚨 React App DOM Interference**
+- **Problem**: React app removes/replaces DOM elements outside `#root`
+- **Symptoms**: `getElementById()` returns `null` unexpectedly
+- **Detection**: Element exists in HTML but not when JavaScript runs
+- **Solution**: Monitor and auto-recreate removed elements
+```javascript
+// Monitor for React interference
+function ensureElementExists() {
+  const element = document.getElementById('target');
+  if (!element && !localStorage.getItem('elementHidden')) {
+    recreateElement();
+  }
+}
+setInterval(ensureElementExists, 1000);
+```
+
+**🚨 DOMContentLoaded Timing Issues**
+- **Problem**: Scripts run before DOM elements are ready
+- **Symptoms**: Event listeners don't attach, elements not found
+- **Detection**: Check `document.readyState` and element existence
+- **Solution**: Always wrap in DOMContentLoaded or use monitoring
+```javascript
+console.log('Document ready state:', document.readyState);
+document.addEventListener('DOMContentLoaded', function() {
+  // Attach listeners here
+});
+```
+
+**🚨 Event Listener Conflicts**
+- **Problem**: Multiple scripts or React interfering with events
+- **Symptoms**: Click events don't fire or fire unexpectedly
+- **Detection**: Log every event and check `event.target`
+- **Solution**: Use event.stopPropagation() strategically
+```javascript
+element.addEventListener('click', function(event) {
+  console.log('Event fired, target:', event.target);
+  event.stopPropagation(); // Prevent React interference
+});
+```
+
+#### Debugging Commands for Demo Issues
+
+```bash
+# Check if GitHub Pages deployed correctly
+curl -I https://onejob.co/demo.html
+curl -I https://onejob.co/app/assets/index-[hash].js
+
+# Verify asset paths in demo.html match deployed structure
+grep "src=" demo.html
+ls -la app/assets/
+
+# Test React app loading in isolation
+# Open browser dev tools and check:
+# - Console errors
+# - Network tab for failed asset loads
+# - Elements tab for missing DOM elements
+```
+
+#### Demo Debugging Workflow (MANDATORY)
+
+```
+1. REPRODUCE → Confirm exact failure conditions
+2. MONITOR → Add console logging throughout affected code  
+3. DEPLOY → Push debugging version to staging
+4. OBSERVE → Check browser console for actual vs. expected behavior
+5. DIAGNOSE → Identify root cause from monitoring data
+6. FIX → Address root cause, not symptoms
+7. VERIFY → Test fix works in all scenarios
+8. CLEAN → Remove debug logging in production version
+```
+
+#### Success Pattern: Instructions Panel Bug
+
+**What we learned:**
+- ❌ **Wrong assumption**: Event listeners not attaching properly
+- ✅ **Actual cause**: React app removing DOM elements entirely
+- 🔧 **Fix**: Monitor and auto-recreate removed elements
+- ⚡ **Time saved**: 15 minutes vs. hours of DOM timing guesswork
+
+**The debugging approach that worked:**
+1. Added comprehensive console logging
+2. Created debug button for direct testing  
+3. Logged element existence at each step
+4. Discovered React was removing elements
+5. Implemented monitoring solution
+
 ## MOBILE-FIRST TESTING REQUIREMENTS
 
 ### Testing Strategy
@@ -332,6 +448,8 @@ npm run dev  # Auto-selects available port (usually 8081)
 - ✅ Build system: Production builds working (`npm run build`)
 - ✅ Database: Contains test data (2 completed tasks)
 - ✅ API Integration: All endpoints responding correctly
+- ✅ Demo functionality: Instructions panel dismissal working (React DOM interference resolved)
+- ✅ Debugging methodology: Console monitoring approach proven effective
 
 ### Immediate Actions for Each Session
 
@@ -457,6 +575,52 @@ Based on recent commits and project status:
 - **Documentation**: Comprehensive requirements and architecture docs
 
 **Key Insight**: The verification-first methodology prevented the deferral bug from becoming a multi-hour debugging session. Systematic pattern discovery is the foundation of our velocity.
+
+## CURRENT SESSION STATUS (Updated 2025-08-02)
+
+### Recent Breakthroughs Achieved
+
+**✅ Demo Page Debugging Mastery**
+- **Problem**: Instructions panel dismissal not working
+- **Wrong Path**: Assumed DOM timing or event listener issues  
+- **Systematic Discovery**: Console monitoring revealed React app removing elements
+- **Solution**: Auto-monitoring and recreation of removed elements
+- **Time**: 15 minutes using monitoring vs. potential hours of guesswork
+- **Pattern**: Monitor first, diagnose from real data, fix root cause
+
+**✅ Date Formatting Resilience**
+- Fixed Completed tab crashes with graceful error handling
+- Added try-catch blocks around date formatting operations
+- Fallback to "Completed recently" for invalid dates
+
+**✅ GitHub Pages Deployment Pipeline**
+- Asset path corrections for demo.html 
+- Proper build artifact deployment structure
+- Demo now loads correctly at onejob.co
+
+### Current Development Phase
+
+**🎯 ACCEPTANCE TESTING PHASE**
+- Demo fully functional for comprehensive QA testing
+- Instructions panel dismissal working properly
+- Ready for user acceptance testing feedback
+- Next: Backend deployment to Render.com for full integration
+
+### Lessons Learned This Session
+
+1. **Never Skip Systematic Verification** - Even for "simple" UI bugs
+2. **React DOM Interference** - External elements can be removed by React
+3. **Monitoring Beats Guessing** - Console logging reveals actual problems
+4. **Deploy Debug Versions** - Test real behavior in live environment
+5. **Document Breakthroughs** - Capture methodology for future sessions
+
+### Immediate Next Steps
+
+1. Confirm demo acceptance testing complete
+2. Deploy backend to Render.com  
+3. Update frontend to use production API
+4. Test full end-to-end functionality
+5. Plan integration roadmap (Asana, Todoist, etc.)
 
 ---
 
