@@ -37,7 +37,7 @@ jobs:
       - name: Create deployment directory
         run: |
           mkdir -p deploy
-          cp index.html deploy/
+          cp landing-page.html deploy/index.html
           cp demo.html deploy/
           cp -r app deploy/
           cp -r assets deploy/ 2>/dev/null || true
