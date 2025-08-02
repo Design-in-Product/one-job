@@ -28,6 +28,7 @@ import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
 import { API_BASE_URL, isDemoMode } from '@/config';
+import { DemoService } from '@/services/demoService';
 
 
 // Helper function to convert backend's task format to frontend's Task interface
@@ -66,21 +67,31 @@ const Index = () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      const response = await fetch('http://127.0.0.1:8000/tasks');
+      let frontendTasks: Task[];
+      
+      if (isDemoMode) {
+        // Use demo service instead of API
+        const demoService = DemoService.getInstance();
+        frontendTasks = await demoService.getAllTasks();
+        console.log("Demo Mode - Fetched Tasks:", frontendTasks);
+      } else {
+        // Use real API
+        const response = await fetch(`${API_BASE_URL}/tasks`);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const backendData: any[] = await response.json();
+        frontendTasks = backendData.map(mapBackendTaskToFrontendTask);
+        
+        console.log("Fetched Backend Data (raw):", backendData);
+        console.log("Transformed Frontend Tasks:", frontendTasks);
       }
-
-      const backendData: any[] = await response.json();
-      const frontendTasks: Task[] = backendData.map(mapBackendTaskToFrontendTask);
-
-      console.log("Fetched Backend Data (raw):", backendData);
-      console.log("Transformed Frontend Tasks:", frontendTasks);
 
       setTasks(frontendTasks);
     } catch (err) {
-      console.error("Could not fetch tasks from backend:", err);
+      console.error("Could not fetch tasks:", err);
       setError((err as Error).message);
       setTasks([]);
     } finally {
@@ -125,27 +136,36 @@ const Index = () => {
   const handleAddTask = async (newTask: Task) => {
     if (!currentSubstack) {
       try {
-        const response = await fetch('http://127.0.0.1:8000/tasks', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: newTask.title,
-            description: newTask.description,
-          }),
-        });
+        if (isDemoMode) {
+          // Use demo service
+          const demoService = DemoService.getInstance();
+          const addedTask = await demoService.createTask(newTask.title, newTask.description);
+          console.log("Demo Mode - Task added:", addedTask);
+          toast.success(demoService.getDemoMessage('taskAdded'));
+        } else {
+          // Use real API
+          const response = await fetch(`${API_BASE_URL}/tasks`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: newTask.title,
+              description: newTask.description,
+            }),
+          });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const addedTask = await response.json();
+          console.log("Task added to backend:", addedTask);
+          toast.success('Task added!');
         }
-
-        const addedTask = await response.json();
-        console.log("Task added to backend:", addedTask);
-        toast.success('Task added!');
         refreshTasks();
       } catch (err) {
-        console.error("Failed to add task to backend:", err);
+        console.error("Failed to add task:", err);
         toast.error(`Failed to add task: ${(err as Error).message}`);
       }
     } else {
@@ -218,24 +238,33 @@ const Index = () => {
       toast.success('Substack task completed (local only)!');
     } else {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ status: 'done' }),
-        });
+        if (isDemoMode) {
+          // Use demo service
+          const demoService = DemoService.getInstance();
+          await demoService.updateTask(taskId, { completed: true, status: 'done' });
+          console.log("Demo Mode - Task completed:", taskId);
+          toast.success(demoService.getDemoMessage('taskCompleted'));
+        } else {
+          // Use real API
+          const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 'done' }),
+          });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const updatedTask = await response.json();
+          console.log("Task completed in backend:", updatedTask);
+          toast.success('Task completed!');
         }
-
-        const updatedTask = await response.json();
-        console.log("Task completed in backend:", updatedTask);
-        toast.success('Task completed!');
         refreshTasks();
       } catch (err) {
-        console.error("Failed to complete task in backend:", err);
+        console.error("Failed to complete task:", err);
         toast.error(`Failed to complete task: ${(err as Error).message}`);
       }
     }
@@ -282,24 +311,33 @@ const Index = () => {
       toast.info('Substack task moved to the bottom (local only)!');
     } else {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ is_deferral: true }),
-        });
+        if (isDemoMode) {
+          // Use demo service
+          const demoService = DemoService.getInstance();
+          await demoService.updateTask(taskId, { status: 'todo' }); // This triggers deferral logic in demo service
+          console.log("Demo Mode - Task deferred:", taskId);
+          toast.info(demoService.getDemoMessage('taskDeferred'));
+        } else {
+          // Use real API
+          const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ is_deferral: true }),
+          });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const updatedTask = await response.json();
+          console.log("Task deferred in backend:", updatedTask);
+          toast.info('Task moved to the bottom of stack!');
         }
-
-        const updatedTask = await response.json();
-        console.log("Task deferred in backend:", updatedTask);
-        toast.info('Task moved to the bottom of stack!');
         refreshTasks();
       } catch (err) {
-        console.error("Failed to defer task in backend:", err);
+        console.error("Failed to defer task:", err);
         toast.error(`Failed to defer task: ${(err as Error).message}`);
       }
     }
