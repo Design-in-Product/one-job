@@ -34,13 +34,25 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Create deployment directory
+        run: |
+          mkdir -p deploy
+          cp index.html deploy/
+          cp demo.html deploy/
+          cp -r app deploy/
+          cp favicon.ico deploy/ 2>/dev/null || true
+          cp one-job.png deploy/ 2>/dev/null || true
+          cp robots.txt deploy/ 2>/dev/null || true
+          cp placeholder.svg deploy/ 2>/dev/null || true
+          cp CNAME deploy/ 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: './deploy'
 
   deploy:
     environment:
