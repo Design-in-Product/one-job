@@ -30,7 +30,7 @@ from pydantic import BaseModel, ConfigDict
 
 # --- Configuration ---
 class Settings(BaseSettings):
-    DATABASE_URL: str
+    DATABASE_URL: str = "sqlite:///./onejob.db"  # Default to SQLite
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
