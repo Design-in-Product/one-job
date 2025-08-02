@@ -6,5 +6,10 @@ export const isProduction = window.location.hostname === 'onejob.co' ||
                            window.location.hostname === 'www.onejob.co' ||
                            window.location.hostname.includes('github.io');
 
-// Demo mode for when backend is not available
-export const isDemoMode = isProduction && !import.meta.env.VITE_API_URL;
+// Demo mode - enable when:
+// 1. In production without API URL, OR
+// 2. Explicitly enabled via URL parameter, OR  
+// 3. Explicitly enabled via environment variable
+export const isDemoMode = isProduction && !import.meta.env.VITE_API_URL ||
+                         new URLSearchParams(window.location.search).has('demo') ||
+                         import.meta.env.VITE_DEMO_MODE === 'true';
