@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate OG Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .preview {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            display: inline-block;
+        }
+        button {
+            background: #6366F1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #5558E3;
+        }
+    </style>
+</head>
+<body>
+    <h1>One Job - Open Graph Image Generator</h1>
+    <p>Right-click and save the image below as "one-job.png" in the root directory:</p>
+    
+    <div class="preview">
+        <canvas id="canvas" width="1200" height="630"></canvas>
+    </div>
+    
+    <br>
+    <button onclick="download()">Download as PNG</button>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+        gradient.addColorStop(0, '#6366F1');
+        gradient.addColorStop(1, '#8B5CF6');
+        
+        // Background
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1200, 630);
+        
+        // Draw dots pattern
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        for (let x = 30; x < 1200; x += 60) {
+            for (let y = 30; y < 630; y += 60) {
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Center cards
+        ctx.save();
+        ctx.translate(600, 315);
+        
+        // Background cards
+        ctx.save();
+        ctx.rotate(-5 * Math.PI / 180);
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        roundRect(ctx, -100, -60, 200, 120, 16);
+        ctx.fill();
+        ctx.restore();
+        
+        ctx.save();
+        ctx.rotate(-2.5 * Math.PI / 180);
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        roundRect(ctx, -100, -60, 200, 120, 16);
+        ctx.fill();
+        ctx.restore();
+        
+        // Main card
+        ctx.fillStyle = 'white';
+        roundRect(ctx, -100, -60, 200, 120, 16);
+        ctx.fill();
+        
+        // Task lines
+        ctx.fillStyle = '#E5E7EB';
+        roundRect(ctx, -70, -30, 140, 8, 4);
+        ctx.fill();
+        roundRect(ctx, -70, -10, 100, 8, 4);
+        ctx.fill();
+        roundRect(ctx, -70, 10, 120, 8, 4);
+        ctx.fill();
+        
+        // Checkmark
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+        ctx.beginPath();
+        ctx.arc(0, 0, 24, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.strokeStyle = '#10B981';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-8, 0);
+        ctx.lineTo(-2, 6);
+        ctx.lineTo(8, -4);
+        ctx.stroke();
+        
+        // Swipe hints
+        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        
+        ctx.beginPath();
+        ctx.moveTo(130, 0);
+        ctx.lineTo(140, -10);
+        ctx.moveTo(130, 0);
+        ctx.lineTo(140, 10);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-130, 0);
+        ctx.lineTo(-140, -10);
+        ctx.moveTo(-130, 0);
+        ctx.lineTo(-140, 10);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+        // Text
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = '600 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('One Job', 600, 500);
+        
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        ctx.fillText('Focus on one task at a time', 600, 530);
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function download() {
+            const link = document.createElement('a');
+            link.download = 'one-job.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
