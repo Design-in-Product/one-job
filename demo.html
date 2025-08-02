@@ -137,20 +137,26 @@
             // Instructions are shown by default
         }
 
-        // Add outside click to dismiss instructions
-        document.addEventListener('click', function(event) {
-            const instructions = document.getElementById('instructions');
-            if (instructions && instructions.style.display !== 'none') {
-                // Check if click is outside the instructions panel
-                if (!instructions.contains(event.target)) {
-                    hideInstructions();
+        // Wait for DOM to be ready before attaching event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add outside click to dismiss instructions
+            document.addEventListener('click', function(event) {
+                const instructions = document.getElementById('instructions');
+                if (instructions && instructions.style.display !== 'none' && instructions.style.opacity !== '0') {
+                    // Check if click is outside the instructions panel
+                    if (!instructions.contains(event.target)) {
+                        hideInstructions();
+                    }
                 }
-            }
-        });
+            });
 
-        // Prevent clicks inside the instructions panel from closing it
-        document.getElementById('instructions').addEventListener('click', function(event) {
-            event.stopPropagation();
+            // Prevent clicks inside the instructions panel from closing it
+            const instructions = document.getElementById('instructions');
+            if (instructions) {
+                instructions.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            }
         });
     </script>
 
