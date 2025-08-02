@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
+import { API_BASE_URL, isDemoMode } from '@/config';
 
 
 // Helper function to convert backend's task format to frontend's Task interface
