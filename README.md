@@ -1,197 +1,165 @@
 # One Job
 
-> Focus on one task at a time with a beautiful, swipe-to-interact mobile-first interface.
+> See one task. Do one task. Feel accomplished.
 
-**One Job** is a task management application built with domain-driven design principles. It implements a card-based interface where users see one task at a time, can swipe right to complete or left to defer tasks, and organize complex work into hierarchical substacks.
-
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
-
-## ✨ Features
-
-### 🎯 **Core Task Management**
-- **One-at-a-time focus**: See only the current task to maintain concentration
-- **Swipe interactions**: Right to complete, left to defer
-- **Smart task ordering**: Deferred tasks move to bottom of stack
-- **Real-time persistence**: All changes immediately saved to backend
-
-### 📚 **Hierarchical Organization** 
-- **Substacks**: Break complex tasks into organized sub-projects
-- **Nested task management**: Each substack is a mini task-stack
-- **Visual hierarchy**: Clear parent-child relationships
-
-### 🔄 **Integration Ready**
-- **External system imports**: Architecture supports Linear, Jira, etc.
-- **RESTful API**: Complete backend API for all operations
-- **Domain-driven design**: Clean separation for easy extension
-
-### 📱 **Modern UX**
-- **Mobile-first**: Optimized for phone use with touch gestures
-- **Smooth animations**: Framer Motion powered transitions
-- **Beautiful UI**: shadcn/ui components with Tailwind CSS
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js** 16+ (for frontend)
-- **Python** 3.9+ (for backend)
-- **Git** (for cloning)
-
-### 1. Clone & Setup
-```bash
-git clone <repository-url>
-cd one-job
-
-# Install frontend dependencies
-npm install
-
-# Setup Python backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\\Scripts\\activate
-pip install -r requirements.txt
-```
-
-### 2. Start Development Servers
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-source ../venv/bin/activate
-uvicorn main:app --reload --port 8000
-```
-
-**Terminal 2 - Frontend:**
-```bash
-npm run dev
-```
-
-### 3. Open & Use
-- **Frontend**: http://localhost:8080
-- **API Docs**: http://127.0.0.1:8000/docs
-- **Ready to use!** The SQLite database auto-creates
-
-## 🏗️ Architecture
-
-One Job follows **domain-driven design** with clear separation of concerns:
-
-```
-┌─────────────────────────┐
-│       Frontend          │
-│   React + TypeScript    │
-│     (Port 8080)        │
-└─────────┬───────────────┘
-          │ HTTP API
-          │
-┌─────────▼───────────────┐
-│       Backend           │
-│   FastAPI + SQLAlchemy  │
-│     (Port 8000)        │
-└─────────┬───────────────┘
-          │ ORM
-          │
-┌─────────▼───────────────┐
-│      Database           │
-│ SQLite (dev) / PG (prod)│
-└─────────────────────────┘
-```
-
-**Key Design Principles:**
-- **API-First**: All functionality exposed via REST API
-- **Mobile-First**: Touch-optimized responsive design  
-- **Test-Driven**: Comprehensive test coverage
-- **Integration-Ready**: Clean interfaces for external systems
-
-## 📖 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Architecture Guide](docs/ARCHITECTURE.md) | Detailed system design and patterns |
-| [API Specification](docs/API.md) | Complete REST API reference |
-| [Developer Guide](docs/DEVELOPMENT.md) | How to extend and contribute |
-| [Deployment Guide](docs/DEPLOYMENT.md) | Production deployment options |
-| [Testing Guide](docs/TESTING.md) | Testing strategy and examples |
-
-## 🛠️ Technology Stack
-
-### Frontend
-- **React 18** - Modern React with hooks
-- **TypeScript** - Type safety and developer experience
-- **Vite** - Fast build tool and dev server
-- **TailwindCSS** - Utility-first styling
-- **shadcn/ui** - High-quality component library
-- **Framer Motion** - Smooth animations
-- **React Query** - Server state management
-
-### Backend  
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - Python ORM with relationship support
-- **Pydantic** - Data validation and serialization
-- **pytest** - Testing framework
-- **SQLite/PostgreSQL** - Database options
-
-### Development
-- **Domain-Driven Design** - Clean architecture patterns
-- **Test-Driven Development** - Comprehensive test coverage
-- **API-First Design** - All features exposed via REST API
-
-## 🧪 Testing
-
-Run the comprehensive test suite:
-
-```bash
-# Backend tests
-cd backend
-source ../venv/bin/activate
-python -m pytest -v
-
-# Frontend tests (when implemented)
-npm test
-```
-
-Current test coverage:
-- ✅ Unit tests for all API endpoints
-- ✅ Integration tests for complete workflows  
-- ✅ Task management operations
-- ✅ Substack functionality
-- ✅ Data persistence
-
-## 🎯 Project Status
-
-**Current Phase: MVP Complete** ✅
-- [x] Core task management working
-- [x] Substack system implemented
-- [x] Full backend-frontend integration
-- [x] Comprehensive test coverage
-- [x] Development documentation
-
-**Next Phase: Integration** 🚧
-- [ ] Linear/Jira import functionality
-- [ ] Advanced task filtering
-- [ ] User authentication
-- [ ] Multi-user support
-
-## 🤝 Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for:
-- Development setup
-- Code style guidelines
-- Pull request process
-- Issue reporting
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with assistance from Claude Code
-- Inspired by domain-driven design principles
-- UI components from shadcn/ui
-- Icons from Lucide React
+<div align="center">
+  
+  **[🚀 Try One Job Now](https://onejob.co)** • **[📱 View Demo](https://onejob.co)** • **[💻 Run Locally](#-quick-start)**
+  
+  ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+  ![License](https://img.shields.io/badge/license-MIT-green.svg)
+  ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
+  
+</div>
 
 ---
 
-**Ready to focus on one job at a time?** Clone, run, and start organizing your work with intention.
+## 😵 The Problem
 
-For questions or support, please open an issue in the repository.
+- **47 browser tabs** open, 3 todo apps, sticky notes everywhere
+- **Context switching** kills productivity (studies show 23 minutes to refocus!)
+- Traditional task lists create **anxiety**, not clarity
+- You spend more time **organizing** tasks than **doing** them
+
+## 💡 The Solution: One Job
+
+**One Job** is a revolutionary task management app that shows you only one task at a time. Built with a beautiful, swipe-to-interact mobile interface, it transforms how you work by eliminating distractions and decision fatigue.
+
+✨ **Swipe right** to complete. **Swipe left** to defer. That's it.
+
+## 🤔 Why One Job?
+
+- **🧠 Psychology-backed**: Single-tasking improves focus by 40% and reduces errors by 50%
+- **📱 Mobile-first**: Actually works on your phone (revolutionary, we know!)
+- **⚡ Zero friction**: Swipe right = done. No menus, no clicks, no confusion
+- **🎯 Intentional**: No notifications, badges, or guilt trips about overdue tasks
+- **🏃 Momentum-building**: Each completed task fuels the next one
+
+## 💼 Perfect For
+
+- **👨‍💻 Developers**: Track your current debugging task without losing context in 47 browser tabs
+- **📚 Students**: One assignment at a time means less overwhelm, better grades
+- **💰 Freelancers**: Focus on billable work, defer distractions until later
+- **🏠 Parents**: Tackle household tasks without the mental load of seeing everything at once
+- **🧘 Anyone**: Who's tired of productivity theater and just wants to get things done
+
+## ✨ Key Features
+
+**🎯 Single-Task Focus** • See only what matters right now  
+**👆 Swipe Gestures** • Complete (→) or defer (←) with natural gestures  
+**📚 Smart Substacks** • Break big tasks into smaller ones without losing focus  
+**🔄 Intelligent Ordering** • Deferred tasks automatically move to the back  
+**💾 Always Saved** • Every action syncs instantly - never lose work  
+**🌐 Integration Ready** • Import from Jira, Linear, Todoist (coming soon)
+
+## 🚀 Get Started
+
+### 🌐 Try it Online (Recommended)
+
+**👉 [Use One Job Now](https://onejob.co)** - No installation needed! Works on any device.
+
+### 💻 Run Locally
+
+Want to run it yourself? Get started in under 2 minutes:
+
+```bash
+# Clone and enter the project
+git clone https://github.com/Design-in-Product/one-job.git
+cd one-job
+
+# Install and start everything
+npm install && npm run dev      # Start frontend (port 8080)
+
+# In a new terminal:
+cd backend && python -m venv venv && source venv/bin/activate
+pip install -r ../requirements.txt && uvicorn main:app --reload
+```
+
+**That's it!** Open http://localhost:8080 and start focusing.
+
+## ❓ FAQ
+
+**Q: What if I have 100 tasks?**  
+A: You still do them one at a time. One Job just makes that obvious.
+
+**Q: Can I see all my tasks at once?**  
+A: Yes, but why would you want that anxiety? Focus on what's in front of you.
+
+**Q: What happens to deferred tasks?**  
+A: They move to the bottom of your stack. They'll come back when you're ready.
+
+**Q: Is my data safe?**  
+A: Your tasks are saved locally and to your backend. We don't track or sell anything.
+
+**Q: Can I import from other apps?**  
+A: Jira, Linear, and Todoist imports coming soon. For now, start fresh - it's liberating!
+
+## 🎯 Project Status
+
+**✅ MVP Complete** - Core task management with swipe gestures  
+**🚧 Coming Soon** - Jira/Linear imports, team features, native mobile apps
+
+## 🤝 Contributing
+
+We'd love your help making One Job even better! Check out:
+- [Contributing Guide](docs/CONTRIBUTING.md) - Get started with development
+- [GitHub Issues](https://github.com/Design-in-Product/one-job/issues) - See what we're working on
+- [Discussions](https://github.com/Design-in-Product/one-job/discussions) - Share ideas and feedback
+
+---
+
+<div align="center">
+
+## 🎉 Start Focusing Today
+
+Stop managing tasks. Start completing them.
+
+### **[Try One Job Now →](https://onejob.co)**
+
+*Built for humans who want to get things done, not organize things to do.*
+
+<br>
+
+**[Documentation](docs/)** • **[API Reference](docs/API.md)** • **[Architecture](docs/ARCHITECTURE.md)**
+
+Made with ❤️ by people who hate todo lists
+
+</div>
+
+---
+
+<details>
+<summary><b>🛠️ Technical Details</b> (for developers)</summary>
+
+### Architecture
+
+One Job follows **domain-driven design** with clear separation of concerns:
+
+- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + Framer Motion
+- **Backend**: FastAPI + SQLAlchemy + Pydantic + SQLite/PostgreSQL  
+- **API-First**: RESTful API with complete OpenAPI documentation
+- **Mobile-First**: Touch-optimized responsive design
+- **Test-Driven**: Comprehensive test coverage with pytest
+
+### Technology Stack
+
+**Frontend**: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui, Framer Motion  
+**Backend**: FastAPI, SQLAlchemy, Pydantic, pytest  
+**Database**: SQLite (dev) / PostgreSQL (production)  
+**Testing**: pytest for backend, Jest/Vitest planned for frontend
+
+### Running Tests
+
+```bash
+# Backend tests
+cd backend && python -m pytest -v
+
+# Frontend tests (coming soon)
+npm test
+```
+
+</details>
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
