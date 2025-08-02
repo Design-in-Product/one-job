@@ -35,9 +35,15 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
           )}
           <div className="flex justify-between items-center mt-2 text-xs text-white/70">
             <span>
-              {task.completedAt && 
-                `Completed ${formatDistanceToNow(task.completedAt, { addSuffix: true })}`
-              }
+              {task.completedAt && (() => {
+                try {
+                  const date = task.completedAt instanceof Date ? task.completedAt : new Date(task.completedAt);
+                  return `Completed ${formatDistanceToNow(date, { addSuffix: true })}`;
+                } catch (e) {
+                  console.error('Date formatting error:', e, task.completedAt);
+                  return 'Completed recently';
+                }
+              })()}
             </span>
             {task.source && (
               <span className="bg-white/20 px-2 py-0.5 rounded-full">
