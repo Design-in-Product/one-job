@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Job - Interactive Demo</title>
+    <meta name="description" content="Try the One Job task management app - see one task, do one task, feel accomplished.">
+    <meta name="author" content="Design in Product">
+    
+    <meta property="og:title" content="One Job - Interactive Demo">
+    <meta property="og:description" content="Try the revolutionary single-task focus app right in your browser">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onejob.co/demo">
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+    <!-- Demo Mode Notice -->
+    <div id="demo-notice" style="
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        right: 0; 
+        background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+        color: white; 
+        padding: 8px 16px; 
+        text-align: center; 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 14px;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    ">
+        🎯 <strong>Demo Mode</strong> - Try all the features! Your data is saved locally and resets when you refresh.
+        <button onclick="resetDemo()" style="
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 4px; 
+            margin-left: 16px; 
+            cursor: pointer;
+            font-size: 12px;
+        ">Reset Demo</button>
+        <a href="/" style="
+            color: white; 
+            text-decoration: none; 
+            margin-left: 16px; 
+            font-size: 12px;
+            opacity: 0.9;
+        ">← Back to Home</a>
+    </div>
+
+    <!-- Demo Instructions -->
+    <div id="demo-instructions" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        max-width: 280px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 14px;
+        z-index: 1000;
+        transition: opacity 0.3s ease;
+    " id="instructions">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 12px;">
+            <h3 style="margin: 0; color: #6366f1; font-size: 16px;">🎯 Try These Actions</h3>
+            <button onclick="hideInstructions()" style="
+                background: none; 
+                border: none; 
+                font-size: 18px; 
+                cursor: pointer; 
+                padding: 0; 
+                margin-left: auto;
+                color: #666;
+            ">×</button>
+        </div>
+        <ul style="margin: 0; padding-left: 16px; color: #666; line-height: 1.5;">
+            <li><strong>Swipe right</strong> or click ✓ to complete tasks</li>
+            <li><strong>Swipe left</strong> or click → to defer tasks</li>
+            <li><strong>Tap cards</strong> to edit and add substacks</li>
+            <li><strong>Add new tasks</strong> using the + button</li>
+            <li><strong>Switch tabs</strong> to see completed tasks</li>
+        </ul>
+        <div style="
+            margin-top: 12px; 
+            padding-top: 12px; 
+            border-top: 1px solid #eee; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #999;
+        ">
+            All changes are saved in your browser
+        </div>
+    </div>
+
+    <!-- React App Container -->
+    <div id="root" style="margin-top: 40px;"></div>
+
+    <!-- Demo Scripts -->
+    <script>
+        // Force demo mode by adding URL parameter
+        if (!window.location.search.includes('demo')) {
+            const newUrl = window.location.pathname + '?demo=true' + window.location.hash;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        function resetDemo() {
+            if (confirm('Reset demo to original state? This will clear all your changes.')) {
+                localStorage.removeItem('oneJobDemoTasks');
+                window.location.reload();
+            }
+        }
+
+        function hideInstructions() {
+            document.getElementById('instructions').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('instructions').style.display = 'none';
+            }, 300);
+        }
+
+        // Auto-hide instructions after 30 seconds
+        setTimeout(() => {
+            const instructions = document.getElementById('instructions');
+            if (instructions) {
+                instructions.style.opacity = '0.7';
+            }
+        }, 30000);
+
+        // Show instructions on first visit
+        if (!localStorage.getItem('oneJobDemoVisited')) {
+            localStorage.setItem('oneJobDemoVisited', 'true');
+            // Instructions are shown by default
+        }
+    </script>
+
+    <!-- Load the React app -->
+    <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
