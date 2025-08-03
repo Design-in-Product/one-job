@@ -426,6 +426,79 @@ grep -r "mobile\|responsive" src/ --include="*"
 
 ## SESSION MANAGEMENT
 
+### Session Logging Protocol
+
+**MANDATORY**: Every session MUST begin with creating or updating a session log. This ensures continuity across sessions and captures valuable insights.
+
+#### First Session of Each Day
+
+1. **Create new session log**: `development/session-logs/YYYY-MM-DD-claude-code-log.md`
+2. **Include standard header**:
+   - Session start time and timezone
+   - Git status and recent commits
+   - Current project phase
+   - Session objectives
+3. **Review key documents**:
+   - CLAUDE.md (this file)
+   - Recent commits for context
+   - Previous day's session log if applicable
+
+#### Additional Sessions Same Day
+
+1. **Append to existing log** with clear separator:
+   ```markdown
+   ---
+   ## Session #2: 2:30 PM PST
+   ```
+2. **Reference previous session's progress**
+3. **Update objectives based on earlier work**
+4. **Continue incrementing session numbers**
+
+#### Standard Session Start Checklist
+
+```bash
+# MANDATORY session initialization steps:
+1. Review CLAUDE.md for methodology and patterns
+2. Create/update session log at development/session-logs/YYYY-MM-DD-claude-code-log.md
+3. Run git status and review recent commits
+4. Create TodoWrite list for session tasks
+5. Verify development environment if implementing
+6. Check REQUIREMENTS.md for current project status
+```
+
+#### Session Log Template
+
+```markdown
+# Session Log: YYYY-MM-DD
+
+## Session Start: HH:MM AM/PM PST
+
+### Context
+- Environment: Claude Code (Opus 4)
+- Project: One Job
+- Git Status: [clean/modified]
+- Recent Commits: [list 3-5]
+- Current Phase: [from REQUIREMENTS.md]
+
+### Session Objectives
+1. [Primary objective]
+2. [Secondary objective]
+3. [Additional tasks]
+
+### Session Activities
+[Timestamp] - [Activity description]
+
+### Notes & Insights
+- [Key discoveries]
+- [Patterns identified]
+- [Decisions made]
+
+### Session End Summary
+- Completed: [what was done]
+- Pending: [what remains]
+- Next Session: [recommendations]
+```
+
 ### Development Environment Status (Updated 2025-07-31)
 
 **Current Service Configuration:**

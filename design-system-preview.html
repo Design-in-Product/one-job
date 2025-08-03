@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Job - Design System Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+        
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .palette-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .palette-header {
+            margin-bottom: 20px;
+        }
+        
+        .palette-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .palette-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .color-swatch {
+            text-align: center;
+        }
+        
+        .color-box {
+            width: 100%;
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .color-box:hover {
+            transform: scale(1.05);
+        }
+        
+        .color-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .color-code {
+            font-size: 0.7rem;
+            color: #999;
+            font-family: monospace;
+        }
+        
+        .demo-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-card-1 { background: linear-gradient(135deg, #FFF9F7 0%, #FFE5E1 100%); }
+        .demo-card-2 { background: linear-gradient(135deg, #FFFEF2 0%, #FFE5B4 100%); }
+        .demo-card-3 { background: linear-gradient(135deg, #FFFFFF 0%, #F0F4F8 100%); }
+        
+        .task-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .task-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        
+        .task-content p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .swipe-hint {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        .badge {
+            background: #FF6B5A;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .typography-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .typography-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 24px;
+        }
+        
+        .font-sample {
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-dm { font-family: 'DM Sans', sans-serif; }
+        
+        .font-name {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .font-sample h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .font-sample h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .font-sample p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        
+        .ui-concepts {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .concept-card {
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+        
+        .concept-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        
+        .concept-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .concept-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Palette-specific styles */
+        .palette-1-primary { background: #FF6B5A !important; }
+        .palette-1-secondary { background: #FF8E7F !important; }
+        .palette-1-accent { background: #FFD4CF !important; color: #2C1810 !important; }
+        .palette-1-bg { background: #FFF9F7 !important; color: #2C1810 !important; }
+        .palette-1-text { background: #2C1810 !important; }
+        .palette-1-success { background: #4CAF50 !important; }
+        .palette-1-warning { background: #FFA726 !important; }
+        
+        .palette-2-primary { background: #FF5E5B !important; }
+        .palette-2-secondary { background: #FFCA3A !important; }
+        .palette-2-accent { background: #8AC926 !important; }
+        .palette-2-bg { background: #FFFEF2 !important; color: #1A1A2E !important; }
+        .palette-2-text { background: #1A1A2E !important; }
+        .palette-2-success { background: #06D6A0 !important; }
+        .palette-2-warning { background: #F77F00 !important; }
+        
+        .palette-3-primary { background: #F4533C !important; }
+        .palette-3-secondary { background: #2D3436 !important; }
+        .palette-3-accent { background: #74B9FF !important; }
+        .palette-3-bg { background: #FFFFFF !important; color: #2D3436 !important; }
+        .palette-3-text { background: #2D3436 !important; }
+        .palette-3-success { background: #00B894 !important; }
+        .palette-3-warning { background: #FDCB6E !important; }
+        
+        .stacked-cards {
+            position: relative;
+            height: 200px;
+            margin: 20px;
+        }
+        
+        .stack-card {
+            position: absolute;
+            width: 90%;
+            height: 140px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .stack-card:nth-child(1) { top: 0; left: 0; z-index: 3; }
+        .stack-card:nth-child(2) { top: 10px; left: 10px; z-index: 2; opacity: 0.9; }
+        .stack-card:nth-child(3) { top: 20px; left: 20px; z-index: 1; opacity: 0.8; }
+        
+        .stacked-cards:hover .stack-card:nth-child(1) { transform: translateX(20px) rotate(2deg); }
+        .stacked-cards:hover .stack-card:nth-child(2) { transform: translateX(-10px) rotate(-1deg); }
+        .stacked-cards:hover .stack-card:nth-child(3) { transform: translateY(5px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 One Job Design System Preview</h1>
+        
+        <!-- Color Palettes -->
+        <div class="palette-grid">
+            <!-- Palette 1: Warm Coral -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <h2 class="palette-title">Palette 1: "Warm Coral"</h2>
+                    <p class="palette-description">Friendly & Energetic - Approachable, warm, energizing. Great for productivity without stress.</p>
+                </div>
+                <div class="color-grid">
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-primary">#FF6B5A</div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-code">#FF6B5A</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-secondary">#FF8E7F</div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-code">#FF8E7F</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-accent">#FFD4CF</div>
+                        <div class="color-label">Accent</div>
+                        <div class="color-code">#FFD4CF</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-bg">#FFF9F7</div>
+                        <div class="color-label">Background</div>
+                        <div class="color-code">#FFF9F7</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-text">#2C1810</div>
+                        <div class="color-label">Text</div>
+                        <div class="color-code">#2C1810</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-success">#4CAF50</div>
+                        <div class="color-label">Success</div>
+                        <div class="color-code">#4CAF50</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-1-warning">#FFA726</div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-code">#FFA726</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-card demo-card-1">
+                        <div class="task-card">
+                            <div class="task-content">
+                                <h3 style="color: #2C1810;">Review pull request</h3>
+                                <p style="color: #2C1810;">Check the new feature implementation</p>
+                            </div>
+                            <div class="badge" style="background: #FF6B5A;">1</div>
+                        </div>
+                        <div class="swipe-hint" style="color: #2C1810;">← Swipe to defer • Swipe to complete →</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Palette 2: Sunset Gradient -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <h2 class="palette-title">Palette 2: "Sunset Gradient"</h2>
+                    <p class="palette-description">Modern & Bold - Dynamic, modern, playful. Creates energy and movement.</p>
+                </div>
+                <div class="color-grid">
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-primary">#FF5E5B</div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-code">#FF5E5B</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-secondary">#FFCA3A</div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-code">#FFCA3A</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-accent">#8AC926</div>
+                        <div class="color-label">Accent</div>
+                        <div class="color-code">#8AC926</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-bg">#FFFEF2</div>
+                        <div class="color-label">Background</div>
+                        <div class="color-code">#FFFEF2</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-text">#1A1A2E</div>
+                        <div class="color-label">Text</div>
+                        <div class="color-code">#1A1A2E</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-success">#06D6A0</div>
+                        <div class="color-label">Success</div>
+                        <div class="color-code">#06D6A0</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-2-warning">#F77F00</div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-code">#F77F00</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-card demo-card-2">
+                        <div class="task-card">
+                            <div class="task-content">
+                                <h3 style="color: #1A1A2E;">Write documentation</h3>
+                                <p style="color: #1A1A2E;">Update API docs for new endpoint</p>
+                            </div>
+                            <div class="badge" style="background: #FF5E5B;">1</div>
+                        </div>
+                        <div class="swipe-hint" style="color: #1A1A2E;">← Swipe to defer • Swipe to complete →</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Palette 3: Coral Minimal -->
+            <div class="palette-card">
+                <div class="palette-header">
+                    <h2 class="palette-title">Palette 3: "Coral Minimal"</h2>
+                    <p class="palette-description">Clean & Professional - Minimal distractions, maximum clarity.</p>
+                </div>
+                <div class="color-grid">
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-primary">#F4533C</div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-code">#F4533C</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-secondary">#2D3436</div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-code">#2D3436</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-accent">#74B9FF</div>
+                        <div class="color-label">Accent</div>
+                        <div class="color-code">#74B9FF</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-bg">#FFFFFF</div>
+                        <div class="color-label">Background</div>
+                        <div class="color-code">#FFFFFF</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-text">#2D3436</div>
+                        <div class="color-label">Text</div>
+                        <div class="color-code">#2D3436</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-success">#00B894</div>
+                        <div class="color-label">Success</div>
+                        <div class="color-code">#00B894</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box palette-3-warning">#FDCB6E</div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-code">#FDCB6E</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-card demo-card-3" style="font-family: 'Inter', sans-serif;">
+                        <div class="task-card">
+                            <div class="task-content">
+                                <h3 style="color: #2D3436; font-weight: 600;">Deploy to production</h3>
+                                <p style="color: #636E72; font-weight: 400; font-size: 0.9rem;">Push latest changes to server</p>
+                            </div>
+                            <div class="badge" style="background: #F4533C; font-family: 'Inter', sans-serif; font-weight: 600;">1</div>
+                        </div>
+                        <div class="swipe-hint" style="color: #636E72; font-size: 0.8rem; font-weight: 400;">← Swipe to defer • Swipe to complete →</div>
+                    </div>
+                    
+                    <!-- Additional Inter Examples -->
+                    <div style="margin-top: 20px; padding: 20px; background: #F8F9FA; border-radius: 8px; font-family: 'Inter', sans-serif;">
+                        <h4 style="color: #2D3436; font-weight: 600; margin-bottom: 12px; font-size: 1.1rem;">Inter in Action</h4>
+                        <p style="color: #2D3436; font-weight: 500; margin-bottom: 8px; font-size: 1rem;">Task Title (Medium 500)</p>
+                        <p style="color: #636E72; font-weight: 400; margin-bottom: 8px; font-size: 0.9rem;">Task description in regular weight (400)</p>
+                        <p style="color: #636E72; font-weight: 400; font-size: 0.8rem;">Small text for hints and metadata</p>
+                        
+                        <div style="margin-top: 16px; display: flex; gap: 12px; align-items: center;">
+                            <button style="background: #F4533C; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem; cursor: pointer;">Complete Task</button>
+                            <button style="background: #74B9FF; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.9rem; cursor: pointer;">View Details</button>
+                            <span style="color: #00B894; font-weight: 500; font-size: 0.85rem;">✓ Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Typography Section -->
+        <div class="typography-section">
+            <h2 style="margin-bottom: 8px;">Typography Options</h2>
+            <p style="color: #666; margin-bottom: 24px;">Three font families that match the friendly, approachable nature of your logo</p>
+            
+            <div class="typography-grid">
+                <div class="font-sample font-inter">
+                    <div class="font-name">INTER</div>
+                    <h2>One Job at a Time</h2>
+                    <h3>Focus on what matters</h3>
+                    <p>Inter is a carefully crafted typeface designed for computer screens. It features a tall x-height to aid readability of mixed-case and lower-case text.</p>
+                </div>
+                
+                <div class="font-sample font-poppins">
+                    <div class="font-name">POPPINS</div>
+                    <h2>One Job at a Time</h2>
+                    <h3>Focus on what matters</h3>
+                    <p>Poppins is a geometric sans-serif with a friendly and approachable character. Its rounded shapes echo the curves in your logo.</p>
+                </div>
+                
+                <div class="font-sample font-dm">
+                    <div class="font-name">DM SANS</div>
+                    <h2>One Job at a Time</h2>
+                    <h3>Focus on what matters</h3>
+                    <p>DM Sans is a low-contrast geometric sans serif design, optimized for use at smaller text sizes. Clean and highly readable on mobile devices.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI Concepts -->
+        <div class="ui-concepts">
+            <h2 style="margin-bottom: 8px;">UI Enhancement Concepts</h2>
+            <p style="color: #666; margin-bottom: 24px;">Ideas to reinforce the "one job" and stacked cards metaphor</p>
+            
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-icon">📚</div>
+                    <div class="concept-title">Stacked Shadow Effect</div>
+                    <div class="concept-desc">Multiple shadows to create depth and reinforce the stack metaphor</div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-icon">1️⃣</div>
+                    <div class="concept-title">Animated Badge</div>
+                    <div class="concept-desc">Pulsing or rotating "1" badge to draw attention to single-task focus</div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-icon">✨</div>
+                    <div class="concept-title">Gradient Cards</div>
+                    <div class="concept-desc">Subtle gradients on cards for visual interest without distraction</div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-icon">👆</div>
+                    <div class="concept-title">Swipe Indicators</div>
+                    <div class="concept-desc">Visual hints showing swipe directions with your brand colors</div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-icon">🎯</div>
+                    <div class="concept-title">Focus Ring</div>
+                    <div class="concept-desc">Glowing border around active card using primary color</div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-icon">📱</div>
+                    <div class="concept-title">Rounded Corners</div>
+                    <div class="concept-desc">Consistent border-radius matching logo's friendly aesthetic</div>
+                </div>
+            </div>
+            
+            <!-- Interactive Stack Demo -->
+            <div style="margin-top: 40px;">
+                <h3 style="margin-bottom: 16px;">Interactive Stack Visualization</h3>
+                <div class="stacked-cards">
+                    <div class="stack-card" style="background: linear-gradient(135deg, #FF6B5A, #FF8E7F);">
+                        <span style="color: white;">Current Task</span>
+                    </div>
+                    <div class="stack-card" style="background: #f8f9fa;">
+                        Next Task
+                    </div>
+                    <div class="stack-card" style="background: #f0f1f3;">
+                        Third Task
+                    </div>
+                </div>
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    (Hover over the stack to see the animation effect)
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
