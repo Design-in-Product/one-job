@@ -1,93 +1,106 @@
 
+/* Import our comprehensive design system */
+@import './styles/design-system.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Bridge our design system to shadcn/ui HSL format */
+    /* Converting from our hex values to HSL for shadcn compatibility */
+    
+    /* Background system */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 216 6% 18%; /* #2D3436 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Card system */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 216 6% 18%; /* #2D3436 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover system */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 216 6% 18%; /* #2D3436 */
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary system - using our coral */
+    --primary: 9 87% 59%; /* #F4533C */
+    --primary-foreground: 0 0% 100%; /* white text on coral */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary system - using our charcoal */
+    --secondary: 216 6% 18%; /* #2D3436 */
+    --secondary-foreground: 0 0% 100%; /* white text on charcoal */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted system */
+    --muted: 210 9% 97%; /* #F8F9FA */
+    --muted-foreground: 215 9% 61%; /* #636E72 */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent system - using our blue */
+    --accent: 219 100% 73%; /* #74B9FF */
+    --accent-foreground: 0 0% 100%; /* white text on blue */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive system */
+    --destructive: 0 84% 70%; /* #FF6B6B */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Border and input system */
+    --border: 220 13% 85%; /* #D3D9DF */
+    --input: 220 13% 85%; /* #D3D9DF */
+    --ring: 9 87% 59%; /* #F4533C - coral focus ring */
 
-    --radius: 0.5rem;
+    /* Radius - using our design system values */
+    --radius: 0.75rem; /* var(--radius-xl) */
 
+    /* Sidebar system (keeping existing values for now) */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode tokens - future enhancement */
+    --background: 216 6% 18%; /* #2D3436 */
+    --foreground: 0 0% 100%; /* #FFFFFF */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 216 6% 18%; /* #2D3436 */
+    --card-foreground: 0 0% 100%; /* #FFFFFF */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 216 6% 18%; /* #2D3436 */
+    --popover-foreground: 0 0% 100%; /* #FFFFFF */
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 9 87% 59%; /* #F4533C - keep coral in dark mode */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 9% 61%; /* #636E72 */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 215 9% 15%; /* darker muted */
+    --muted-foreground: 215 9% 61%; /* #636E72 */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 219 100% 73%; /* #74B9FF */
+    --accent-foreground: 216 6% 18%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 70%; /* #FF6B6B */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 215 9% 25%; /* darker borders */
+    --input: 215 9% 25%;
+    --ring: 9 87% 59%; /* #F4533C */
+
+    /* Dark sidebar */
+    --sidebar-background: 216 6% 18%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 9 87% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 215 9% 25%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 215 9% 25%;
+    --sidebar-ring: 9 87% 59%;
   }
 }
 
@@ -98,15 +111,184 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus management for accessibility */
+  *:focus {
+    outline: var(--focus-ring-width) solid var(--color-border-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Remove focus ring when not using keyboard */
+  *:focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
 @layer components {
-  .completed-task-card {
-    @apply bg-gradient-to-br from-completedGradient-start to-completedGradient-end;
+  /* Task card system using our design tokens */
+  .task-card {
+    background: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: var(--card-padding);
+    transition: var(--transition-normal);
+    font-family: var(--font-family-primary);
   }
 
+  .task-card:hover {
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  /* Badge system for the "1" indicator */
+  .task-badge {
+    background: var(--badge-background);
+    color: var(--badge-color);
+    width: var(--badge-size);
+    height: var(--badge-size);
+    border-radius: var(--badge-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family-primary);
+  }
+
+  /* Completed task styling */
+  .completed-task-card {
+    background: linear-gradient(135deg, var(--color-success-50), var(--color-success-100));
+    border-color: var(--color-success-200);
+  }
+
+  /* Deferred task styling */
   .deferred-task-card {
-    @apply bg-gradient-to-br from-deferredGradient-start to-deferredGradient-end;
+    background: linear-gradient(135deg, var(--color-warning-50), var(--color-warning-100));
+    border-color: var(--color-warning-200);
+  }
+
+  /* Button system using design tokens */
+  .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--button-radius);
+    padding: var(--button-padding-y) var(--button-padding-x);
+    font-weight: var(--button-font-weight);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    transition: var(--button-transition);
+    cursor: pointer;
+    min-height: var(--size-touch-min);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .btn-primary:active {
+    background: var(--color-primary-active);
+  }
+
+  .btn-primary:disabled {
+    background: var(--color-primary-disabled);
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--button-radius);
+    padding: var(--button-padding-y) var(--button-padding-x);
+    font-weight: var(--button-font-weight);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    transition: var(--button-transition);
+    cursor: pointer;
+    min-height: var(--size-touch-min);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-secondary-hover);
+  }
+
+  /* Tab system styling */
+  .tab-trigger {
+    color: var(--tab-inactive-color);
+    border-bottom: var(--tab-border-width) solid transparent;
+    padding: var(--space-3) var(--space-5);
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-fast);
+  }
+
+  .tab-trigger[data-state="active"] {
+    color: var(--tab-active-color);
+    border-bottom-color: var(--tab-active-color);
+  }
+
+  /* Input system */
+  .input-field {
+    border: var(--input-border-width) solid var(--color-border-primary);
+    border-radius: var(--input-radius);
+    padding: var(--input-padding-y) var(--input-padding-x);
+    font-size: var(--input-font-size);
+    font-family: var(--font-family-primary);
+    transition: var(--transition-fast);
+    min-height: var(--size-touch-min);
+  }
+
+  .input-field:focus {
+    border-color: var(--color-border-focus);
+    outline: none;
+  }
+
+  /* Modal system */
+  .modal-backdrop {
+    background: var(--modal-backdrop);
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-index-modal-backdrop);
+  }
+
+  .modal-content {
+    background: var(--modal-background);
+    border-radius: var(--modal-radius);
+    box-shadow: var(--modal-shadow);
+    padding: var(--modal-padding);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--z-index-modal);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Swipe hint styling */
+  .swipe-hint {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    text-align: center;
+    margin-top: var(--space-2);
+    font-family: var(--font-family-primary);
+  }
+
+  /* Loading state */
+  .loading-spinner {
+    color: var(--color-primary);
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 }
