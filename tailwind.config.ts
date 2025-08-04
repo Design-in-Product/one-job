@@ -64,16 +64,16 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				taskGradient: {
-					start: '#4F46E5',
-					end: '#7C3AED'
+					start: '#F4533C',
+					end: '#E73C7E'
 				},
 				completedGradient: {
 					start: '#059669',
 					end: '#10B981'
 				},
 				deferredGradient: {
-					start: '#9333EA',
-					end: '#A855F7'
+					start: '#F4533C',
+					end: '#FF6B35'
 				}
 			},
 			borderRadius: {
