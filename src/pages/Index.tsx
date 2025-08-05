@@ -446,9 +446,26 @@ const Index = () => {
       >
         <div className="max-w-md mx-auto flex flex-col h-screen">
           <header className="text-center py-8 px-4">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
-              One Job
-            </h1>
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <svg width="40" height="40" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style={{stopColor:"#F4533C", stopOpacity:1}} />
+                    <stop offset="100%" style={{stopColor:"#E73C7E", stopOpacity:1}} />
+                  </linearGradient>
+                </defs>
+                <g transform="translate(128, 128)">
+                  <rect x="-70" y="-50" width="140" height="100" rx="12" fill="rgba(244,83,60,0.2)" transform="translate(8, 8)"/>
+                  <rect x="-70" y="-50" width="140" height="100" rx="12" fill="url(#iconGradient)"/>
+                  <circle cx="0" cy="0" r="8" fill="white"/>
+                  <path d="M 45 0 L 55 -10 M 45 0 L 55 10" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+                  <path d="M -45 0 L -55 -10 M -45 0 L -55 10" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+                </g>
+              </svg>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
+                One Job
+              </h1>
+            </div>
             <p className="text-muted-foreground mt-2">
               Swipe right to complete, left to defer
             </p>
@@ -483,7 +500,7 @@ const Index = () => {
                     />
                   )}
 
-                  <div className="px-4 pb-4">
+                  <div className="px-4 pb-8 mt-auto">
                     <TaskForm onAddTask={handleAddTask} />
                   </div>
                 </motion.div>
