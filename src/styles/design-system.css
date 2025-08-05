@@ -10,13 +10,13 @@
    * Core color values - primitive tokens
    * ================================ */
   
-  /* Brand Colors */
-  --color-coral-500: #F4533C;
-  --color-coral-400: #F66B54;
-  --color-coral-300: #F8836F;
-  --color-coral-200: #FBAB95;
-  --color-coral-100: #FDD3BB;
-  --color-coral-50: #FEF0E8;
+  /* Brand Colors - Calibrated to logo #f35343 */
+  --color-coral-500: #f35343;  /* Primary from logo */
+  --color-coral-400: #f56b5a;  /* Lighter coral */
+  --color-coral-300: #f78371;  /* Light coral */
+  --color-coral-200: #fab8b0;  /* Very light coral */
+  --color-coral-100: #fcdcd8;  /* Subtle coral */
+  --color-coral-50: #fef4f2;   /* Barely coral background */
 
   /* Neutral Colors */
   --color-neutral-900: #2D3436;
