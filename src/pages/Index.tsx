@@ -447,7 +447,7 @@ const Index = () => {
         <div className="max-w-md mx-auto flex flex-col h-screen">
           <header className="text-center py-8 px-4">
             <div className="flex items-center justify-center gap-3 mb-2">
-              <img src="/one-logo.png" alt="OneJob Logo" width="40" height="40" className="flex-shrink-0" />
+              <img src="/app/one-logo.png" alt="OneJob Logo" width="40" height="40" className="flex-shrink-0" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
                 One Job
               </h1>
