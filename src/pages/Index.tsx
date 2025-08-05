@@ -449,17 +449,17 @@ const Index = () => {
             <div className="flex items-center justify-center gap-3 mb-2">
               <svg width="40" height="40" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" style={{stopColor:"#F4533C", stopOpacity:1}} />
                     <stop offset="100%" style={{stopColor:"#E73C7E", stopOpacity:1}} />
                   </linearGradient>
                 </defs>
+                <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#cardGradient)"/>
                 <g transform="translate(128, 128)">
-                  <rect x="-70" y="-50" width="140" height="100" rx="12" fill="rgba(244,83,60,0.2)" transform="translate(8, 8)"/>
-                  <rect x="-70" y="-50" width="140" height="100" rx="12" fill="url(#iconGradient)"/>
-                  <circle cx="0" cy="0" r="8" fill="white"/>
-                  <path d="M 45 0 L 55 -10 M 45 0 L 55 10" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
-                  <path d="M -45 0 L -55 -10 M -45 0 L -55 10" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+                  <rect x="-52" y="-32" width="104" height="64" rx="8" fill="none" stroke="white" strokeWidth="3" opacity="0.6" transform="translate(8, 8)"/>
+                  <rect x="-52" y="-32" width="104" height="64" rx="8" fill="none" stroke="white" strokeWidth="3" opacity="0.8" transform="translate(4, 4)"/>
+                  <rect x="-52" y="-32" width="104" height="64" rx="8" fill="white"/>
+                  <text x="0" y="12" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="48" fontWeight="700" fill="url(#cardGradient)">1</text>
                 </g>
               </svg>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
