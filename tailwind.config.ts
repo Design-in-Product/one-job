@@ -64,7 +64,7 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				taskGradient: {
-					start: '#F4533C',
+					start: '#f35343',
 					end: '#E73C7E'
 				},
 				completedGradient: {
@@ -72,7 +72,7 @@ export default {
 					end: '#10B981'
 				},
 				deferredGradient: {
-					start: '#F4533C',
+					start: '#f35343',
 					end: '#FF6B35'
 				}
 			},
