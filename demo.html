@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Job - Interactive Demo</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="description" content="Try the One Job task management app - see one task, do one task, feel accomplished.">
     <meta name="author" content="Design in Product">
     
@@ -142,19 +145,17 @@
             window.history.replaceState({}, document.title, newUrl);
         }
 
-        // Check if demo banner was previously dismissed
-        if (localStorage.getItem('demoBannerDismissed') === 'true') {
-            const banner = document.getElementById('demo-notice');
-            const root = document.getElementById('root');
-            if (banner && root) {
-                banner.style.display = 'none';
-                root.style.marginTop = '0px';
-            }
+        // Check if demo banner was previously collapsed
+        if (localStorage.getItem('demoBannerCollapsed') === 'true') {
+            // Auto-collapse on page load
+            setTimeout(() => dismissDemoBanner(), 100);
         }
 
         function resetDemo() {
             if (confirm('Reset demo to original state? This will clear all your changes.')) {
                 localStorage.removeItem('oneJobDemoTasks');
+                localStorage.removeItem('demoBannerCollapsed');
+                localStorage.removeItem('demoBannerDismissed'); // Clean up old key
                 window.location.reload();
             }
         }
@@ -164,13 +165,31 @@
             const banner = document.getElementById('demo-notice');
             const root = document.getElementById('root');
             if (banner && root) {
-                banner.style.transform = 'translateY(-100%)';
-                setTimeout(() => {
-                    banner.style.display = 'none';
-                    root.style.marginTop = '0px';
-                }, 300);
-                localStorage.setItem('demoBannerDismissed', 'true');
+                // Collapse to minimal button instead of hiding completely
+                banner.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; padding: 4px 8px;">
+                        <button onclick="restoreDemoBanner()" style="
+                            background: rgba(45,52,54,0.1); 
+                            border: 1px solid rgba(45,52,54,0.2); 
+                            color: #2D3436; 
+                            padding: 4px 12px; 
+                            border-radius: 4px; 
+                            cursor: pointer;
+                            font-size: 11px;
+                            font-family: 'Inter', sans-serif;
+                        ">🎯 Demo Mode - Expand</button>
+                    </div>
+                `;
+                banner.style.padding = '4px 16px';
+                root.style.marginTop = '32px'; // Smaller margin for collapsed state
+                localStorage.setItem('demoBannerCollapsed', 'true');
             }
+        }
+
+        function restoreDemoBanner() {
+            console.log('restoreDemoBanner called');
+            localStorage.removeItem('demoBannerCollapsed');
+            window.location.reload(); // Simple way to restore full banner
         }
 
         function hideInstructions() {
