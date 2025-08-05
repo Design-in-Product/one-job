@@ -311,6 +311,13 @@
   --tab-border-width: 2px;
   --tab-active-color: var(--color-primary);
   --tab-inactive-color: var(--color-text-tertiary);
+
+  /* System Messages & Overlays */
+  --system-message-background: var(--color-accent);
+  --system-message-background-gradient: linear-gradient(135deg, var(--color-accent), var(--color-blue-400));
+  --system-message-text: var(--color-neutral-900);
+  --system-message-button: rgba(45, 52, 54, 0.1);
+  --system-message-button-border: rgba(45, 52, 54, 0.2);
 }
 
 /* ================================
