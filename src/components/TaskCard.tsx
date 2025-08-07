@@ -12,6 +12,7 @@ interface TaskCardProps {
   onSwipeLeft: (id: string) => void;
   onCardClick: (task: Task) => void;
   isTop?: boolean;
+  isFlipped?: boolean;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
@@ -19,7 +20,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   onSwipeRight,
   onSwipeLeft,
   onCardClick,
-  isTop = false
+  isTop = false,
+  isFlipped = false
 }) => {
   // THIS IS THE CORRECT PLACE FOR THE console.log
   console.log(`TaskCard rendered: "${task.title}" (ID: ${task.id.slice(0, 8)}...) - isTop: ${isTop}`);
@@ -82,6 +84,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
     // Don't trigger if click is on swipe area
     if (swiping) return;
+
+    // Only allow click if card is flipped and top
+    if (!isFlipped || !isTop) return;
 
     onCardClick(task);
   };
@@ -162,7 +167,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           )}
 
-          {isTop && (
+          {isTop && isFlipped && (
             <div className="text-center text-xs text-gray-500 border-t pt-3">
               Swipe right to complete, left to defer, or tap to view details
             </div>
