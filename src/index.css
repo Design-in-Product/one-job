@@ -603,4 +603,42 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+
+  /* ================================
+   * CARD FLIP ANIMATIONS
+   * Four variations for random selection in Card Deck Experience
+   * ================================ */
+
+  @keyframes flip-classic {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(180deg); }
+  }
+
+  @keyframes flip-quick {
+    0% { transform: rotateY(0deg) scale(1); }
+    25% { transform: rotateY(45deg) scale(1.02); }
+    50% { transform: rotateY(90deg) scale(1.05); }
+    75% { transform: rotateY(135deg) scale(1.02); }
+    100% { transform: rotateY(180deg) scale(1); }
+  }
+
+  @keyframes flip-smooth {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(180deg); }
+  }
+
+  @keyframes flip-wave {
+    0% { transform: rotateY(0deg) rotateX(0deg); }
+    25% { transform: rotateY(45deg) rotateX(5deg); }
+    50% { transform: rotateY(90deg) rotateX(10deg); }
+    75% { transform: rotateY(135deg) rotateX(5deg); }
+    100% { transform: rotateY(180deg) rotateX(0deg); }
+  }
+
+  /* Animation classes for dynamic application */
+  .flip-classic { animation: flip-classic 0.4s ease-in-out; }
+  .flip-quick { animation: flip-quick 0.3s ease-out; }
+  .flip-smooth { animation: flip-smooth 0.6s ease-in-out; }
+  .flip-wave { animation: flip-wave 0.4s ease-in-out; }
 }

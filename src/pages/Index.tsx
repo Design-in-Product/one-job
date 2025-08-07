@@ -16,14 +16,13 @@
 // 2025-06-06  - Added backedTask.sortOrder to mapBackendTasktoFrontendTask
 
 import React, { useState, useEffect, useCallback } from 'react';
-import TaskStack from '@/components/TaskStack';
+import CardDeck from '@/components/CardDeck';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
 import TaskIntegration from '@/components/TaskIntegration';
 import TaskDetails from '@/components/TaskDetails';
 import SubstackView from '@/components/SubstackView';
 import { Task, Substack } from '@/types/task';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
@@ -61,6 +60,7 @@ const Index = () => {
     substack: Substack;
   } | null>(null);
   const [isCreatingSubstack, setIsCreatingSubstack] = useState(false);
+  const [currentView, setCurrentView] = useState<'main' | 'completed' | 'integrate'>('main');
 
   // --- NEW: refreshTasks function ---
   const refreshTasks = useCallback(async () => {
@@ -438,87 +438,58 @@ const Index = () => {
     <AnimatePresence mode="wait">
       <motion.div
         key="main-view"
-        initial={{ x: "-100%", opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: "100%", opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
         className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
       >
         <div className="max-w-md mx-auto flex flex-col h-screen">
-          <header className="text-center py-8 px-4">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <img src="/app/one-logo.png" alt="OneJob Logo" width="40" height="40" className="flex-shrink-0" style={{mixBlendMode: 'multiply'}} />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-taskGradient-start to-taskGradient-end text-transparent bg-clip-text">
-                One Job
-              </h1>
-            </div>
-            <p className="text-muted-foreground mt-2">
-              Swipe right to complete, left to defer
-            </p>
-          </header>
 
-          <Tabs defaultValue="stack" className="flex flex-col flex-1">
-            <TabsList className="grid w-full grid-cols-3 mx-4 mb-4">
-              <TabsTrigger value="stack">Task Stack ({activeTasks.length})</TabsTrigger>
-              <TabsTrigger value="completed">Completed ({completedTasks.length})</TabsTrigger>
-              <TabsTrigger value="integrate">Integrate</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="stack" className="flex flex-col flex-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex flex-col flex-1"
-                >
-                  {loading && <p className="text-center mt-8">Loading tasks from backend...</p>}
-                  {error && <p className="text-center mt-8 text-red-500">Error loading tasks: {error}</p>}
-                  {!loading && !error && activeTasks.length === 0 && <p className="text-center mt-8">All done! Add a new task or check completed/integrations.</p>}
-
-                  {!loading && !error && activeTasks.length > 0 && (
-                    <TaskStack
-                      tasks={activeTasks}
-                      onComplete={handleCompleteTask}
-                      onDefer={handleDeferTask}
-                      onCardClick={handleCardClick}
-                    />
-                  )}
-
-                  <div className="px-4 pb-8 mt-auto">
-                    <TaskForm onAddTask={handleAddTask} />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </TabsContent>
-
-            <TabsContent value="completed" className="flex-1 overflow-y-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <CompletedTasks tasks={completedTasks} />
-                </motion.div>
-              </AnimatePresence>
-            </TabsContent>
-
-            <TabsContent value="integrate" className="flex-1 overflow-y-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <TaskIntegration onImportTasks={handleImportTasks} />
-                </motion.div>
-              </AnimatePresence>
-            </TabsContent>
-          </Tabs>
+          {/* Card Deck Experience - Single View */}
+          <div className="flex flex-col flex-1">
+            {currentView === 'main' && (
+              <CardDeck
+                tasks={activeTasks}
+                loading={loading}
+                error={error}
+                onComplete={handleCompleteTask}
+                onDefer={handleDeferTask}
+                onCardClick={handleCardClick}
+                onAddTask={handleAddTask}
+                onViewCompleted={() => setCurrentView('completed')}
+                onViewIntegrations={() => setCurrentView('integrate')}
+              />
+            )}
+            
+            {currentView === 'completed' && (
+              <div className="flex flex-col flex-1">
+                <div className="p-4">
+                  <button 
+                    onClick={() => setCurrentView('main')}
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ← Back to Tasks
+                  </button>
+                </div>
+                <CompletedTasks tasks={completedTasks} />
+              </div>
+            )}
+            
+            {currentView === 'integrate' && (
+              <div className="flex flex-col flex-1">
+                <div className="p-4">
+                  <button 
+                    onClick={() => setCurrentView('main')}
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ← Back to Tasks
+                  </button>
+                </div>
+                <TaskIntegration onImportTasks={handleImportTasks} />
+              </div>
+            )}
+          </div>
 
           <TaskDetails
             task={getCurrentSelectedTask()}
