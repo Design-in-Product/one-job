@@ -220,20 +220,21 @@ const CardDeck: React.FC<CardDeckProps> = ({
                 duration: flipAnimation === 1 ? 0.3 : flipAnimation === 2 ? 0.6 : 0.4,
                 ease: flipAnimation === 1 ? "easeOut" : "easeInOut"
               }}
-              className="w-72 h-96 bg-white rounded-xl shadow-lg border-2 border-gray-200 cursor-pointer flex items-center justify-center relative"
+              className="w-72 h-96 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl shadow-lg border-2 border-orange-200 cursor-pointer flex flex-col items-center justify-center relative"
               onClick={handleCardTap}
             >
-              {/* Card back with One Job logo */}
-              <div className="text-center">
-                <img 
-                  src="/app/one-logo.png" 
-                  alt="One Job" 
-                  className="w-16 h-16 mx-auto mb-4 opacity-80"
-                  style={{ mixBlendMode: 'multiply' }}
-                />
-                <h2 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text">
+              {/* Card back design - centered content */}
+              <div className="flex flex-col items-center justify-center">
+                {/* Logo or icon */}
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                  <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text">
                   One Job
                 </h2>
+                <p className="text-sm text-gray-500 mt-2">Tap to reveal your task</p>
               </div>
               
               {/* Subtle pulse hint for first launch */}
