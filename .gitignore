@@ -32,3 +32,4 @@ __pycache__/
 .Python
 env/
 .env
+# Beads memory system\n.beads/

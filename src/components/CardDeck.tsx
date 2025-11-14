@@ -225,12 +225,12 @@ const CardDeck: React.FC<CardDeckProps> = ({
             >
               {/* Card back design - centered content */}
               <div className="flex flex-col items-center justify-center">
-                {/* Logo or icon */}
-                <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-                  <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
+                {/* OneJob Logo - card stack with "1" */}
+                <img
+                  src="/logo-onejob.svg"
+                  alt="One Job Logo"
+                  className="w-24 h-24 mb-6"
+                />
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text">
                   One Job
                 </h2>
