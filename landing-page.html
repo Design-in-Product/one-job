@@ -20,25 +20,39 @@
     <meta name="twitter:description" content="See one task. Do one task. Feel accomplished.">
     <meta name="twitter:image" content="https://onejob.co/one-job.png">
     
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- Google Fonts - Inter for design system consistency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon-onejob.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'task-start': '#6366f1',
-                        'task-end': '#8b5cf6'
+                        'coral': '#f35343',
+                        'coral-light': '#f56b5a',
+                        'task-start': '#f35343',
+                        'task-end': '#E5442C'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen font-sans">
     <!-- Hero Section -->
     <div class="max-w-4xl mx-auto px-4 py-16">
         <div class="text-center mb-16">
+            <!-- OneJob Logo -->
+            <div class="flex justify-center mb-6">
+                <img src="/logo-onejob.svg" alt="One Job Logo" class="w-20 h-20">
+            </div>
             <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-task-start to-task-end text-transparent bg-clip-text mb-6">
                 One Job
             </h1>
