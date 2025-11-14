@@ -641,4 +641,31 @@
   .flip-quick { animation: flip-quick 0.3s ease-out; }
   .flip-smooth { animation: flip-smooth 0.6s ease-in-out; }
   .flip-wave { animation: flip-wave 0.4s ease-in-out; }
+
+  /* ================================
+   * SWIPE ANIMATIONS
+   * Card exit animations for complete/defer actions
+   * ================================ */
+
+  @keyframes swipe-right {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(150%) rotate(20deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes swipe-left {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-150%) rotate(-20deg);
+      opacity: 0;
+    }
+  }
 }
