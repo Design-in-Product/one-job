@@ -89,6 +89,74 @@ Installing Serena MCP and Beads as requested by user...
 
 ### [7:05 PM] Core Work Phase - Beginning Logo Fix
 
+Investigated CardDeck.tsx and found placeholder SVG clipboard icon instead of actual OneJob logo.
+
+**Logo Fix Implementation:**
+1. ✅ Copied `logo-onejob.svg` to `public/` directory for Vite serving
+2. ✅ Updated CardDeck component to display actual logo (w-24 h-24 sizing)
+3. ✅ Replaced placeholder SVG with img tag referencing `/logo-onejob.svg`
+4. ✅ Verified Vite build copies logo to app directory automatically
+5. ✅ Build successful - new asset hashes generated
+
+**Favicon Fix:**
+1. ✅ Updated index.html to use `favicon-onejob.svg` instead of missing favicon.ico
+2. ✅ Copied favicon to public directory
+3. ✅ Changed icon type to `image/svg+xml` for proper SVG handling
+
+**Git Commit:**
+- ✅ Committed changes with descriptive message
+- ✅ Included session log in commit
+- ✅ Added .beads to .gitignore
+
+### [7:20 PM] Architecture Review Completed
+
+**Current State Analysis:**
+- Card Deck Experience is fully implemented as primary interface
+- Tabs have been removed - uses view switching instead (main/completed/integrate)
+- Demo mode working with localStorage-based DemoService
+- Many UI/UX issues in tracker are obsolete (from pre-Card Deck era)
+
+**UI/UX Issues Triage:**
+
+*Fixed This Session:*
+- ✅ Card back logo display (replaced placeholder with actual logo)
+- ✅ Favicon using OneJob branding
+
+*Obsolete Issues (Pre-Card Deck):*
+- ACCESS-001: Tab contrast (tabs removed)
+- ADD-BTN-001: Add button cut off (now long-press menu)
+
+*Still Relevant:*
+- ANIM-001: Flicker on defer (animation timing)
+- Landing page issues (THEME-001, LOGO-001, TYPO-001/002) - separate from app
+
+*Not Critical for Current Phase:*
+- Backend deployment
+- Landing page polish
+- External integrations
+
+### [7:25 PM] Development Environment Status
+
+**Frontend:**
+- ✅ Dev server running on http://localhost:8080
+- ✅ All npm dependencies installed (389 packages)
+- ✅ Build system working correctly
+- ✅ Demo mode functional
+
+**Backend:**
+- FastAPI code present in `/home/user/one-job/backend`
+- Dependencies in venv (not activated for browser environment)
+- Not needed for current demo mode testing
+- Can be activated for full-stack testing later
+
+**Tools Installed:**
+- ✅ Serena MCP (installation initiated, will be available)
+- ✅ Beads MCP Python package (v0.23.1)
+- ✅ bd binary compiled and installed
+- ⚠️  Beads database initialization blocked by SQLite locking in browser env
+
+### [7:30 PM] Session Progress Summary
+
 ---
 
 ## Technical Notes
