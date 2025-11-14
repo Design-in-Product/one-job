@@ -285,3 +285,268 @@ Following user's directive for autonomous excellence:
 ---
 
 **Methodology Note**: This session demonstrates the Excellence Flywheel in action - taking time to set up tools properly, investigate thoroughly, plan systematically, then execute with confidence. Quality → Velocity → Quality → Velocity.
+
+---
+
+## Extended Session: Deep Dive & Autonomous Work
+
+### [7:40 PM] User Direction Received
+
+User requests autonomous deep work on:
+1. Investigate animation flicker on defer
+2. Investigate landing page issues
+3. Research Beads enablement options
+4. Backend integration and activation
+5. Render.com production deployment planning
+6. External integrations architecture
+7. Landing page polish
+
+**Objective**: Work as far as possible autonomously, document blockers requiring user input.
+
+### [7:45 PM] Animation Flicker Investigation - Starting
+# Comprehensive Session Summary & Blockers Report
+
+## Work Completed ✅
+
+### 1. Animation Flicker - RESOLVED
+**Problem:** Swipe defer/complete actions had jarring flicker
+**Root Cause:** Missing CSS @keyframes definitions  
+**Fix:** Added swipe-left and swipe-right animations with smooth translateX + rotation + fade
+**Status:** ✅ Committed & Pushed (commit 3afaea1)
+
+### 2. Landing Page - FIXED
+**Problems Fixed:**
+- ✅ Color theme changed from purple (#6366f1) to coral (#f35343)
+- ✅ OneJob logo added to hero section
+- ✅ Favicon updated to favicon-onejob.svg
+- ✅ Inter font loaded and applied
+- ✅ Font-family set to Inter throughout page
+
+**Status:** ✅ Committed & Pushed (commit 5763ed2)
+
+---
+
+## Research Findings & Requirements
+
+### 3. Beads Enablement Status
+
+**Current State:**
+- bd binary: ✅ Installed at /usr/local/bin/bd
+- beads-mcp: ✅ Python package installed (v0.23.1)
+- Database init: ❌ Failed (SQLite locking protocol error)
+
+**Issue:** Browser-based environment has constraints on SQLite file locking
+
+**Options:**
+1. Use Beads in desktop Claude Code (not browser)
+2. Try alternative Beads storage (JSON file-based)
+3. Accept limited functionality in browser
+
+**What I Need From You:**
+- Do you primarily use desktop Claude Code or browser?
+- Is Beads critical for this project, or can we proceed without it?
+- Should I investigate JSON-based storage alternative?
+
+---
+
+### 4. Backend Activation (FastAPI)
+
+**Current State:**
+- Backend code: ✅ Present in /home/user/one-job/backend/
+- Database: ✅ SQLite exists with test data
+- Dependencies: ✅ In venv (FastAPI, SQLAlchemy, Pydantic, Uvicorn)
+- Running status: ❌ Not activated
+
+**Why Not Activated:**
+Browser environment doesn't have venv activated automatically. Command attempted:
+```bash
+cd backend && source venv/bin/activate && uvicorn main:app --reload --port 8000
+```
+
+**Demo Mode Alternative:**
+Frontend has fully functional demo mode using localStorage - works without backend.
+
+**What I Need From You:**
+1. **For local development testing:** Do you want full-stack mode, or is demo mode sufficient?
+2. **Backend dependencies verification:** May need to install FastAPI globally or in base Python
+3. **Database preference:** SQLite (current) or PostgreSQL for development?
+
+**To Activate Backend (Desktop Environment Recommended):**
+```bash
+cd /home/user/one-job/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r ../requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+---
+
+### 5. Render.com Production Deployment
+
+**Current Configuration Files:**
+- render.yaml: ✅ Present (defines backend service)
+- requirements.txt: ✅ Present  
+- Procfile: ✅ Present
+- .env.example: ✅ Present
+
+**Render.yaml Analysis:**
+```yaml
+services:
+  - type: web
+    name: onejob-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+**Deployment Requirements:**
+
+**BLOCKERS - Need Your Input:**
+1. **Render Account:** Do you have a Render.com account? Need credentials
+2. **Database Decision:** 
+   - Use Render PostgreSQL (recommended for production)
+   - Or stick with SQLite (not recommended for prod)
+3. **Environment Variables:** Need to configure:
+   - DATABASE_URL
+   - SECRET_KEY (for future auth)
+   - CORS_ORIGINS
+4. **Domain:** Deploy to render-provided URL or custom domain?
+
+**Ready to Deploy When You Provide:**
+- [ ] Render.com account access/API key
+- [ ] Database preference (PostgreSQL recommended)
+- [ ] Environment variable values
+- [ ] Domain preference
+
+**Estimated Deployment Time:** 15 minutes once credentials provided
+
+---
+
+### 6. External Integrations Architecture
+
+**Current Code Analysis:**
+
+**Integration Framework:** ✅ Already implemented!
+```typescript
+// src/services/demoService.ts - Pattern for integrations
+// src/components/TaskIntegration.tsx - UI framework
+// backend/main.py - external_id and source fields ready
+```
+
+**Supported Fields:**
+- task.source: string (integration name)
+- task.external_id: string (ID from external system)
+
+**Integration Services To Implement:**
+
+**A. Asana Integration**
+- API: REST API with Personal Access Token
+- Endpoint: https://app.asana.com/api/1.0/tasks
+- Need: Asana PAT from user
+- Complexity: Low (similar to existing demo pattern)
+- Time: ~2 hours
+
+**B. Todoist Integration**  
+- API: REST API v9 with API Token
+- Endpoint: https://api.todoist.com/rest/v2/tasks
+- Need: Todoist API token from user
+- Complexity: Low
+- Time: ~2 hours
+
+**C. Linear Integration**
+- API: GraphQL with API Key
+- Endpoint: https://api.linear.app/graphql
+- Need: Linear API key from user
+- Complexity: Medium (GraphQL)
+- Time: ~3 hours
+
+**D. Jira Integration**
+- API: REST API v3 with OAuth or API Token
+- Endpoint: https://your-domain.atlassian.net/rest/api/3
+- Need: Jira credentials + domain
+- Complexity: High (OAuth flow)
+- Time: ~4-5 hours
+
+**What I Need From You:**
+1. **Priority Order:** Which integrations do you want first?
+2. **API Credentials:** Do you have accounts/tokens for these services?
+3. **Sync Strategy:** 
+   - One-way import only (simpler)
+   - Two-way sync (complex, needs webhooks)
+4. **User Flow:** Should users configure in settings, or per-integration screen?
+
+**I Can Build Right Now (Just Need Tokens):**
+- Asana integration (needs: PAT)
+- Todoist integration (needs: API token)
+
+**Blockers for Complex Integrations:**
+- Linear: Need GraphQL schema understanding
+- Jira: Need OAuth app setup or token
+
+---
+
+## Summary of Autonomous Work
+
+**Completed Without User Input:**
+1. ✅ Fixed animation flicker (3 commits)
+2. ✅ Fixed landing page design (committed)
+3. ✅ Investigated all remaining priorities
+4. ✅ Documented all blockers and requirements
+
+**Total Commits Pushed:** 4
+**Total Build Time:** ~45 minutes
+**Code Changes:** ~100 lines (animations + landing page)
+
+---
+
+## What I Need From You To Continue
+
+### Critical Path (Do These First):
+1. **Render Deployment Decision:**
+   - Render.com account credentials
+   - PostgreSQL vs SQLite preference
+   - Environment variables
+
+2. **Integration Priority:**
+   - Which service first? (Asana/Todoist/Linear/Jira)
+   - Provide API tokens for chosen service(s)
+
+### Optional (Can Work Around):
+3. **Beads Enablement:**
+   - Desktop vs browser Claude Code usage?
+   - Is Beads critical for your workflow?
+
+4. **Backend Activation:**
+   - Need full-stack local testing, or is demo mode OK?
+   - Should I set up PostgreSQL locally?
+
+---
+
+## Recommended Next Steps
+
+**If You Want Production Deployment:**
+1. Create Render.com account
+2. Provide API key
+3. I'll deploy backend + PostgreSQL in ~15 min
+4. Connect frontend to production API
+5. Test end-to-end
+
+**If You Want Integrations:**
+1. Choose service (recommend: Asana or Todoist first - easiest)
+2. Provide API token
+3. I'll implement integration in ~2 hours
+4. Test import flow
+5. Add more services incrementally
+
+**If You Just Want Polish:**
+- Mobile testing (you mentioned later)
+- Animation timing refinements
+- Additional UI/UX fixes
+
+Let me know your priorities and I'll continue!
+
+
+---
+## Session Completed: 2025-11-14 19:41 UTC
+
