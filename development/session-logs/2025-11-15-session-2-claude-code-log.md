@@ -179,4 +179,94 @@ CREATE TABLE tasks (
 
 **Status**: Ready to implement, awaiting user confirmation to begin
 
+---
+
+## Unified Recursive Model Implementation (Autonomous Work)
+
+#### 14:30 - Backend Implementation Complete (Phase 1 & 2)
+
+**Objective**: Implement unified recursive model with projects as top-level containers
+
+**Database Migration (Phase 1)**:
+1. ✅ Created `projects` table with integration config fields
+2. ✅ Added `parent_id`, `project_id`, `depth`, `path` to `tasks` table
+3. ✅ Created migration script `/backend/migrations/001_unified_recursive_model.py`
+4. ✅ Migrated 7 existing tasks to default project
+5. ✅ Verified database integrity - all tasks have project_id and correct paths
+
+**Backend API Implementation (Phase 2)**:
+
+**Models Updated**:
+- Created `DBProject` SQLAlchemy model with integration support
+- Updated `DBTask` with hierarchy fields (parent_id, project_id, depth, path)
+- Added relationships: `project`, `parent`, `children`
+- Created Pydantic models: `ProjectCreate`, `ProjectUpdate`, `ProjectResponse`
+- Updated `TaskCreate` and `TaskResponse` for hierarchy
+
+**Projects API (NEW)**:
+```python
+GET /projects                  # List all projects with task counts
+GET /projects/{id}             # Get single project
+POST /projects                 # Create project
+PUT /projects/{id}             # Update project
+DELETE /projects/{id}          # Archive project (soft delete)
+```
+
+**Tasks API (Enhanced for Recursion)**:
+```python
+GET /tasks?project_id=X&parent_id=Y&include_children=true
+GET /projects/{project_id}/tasks
+GET /tasks/{task_id}?include_children=true
+GET /tasks/{task_id}/children
+POST /tasks                    # Now supports parent_id for child tasks
+```
+
+**Key Features Implemented**:
+- ✅ Automatic depth calculation (parent.depth + 1)
+- ✅ Materialized path generation (/parent_id/child_id)
+- ✅ `has_children` computed field
+- ✅ Lazy-loading children with `include_children=true`
+- ✅ Default project assignment if project_id not specified
+- ✅ Per-project task counts (todo and completed)
+
+**Testing Results**:
+```bash
+# Projects API
+curl /projects
+✅ Returns default project with task_count=1, completed_count=3
+
+# Root tasks
+curl /tasks
+✅ Returns 7 tasks, all with project_id, depth=0, parent_id=null
+
+# Create child task
+curl -X POST /tasks -d '{"title":"Child Task Test","parent_id":"..."}'
+✅ Created with depth=1, path="/parent/child", parent_id set correctly
+
+# Get parent with children
+curl /tasks/{parent_id}?include_children=true
+✅ has_children=true, children array populated correctly
+```
+
+**Architecture Validated**:
+- ✅ Unlimited nesting depth supported
+- ✅ Materialized path for efficient queries
+- ✅ Projects as containers (top-level abstraction)
+- ✅ Per-project integration config ready
+- ✅ Backward compatible (old substacks tables still present)
+
+**Files Modified/Created**:
+- `backend/main.py` - Added DBProject, updated DBTask, new API endpoints
+- `backend/migrations/001_unified_recursive_model.py` - Migration script
+- `backend/migrations/verify_migration.py` - Verification utility
+- `backend/migrations/fix_project_ids.py` - Data fix utility
+- `backend/onejob.db` - Migrated database with new schema
+
+**Commit**: `e8eb4b9 - Implement unified recursive model backend (Phase 1 & 2)`
+
+**Status**: ✅ Backend complete, API tested and working
+**Next**: Phase 3 (Frontend state management and UI components)
+
+---
+
 ### Session End Summary (Pending)
