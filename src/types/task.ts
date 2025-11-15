@@ -37,6 +37,7 @@ export interface Task {
   path?: string;
   hasChildren: boolean;
   children?: Task[];
+  breadcrumbPath?: string[];  // For search results: parent task titles
 
   // OLD: Keep substacks for backward compatibility during transition
   substacks?: Substack[];
