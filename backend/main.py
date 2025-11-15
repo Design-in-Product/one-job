@@ -306,7 +306,9 @@ app = FastAPI()
 # CORS configuration to allow frontend to communicate with backend
 origins = [
     "http://localhost:8080",  # Frontend URL
+    "http://localhost:8081",  # Frontend URL (alternate port)
     "http://127.0.0.1:8080",  # Alternative frontend URL
+    "http://127.0.0.1:8081",  # Alternative frontend URL (alternate port)
     "http://localhost:5173",  # Vite default port
     "https://onejob.co",      # Production domain
     "https://www.onejob.co",  # Production www domain
