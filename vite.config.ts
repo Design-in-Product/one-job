@@ -8,6 +8,29 @@ export default defineConfig(({ mode }) => ({
   base: mode === 'production' ? '/app/' : '/',
   build: {
     outDir: 'app',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React and React DOM in separate chunk
+          'react-vendor': ['react', 'react-dom', 'react/jsx-runtime'],
+          // Framer Motion for animations
+          'framer-motion': ['framer-motion'],
+          // Date utilities
+          'date-fns': ['date-fns'],
+          // Icons
+          'lucide-react': ['lucide-react'],
+          // UI components
+          'ui-components': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-label',
+          ],
+        },
+      },
+    },
+    // Increase chunk size warning limit to 600KB (from default 500KB)
+    chunkSizeWarningLimit: 600,
   },
   server: {
     host: "::",

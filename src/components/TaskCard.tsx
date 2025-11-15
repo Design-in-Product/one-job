@@ -136,6 +136,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
       onMouseUp={handleSwipeEnd}
       onMouseLeave={handleSwipeEnd}
       onClick={handleCardClick}
+      role="article"
+      aria-label={`Task: ${task.title}${hasSubstacks ? `, with ${task.substacks.length} substack${task.substacks.length === 1 ? '' : 's'}` : ''}. ${task.description ? task.description : 'No description.'}${task.source ? ` From ${task.source}.` : ''}`}
+      tabIndex={isTop && isFlipped ? 0 : -1}
     >
       <div className="flex flex-col h-full">
         <div className="flex items-start justify-between mb-4">
@@ -143,9 +146,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
             {task.title}
           </h3>
           {hasSubstacks && (
-            <div className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full flex-shrink-0">
-              <Layers className="w-4 h-4 text-blue-600" />
-              <span className="text-xs text-blue-600 font-medium">
+            <div
+              className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full flex-shrink-0"
+              aria-label={`${task.substacks.length} substack${task.substacks.length === 1 ? '' : 's'}`}
+              role="status"
+            >
+              <Layers className="w-4 h-4 text-blue-600" aria-hidden="true" />
+              <span className="text-xs text-blue-600 font-medium" aria-hidden="true">
                 {task.substacks.length}
               </span>
             </div>

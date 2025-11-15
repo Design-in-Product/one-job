@@ -1,7 +1,7 @@
 // src/components/LongPressMenu.tsx
 // Long-press menu with gentle arc layout above the card deck
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Plus, RotateCcw, Link2, Settings } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -22,6 +22,8 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onViewIntegrations,
   onSettings
 }) => {
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const menuItems = [
     {
       icon: Plus,
@@ -49,22 +51,86 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
     }
   ];
 
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) {
+      setFocusedIndex(0);
+      return;
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev + 1) % menuItems.length);
+          break;
+
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev - 1 + menuItems.length) % menuItems.length);
+          break;
+
+        case 'Enter':
+        case ' ':
+          e.preventDefault();
+          menuItems[focusedIndex]?.action();
+          onClose();
+          break;
+
+        case 'Tab':
+          e.preventDefault();
+          if (e.shiftKey) {
+            setFocusedIndex((prev) => (prev - 1 + menuItems.length) % menuItems.length);
+          } else {
+            setFocusedIndex((prev) => (prev + 1) % menuItems.length);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, focusedIndex, menuItems.length, onClose]);
+
+  // Auto-focus first button when menu opens
+  useEffect(() => {
+    if (isOpen && buttonRefs.current[0]) {
+      buttonRefs.current[0].focus();
+    }
+  }, [isOpen]);
+
+  // Focus currently selected button
+  useEffect(() => {
+    if (isOpen && buttonRefs.current[focusedIndex]) {
+      buttonRefs.current[focusedIndex]?.focus();
+    }
+  }, [focusedIndex, isOpen]);
+
   // Calculate positions for gentle arc (60-90 degrees)
   const getItemPosition = (index: number, total: number) => {
     const arcStart = -30; // degrees from center
     const arcEnd = 30;    // degrees from center
     const angle = arcStart + (index * (arcEnd - arcStart)) / (total - 1);
     const radius = 120; // pixels from center
-    
+
     // Convert to cartesian coordinates (y negative because CSS y increases downward)
     const x = Math.sin((angle * Math.PI) / 180) * radius;
     const y = -Math.cos((angle * Math.PI) / 180) * radius;
-    
+
     return { x, y };
   };
 
   return (
     <>
+      {/* Screen reader announcement */}
+      {isOpen && (
+        <div className="sr-only" role="status" aria-live="polite">
+          Menu opened. Use arrow keys to navigate between {menuItems.length} menu items. Press Enter to select, Escape to close.
+        </div>
+      )}
+
       {/* Backdrop */}
       <AnimatePresence>
         {isOpen && (
@@ -75,7 +141,27 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black bg-opacity-20 z-40"
             onClick={onClose}
+            aria-label="Menu overlay. Press Escape to close, arrow keys to navigate, Enter to select."
           />
+        )}
+      </AnimatePresence>
+
+      {/* Keyboard navigation hint */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
+          >
+            <div className="bg-gray-800 bg-opacity-90 text-white text-sm px-4 py-2 rounded-lg shadow-lg">
+              <p className="text-center">
+                <span className="font-semibold">Keyboard:</span> Arrow keys to navigate • Enter to select • Esc to close
+              </p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -91,20 +177,21 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
                 return (
                   <motion.button
                     key={item.label}
-                    initial={{ 
-                      opacity: 0, 
+                    ref={(el) => (buttonRefs.current[index] = el)}
+                    initial={{
+                      opacity: 0,
                       scale: 0.5,
                       x: 0,
                       y: 0
                     }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
+                    animate={{
+                      opacity: 1,
+                      scale: focusedIndex === index ? 1.1 : 1,
                       x: position.x,
                       y: position.y
                     }}
-                    exit={{ 
-                      opacity: 0, 
+                    exit={{
+                      opacity: 0,
                       scale: 0.5,
                       x: 0,
                       y: 0
@@ -124,12 +211,16 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
                       transform -translate-x-1/2 -translate-y-1/2
                       hover:scale-110 active:scale-95
                       transition-transform duration-150
-                      border-2 border-white
+                      border-2 ${focusedIndex === index ? 'border-yellow-400 border-4' : 'border-white'}
+                      focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-75
                     `}
                     style={{
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                      boxShadow: focusedIndex === index
+                        ? '0 6px 16px rgba(0, 0, 0, 0.25)'
+                        : '0 4px 12px rgba(0, 0, 0, 0.15)'
                     }}
                     aria-label={item.label}
+                    tabIndex={0}
                   >
                     <Icon className="w-6 h-6" />
                   </motion.button>
