@@ -22,7 +22,10 @@ import CompletedTasks from '@/components/CompletedTasks';
 import TaskIntegration from '@/components/TaskIntegration';
 import TaskDetails from '@/components/TaskDetails';
 import SubstackView from '@/components/SubstackView';
-import { Task, Substack } from '@/types/task';
+import { Breadcrumb } from '@/components/Breadcrumb';
+import { ProjectSwitcher } from '@/components/ProjectSwitcher';
+import { Task, Substack, Project } from '@/types/task';
+import { useProject } from '@/contexts/ProjectContext';
 import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
@@ -59,6 +62,21 @@ const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
 };
 
 const Index = () => {
+  // ProjectContext for hierarchy navigation
+  const {
+    currentProject,
+    projects,
+    setProjects,
+    setCurrentProject,
+    currentTasks,
+    pushTaskLevel,
+    popTaskLevel,
+    resetToRoot,
+    updateCurrentTasks,
+    isAtRoot,
+    breadcrumb
+  } = useProject();
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -399,9 +417,49 @@ const Index = () => {
     setCurrentSubstack(null);
   };
 
-  const currentTasks = currentSubstack ? currentSubstack.substack.tasks : tasks;
-  const activeTasks = currentTasks.filter(task => !task.completed);
-  const completedTasks = currentTasks.filter(task => task.completed);
+  // NEW: Zoom navigation handlers
+  const handleZoomIn = async (task: Task) => {
+    if (!task.hasChildren) return;
+
+    try {
+      // Fetch children of this task
+      const response = await fetch(`${API_BASE_URL}/tasks/${task.id}/children`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const childrenData = await response.json();
+      const children = childrenData.map(mapBackendTaskToFrontendTask);
+
+      // Push new level onto the stack
+      pushTaskLevel(task, children);
+      toast.success(`Viewing tasks within "${task.title}"`);
+    } catch (err) {
+      console.error("Failed to fetch child tasks:", err);
+      toast.error(`Failed to load child tasks: ${(err as Error).message}`);
+    }
+  };
+
+  const handleNavigateToLevel = (depth: number) => {
+    // Navigate back to a specific depth in the hierarchy
+    const currentDepth = breadcrumb.length;
+    const levelsToRemove = currentDepth - depth;
+
+    for (let i = 0; i < levelsToRemove; i++) {
+      popTaskLevel();
+    }
+
+    if (depth === 0) {
+      // Navigating to root - reset with root tasks
+      resetToRoot(tasks);
+    }
+  };
+
+  // Use ProjectContext tasks if navigating hierarchy, otherwise use local state
+  const displayTasks = isAtRoot ? tasks : currentTasks;
+  const currentTasksList = currentSubstack ? currentSubstack.substack.tasks : displayTasks;
+  const activeTasks = currentTasksList.filter(task => !task.completed);
+  const completedTasks = currentTasksList.filter(task => task.completed);
 
   const getCurrentSelectedTask = () => {
     if (!selectedTask) return null;
@@ -470,17 +528,23 @@ const Index = () => {
           {/* Card Deck Experience - Single View */}
           <div className="flex flex-col flex-1">
             {currentView === 'main' && (
-              <CardDeck
-                tasks={activeTasks}
-                loading={loading}
-                error={error}
-                onComplete={handleCompleteTask}
-                onDefer={handleDeferTask}
-                onCardClick={handleCardClick}
-                onAddTask={handleAddTask}
-                onViewCompleted={() => setCurrentView('completed')}
-                onViewIntegrations={() => setCurrentView('integrate')}
-              />
+              <>
+                {/* Breadcrumb for hierarchical navigation */}
+                <Breadcrumb onNavigateToLevel={handleNavigateToLevel} />
+
+                <CardDeck
+                  tasks={activeTasks}
+                  loading={loading}
+                  error={error}
+                  onComplete={handleCompleteTask}
+                  onDefer={handleDeferTask}
+                  onCardClick={handleCardClick}
+                  onZoomIn={handleZoomIn}
+                  onAddTask={handleAddTask}
+                  onViewCompleted={() => setCurrentView('completed')}
+                  onViewIntegrations={() => setCurrentView('integrate')}
+                />
+              </>
             )}
             
             {currentView === 'completed' && (
