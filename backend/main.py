@@ -292,6 +292,7 @@ class TaskResponse(TaskBase):
     path: Optional[str] = None
     has_children: bool = False  # Computed field
     children: List['TaskResponse'] = []  # Lazy-loaded child tasks
+    breadcrumb_path: List[str] = []  # For search results: parent task titles
 
     # OLD: Keep substacks for backward compatibility during transition
     substacks: List['SubstackResponse'] = []
@@ -655,6 +656,88 @@ async def get_task_children(task_id: uuid.UUID, db: Session = Depends(get_db)):
         result.append(response)
 
     return result
+
+
+@app.get("/search", response_model=List[TaskResponse])
+async def search_tasks(
+    q: str,
+    project_id: Optional[uuid.UUID] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Global search across all tasks in hierarchies.
+
+    Searches title and description fields (case-insensitive).
+    Returns tasks with breadcrumb information showing location in hierarchy.
+
+    Query params:
+    - q: Search query string (required)
+    - project_id: Optional project filter
+    """
+    if not q or len(q.strip()) < 1:
+        raise HTTPException(status_code=400, detail="Search query must be at least 1 character")
+
+    # Build base query
+    query = db.query(DBTask)
+
+    # Filter by project if specified
+    if project_id:
+        query = query.filter(DBTask.project_id == project_id)
+
+    # Case-insensitive search across title and description
+    search_pattern = f"%{q}%"
+    query = query.filter(
+        (DBTask.title.ilike(search_pattern)) |
+        (DBTask.description.ilike(search_pattern))
+    )
+
+    # Order by relevance (title matches first, then by depth for hierarchy context)
+    # Title matches are more relevant than description matches
+    results = query.order_by(
+        DBTask.title.ilike(search_pattern).desc(),
+        DBTask.depth.asc(),
+        DBTask.created_at.desc()
+    ).all()
+
+    # Convert to response format with breadcrumb paths
+    response_tasks = []
+    for task in results:
+        # Build breadcrumb path by traversing up the hierarchy
+        breadcrumb_path = []
+        current = task
+        while current.parent_id:
+            parent = db.query(DBTask).filter(DBTask.id == current.parent_id).first()
+            if parent:
+                breadcrumb_path.insert(0, parent.title)
+                current = parent
+            else:
+                break
+
+        # Convert to response
+        response = TaskResponse(
+            id=task.id,
+            title=task.title,
+            description=task.description,
+            completed=task.completed,
+            status=task.status,
+            created_at=task.created_at,
+            completed_at=task.completed_at,
+            deferred_at=task.deferred_at,
+            deferral_count=task.deferral_count,
+            sort_order=task.sort_order,
+            external_id=task.external_id,
+            source=task.source,
+            parent_id=task.parent_id,
+            project_id=task.project_id,
+            depth=task.depth,
+            path=task.path,
+            has_children=len(task.children) > 0,
+            breadcrumb_path=breadcrumb_path  # Add breadcrumb for search results
+        )
+
+        response_tasks.append(response)
+
+    return response_tasks
 
 
 @app.put("/tasks/{task_id}", response_model=TaskResponse)

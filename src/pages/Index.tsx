@@ -24,6 +24,7 @@ import TaskDetails from '@/components/TaskDetails';
 import SubstackView from '@/components/SubstackView';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { ProjectSwitcher } from '@/components/ProjectSwitcher';
+import { SearchBar } from '@/components/SearchBar';
 import { Task, Substack, Project } from '@/types/task';
 import { useProject } from '@/contexts/ProjectContext';
 import { toast } from '@/components/ui/sonner';
@@ -55,6 +56,7 @@ const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
     path: backendTask.path,
     hasChildren: backendTask.has_children || false,
     children: backendTask.children ? backendTask.children.map(mapBackendTaskToFrontendTask) : undefined,
+    breadcrumbPath: backendTask.breadcrumb_path || [],
 
     // OLD: Keep substacks for backward compatibility
     substacks: backendTask.substacks || []
@@ -440,6 +442,59 @@ const Index = () => {
     }
   };
 
+  /**
+   * Handle search result selection - Navigate to the task's location in hierarchy
+   */
+  const handleSearchResultSelect = async (task: Task) => {
+    try {
+      // If task is at root level (depth 0), just reset to root and show it
+      if (task.depth === 0) {
+        resetToRoot(tasks);
+        toast.success(`Navigated to "${task.title}"`);
+        return;
+      }
+
+      // For nested tasks, we need to navigate down the hierarchy
+      // First, reset to root
+      resetToRoot(tasks);
+
+      // Parse the path to get parent IDs
+      // Path format: /parent_uuid/child_uuid/grandchild_uuid
+      const pathSegments = task.path?.split('/').filter(Boolean) || [];
+
+      // Navigate down to each level
+      for (let i = 0; i < pathSegments.length - 1; i++) {
+        const parentId = pathSegments[i];
+
+        // Fetch the parent task
+        const parentResponse = await fetch(`${API_BASE_URL}/tasks/${parentId}`);
+        if (!parentResponse.ok) {
+          throw new Error(`Failed to fetch parent task`);
+        }
+        const parentData = await parentResponse.json();
+        const parentTask = mapBackendTaskToFrontendTask(parentData);
+
+        // Fetch children of this parent
+        const childrenResponse = await fetch(`${API_BASE_URL}/tasks/${parentId}/children`);
+        if (!childrenResponse.ok) {
+          throw new Error(`Failed to fetch children`);
+        }
+        const childrenData = await childrenResponse.json();
+        const children = childrenData.map(mapBackendTaskToFrontendTask);
+
+        // Push this level onto the stack
+        pushTaskLevel(parentTask, children);
+      }
+
+      toast.success(`Found "${task.title}"` + (task.breadcrumbPath && task.breadcrumbPath.length > 0
+        ? ` in ${task.breadcrumbPath.join(' > ')}`
+        : ''));
+    } catch (err) {
+      console.error("Failed to navigate to search result:", err);
+      toast.error(`Failed to navigate to task: ${(err as Error).message}`);
+    }
+  };
+
   const handleNavigateToLevel = (depth: number) => {
     // Navigate back to a specific depth in the hierarchy
     const currentDepth = breadcrumb.length;
@@ -529,6 +584,14 @@ const Index = () => {
           <div className="flex flex-col flex-1">
             {currentView === 'main' && (
               <>
+                {/* Global Search */}
+                <div className="px-4 pt-4">
+                  <SearchBar
+                    onSelectResult={handleSearchResultSelect}
+                    projectId={currentProject?.id}
+                  />
+                </div>
+
                 {/* Breadcrumb for hierarchical navigation */}
                 <Breadcrumb onNavigateToLevel={handleNavigateToLevel} />
 
