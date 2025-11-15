@@ -1,8 +1,8 @@
 # One Job - Requirements Specification
 
-> **Document Version**: 2.0
-> **Last Updated**: November 2025
-> **Status**: Unified Recursive Model Complete, Integration Phase In Progress
+> **Document Version**: 2.1
+> **Last Updated**: November 15, 2025
+> **Status**: Phase 5 Complete (Global Search), Integration Phase In Progress
 
 ## 🎯 Project Overview
 
@@ -111,6 +111,20 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR3.4.2** Stack view SHALL show current active task prominently
 - **FR3.4.3** Completed view SHALL list all finished tasks chronologically
 - **FR3.4.4** Each view SHALL show appropriate task counts
+
+#### FR3.5 Global Search (NEW - Phase 5)
+- **FR3.5.1** Users SHALL be able to search across all tasks in all projects
+- **FR3.5.2** Search SHALL be case-insensitive and support partial matching
+- **FR3.5.3** Search SHALL query both title and description fields
+- **FR3.5.4** Search results SHALL display in real-time dropdown (300ms debounce)
+- **FR3.5.5** Each result SHALL show breadcrumb path indicating location in hierarchy
+- **FR3.5.6** Each result SHALL show status badge (Completed/Pending)
+- **FR3.5.7** Results SHALL highlight matching text with yellow background
+- **FR3.5.8** Search SHALL support keyboard navigation (Arrow keys, Enter, Escape)
+- **FR3.5.9** Selecting a result SHALL navigate to that task's location in hierarchy
+- **FR3.5.10** Search SHALL support optional project filtering via project_id parameter
+- **FR3.5.11** Search results SHALL show result count
+- **FR3.5.12** Search SHALL include clear button and loading indicator
 
 ### FR4: Data Persistence and API
 
@@ -300,11 +314,13 @@ One Job is a mobile-first task management application built with domain-driven d
   - `POST /projects` - Create projects with integration config
   - `GET /tasks/{id}/children` - Fetch immediate children
   - `POST /tasks` with `parent_id` - Create child tasks
+  - `GET /search?q={query}&project_id={optional}` - Global search across hierarchies
 - [x] **Frontend navigation components**:
   - `Breadcrumb` - Navigation trail with click-to-navigate
   - `ProjectSwitcher` - Command palette for project selection
   - `TaskCard` enhancements - Visual indicators for child tasks
   - `CardDeck` zoom integration - Click to explore hierarchies
+  - `SearchBar` - Global search with breadcrumb paths and keyboard navigation
 - [x] **ProjectContext state management** - Stack-based navigation
 - [x] **Demo data** with 3-level hierarchy (root → children → grandchildren)
 
@@ -327,8 +343,9 @@ One Job is a mobile-first task management application built with domain-driven d
 - [ ] **Jira API integration** (OAuth/API Token)
 
 #### Advanced Features
-- [ ] **Task filtering and search**
-- [ ] **Bulk task operations**  
+- [x] **Global search across projects and hierarchies** (Phase 5 - November 2025)
+- [ ] **Task filtering by status, date, project**
+- [ ] **Bulk task operations**
 - [ ] **Task templates and quick-create**
 - [ ] **Task time tracking and analytics**
 
