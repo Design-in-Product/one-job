@@ -141,7 +141,7 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black bg-opacity-20 z-40"
             onClick={onClose}
-            aria-label="Menu overlay. Press Escape to close, arrow keys to navigate, Enter to select."
+            aria-hidden="true"
           />
         )}
       </AnimatePresence>
