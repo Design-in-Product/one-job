@@ -1,8 +1,8 @@
 # One Job - Requirements Specification
 
-> **Document Version**: 1.0  
-> **Last Updated**: January 2025  
-> **Status**: MVP Complete, Integration Phase Planning
+> **Document Version**: 2.0
+> **Last Updated**: November 2025
+> **Status**: Unified Recursive Model Complete, Integration Phase In Progress
 
 ## 🎯 Project Overview
 
@@ -49,25 +49,42 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR1.4.3** System SHALL display task count badges for active and completed tasks
 - **FR1.4.4** Frontend SHALL show only the top task in the main view
 
-### FR2: Hierarchical Organization (Substacks)
+### FR2: Hierarchical Organization (Unified Recursive Model)
 
-#### FR2.1 Substack Creation
-- **FR2.1.1** Users SHALL be able to create named substacks within any task
-- **FR2.1.2** Substacks SHALL have unique UUIDs and creation timestamps
-- **FR2.1.3** System SHALL maintain parent-child relationship between tasks and substacks
-- **FR2.1.4** Each substack SHALL function as an independent task container
+#### FR2.1 Project Management
+- **FR2.1.1** Users SHALL be able to create multiple projects as top-level containers
+- **FR2.1.2** Each project SHALL have unique ID, name, color, and integration config
+- **FR2.1.3** Projects SHALL support per-project backend integrations (GitHub, Trello, Asana, etc.)
+- **FR2.1.4** System SHALL track task counts (todo/completed) per project
+- **FR2.1.5** Projects SHALL be archivable (soft delete)
 
-#### FR2.2 Substack Task Management
-- **FR2.2.1** Users SHALL be able to add tasks to substacks
-- **FR2.2.2** Substack tasks SHALL have their own completion status
-- **FR2.2.3** Substack tasks SHALL maintain sort_order within their container
-- **FR2.2.4** System SHALL support nested navigation between parent tasks and substacks
+#### FR2.2 Recursive Task Hierarchy
+- **FR2.2.1** Tasks SHALL support unlimited nesting depth via parent-child relationships
+- **FR2.2.2** Each task MAY have zero or more child tasks
+- **FR2.2.3** System SHALL automatically calculate and maintain task depth levels
+- **FR2.2.4** System SHALL maintain materialized paths for efficient hierarchy queries
+- **FR2.2.5** Path format SHALL be: `/parent_uuid/child_uuid/grandchild_uuid`
+- **FR2.2.6** Child tasks SHALL inherit project_id from parent or explicit assignment
 
-#### FR2.3 Substack Navigation
-- **FR2.3.1** Users SHALL be able to navigate into substack views
-- **FR2.3.2** Substack view SHALL display parent task context
-- **FR2.3.3** Users SHALL be able to return to parent task view
-- **FR2.3.4** Navigation transitions SHALL be animated for clarity
+#### FR2.3 Zoom Navigation
+- **FR2.3.1** Users SHALL be able to "zoom into" tasks with children via click/tap
+- **FR2.3.2** Zooming in SHALL fetch and display only immediate children
+- **FR2.3.3** System SHALL maintain navigation stack using push/pop metaphor
+- **FR2.3.4** Breadcrumb trail SHALL show navigation path from root to current level
+- **FR2.3.5** Users SHALL be able to navigate back up hierarchy via breadcrumb clicks
+- **FR2.3.6** System SHALL display current depth level (Level 0, 1, 2, etc.)
+- **FR2.3.7** Navigation transitions SHALL be smooth and provide clear context
+
+#### FR2.4 Visual Indicators
+- **FR2.4.1** Tasks with children SHALL display blue badge with child count
+- **FR2.4.2** Task cards SHALL show context-aware instructions (zoom vs. details)
+- **FR2.4.3** Breadcrumb SHALL auto-hide when at root level
+- **FR2.4.4** Depth indicator SHALL be visible during hierarchical navigation
+
+#### FR2.5 Backward Compatibility (Legacy Substacks)
+- **FR2.5.1** System SHALL maintain existing substacks table during transition
+- **FR2.5.2** API responses SHALL include both `children` and `substacks` fields
+- **FR2.5.3** Frontend SHALL support both hierarchical models during migration
 
 ### FR3: User Interface and Interaction
 
@@ -270,11 +287,33 @@ One Job is a mobile-first task management application built with domain-driven d
 - [x] Parent-child relationship tracking
 - [x] Animated navigation between views
 
+#### **✨ Unified Recursive Model (NEW - November 2025)**
+- [x] **Projects as top-level containers** with integration config
+- [x] **Unlimited nesting depth** via recursive parent-child relationships
+- [x] **Materialized path optimization** for efficient hierarchy queries
+- [x] **Zoom navigation model** (push/pop stack metaphor)
+- [x] **Breadcrumb trail** with depth indicators
+- [x] **Automatic depth and path calculation**
+- [x] **Database migration** from 3-table to unified recursive structure
+- [x] **Backend API enhancements**:
+  - `GET /projects` - List all projects with task counts
+  - `POST /projects` - Create projects with integration config
+  - `GET /tasks/{id}/children` - Fetch immediate children
+  - `POST /tasks` with `parent_id` - Create child tasks
+- [x] **Frontend navigation components**:
+  - `Breadcrumb` - Navigation trail with click-to-navigate
+  - `ProjectSwitcher` - Command palette for project selection
+  - `TaskCard` enhancements - Visual indicators for child tasks
+  - `CardDeck` zoom integration - Click to explore hierarchies
+- [x] **ProjectContext state management** - Stack-based navigation
+- [x] **Demo data** with 3-level hierarchy (root → children → grandchildren)
+
 #### Testing and Documentation
 - [x] Comprehensive unit tests for all API endpoints
 - [x] Integration tests for complete workflows
 - [x] Full API documentation with OpenAPI
 - [x] Architecture documentation and guides
+- [x] **16/16 accessibility tests passing** (WCAG 2.1 Level AA compliance)
 
 ### 🚧 **IN PROGRESS (Integration Phase)**
 
