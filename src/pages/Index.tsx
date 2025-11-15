@@ -44,6 +44,16 @@ const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
     sortOrder: backendTask.sort_order,
     source: backendTask.source,
     externalId: backendTask.external_id,
+
+    // NEW: Hierarchy fields
+    parentId: backendTask.parent_id,
+    projectId: backendTask.project_id,
+    depth: backendTask.depth || 0,
+    path: backendTask.path,
+    hasChildren: backendTask.has_children || false,
+    children: backendTask.children ? backendTask.children.map(mapBackendTaskToFrontendTask) : undefined,
+
+    // OLD: Keep substacks for backward compatibility
     substacks: backendTask.substacks || []
   };
 };
