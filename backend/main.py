@@ -87,29 +87,64 @@ class UUID(types.TypeDecorator):
             else:
                 return uuid.UUID(value)
 
-# SQLAlchemy Model
+# SQLAlchemy Models
+
+# Project Model (NEW for unified recursive architecture)
+class DBProject(Base):
+    __tablename__ = "projects"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(255), index=True)
+    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    color: Mapped[Optional[str]] = mapped_column(String(7), nullable=True)  # hex color #RRGGBB
+    icon: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)  # emoji or icon name
+
+    # Integration configuration (per-project backends!)
+    integration_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)  # 'github', 'trello', 'asana'
+    integration_config: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # JSON string
+
+    # Metadata
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    archived: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Relationship to tasks
+    tasks = relationship("DBTask", back_populates="project", cascade="all, delete-orphan")
+
+
 class DBTask(Base):
     __tablename__ = "tasks"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(), primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String, index=True)
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    
+
     # RE-ADDED: 'completed' column. The database expects this.
-    completed: Mapped[bool] = mapped_column(Boolean, default=False) 
-    
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+
     status: Mapped[str] = mapped_column(String, default="todo") # 'todo' or 'done'
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     deferred_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    
+
     deferral_count: Mapped[int] = mapped_column(Integer, default=0)
 
     sort_order: Mapped[Optional[int]] = mapped_column(Integer, nullable=True) # Used for active tasks
     external_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     source: Mapped[Optional[str]] = mapped_column(String, nullable=True) # e.g., "linear", "jira"
-    
-    # Relationship to substacks
+
+    # NEW: Recursive hierarchy fields
+    parent_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(), ForeignKey("tasks.id"), nullable=True)
+    project_id: Mapped[uuid.UUID] = mapped_column(UUID(), ForeignKey("projects.id"))
+    depth: Mapped[int] = mapped_column(Integer, default=0)
+    path: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # materialized path: '/uuid/uuid/uuid'
+
+    # Relationships
+    project = relationship("DBProject", back_populates="tasks")
+    parent = relationship("DBTask", remote_side=[id], back_populates="children")
+    children = relationship("DBTask", back_populates="parent", cascade="all, delete-orphan")
+
+    # OLD: Relationship to substacks (keep for backward compatibility during transition)
     substacks = relationship("DBSubstack", back_populates="parent_task", cascade="all, delete-orphan")
 
 
@@ -151,18 +186,57 @@ def get_db():
         db.close()
 
 # Pydantic Models for request/response
+
+# Project models (NEW)
+class ProjectBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    color: Optional[str] = None
+    icon: Optional[str] = None
+
+class ProjectCreate(ProjectBase):
+    integration_type: Optional[str] = None
+    integration_config: Optional[str] = None  # JSON string
+
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    color: Optional[str] = None
+    icon: Optional[str] = None
+    integration_type: Optional[str] = None
+    integration_config: Optional[str] = None
+    archived: Optional[bool] = None
+
+    model_config = ConfigDict(extra='ignore')
+
+class ProjectResponse(ProjectBase):
+    id: uuid.UUID
+    integration_type: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    archived: bool
+    task_count: int = 0  # Computed field
+    completed_count: int = 0  # Computed field
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Task models
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
 
 class TaskCreate(TaskBase):
-    pass
+    parent_id: Optional[uuid.UUID] = None  # NEW: Support creating child tasks
+    project_id: Optional[uuid.UUID] = None  # NEW: Specify project (defaults to current)
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     status: Optional[str] = None # Will only be "todo" or "done" now
     is_deferral: Optional[bool] = None
+    parent_id: Optional[uuid.UUID] = None  # NEW: Move task to different parent
+    project_id: Optional[uuid.UUID] = None  # NEW: Move task to different project
 
     model_config = ConfigDict(extra='ignore')
 
@@ -210,6 +284,16 @@ class TaskResponse(TaskBase):
     sort_order: Optional[int] = None
     external_id: Optional[str] = None
     source: Optional[str] = None
+
+    # NEW: Recursive hierarchy fields
+    parent_id: Optional[uuid.UUID] = None
+    project_id: uuid.UUID
+    depth: int = 0
+    path: Optional[str] = None
+    has_children: bool = False  # Computed field
+    children: List['TaskResponse'] = []  # Lazy-loaded child tasks
+
+    # OLD: Keep substacks for backward compatibility during transition
     substacks: List['SubstackResponse'] = []
 
     model_config = ConfigDict(from_attributes=True)
@@ -239,39 +323,248 @@ app.add_middleware(
 # Create tables on startup
 Base.metadata.create_all(bind=engine)
 
+
+# ===== PROJECTS API (NEW) =====
+
+@app.get("/projects", response_model=List[ProjectResponse])
+async def get_projects(db: Session = Depends(get_db)):
+    """Get all projects with task counts"""
+    projects = db.query(DBProject).filter(DBProject.archived == False).all()
+
+    result = []
+    for project in projects:
+        # Count tasks in this project
+        task_count = db.query(func.count(DBTask.id)).filter(
+            DBTask.project_id == project.id,
+            DBTask.status == "todo"
+        ).scalar()
+
+        completed_count = db.query(func.count(DBTask.id)).filter(
+            DBTask.project_id == project.id,
+            DBTask.status == "done"
+        ).scalar()
+
+        project_response = ProjectResponse.model_validate(project)
+        project_response.task_count = task_count
+        project_response.completed_count = completed_count
+        result.append(project_response)
+
+    return result
+
+
+@app.get("/projects/{project_id}", response_model=ProjectResponse)
+async def get_project(project_id: uuid.UUID, db: Session = Depends(get_db)):
+    """Get a single project by ID"""
+    project = db.query(DBProject).filter(DBProject.id == project_id).first()
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    # Count tasks
+    task_count = db.query(func.count(DBTask.id)).filter(
+        DBTask.project_id == project.id,
+        DBTask.status == "todo"
+    ).scalar()
+
+    completed_count = db.query(func.count(DBTask.id)).filter(
+        DBTask.project_id == project.id,
+        DBTask.status == "done"
+    ).scalar()
+
+    project_response = ProjectResponse.model_validate(project)
+    project_response.task_count = task_count
+    project_response.completed_count = completed_count
+    return project_response
+
+
+@app.post("/projects", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+async def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
+    """Create a new project"""
+    db_project = DBProject(
+        name=project.name,
+        description=project.description,
+        color=project.color,
+        icon=project.icon,
+        integration_type=project.integration_type,
+        integration_config=project.integration_config
+    )
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+
+    project_response = ProjectResponse.model_validate(db_project)
+    project_response.task_count = 0
+    project_response.completed_count = 0
+    return project_response
+
+
+@app.put("/projects/{project_id}", response_model=ProjectResponse)
+async def update_project(
+    project_id: uuid.UUID,
+    project_update: ProjectUpdate,
+    db: Session = Depends(get_db)
+):
+    """Update a project"""
+    db_project = db.query(DBProject).filter(DBProject.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    # Update fields
+    if project_update.name is not None:
+        db_project.name = project_update.name
+    if project_update.description is not None:
+        db_project.description = project_update.description
+    if project_update.color is not None:
+        db_project.color = project_update.color
+    if project_update.icon is not None:
+        db_project.icon = project_update.icon
+    if project_update.integration_type is not None:
+        db_project.integration_type = project_update.integration_type
+    if project_update.integration_config is not None:
+        db_project.integration_config = project_update.integration_config
+    if project_update.archived is not None:
+        db_project.archived = project_update.archived
+
+    db_project.updated_at = datetime.now(timezone.utc)
+
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+
+    # Count tasks
+    task_count = db.query(func.count(DBTask.id)).filter(
+        DBTask.project_id == project_id,
+        DBTask.status == "todo"
+    ).scalar()
+
+    completed_count = db.query(func.count(DBTask.id)).filter(
+        DBTask.project_id == project_id,
+        DBTask.status == "done"
+    ).scalar()
+
+    project_response = ProjectResponse.model_validate(db_project)
+    project_response.task_count = task_count
+    project_response.completed_count = completed_count
+    return project_response
+
+
+@app.delete("/projects/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(project_id: uuid.UUID, db: Session = Depends(get_db)):
+    """Archive a project (soft delete)"""
+    db_project = db.query(DBProject).filter(DBProject.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    db_project.archived = True
+    db_project.updated_at = datetime.now(timezone.utc)
+
+    db.add(db_project)
+    db.commit()
+
+
+# ===== TASKS API (Enhanced for hierarchy) =====
+
 @app.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate, db: Session = Depends(get_db)):
-    # Find the maximum sort_order for existing active tasks
+    """Create a new task (root or child)"""
+
+    # Determine project_id (use provided or default)
+    project_id = task.project_id
+    if project_id is None:
+        # Get default project
+        default_project = db.query(DBProject).filter(
+            DBProject.id == '00000000-0000-0000-0000-000000000001'
+        ).first()
+        if default_project is None:
+            raise HTTPException(status_code=400, detail="No default project found")
+        project_id = default_project.id
+
+    # Calculate depth and path
+    depth = 0
+    parent_path = ""
+    if task.parent_id is not None:
+        # Verify parent exists
+        parent_task = db.query(DBTask).filter(DBTask.id == task.parent_id).first()
+        if parent_task is None:
+            raise HTTPException(status_code=404, detail="Parent task not found")
+
+        depth = parent_task.depth + 1
+        parent_path = parent_task.path or f"/{parent_task.id}"
+
+    # Find the maximum sort_order for existing active tasks at same level
     # Active tasks are those with status 'todo'
     max_order_result = db.query(func.max(DBTask.sort_order)).filter(
-        DBTask.status == "todo"
+        DBTask.status == "todo",
+        DBTask.parent_id == task.parent_id,
+        DBTask.project_id == project_id
     ).scalar()
 
     new_sort_order = (max_order_result or 0) + 1
 
+    # Create task
     db_task = DBTask(
         title=task.title,
         description=task.description,
-        # Default status for new tasks is 'todo'
         status="todo",
         sort_order=new_sort_order,
-        completed=False # Ensure 'completed' is set for new tasks
+        completed=False,
+        parent_id=task.parent_id,
+        project_id=project_id,
+        depth=depth
     )
+
     db.add(db_task)
+    db.flush()  # Get the ID
+
+    # Set path
+    db_task.path = f"{parent_path}/{db_task.id}"
+
     db.commit()
     db.refresh(db_task)
-    return TaskResponse.model_validate(db_task)
+
+    # Check if has children
+    has_children = db.query(func.count(DBTask.id)).filter(
+        DBTask.parent_id == db_task.id
+    ).scalar() > 0
+
+    response = TaskResponse.model_validate(db_task)
+    response.has_children = has_children
+    return response
 
 
 @app.get("/tasks", response_model=List[TaskResponse])
-async def get_tasks(db: Session = Depends(get_db)):
-    # Fetch all tasks with their substacks
-    tasks = db.query(DBTask).all()
+async def get_tasks(
+    db: Session = Depends(get_db),
+    project_id: Optional[uuid.UUID] = None,
+    parent_id: Optional[uuid.UUID] = None,
+    include_children: bool = False
+):
+    """
+    Get tasks, optionally filtered by project and/or parent.
+    - If project_id is provided, only tasks from that project
+    - If parent_id is provided, only children of that task
+    - If parent_id is None (default), only root tasks (parent_id IS NULL)
+    - If include_children is True, recursively load all children
+    """
+
+    # Build query
+    query = db.query(DBTask)
+
+    if project_id is not None:
+        query = query.filter(DBTask.project_id == project_id)
+
+    # Filter by parent
+    if parent_id is not None:
+        query = query.filter(DBTask.parent_id == parent_id)
+    else:
+        # Default: only root tasks
+        query = query.filter(DBTask.parent_id.is_(None))
+
+    tasks = query.all()
 
     # Separate tasks by status
     todo_tasks = []
     done_tasks = []
-    
+
     for task in tasks:
         if task.status == "todo":
             todo_tasks.append(task)
@@ -284,7 +577,84 @@ async def get_tasks(db: Session = Depends(get_db)):
     # Sort done tasks by completed_at in descending order (most recent first)
     done_tasks.sort(key=lambda t: (t.completed_at is not None, t.completed_at), reverse=True)
 
-    return [TaskResponse.model_validate(task) for task in todo_tasks + done_tasks]
+    # Convert to responses
+    result = []
+    for task in todo_tasks + done_tasks:
+        response = TaskResponse.model_validate(task)
+
+        # Check if has children
+        has_children = db.query(func.count(DBTask.id)).filter(
+            DBTask.parent_id == task.id
+        ).scalar() > 0
+        response.has_children = has_children
+
+        # Optionally load children recursively
+        if include_children and has_children:
+            children = db.query(DBTask).filter(DBTask.parent_id == task.id).all()
+            response.children = [TaskResponse.model_validate(child) for child in children]
+
+        result.append(response)
+
+    return result
+
+
+@app.get("/projects/{project_id}/tasks", response_model=List[TaskResponse])
+async def get_project_tasks(
+    project_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    parent_id: Optional[uuid.UUID] = None
+):
+    """Get tasks for a specific project"""
+    return await get_tasks(db=db, project_id=project_id, parent_id=parent_id)
+
+
+@app.get("/tasks/{task_id}", response_model=TaskResponse)
+async def get_task(task_id: uuid.UUID, db: Session = Depends(get_db), include_children: bool = False):
+    """Get a single task by ID"""
+    task = db.query(DBTask).filter(DBTask.id == task_id).first()
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    response = TaskResponse.model_validate(task)
+
+    # Check if has children
+    has_children = db.query(func.count(DBTask.id)).filter(
+        DBTask.parent_id == task.id
+    ).scalar() > 0
+    response.has_children = has_children
+
+    # Optionally load children
+    if include_children and has_children:
+        children = db.query(DBTask).filter(DBTask.parent_id == task.id).all()
+        response.children = [TaskResponse.model_validate(child) for child in children]
+
+    return response
+
+
+@app.get("/tasks/{task_id}/children", response_model=List[TaskResponse])
+async def get_task_children(task_id: uuid.UUID, db: Session = Depends(get_db)):
+    """Get immediate children of a task"""
+    # Verify parent exists
+    parent_task = db.query(DBTask).filter(DBTask.id == task_id).first()
+    if parent_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Get children
+    children = db.query(DBTask).filter(DBTask.parent_id == task_id).all()
+
+    result = []
+    for child in children:
+        response = TaskResponse.model_validate(child)
+
+        # Check if child has children
+        has_children = db.query(func.count(DBTask.id)).filter(
+            DBTask.parent_id == child.id
+        ).scalar() > 0
+        response.has_children = has_children
+
+        result.append(response)
+
+    return result
 
 
 @app.put("/tasks/{task_id}", response_model=TaskResponse)
