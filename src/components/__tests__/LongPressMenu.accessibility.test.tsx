@@ -35,9 +35,13 @@ describe('LongPressMenu Accessibility', () => {
   it('should have keyboard navigation hint visible', () => {
     render(<LongPressMenu isOpen={true} {...mockHandlers} />);
 
-    // Check for keyboard hint
-    const hint = screen.getByText(/arrow keys to navigate/i);
-    expect(hint).toBeInTheDocument();
+    // Check for keyboard hint with exact structure (using getByText to find the span)
+    const keyboardLabel = screen.getByText('Keyboard:');
+    expect(keyboardLabel).toBeInTheDocument();
+
+    // Check for the full hint text
+    const hintText = screen.getByText(/arrow keys to navigate.*enter to select.*esc to close/i);
+    expect(hintText).toBeInTheDocument();
   });
 
   it('should have proper ARIA labels on menu buttons', () => {
@@ -107,11 +111,12 @@ describe('LongPressMenu Accessibility', () => {
     expect(buttons).toHaveLength(0);
   });
 
-  it('should have backdrop with ARIA label', () => {
+  it('should have backdrop with proper attributes', () => {
     render(<LongPressMenu isOpen={true} {...mockHandlers} />);
 
-    // Find backdrop by aria-label
-    const backdrop = document.querySelector('[aria-label*="Menu overlay"]');
+    // Find backdrop by class and check it's hidden from screen readers
+    const backdrop = document.querySelector('.fixed.inset-0.bg-black');
     expect(backdrop).toBeInTheDocument();
+    expect(backdrop).toHaveAttribute('aria-hidden', 'true');
   });
 });

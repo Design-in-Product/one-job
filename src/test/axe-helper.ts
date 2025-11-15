@@ -1,4 +1,4 @@
-import { configureAxe } from 'axe-core';
+import * as axe from 'axe-core';
 import type { Result } from 'axe-core';
 
 /**
@@ -19,7 +19,7 @@ export async function runAxe(
   container: Element,
   options = {}
 ): Promise<{ violations: Result[] }> {
-  const axe = configureAxe({
+  const results = await axe.run(container, {
     rules: {
       // Configure axe rules if needed
       'color-contrast': { enabled: true },
@@ -27,9 +27,8 @@ export async function runAxe(
       'button-name': { enabled: true },
       'link-name': { enabled: true },
     },
+    ...options,
   });
-
-  const results = await axe.run(container, options);
 
   return {
     violations: results.violations,

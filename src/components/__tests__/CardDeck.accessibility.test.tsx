@@ -66,13 +66,17 @@ describe('CardDeck Accessibility', () => {
       />
     );
 
-    // Card deck should be focusable
-    const cardDeck = screen.getByRole('main');
-    expect(cardDeck).toHaveAttribute('tabIndex', '0');
+    // Main region should exist
+    const mainRegion = screen.getByRole('main');
+    expect(mainRegion).toBeInTheDocument();
+
+    // Card deck (the focusable element) should have tabIndex
+    const focusableElement = screen.getByLabelText(/task deck.*press enter or space/i);
+    expect(focusableElement).toHaveAttribute('tabIndex', '0');
 
     // Focus the card deck
-    cardDeck.focus();
-    expect(cardDeck).toHaveFocus();
+    focusableElement.focus();
+    expect(focusableElement).toHaveFocus();
 
     // Test keyboard shortcuts
     await user.keyboard(' '); // Space to flip
@@ -135,10 +139,13 @@ describe('CardDeck Accessibility', () => {
       />
     );
 
-    const cardDeck = screen.getByRole('main');
+    // Get the focusable element (not the main container)
+    const focusableElement = screen.getByLabelText(/task deck.*press enter or space/i);
 
-    // Check for focus ring classes
-    expect(cardDeck).toHaveClass('focus:ring-4');
-    expect(cardDeck).toHaveClass('focus:ring-orange-400');
+    // Check for focus ring classes on the actual card element
+    // Note: Focus styles are on the card itself in the implementation
+    const cardElement = screen.getByRole('button', { name: /card deck with/i });
+    expect(cardElement).toHaveClass('focus:ring-4');
+    expect(cardElement).toHaveClass('focus:ring-orange-400');
   });
 });
