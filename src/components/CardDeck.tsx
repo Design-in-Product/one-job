@@ -37,6 +37,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
+  const cardDeckRef = useRef<HTMLDivElement>(null);
 
   // Available flip animations (0-3 for random selection)
   const flipAnimations = [
@@ -45,6 +46,64 @@ const CardDeck: React.FC<CardDeckProps> = ({
     'flip-smooth',     // Slower, deliberate
     'flip-wave'        // Y-axis with X-axis tilt
   ];
+
+  // Get current task
+  const currentTask = tasks[0];
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if card deck is focused or no other input is focused
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement?.tagName === 'INPUT' ||
+                             activeElement?.tagName === 'TEXTAREA' ||
+                             activeElement?.getAttribute('contenteditable') === 'true';
+
+      if (isInputFocused) return;
+
+      switch(e.key) {
+        case 'Enter':
+        case ' ':
+          if (!isFlipped && tasks.length > 0) {
+            e.preventDefault();
+            handleCardTap();
+          }
+          break;
+
+        case 'ArrowRight':
+          if (e.shiftKey && isFlipped && currentTask) {
+            e.preventDefault();
+            handleComplete(currentTask.id);
+          }
+          break;
+
+        case 'ArrowLeft':
+          if (e.shiftKey && isFlipped && currentTask) {
+            e.preventDefault();
+            handleDefer(currentTask.id);
+          }
+          break;
+
+        case 'Escape':
+          if (showMenu) {
+            e.preventDefault();
+            setShowMenu(false);
+          }
+          break;
+
+        case 'm':
+        case 'M':
+          if (!showMenu) {
+            e.preventDefault();
+            setShowMenu(true);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFlipped, showMenu, tasks.length, handleCardTap, handleComplete, handleDefer, currentTask]);
 
   // Reset timeout on any activity
   const resetTimeout = useCallback(() => {
@@ -119,8 +178,6 @@ const CardDeck: React.FC<CardDeckProps> = ({
     // Will be handled by TaskForm in menu
   };
 
-  const currentTask = tasks[0];
-
   // Loading state
   if (loading) {
     return (
@@ -187,10 +244,13 @@ const CardDeck: React.FC<CardDeckProps> = ({
   }
 
   return (
-    <div className="flex-1 relative">
+    <div className="flex-1 relative" role="main" aria-label="Task card deck">
       {/* Main card deck area - takes 80-90% of viewport */}
-      <div 
+      <div
+        ref={cardDeckRef}
         className="absolute inset-4 flex items-center justify-center"
+        tabIndex={0}
+        aria-label="Task deck - Press Enter or Space to flip card, M for menu"
         onMouseDown={(e) => {
           const longPressTimer = setTimeout(() => handleLongPress(e), 500);
           const cleanup = () => clearTimeout(longPressTimer);
@@ -209,19 +269,22 @@ const CardDeck: React.FC<CardDeckProps> = ({
               key="face-down"
               initial={{ rotateY: 0 }}
               animate={{ rotateY: 0 }}
-              exit={{ 
-                rotateY: flipAnimation === 0 ? 180 : 
+              exit={{
+                rotateY: flipAnimation === 0 ? 180 :
                         flipAnimation === 1 ? 270 :
                         flipAnimation === 2 ? 180 :
                         200, // wave effect
                 rotateX: flipAnimation === 3 ? 15 : 0
               }}
-              transition={{ 
+              transition={{
                 duration: flipAnimation === 1 ? 0.3 : flipAnimation === 2 ? 0.6 : 0.4,
                 ease: flipAnimation === 1 ? "easeOut" : "easeInOut"
               }}
-              className="w-72 h-96 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl shadow-lg border-2 border-orange-200 cursor-pointer flex flex-col items-center justify-center relative"
+              className="w-72 h-96 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl shadow-lg border-2 border-orange-200 cursor-pointer flex flex-col items-center justify-center relative focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-opacity-50"
               onClick={handleCardTap}
+              role="button"
+              aria-label={`Card deck with ${tasks.length} task${tasks.length === 1 ? '' : 's'}. Press Enter or Space to reveal your current task.`}
+              tabIndex={-1}
             >
               {/* Card back design - centered content */}
               <div className="flex flex-col items-center justify-center">
@@ -235,6 +298,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
                   One Job
                 </h2>
                 <p className="text-sm text-gray-500 mt-2">Tap to reveal your task</p>
+                <p className="text-xs text-gray-400 mt-4">Press Enter or Space to flip</p>
               </div>
               
               {/* Subtle pulse hint for first launch */}

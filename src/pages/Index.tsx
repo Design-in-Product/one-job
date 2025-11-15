@@ -403,13 +403,15 @@ const Index = () => {
 
   if (currentSubstack) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col" role="application" aria-label="Substack task view">
         <div className="max-w-md mx-auto flex flex-col h-screen">
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            role="region"
+            aria-label={`Substack: ${currentSubstack.substack.name}`}
           >
             <SubstackView
               parentTask={currentSubstack.parentTask}
@@ -443,8 +445,17 @@ const Index = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
+        role="application"
+        aria-label="One Job - Task Management Application"
       >
         <div className="max-w-md mx-auto flex flex-col h-screen">
+          {/* Screen reader status announcements */}
+          <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+            {loading && 'Loading tasks...'}
+            {error && `Error: ${error}`}
+            {!loading && !error && currentView === 'main' && `${activeTasks.length} active task${activeTasks.length === 1 ? '' : 's'}`}
+            {!loading && !error && currentView === 'completed' && `${completedTasks.length} completed task${completedTasks.length === 1 ? '' : 's'}`}
+          </div>
 
           {/* Card Deck Experience - Single View */}
           <div className="flex flex-col flex-1">
@@ -463,29 +474,31 @@ const Index = () => {
             )}
             
             {currentView === 'completed' && (
-              <div className="flex flex-col flex-1">
-                <div className="p-4">
-                  <button 
+              <div className="flex flex-col flex-1" role="region" aria-label="Completed tasks view">
+                <nav className="p-4" aria-label="View navigation">
+                  <button
                     onClick={() => setCurrentView('main')}
-                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-2 py-1"
+                    aria-label="Return to main task view"
                   >
                     ← Back to Tasks
                   </button>
-                </div>
+                </nav>
                 <CompletedTasks tasks={completedTasks} />
               </div>
             )}
-            
+
             {currentView === 'integrate' && (
-              <div className="flex flex-col flex-1">
-                <div className="p-4">
-                  <button 
+              <div className="flex flex-col flex-1" role="region" aria-label="Task integrations view">
+                <nav className="p-4" aria-label="View navigation">
+                  <button
                     onClick={() => setCurrentView('main')}
-                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-2 py-1"
+                    aria-label="Return to main task view"
                   >
                     ← Back to Tasks
                   </button>
-                </div>
+                </nav>
                 <TaskIntegration onImportTasks={handleImportTasks} />
               </div>
             )}
