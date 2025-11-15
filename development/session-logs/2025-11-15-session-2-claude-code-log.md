@@ -95,3 +95,88 @@ Duration: 4.69s
 - ✅ 100% automated test coverage for keyboard navigation and screen reader support
 
 #### 06:00 - Analysis Complete
+
+**Summary**: All 16 tests passing, no unresolvable gaps! ✅
+
+---
+
+## Option E: Nested Stacks & Projects Architecture Discussion
+
+#### 06:15 - User Architectural Vision Clarification
+
+**User Decisions**:
+1. ✅ **Approach A** (Unified Recursive Model) - "We're not even in alpha yet, no real users or data"
+2. ✅ **Implementation order**: Technical preference (both will be done sequentially anyway)
+3. ✅ **Design decisions**:
+   - **Unlimited nesting depth** - No artificial limits
+   - **Zoom navigation model** - Push/pop stack metaphor
+   - **Projects as top-level containers** - Each project has own root stack
+   - **Per-project integrations** - Different backends per project (GitHub vs Trello)
+   - **Cross-project moves** - Nice-to-have, roadmap item
+   - **Global search** - Yes, across all projects
+
+**Key Insight**: "The project model is a container one level above the stack. Without the project concept there is only one default project with one root stack. When we add projects, there is now the ability to switch to a different project with its own root stack."
+
+**Mental Model**:
+```
+Project (Workspace)
+├── Root Stack (active tasks)
+│   ├── Task → Child Stack (unlimited nesting)
+│   │   └── Task → Child Stack
+│   │       └── Task → ...
+│   └── Task
+└── Done Stack (completed tasks)
+```
+
+**Each project can integrate with different backends**:
+- Project 1 → GitHub backlog
+- Project 2 → Trello board
+- Project 3 → Asana workspace
+
+#### 06:30 - Implementation Plan Created
+
+**Document**: `docs/IMPLEMENTATION-PLAN-UNIFIED-RECURSIVE.md`
+
+**Architecture**:
+- **Unified Task Table** - Single recursive structure with `parent_id`
+- **Projects Table** - Top-level containers with integration config
+- **Materialized Path** - Optimization for deep hierarchies
+- **Zoom Navigation** - Stack-based UI (push/pop for drilling down)
+
+**Database Schema**:
+```sql
+CREATE TABLE projects (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    integration_type VARCHAR(50),  -- 'github', 'trello', etc.
+    integration_config JSONB,
+    ...
+);
+
+CREATE TABLE tasks (
+    id UUID PRIMARY KEY,
+    title VARCHAR(500) NOT NULL,
+    parent_id UUID REFERENCES tasks(id),  -- NULL = root task
+    project_id UUID REFERENCES projects(id) NOT NULL,
+    depth INTEGER DEFAULT 0,
+    path TEXT,  -- '/uuid/uuid/uuid' for fast queries
+    ...
+);
+```
+
+**Migration Strategy**:
+1. Create projects table with default project
+2. Add parent_id, project_id to tasks
+3. Migrate substacks → child tasks
+4. Drop old substacks tables
+
+**Implementation Phases** (16-21 hours total):
+1. Database migration (2-3h)
+2. Backend API updates (4-5h)
+3. Frontend state management (3-4h)
+4. UI components (5-6h)
+5. Search & polish (2-3h)
+
+**Status**: Ready to implement, awaiting user confirmation to begin
+
+### Session End Summary (Pending)
