@@ -3,17 +3,22 @@ services:
     name: one-job-api
     runtime: python3
     buildCommand: pip install -r requirements.txt
-    startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    # Use gunicorn with uvicorn workers for better production performance
+    startCommand: gunicorn backend.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120
     plan: free
     envVars:
       - key: DATABASE_URL
-        generateValue: true
-        type: database
+        fromDatabase:
+          name: one-job-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.11"
     autoDeploy: true
-    branch: main
+    branch: main  # ⚠️ IMPORTANT: Change this to your branch if not using 'main'
     rootDir: .
 
 databases:
   - name: one-job-db
     databaseName: onejob
-    plan: free
+    user: onejob_user
+    plan: free  # Free for 90 days, then $7/month
