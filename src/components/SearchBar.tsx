@@ -8,7 +8,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, ChevronRight, X } from 'lucide-react';
+import { Search, ChevronRight, X, Layers, Command } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Task } from '@/types/task';
 import { cn } from '@/lib/utils';
@@ -27,6 +27,30 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Keyboard shortcut: Cmd/Ctrl+K to focus search
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
+  // Scroll selected item into view
+  useEffect(() => {
+    if (resultsRef.current && selectedIndex >= 0) {
+      const selectedElement = resultsRef.current.querySelector(`#result-${selectedIndex}`);
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [selectedIndex]);
 
   // Debounced search
   useEffect(() => {
@@ -147,10 +171,10 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
     <div ref={searchRef} className={cn("relative", className)}>
       {/* Search Input */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         <input
           ref={inputRef}
-          type="text"
+          type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -159,27 +183,50 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
           }}
           placeholder="Search tasks..."
           className={cn(
-            "w-full pl-9 pr-9 py-2 rounded-md border border-input bg-background",
+            "w-full pl-9 py-2.5 rounded-lg border border-input bg-background",
             "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
-            "placeholder:text-muted-foreground"
+            "placeholder:text-muted-foreground",
+            "text-sm md:text-base",
+            // Adjust padding based on whether we have buttons on the right
+            query || isLoading ? "pr-10" : "pr-20"
           )}
-          aria-label="Search tasks"
+          aria-label="Search tasks across all projects"
           aria-expanded={isOpen}
           aria-controls="search-results"
           aria-activedescendant={isOpen && results[selectedIndex] ? `result-${selectedIndex}` : undefined}
         />
-        {query && (
+
+        {/* Keyboard shortcut hint (desktop only) */}
+        {!query && !isLoading && (
+          <div className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1 text-xs text-muted-foreground pointer-events-none">
+            <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border font-mono">
+              {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
+            </kbd>
+            <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border font-mono">K</kbd>
+          </div>
+        )}
+        {query && !isLoading && (
           <button
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className={cn(
+              "absolute right-3 top-1/2 -translate-y-1/2",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "p-1 rounded-md hover:bg-muted",
+              "touch-manipulation" // Better mobile touch
+            )}
             aria-label="Clear search"
+            type="button"
           >
             <X className="h-4 w-4" />
           </button>
         )}
         {isLoading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <motion.div
+              className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+            />
           </div>
         )}
       </div>
@@ -188,33 +235,45 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
       <AnimatePresence>
         {isOpen && results.length > 0 && (
           <motion.div
+            ref={resultsRef}
             id="search-results"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.15 }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }} // Smooth easing
             className={cn(
-              "absolute z-50 w-full mt-2 bg-background border border-border rounded-md shadow-lg",
-              "max-h-[400px] overflow-y-auto"
+              "absolute z-50 w-full mt-2 bg-background border border-border rounded-lg shadow-xl",
+              // Mobile-responsive max heights
+              "max-h-[60vh] md:max-h-[400px] overflow-y-auto",
+              // Smooth scrolling on iOS
+              "overscroll-contain",
+              // Better mobile scrolling
+              "-webkit-overflow-scrolling: touch"
             )}
             role="listbox"
           >
             {results.map((task, index) => (
-              <button
+              <motion.button
                 key={task.id}
                 id={`result-${index}`}
                 onClick={() => handleSelectResult(task)}
                 onMouseEnter={() => setSelectedIndex(index)}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.03, duration: 0.2 }}
                 className={cn(
-                  "w-full px-4 py-3 text-left transition-colors",
+                  "w-full px-4 py-3 md:py-3.5 text-left",
                   "border-b border-border last:border-b-0",
                   "focus:outline-none",
+                  "transition-all duration-150",
+                  "touch-manipulation min-h-[60px] md:min-h-0", // Better mobile tap targets
                   index === selectedIndex
-                    ? "bg-accent text-accent-foreground"
-                    : "hover:bg-accent/50"
+                    ? "bg-accent text-accent-foreground scale-[0.99]"
+                    : "hover:bg-accent/50 active:bg-accent/70"
                 )}
                 role="option"
                 aria-selected={index === selectedIndex}
+                type="button"
               >
                 <div className="flex flex-col gap-1">
                   {/* Task Title */}
@@ -224,11 +283,11 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
 
                   {/* Breadcrumb Path */}
                   {task.breadcrumbPath && task.breadcrumbPath.length > 0 && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground flex-wrap">
                       {task.breadcrumbPath.map((crumb, i) => (
                         <React.Fragment key={i}>
-                          {i > 0 && <ChevronRight className="h-3 w-3" />}
-                          <span className="truncate max-w-[150px]">{crumb}</span>
+                          {i > 0 && <ChevronRight className="h-3 w-3 flex-shrink-0" />}
+                          <span className="truncate max-w-[120px] md:max-w-[150px]">{crumb}</span>
                         </React.Fragment>
                       ))}
                     </div>
@@ -236,24 +295,26 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
 
                   {/* Description Preview */}
                   {task.description && (
-                    <div className="text-xs text-muted-foreground line-clamp-1">
+                    <div className="text-xs text-muted-foreground line-clamp-2 md:line-clamp-1">
                       {highlightMatch(task.description, query)}
                     </div>
                   )}
 
-                  {/* Status Badge */}
-                  <div className="flex items-center gap-2 text-xs">
+                  {/* Status Badges */}
+                  <div className="flex items-center gap-2 flex-wrap text-xs">
                     <span className={cn(
-                      "px-2 py-0.5 rounded-full",
+                      "inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-medium",
                       task.completed
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                        : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
                     )}>
-                      {task.completed ? "Completed" : "Pending"}
+                      {task.completed ? "✓ Completed" : "○ Pending"}
                     </span>
                     {task.hasChildren && (
-                      <span className="text-muted-foreground">
-                        • Has nested tasks
+                      <span className="inline-flex items-center gap-1 text-muted-foreground">
+                        <Layers className="h-3 w-3" />
+                        <span className="hidden sm:inline">Has nested tasks</span>
+                        <span className="sm:hidden">Nested</span>
                       </span>
                     )}
                   </div>
@@ -261,24 +322,47 @@ export function SearchBar({ onSelectResult, projectId, className }: SearchBarPro
               </button>
             ))}
 
-            {/* Results Count */}
-            <div className="px-4 py-2 text-xs text-muted-foreground bg-muted/30 border-t border-border">
-              {results.length} result{results.length === 1 ? '' : 's'} found
+            {/* Results Count Footer */}
+            <div className="sticky bottom-0 px-4 py-2.5 text-xs text-muted-foreground bg-muted/50 backdrop-blur-sm border-t border-border">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">
+                  {results.length} result{results.length === 1 ? '' : 's'} found
+                </span>
+                <span className="hidden md:inline text-[10px] opacity-70">
+                  Use ↑↓ to navigate, Enter to select
+                </span>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* No Results */}
+      {/* Empty State */}
       <AnimatePresence>
         {isOpen && !isLoading && results.length === 0 && query.trim().length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute z-50 w-full mt-2 bg-background border border-border rounded-md shadow-lg p-4 text-center text-sm text-muted-foreground"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute z-50 w-full mt-2 bg-background border border-border rounded-lg shadow-xl p-6 text-center"
           >
-            No tasks found for "{query}"
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+                <Search className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-foreground">
+                  No tasks found
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  No results for "<span className="font-medium">{query}</span>"
+                </p>
+              </div>
+              <p className="text-xs text-muted-foreground max-w-[280px]">
+                Try searching with different keywords or check if the task exists in another project
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
