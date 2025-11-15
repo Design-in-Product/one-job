@@ -50,61 +50,6 @@ const CardDeck: React.FC<CardDeckProps> = ({
   // Get current task
   const currentTask = tasks[0];
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Only handle if card deck is focused or no other input is focused
-      const activeElement = document.activeElement;
-      const isInputFocused = activeElement?.tagName === 'INPUT' ||
-                             activeElement?.tagName === 'TEXTAREA' ||
-                             activeElement?.getAttribute('contenteditable') === 'true';
-
-      if (isInputFocused) return;
-
-      switch(e.key) {
-        case 'Enter':
-        case ' ':
-          if (!isFlipped && tasks.length > 0) {
-            e.preventDefault();
-            handleCardTap();
-          }
-          break;
-
-        case 'ArrowRight':
-          if (e.shiftKey && isFlipped && currentTask) {
-            e.preventDefault();
-            handleComplete(currentTask.id);
-          }
-          break;
-
-        case 'ArrowLeft':
-          if (e.shiftKey && isFlipped && currentTask) {
-            e.preventDefault();
-            handleDefer(currentTask.id);
-          }
-          break;
-
-        case 'Escape':
-          if (showMenu) {
-            e.preventDefault();
-            setShowMenu(false);
-          }
-          break;
-
-        case 'm':
-        case 'M':
-          if (!showMenu) {
-            e.preventDefault();
-            setShowMenu(true);
-          }
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isFlipped, showMenu, tasks.length, handleCardTap, handleComplete, handleDefer, currentTask]);
-
   // Reset timeout on any activity
   const resetTimeout = useCallback(() => {
     lastActivityRef.current = Date.now();
@@ -171,6 +116,61 @@ const CardDeck: React.FC<CardDeckProps> = ({
     e.preventDefault();
     setShowMenu(true);
   }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if card deck is focused or no other input is focused
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement?.tagName === 'INPUT' ||
+                             activeElement?.tagName === 'TEXTAREA' ||
+                             activeElement?.getAttribute('contenteditable') === 'true';
+
+      if (isInputFocused) return;
+
+      switch(e.key) {
+        case 'Enter':
+        case ' ':
+          if (!isFlipped && tasks.length > 0) {
+            e.preventDefault();
+            handleCardTap();
+          }
+          break;
+
+        case 'ArrowRight':
+          if (e.shiftKey && isFlipped && currentTask) {
+            e.preventDefault();
+            handleComplete(currentTask.id);
+          }
+          break;
+
+        case 'ArrowLeft':
+          if (e.shiftKey && isFlipped && currentTask) {
+            e.preventDefault();
+            handleDefer(currentTask.id);
+          }
+          break;
+
+        case 'Escape':
+          if (showMenu) {
+            e.preventDefault();
+            setShowMenu(false);
+          }
+          break;
+
+        case 'm':
+        case 'M':
+          if (!showMenu) {
+            e.preventDefault();
+            setShowMenu(true);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFlipped, showMenu, tasks.length, handleCardTap, handleComplete, handleDefer, currentTask]);
 
   // Menu actions
   const handleAddNewTask = () => {
