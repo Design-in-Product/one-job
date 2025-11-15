@@ -7,6 +7,7 @@ import TaskCard from './TaskCard';
 import TaskForm from './TaskForm';
 import LongPressMenu from './LongPressMenu';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Sparkles, AlertCircle } from 'lucide-react';
 
 interface CardDeckProps {
   tasks: Task[];
@@ -180,26 +181,94 @@ const CardDeck: React.FC<CardDeckProps> = ({
     // Will be handled by TaskForm in menu
   };
 
-  // Loading state
+  // Loading state - Skeleton loader mimicking card
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your tasks...</p>
-        </div>
+      <div className="flex-1 flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-sm"
+        >
+          {/* Skeleton card */}
+          <div className="relative w-72 h-96 mx-auto bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg border-2 border-gray-200 dark:border-gray-700 overflow-hidden">
+            {/* Animated shimmer effect */}
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+            {/* Skeleton content */}
+            <div className="p-6 space-y-4">
+              {/* Title skeleton */}
+              <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded animate-pulse w-3/4" />
+
+              {/* Description skeletons */}
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-5/6" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-4/6" />
+              </div>
+
+              {/* Badge skeletons */}
+              <div className="flex gap-2 pt-4">
+                <div className="h-6 w-20 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse" />
+                <div className="h-6 w-24 bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse" />
+              </div>
+            </div>
+
+            {/* Loading text */}
+            <div className="absolute bottom-6 left-0 right-0 text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full"
+                />
+                <span>Loading your tasks...</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
-  // Error state  
+  // Error state
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center text-red-500 p-4">
-          <p className="font-medium mb-2">Oops! Something went wrong</p>
-          <p className="text-sm text-muted-foreground">{error}</p>
-        </div>
+      <div className="flex-1 flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-md"
+        >
+          {/* Error card */}
+          <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-8 shadow-lg">
+            {/* Error icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center"
+            >
+              <AlertCircle className="w-8 h-8 text-red-500" />
+            </motion.div>
+
+            {/* Error text */}
+            <h3 className="text-lg font-semibold text-red-900 dark:text-red-200 mb-2">
+              Oops! Something went wrong
+            </h3>
+            <p className="text-sm text-red-700 dark:text-red-300 mb-4">
+              {error}
+            </p>
+
+            {/* Retry button */}
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium text-sm"
+            >
+              Reload Page
+            </button>
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -207,11 +276,15 @@ const CardDeck: React.FC<CardDeckProps> = ({
   // Empty state
   if (tasks.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center px-6">
-        <div className="text-center">
+      <div className="flex-1 flex items-center justify-center px-4 md:px-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center w-full max-w-md"
+        >
           {/* Dashed outline where card deck would be */}
-          <div 
-            className="w-72 h-96 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center mb-6 mx-auto relative"
+          <div
+            className="w-full max-w-sm mx-auto h-96 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl flex items-center justify-center mb-6 relative overflow-hidden group hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
             onMouseDown={(e) => {
               const longPressTimer = setTimeout(() => handleLongPress(e), 500);
               const cleanup = () => clearTimeout(longPressTimer);
@@ -223,16 +296,82 @@ const CardDeck: React.FC<CardDeckProps> = ({
               document.addEventListener('touchend', cleanup, { once: true });
             }}
           >
-            <div className="text-gray-400">
-              <h3 className="text-xl font-medium mb-2">You're all caught up! 🌟</h3>
-              <p className="text-muted-foreground mb-4">
+            {/* Floating sparkles animation */}
+            <motion.div
+              className="absolute top-1/4 left-1/4"
+              animate={{
+                y: [-10, 10, -10],
+                opacity: [0.4, 0.8, 0.4]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <Sparkles className="w-6 h-6 text-yellow-400" />
+            </motion.div>
+
+            <motion.div
+              className="absolute top-1/3 right-1/4"
+              animate={{
+                y: [10, -10, 10],
+                opacity: [0.3, 0.7, 0.3]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+            >
+              <Sparkles className="w-5 h-5 text-blue-400" />
+            </motion.div>
+
+            <motion.div
+              className="absolute bottom-1/3 left-1/3"
+              animate={{
+                y: [-8, 8, -8],
+                opacity: [0.5, 0.9, 0.5]
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5
+              }}
+            >
+              <Sparkles className="w-4 h-4 text-purple-400" />
+            </motion.div>
+
+            {/* Content */}
+            <div className="relative z-10 px-6">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="text-6xl mb-4"
+              >
+                🌟
+              </motion.div>
+
+              <h3 className="text-xl md:text-2xl font-semibold mb-2 text-foreground">
+                All caught up!
+              </h3>
+
+              <p className="text-sm md:text-base text-muted-foreground mb-6 px-4">
                 What a wonderful feeling to have no pending tasks.
               </p>
+
               <TaskForm onAddTask={onAddTask} />
+
+              <p className="text-xs text-muted-foreground mt-4 opacity-70">
+                Long press or press M for more options
+              </p>
             </div>
           </div>
-        </div>
-        
+        </motion.div>
+
         {/* Long press menu */}
         <LongPressMenu
           isOpen={showMenu}
