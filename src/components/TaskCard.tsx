@@ -108,6 +108,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
     : { transform: 'translateX(0)', transition: 'transform 0.3s ease' };
 
   const hasSubstacks = task.substacks && task.substacks.length > 0;
+  const hasChildren = task.hasChildren || false;
+  const hasNestedTasks = hasSubstacks || hasChildren;
+  const nestedCount = hasChildren
+    ? (task.children?.length || 0)
+    : (task.substacks?.length || 0);
 
   return (
     <div
@@ -137,7 +142,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       onMouseLeave={handleSwipeEnd}
       onClick={handleCardClick}
       role="article"
-      aria-label={`Task: ${task.title}${hasSubstacks ? `, with ${task.substacks.length} substack${task.substacks.length === 1 ? '' : 's'}` : ''}. ${task.description ? task.description : 'No description.'}${task.source ? ` From ${task.source}.` : ''}`}
+      aria-label={`Task: ${task.title}${hasNestedTasks ? `, with ${nestedCount} nested task${nestedCount === 1 ? '' : 's'}` : ''}. ${task.description ? task.description : 'No description.'}${task.source ? ` From ${task.source}.` : ''}`}
       tabIndex={isTop && isFlipped ? 0 : -1}
     >
       <div className="flex flex-col h-full">
@@ -145,15 +150,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <h3 className="text-xl font-bold text-gray-800 break-words flex-1 leading-tight">
             {task.title}
           </h3>
-          {hasSubstacks && (
+          {hasNestedTasks && (
             <div
               className="flex items-center gap-1 ml-3 px-2 py-1 bg-blue-50 rounded-full flex-shrink-0"
-              aria-label={`${task.substacks.length} substack${task.substacks.length === 1 ? '' : 's'}`}
+              aria-label={`${nestedCount} nested task${nestedCount === 1 ? '' : 's'} - tap to explore`}
               role="status"
             >
               <Layers className="w-4 h-4 text-blue-600" aria-hidden="true" />
               <span className="text-xs text-blue-600 font-medium" aria-hidden="true">
-                {task.substacks.length}
+                {nestedCount}
               </span>
             </div>
           )}
@@ -176,7 +181,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
           {isTop && isFlipped && (
             <div className="text-center text-xs text-gray-500 border-t pt-3">
-              Swipe right to complete, left to defer, or tap to view details
+              {hasNestedTasks
+                ? "Tap to explore nested tasks, swipe right to complete, left to defer"
+                : "Swipe right to complete, left to defer, or tap to view details"}
             </div>
           )}
         </div>
