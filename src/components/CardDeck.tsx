@@ -15,6 +15,7 @@ interface CardDeckProps {
   onComplete: (taskId: string) => void;
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
+  onZoomIn?: (task: Task) => void;  // NEW: Zoom into task's children
   onAddTask: (task: Task) => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
@@ -27,6 +28,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onComplete,
   onDefer,
   onCardClick,
+  onZoomIn,
   onAddTask,
   onViewCompleted,
   onViewIntegrations
@@ -329,7 +331,12 @@ const CardDeck: React.FC<CardDeckProps> = ({
                 onSwipeLeft={handleDefer}
                 onCardClick={(task) => {
                   resetTimeout();
-                  onCardClick(task);
+                  // If task has children and zoom is enabled, zoom in instead of opening details
+                  if (task.hasChildren && onZoomIn) {
+                    onZoomIn(task);
+                  } else {
+                    onCardClick(task);
+                  }
                 }}
                 isTop={true}
                 isFlipped={true}
