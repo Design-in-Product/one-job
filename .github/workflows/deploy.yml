@@ -46,6 +46,7 @@ jobs:
           cp demo.html deploy/
           cp -r app deploy/
           cp public/favicon.svg deploy/ 2>/dev/null || true
+          cp og-image.png deploy/ 2>/dev/null || true
           cp favicon-onejob.svg deploy/ 2>/dev/null || true
           cp logo-onejob.svg deploy/ 2>/dev/null || true
           cp one-job.png deploy/ 2>/dev/null || true
