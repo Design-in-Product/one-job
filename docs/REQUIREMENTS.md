@@ -77,11 +77,15 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR3.1.3** Interface SHALL be responsive across device sizes
 - **FR3.1.4** Card-based layout SHALL provide clear visual hierarchy
 
-#### FR3.2 Gesture Controls
+#### FR3.2 Gesture Controls (Card Deck Experience)
 - **FR3.2.1** Swipe-right gesture SHALL complete tasks
 - **FR3.2.2** Swipe-left gesture SHALL defer tasks
-- **FR3.2.3** Tap gesture SHALL open task details modal
-- **FR3.2.4** All gestures SHALL provide visual feedback
+- **FR3.2.3** Tap on a face-up card SHALL open task details modal
+- **FR3.2.4** Tap on the face-down deck SHALL flip the top card face-up
+- **FR3.2.5** Long-press SHALL open the arc menu (Add Task / Completed / Integrations / Settings)
+- **FR3.2.6** All gestures SHALL provide visual feedback (drag follow, tilt, Done/Later hints)
+- **FR3.2.7** A face-up card SHALL auto-flip face-down after 1 minute of inactivity
+- **FR3.2.8** After a swipe, the next card SHALL auto-reveal when tasks remain
 
 #### FR3.3 Visual Design
 - **FR3.3.1** Interface SHALL use gradient design system (taskGradient)
@@ -89,11 +93,11 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR3.3.3** Animations SHALL be smooth (60fps) using Framer Motion
 - **FR3.3.4** Interface SHALL provide clear status indicators
 
-#### FR3.4 Task Display Views
-- **FR3.4.1** System SHALL provide tabbed interface: Stack, Completed, Integrate
-- **FR3.4.2** Stack view SHALL show current active task prominently
-- **FR3.4.3** Completed view SHALL list all finished tasks chronologically
-- **FR3.4.4** Each view SHALL show appropriate task counts
+#### FR3.4 Task Display Views (Card Deck Experience — supersedes the tabbed interface)
+- **FR3.4.1** Main view SHALL be a decluttered card deck: no permanent tabs, buttons, or navigation chrome
+- **FR3.4.2** The deck SHALL present the top task as a playing card (face-down until tapped), with the remaining pile visible beneath
+- **FR3.4.3** Completed and Integrations views SHALL be reachable via the long-press arc menu, with simple back navigation
+- **FR3.4.4** Completed view SHALL list all finished tasks chronologically
 
 ### FR4: Data Persistence and API
 
@@ -259,10 +263,14 @@ One Job is a mobile-first task management application built with domain-driven d
 
 #### User Interface
 - [x] Mobile-first React application with TypeScript
-- [x] Swipe gesture controls (complete/defer)
-- [x] Card-based task display with animations
-- [x] Tabbed interface (Stack/Completed/Integrate)
+- [x] Swipe gesture controls (complete/defer) with drag-follow and hints
+- [x] Card Deck Experience: 3D flip (FlipCard), playing-card back design (CardBack), deck underlay
+- [x] Long-press arc menu (Add Task / Completed / Integrations)
 - [x] shadcn/ui component system with TailwindCSS
+
+> **2025-08 design pivot**: the original tabbed interface (Stack/Completed/Integrate)
+> was replaced by the Card Deck Experience — a decluttered playing-card metaphor.
+> Completed and Integrations are now views reached from the arc menu.
 
 #### Hierarchical Organization
 - [x] Substack creation and management
