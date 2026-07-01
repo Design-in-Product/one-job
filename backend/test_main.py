@@ -1,40 +1,15 @@
 """
 Basic tests for the One Job API
 Following TDD principles for domain-driven development
+
+Uses the `client` fixture from conftest.py, which provides a fresh
+in-memory database per test.
 """
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 
-from main import app, get_db, Base
 
-# Test database setup
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-def test_create_task():
+def test_create_task(client):
     """Test creating a new task"""
     response = client.post(
         "/tasks",
@@ -48,21 +23,21 @@ def test_create_task():
     assert data["completed"] == False
     assert data["sort_order"] == 1
 
-def test_get_tasks():
+def test_get_tasks(client):
     """Test retrieving tasks"""
     # Create a task first
     client.post(
         "/tasks",
         json={"title": "Another Task", "description": "Another test task"}
     )
-    
+
     response = client.get("/tasks")
     assert response.status_code == 200
     data = response.json()
     assert len(data) >= 1
     assert any(task["title"] == "Another Task" for task in data)
 
-def test_complete_task():
+def test_complete_task(client):
     """Test completing a task"""
     # Create a task
     create_response = client.post(
@@ -70,7 +45,7 @@ def test_complete_task():
         json={"title": "Task to Complete", "description": "Will be completed"}
     )
     task_id = create_response.json()["id"]
-    
+
     # Complete the task
     response = client.put(
         f"/tasks/{task_id}",
@@ -82,7 +57,7 @@ def test_complete_task():
     assert data["completed"] == True
     assert data["completed_at"] is not None
 
-def test_defer_task():
+def test_defer_task(client):
     """Test deferring a task"""
     # Create a task
     create_response = client.post(
@@ -90,7 +65,7 @@ def test_defer_task():
         json={"title": "Task to Defer", "description": "Will be deferred"}
     )
     task_id = create_response.json()["id"]
-    
+
     # Defer the task
     response = client.put(
         f"/tasks/{task_id}",
