@@ -11,24 +11,30 @@
     <meta property="og:description" content="See one task. Do one task. Feel accomplished.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onejob.co">
-    <meta property="og:image" content="https://onejob.co/one-job.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://onejob.co/og-image.png">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1260">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="One Job">
     <meta name="twitter:description" content="See one task. Do one task. Feel accomplished.">
-    <meta name="twitter:image" content="https://onejob.co/one-job.png">
+    <meta name="twitter:image" content="https://onejob.co/og-image.png">
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+                    },
                     colors: {
-                        'task-start': '#6366f1',
-                        'task-end': '#8b5cf6'
+                        'task-start': '#f35343',
+                        'task-end': '#E73C7E'
                     }
                 }
             }
@@ -39,6 +45,11 @@
     <!-- Hero Section -->
     <div class="max-w-4xl mx-auto px-4 py-16">
         <div class="text-center mb-16">
+            <div class="inline-flex items-center justify-center w-24 h-32 rounded-2xl bg-gradient-to-br from-task-start to-task-end shadow-lg mb-6 border-4 border-orange-50">
+                <div class="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center shadow">
+                    <span class="text-3xl font-extrabold bg-gradient-to-br from-task-start to-task-end text-transparent bg-clip-text">1</span>
+                </div>
+            </div>
             <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-task-start to-task-end text-transparent bg-clip-text mb-6">
                 One Job
             </h1>
@@ -61,10 +72,10 @@
             <div class="bg-white rounded-xl shadow-sm p-8 border">
                 <h2 class="text-2xl font-bold text-red-600 mb-4">😵 The Problem</h2>
                 <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><strong>47 browser tabs</strong> open, 3 todo apps, sticky notes everywhere</li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><strong>Context switching</strong> kills productivity (studies show 23 minutes to refocus!)</li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span>Traditional task lists create <strong>anxiety</strong>, not clarity</li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span>You spend more time <strong>organizing</strong> tasks than <strong>doing</strong> them</li>
+                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span><strong>47 browser tabs</strong> open, 3 todo apps, sticky notes everywhere</span></li>
+                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span><strong>Context switching</strong> kills productivity (studies show 23 minutes to refocus!)</span></li>
+                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span>Traditional task lists create <strong>anxiety</strong>, not clarity</span></li>
+                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span>You spend more time <strong>organizing</strong> tasks than <strong>doing</strong> them</span></li>
                 </ul>
             </div>
             
@@ -226,12 +237,12 @@
             <h2 class="text-3xl font-bold text-center mb-8">🎯 Project Status</h2>
             <div class="grid md:grid-cols-2 gap-8">
                 <div>
-                    <h3 class="text-xl font-semibold text-green-600 mb-4">✅ MVP Complete</h3>
-                    <p class="text-gray-700">Core task management with swipe gestures</p>
+                    <h3 class="text-xl font-semibold text-green-600 mb-4">✅ Available Now</h3>
+                    <p class="text-gray-700">Card Deck Experience: flip a card, do the task, swipe it away. Substacks, deferral, and instant sync included.</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold text-blue-600 mb-4">🚧 Coming Soon</h3>
-                    <p class="text-gray-700">Jira/Linear imports, team features, native mobile apps</p>
+                    <p class="text-gray-700">Jira/Linear/Todoist imports, team features, native mobile apps</p>
                 </div>
             </div>
         </div>

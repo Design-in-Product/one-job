@@ -6,10 +6,10 @@
 | Issue ID | Screenshot | Date | Priority | Category | Issue Description | Status | Notes |
 |----------|------------|------|----------|----------|-------------------|--------|-------|
 | ICON-001 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Branding | Favicon still shows Lovable logo instead of OneJob logo | Resolved 2026-07-01 | favicon.svg single-sourced in public/, linked from app + landing, deployed by workflow |
-| THEME-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Design | Coral theme not implemented on landing page | Open | Landing page still using old purple/mixed colors |
-| LOGO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Branding | OneJob logo missing from landing page | Open | Should show OneJob logo prominently |
-| TYPO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Typography | "The Problem" section has broken word spacing around bold text | Open | Spacing around bold words inconsistent |
-| TYPO-002 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Typography | Inter font not applied to landing page | Open | Landing page should use Inter typography from design system |
+| THEME-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Design | Coral theme not implemented on landing page | Resolved 2026-07-01 | Landing palette now #f35343→#E73C7E, matching the app |
+| LOGO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Branding | OneJob logo missing from landing page | Resolved 2026-07-01 | Card-back medallion logo added to hero |
+| TYPO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Typography | "The Problem" section has broken word spacing around bold text | Resolved 2026-07-01 | flex <li> split text runs into flex items, collapsing whitespace; copy now wrapped in a span |
+| TYPO-002 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Typography | Inter font not applied to landing page | Resolved 2026-07-01 | Inter loaded and set as the Tailwind sans stack |
 | DEMO-001 | 2025-08-05-07_02_24 | 2025-08-05 | Critical | UX | Demo mode banner not dismissible and unusable on mobile | Resolved 2025-08 | Banner collapses instead of disappearing (commit 1802342) |
 | DEMO-002 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Design | Demo mode banner not using coral theme colors | Resolved 2025-08 | Switched to blue banner deliberately (commit 977d653, documented in design system) |
 | ACCESS-001 | 2025-08-05-07_02_24 | 2025-08-05 | High | Accessibility | Inactive tab contrast too low for WCAG compliance | Obsolete | Tabs removed by Card Deck pivot |
