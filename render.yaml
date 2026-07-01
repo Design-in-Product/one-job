@@ -1,14 +1,15 @@
 services:
   - type: web
     name: one-job-api
-    runtime: python3
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     plan: free
     envVars:
       - key: DATABASE_URL
-        generateValue: true
-        type: database
+        fromDatabase:
+          name: one-job-db
+          property: connectionString
     autoDeploy: true
     branch: main
     rootDir: .

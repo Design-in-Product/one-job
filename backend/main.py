@@ -36,6 +36,11 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+# Managed Postgres providers (Render, Heroku) hand out postgres:// URLs,
+# a scheme SQLAlchemy 2.x no longer accepts.
+if settings.DATABASE_URL.startswith("postgres://"):
+    settings.DATABASE_URL = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # --- Database Setup ---
 # Handle SQLite vs PostgreSQL differences
 if settings.DATABASE_URL.startswith("sqlite"):
