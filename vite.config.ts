@@ -10,7 +10,9 @@ export default defineConfig(({ mode }) => ({
     outDir: 'app',
   },
   server: {
-    host: "::",
+    // Bind all interfaces (IPv4 + IPv6). The previous "::" was IPv6-only,
+    // which made the dev server unreachable from browsers hitting 127.0.0.1.
+    host: true,
     port: 8080,
   },
   plugins: [

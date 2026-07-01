@@ -8,12 +8,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface TaskFormProps {
   onAddTask: (task: Task) => void;
+  /** Open straight to the form (e.g. when hosted in a modal) */
+  defaultOpen?: boolean;
+  /** Called when the form is dismissed; lets a hosting modal close itself */
+  onCancel?: () => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onCancel }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(defaultOpen);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,10 +77,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
               >
                 Add Task
               </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => setIsFormOpen(false)}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsFormOpen(false);
+                  onCancel?.();
+                }}
                 className="flex-1"
               >
                 Cancel

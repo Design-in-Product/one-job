@@ -1,12 +1,23 @@
 // src/components/CardDeck.tsx
-// Card Deck Experience - Main component implementing the playing card metaphor
+// Card Deck Experience - the playing-card interface. Composes:
+//   CardBack (face-down design) + TaskCard (face-up content)
+//   FlipCard (3D flip)  + SwipeableCard (drag/fling gestures)
+// with a static deck underlay so the stack reads as a physical pile.
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Task } from '@/types/task';
 import TaskCard from './TaskCard';
 import TaskForm from './TaskForm';
+import CardBack from './CardBack';
+import FlipCard, { CARD_GEOMETRY, FlipPreset, randomFlipPreset } from './FlipCard';
+import SwipeableCard from './SwipeableCard';
 import LongPressMenu from './LongPressMenu';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+
+const FACE_DOWN_TIMEOUT_MS = 60000; // idle time before the card turns face-down
+const AUTO_REVEAL_DELAY_MS = 650;   // pause before the next card flips up after a swipe
+const LONG_PRESS_MS = 500;
 
 interface CardDeckProps {
   tasks: Task[];
@@ -32,94 +43,125 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onViewIntegrations
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [flipAnimation, setFlipAnimation] = useState<number>(0);
+  const [flipPreset, setFlipPreset] = useState<FlipPreset>('classic');
   const [showMenu, setShowMenu] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastActivityRef = useRef<number>(Date.now());
-
-  // Available flip animations (0-3 for random selection)
-  const flipAnimations = [
-    'flip-classic',    // Y-axis rotation
-    'flip-quick',      // Faster with bounce
-    'flip-smooth',     // Slower, deliberate
-    'flip-wave'        // Y-axis with X-axis tilt
-  ];
-
-  // Reset timeout on any activity
-  const resetTimeout = useCallback(() => {
-    lastActivityRef.current = Date.now();
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    // Only set timeout if card is face-up
-    if (isFlipped) {
-      timeoutRef.current = setTimeout(() => {
-        setIsFlipped(false);
-      }, 60000); // 1 minute
-    }
-  }, [isFlipped]);
-
-  // Auto-flip timeout effect
-  useEffect(() => {
-    resetTimeout();
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [resetTimeout]);
-
-  // Handle tap to flip
-  const handleCardTap = useCallback(() => {
-    if (!isFlipped && tasks.length > 0) {
-      // Random flip animation selection
-      setFlipAnimation(Math.floor(Math.random() * flipAnimations.length));
-      setIsFlipped(true);
-      setIsFirstLaunch(false);
-      resetTimeout();
-    }
-  }, [isFlipped, tasks.length, resetTimeout]);
-
-  // Handle swipe actions with auto-flip
-  const handleComplete = useCallback((taskId: string) => {
-    onComplete(taskId);
-    // Auto-flip to next task if available
-    setTimeout(() => {
-      if (tasks.length > 1) {
-        setFlipAnimation(Math.floor(Math.random() * flipAnimations.length));
-        setIsFlipped(true);
-        resetTimeout();
-      } else {
-        setIsFlipped(false);
-      }
-    }, 500);
-  }, [onComplete, tasks.length, resetTimeout]);
-
-  const handleDefer = useCallback((taskId: string) => {
-    onDefer(taskId);
-    // Auto-flip to next task
-    setTimeout(() => {
-      setFlipAnimation(Math.floor(Math.random() * flipAnimations.length));
-      setIsFlipped(true);
-      resetTimeout();
-    }, 500);
-  }, [onDefer, resetTimeout]);
-
-  // Handle long press for menu
-  const handleLongPress = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    setShowMenu(true);
-  }, []);
-
-  // Menu actions
-  const handleAddNewTask = () => {
-    setShowMenu(false);
-    // Will be handled by TaskForm in menu
-  };
+  // Incremented on every swipe so the active card remounts even when the
+  // same task stays on top (e.g. deferring the only remaining task).
+  const [deal, setDeal] = useState(0);
+  const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentTask = tasks[0];
+
+  // Idle timeout: face-up card turns back over after a minute of inactivity
+  useEffect(() => {
+    if (!isFlipped) return;
+    const idleTimeout = setTimeout(() => setIsFlipped(false), FACE_DOWN_TIMEOUT_MS);
+    return () => clearTimeout(idleTimeout);
+  }, [isFlipped, currentTask?.id]);
+
+  useEffect(() => () => {
+    if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+  }, []);
+
+  const reveal = useCallback(() => {
+    setFlipPreset(randomFlipPreset());
+    setIsFlipped(true);
+    setIsFirstLaunch(false);
+  }, []);
+
+  const handleCardTap = useCallback(() => {
+    if (!isFlipped && tasks.length > 0) reveal();
+  }, [isFlipped, tasks.length, reveal]);
+
+  // After a swipe: new top card mounts face-down, then auto-reveals.
+  // `remaining` is computed at call time from the pre-update task list,
+  // so there's no stale-closure race with the parent's state update.
+  const swipeAndRedeal = (remaining: number) => {
+    setIsFlipped(false);
+    setDeal(d => d + 1);
+    if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+    if (remaining > 0) {
+      revealTimeoutRef.current = setTimeout(reveal, AUTO_REVEAL_DELAY_MS);
+    }
+  };
+
+  const handleSwipeComplete = () => {
+    onComplete(currentTask.id);
+    swipeAndRedeal(tasks.length - 1);
+  };
+
+  const handleSwipeDefer = () => {
+    onDefer(currentTask.id);
+    swipeAndRedeal(tasks.length); // deferral keeps the task in the stack
+  };
+
+  // Long-press (pointer events cover mouse + touch); cancelled by movement
+  // so slow card drags don't pop the menu.
+  const handlePointerDown = (e: React.PointerEvent) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const timer = setTimeout(() => {
+      cleanup();
+      setShowMenu(true);
+    }, LONG_PRESS_MS);
+    const cancel = () => {
+      clearTimeout(timer);
+      cleanup();
+    };
+    const onMove = (ev: PointerEvent) => {
+      if (Math.abs(ev.clientX - startX) > 8 || Math.abs(ev.clientY - startY) > 8) cancel();
+    };
+    const cleanup = () => {
+      document.removeEventListener('pointerup', cancel);
+      document.removeEventListener('pointercancel', cancel);
+      document.removeEventListener('pointermove', onMove);
+    };
+    document.addEventListener('pointerup', cancel);
+    document.addEventListener('pointercancel', cancel);
+    document.addEventListener('pointermove', onMove);
+  };
+
+  const menu = (
+    <>
+      <LongPressMenu
+        isOpen={showMenu}
+        onClose={() => setShowMenu(false)}
+        onAddTask={() => {
+          setShowMenu(false);
+          setShowAddForm(true);
+        }}
+        onViewCompleted={() => {
+          setShowMenu(false);
+          onViewCompleted();
+        }}
+        onViewIntegrations={() => {
+          setShowMenu(false);
+          onViewIntegrations();
+        }}
+      />
+
+      {/* Add Task modal, reachable from the arc menu */}
+      {showAddForm && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+          onClick={() => setShowAddForm(false)}
+        >
+          <div className="w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <TaskForm
+              onAddTask={(task) => {
+                onAddTask(task);
+                setShowAddForm(false);
+              }}
+              defaultOpen
+              onCancel={() => setShowAddForm(false)}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 
   // Loading state
   if (loading) {
@@ -133,7 +175,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
     );
   }
 
-  // Error state  
+  // Error state
   if (error) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -148,150 +190,87 @@ const CardDeck: React.FC<CardDeckProps> = ({
   // Empty state
   if (tasks.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center px-6">
-        <div className="text-center">
-          {/* Dashed outline where card deck would be */}
-          <div 
-            className="w-72 h-96 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center mb-6 mx-auto relative"
-            onMouseDown={(e) => {
-              const longPressTimer = setTimeout(() => handleLongPress(e), 500);
-              const cleanup = () => clearTimeout(longPressTimer);
-              document.addEventListener('mouseup', cleanup, { once: true });
-            }}
-            onTouchStart={(e) => {
-              const longPressTimer = setTimeout(() => handleLongPress(e), 500);
-              const cleanup = () => clearTimeout(longPressTimer);
-              document.addEventListener('touchend', cleanup, { once: true });
-            }}
-          >
-            <div className="text-gray-400">
-              <h3 className="text-xl font-medium mb-2">You're all caught up! 🌟</h3>
-              <p className="text-muted-foreground mb-4">
-                What a wonderful feeling to have no pending tasks.
-              </p>
-              <TaskForm onAddTask={onAddTask} />
-            </div>
-          </div>
+      <div className="flex-1 flex items-center justify-center px-6" onPointerDown={handlePointerDown}>
+        <div
+          className={cn(
+            CARD_GEOMETRY,
+            'border-2 border-dashed border-gray-300 rounded-2xl',
+            'flex flex-col items-center justify-center text-center p-6'
+          )}
+        >
+          <h3 className="text-xl font-medium mb-2 text-gray-500">You're all caught up! 🌟</h3>
+          <p className="text-muted-foreground mb-4 text-sm">
+            What a wonderful feeling to have no pending tasks.
+          </p>
+          <TaskForm onAddTask={onAddTask} />
         </div>
-        
-        {/* Long press menu */}
-        <LongPressMenu
-          isOpen={showMenu}
-          onClose={() => setShowMenu(false)}
-          onAddTask={handleAddNewTask}
-          onViewCompleted={onViewCompleted}
-          onViewIntegrations={onViewIntegrations}
-        />
+        {menu}
       </div>
     );
   }
 
+  const underlayCount = Math.min(tasks.length - 1, 2);
+
   return (
     <div className="flex-1 relative">
-      {/* Main card deck area - takes 80-90% of viewport */}
-      <div 
+      <div
         className="absolute inset-4 flex items-center justify-center"
-        onMouseDown={(e) => {
-          const longPressTimer = setTimeout(() => handleLongPress(e), 500);
-          const cleanup = () => clearTimeout(longPressTimer);
-          document.addEventListener('mouseup', cleanup, { once: true });
-        }}
-        onTouchStart={(e) => {
-          const longPressTimer = setTimeout(() => handleLongPress(e), 500);
-          const cleanup = () => clearTimeout(longPressTimer);
-          document.addEventListener('touchend', cleanup, { once: true });
-        }}
+        onPointerDown={handlePointerDown}
       >
-        <AnimatePresence mode="wait">
-          {!isFlipped ? (
-            // Face-down deck
+        <div className={cn(CARD_GEOMETRY, 'relative')}>
+          {/* Deck underlay: the rest of the pile, always face-down */}
+          {underlayCount >= 2 && (
+            <div className="absolute inset-0 translate-y-3 scale-[0.94] pointer-events-none">
+              <CardBack />
+            </div>
+          )}
+          {underlayCount >= 1 && (
+            <div className="absolute inset-0 translate-y-1.5 scale-[0.97] pointer-events-none">
+              <CardBack />
+            </div>
+          )}
+
+          {/* Active card: flips to reveal, drags to complete/defer */}
+          <AnimatePresence>
             <motion.div
-              key="face-down"
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: 0 }}
-              exit={{ 
-                rotateY: flipAnimation === 0 ? 180 : 
-                        flipAnimation === 1 ? 270 :
-                        flipAnimation === 2 ? 180 :
-                        200, // wave effect
-                rotateX: flipAnimation === 3 ? 15 : 0
-              }}
-              transition={{ 
-                duration: flipAnimation === 1 ? 0.3 : flipAnimation === 2 ? 0.6 : 0.4,
-                ease: flipAnimation === 1 ? "easeOut" : "easeInOut"
-              }}
-              className="w-72 h-96 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl shadow-lg border-2 border-orange-200 cursor-pointer flex flex-col items-center justify-center relative"
-              onClick={handleCardTap}
+              key={`${currentTask.id}:${deal}`}
+              className="absolute inset-0"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.2, delay: 0.15 } }}
+              transition={{ duration: 0.25 }}
             >
-              {/* Card back design - centered content */}
-              <div className="flex flex-col items-center justify-center">
-                {/* Logo or icon */}
-                <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-                  <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-500 text-transparent bg-clip-text">
-                  One Job
-                </h2>
-                <p className="text-sm text-gray-500 mt-2">Tap to reveal your task</p>
-              </div>
-              
-              {/* Subtle pulse hint for first launch */}
-              {isFirstLaunch && (
-                <div className="absolute inset-0 rounded-xl border-2 border-orange-400 animate-pulse opacity-50" />
+              <SwipeableCard
+                disabled={!isFlipped}
+                onSwipeRight={handleSwipeComplete}
+                onSwipeLeft={handleSwipeDefer}
+                className="w-full h-full"
+              >
+                <FlipCard
+                  className="w-full h-full"
+                  isFlipped={isFlipped}
+                  preset={flipPreset}
+                  onTapBack={handleCardTap}
+                  back={<CardBack showHint />}
+                  front={
+                    <TaskCard
+                      task={currentTask}
+                      onClick={onCardClick}
+                      showHints
+                    />
+                  }
+                />
+              </SwipeableCard>
+
+              {/* Gentle pulse inviting the first tap */}
+              {isFirstLaunch && !isFlipped && (
+                <div className="absolute inset-0 rounded-2xl border-2 border-orange-300 animate-pulse pointer-events-none" />
               )}
             </motion.div>
-          ) : (
-            // Face-up card showing current task
-            <motion.div
-              key="face-up"
-              initial={{ 
-                rotateY: flipAnimation === 0 ? -180 : 
-                        flipAnimation === 1 ? -270 :
-                        flipAnimation === 2 ? -180 :
-                        -200,
-                rotateX: flipAnimation === 3 ? -15 : 0
-              }}
-              animate={{ rotateY: 0, rotateX: 0 }}
-              transition={{ 
-                duration: flipAnimation === 1 ? 0.3 : flipAnimation === 2 ? 0.6 : 0.4,
-                ease: flipAnimation === 1 ? "easeOut" : "easeInOut"
-              }}
-            >
-              <TaskCard
-                task={currentTask}
-                onSwipeRight={handleComplete}
-                onSwipeLeft={handleDefer}
-                onCardClick={(task) => {
-                  resetTimeout();
-                  onCardClick(task);
-                }}
-                isTop={true}
-                isFlipped={true}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
       </div>
-
-      {/* Long press menu */}
-      <LongPressMenu
-        isOpen={showMenu}
-        onClose={() => setShowMenu(false)}
-        onAddTask={() => {
-          setShowMenu(false);
-          // Trigger add task form - will be handled by menu component
-        }}
-        onViewCompleted={() => {
-          setShowMenu(false);
-          onViewCompleted();
-        }}
-        onViewIntegrations={() => {
-          setShowMenu(false);
-          onViewIntegrations();
-        }}
-      />
+      {menu}
     </div>
   );
 };

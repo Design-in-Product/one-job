@@ -13,7 +13,8 @@ interface TaskDetailsProps {
   onCreateSubstack: (taskId: string, name: string) => void;
   onOpenSubstack: (task: Task, substack: Substack) => void;
   // <--- NEW PROP: Function to send updates to the parent (Index.tsx)
-  onUpdateTask: (taskId: string, updates: { title?: string; description?: string }) => void;
+  /** Optional: substack views don't support editing yet */
+  onUpdateTask?: (taskId: string, updates: { title?: string; description?: string }) => void;
 }
 
 const TaskDetails: React.FC<TaskDetailsProps> = ({
@@ -51,7 +52,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const handleSave = () => {
     // Only send update if title or description have actually changed
     if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
-      onUpdateTask(task.id, {
+      onUpdateTask?.(task.id, {
         title: editedTitle,
         description: editedDescription
       });

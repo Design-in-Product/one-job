@@ -98,26 +98,6 @@ export default {
 						height: '0'
 					}
 				},
-				'swipe-right': {
-					from: {
-						transform: 'translateX(0) rotate(0)',
-						opacity: '1'
-					},
-					to: {
-						transform: 'translateX(150%) rotate(20deg)',
-						opacity: '0'
-					}
-				},
-				'swipe-left': {
-					from: {
-						transform: 'translateX(0) rotate(0)',
-						opacity: '1'
-					},
-					to: {
-						transform: 'translateX(-150%) rotate(-20deg)',
-						opacity: '0'
-					}
-				},
 				'slide-up': {
 					from: {
 						transform: 'translateY(20px)',
@@ -132,8 +112,6 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'swipe-right': 'swipe-right 0.5s forwards',
-				'swipe-left': 'swipe-left 0.5s forwards',
 				'slide-up': 'slide-up 0.3s ease-out'
 			}
 		}
