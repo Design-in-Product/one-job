@@ -174,12 +174,16 @@ find . -name "requirements.txt" -o -name "package.json" | xargs cat
    - **API Payloads**: Always verify frontend JSON matches backend Pydantic models
    - **Response Mapping**: Backend uses `status`, frontend uses `completed` boolean
 
-3. **Mobile-Optimized Component Hierarchy**:
+3. **Mobile-Optimized Component Hierarchy (Card Deck Experience)**:
 
-   - **TaskStack**: Displays single card with swipe gestures
-   - **TaskForm**: Quick task creation optimized for mobile
+   - **CardDeck**: Main interface — deck underlay, active card, long-press arc menu
+   - **FlipCard**: Two-sided 3D flip (perspective + backface-visibility); exports shared `CARD_GEOMETRY`
+   - **SwipeableCard**: Framer Motion drag wrapper (finger tracking, tilt, Done/Later hints, fling)
+   - **CardBack / TaskCard**: Presentational faces (playing-card back / task content)
+   - **LongPressMenu**: Arc menu (Add Task / Completed / Integrations / Settings)
+   - **TaskForm**: Quick task creation (inline in empty state, modal from arc menu)
    - **TaskDetails**: Modal for editing with substacks
-   - **SubstackView**: Nested navigation for hierarchical tasks
+   - **SubstackView / TaskStack**: Nested navigation, built on the same SwipeableCard + TaskCard pieces
 
 4. **Hierarchical Task Organization**:
    - **Main Tasks**: Persisted to backend via API
@@ -513,7 +517,8 @@ source venv/bin/activate
 python -m uvicorn main:app --reload --port 8000
 
 # Frontend (from /Users/xian/Development/one-job)
-npm run dev  # Auto-selects available port (usually 8081)
+npm run dev  # Port 8080; binds IPv4+IPv6 (vite.config.ts host: true —
+             # the old "::" was IPv6-only, making the server unreachable)
 ```
 
 **Known Working State:**
@@ -649,7 +654,42 @@ Based on recent commits and project status:
 
 **Key Insight**: The verification-first methodology prevented the deferral bug from becoming a multi-hour debugging session. Systematic pattern discovery is the foundation of our velocity.
 
-## CURRENT SESSION STATUS (Updated 2025-08-02)
+## CURRENT SESSION STATUS (Updated 2026-07-01)
+
+### Card Deck Experience: mechanics rebuilt and verified
+
+The presentation-layer defects that stalled the 2025-08 pivot are fixed:
+
+- **True 3D flip**: `FlipCard` is a single two-sided rotator (perspective +
+  backface-visibility). The four flip variations are transition presets on one
+  rotation — no more parallel animation systems.
+- **Finger-tracking drag**: `SwipeableCard` uses Framer Motion `drag="x"`;
+  the old `TaskCard` had corrupted transform strings (pasted KaTeX HTML) so
+  cards never followed the finger, and its swipe-out keyframes were never
+  emitted by Tailwind (inline `animation:` doesn't trigger keyframe emission).
+- **Unified geometry**: every face shares `CARD_GEOMETRY` from FlipCard.tsx;
+  the card back is a designed playing-card back (`CardBack`).
+- **Add Task** is reachable from the arc menu (modal TaskForm).
+- **Dev server fix**: vite `host: "::"` was IPv6-only — the cause of the
+  2025-08-06 "server unreachable" blocker. Now `host: true`.
+- **Watch out**: containers styled `max-w-md mx-auto` inside a flex column
+  have no intrinsic width once children are `w-full` — keep the explicit
+  `w-full` on the app shell in Index.tsx.
+
+Verification now includes driving the app with Playwright
+(`chromium` + mobile viewport) — screenshots beat guessing for gesture work.
+
+### Production pipeline state
+
+- `npm run build` also syncs demo.html's hashed bundle references
+  (scripts/sync-demo-assets.mjs) — never hand-edit them again.
+- `app/` build output and `backend/venv` / `*.db` / `.env` are untracked.
+- Pages deploy reads `VITE_API_URL` from a repo Actions variable; unset ⇒
+  demo mode. Set it after the Render backend deploy to go live.
+- render.yaml links DATABASE_URL via `fromDatabase`; backend normalizes
+  `postgres://` → `postgresql://` for SQLAlchemy 2.
+
+## PREVIOUS SESSION STATUS (2025-08-02)
 
 ### Recent Breakthroughs Achieved
 

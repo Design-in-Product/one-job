@@ -31,8 +31,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Set the VITE_API_URL repository variable (Settings → Secrets and
+      # variables → Actions → Variables) once the backend is deployed;
+      # while unset, the app ships in demo mode.
       - name: Build
         run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Create deployment directory
         run: |
@@ -40,9 +45,11 @@ jobs:
           cp landing-page.html deploy/index.html
           cp demo.html deploy/
           cp -r app deploy/
-          cp -r assets deploy/ 2>/dev/null || true
-          cp favicon.ico deploy/ 2>/dev/null || true
+          cp public/favicon.svg deploy/ 2>/dev/null || true
+          cp favicon-onejob.svg deploy/ 2>/dev/null || true
+          cp logo-onejob.svg deploy/ 2>/dev/null || true
           cp one-job.png deploy/ 2>/dev/null || true
+          cp one-job.svg deploy/ 2>/dev/null || true
           cp robots.txt deploy/ 2>/dev/null || true
           cp placeholder.svg deploy/ 2>/dev/null || true
           cp CNAME deploy/ 2>/dev/null || true

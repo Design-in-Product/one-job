@@ -1,19 +1,22 @@
 # One Job UI/UX Issues Tracking
 
+> **Re-triaged 2026-07-01** after the Card Deck Experience mechanics rebuild.
+> "Obsolete" = the tabbed UI element the issue referred to no longer exists.
+
 | Issue ID | Screenshot | Date | Priority | Category | Issue Description | Status | Notes |
 |----------|------------|------|----------|----------|-------------------|--------|-------|
-| ICON-001 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Branding | Favicon still shows Lovable logo instead of OneJob logo | Open | Need OneJob logo (card stack with "1") |
+| ICON-001 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Branding | Favicon still shows Lovable logo instead of OneJob logo | Resolved 2026-07-01 | favicon.svg single-sourced in public/, linked from app + landing, deployed by workflow |
 | THEME-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Design | Coral theme not implemented on landing page | Open | Landing page still using old purple/mixed colors |
 | LOGO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Branding | OneJob logo missing from landing page | Open | Should show OneJob logo prominently |
 | TYPO-001 | 2025-08-05-06_50_55 | 2025-08-05 | High | Typography | "The Problem" section has broken word spacing around bold text | Open | Spacing around bold words inconsistent |
 | TYPO-002 | 2025-08-05-06_50_55 | 2025-08-05 | Medium | Typography | Inter font not applied to landing page | Open | Landing page should use Inter typography from design system |
-| DEMO-001 | 2025-08-05-07_02_24 | 2025-08-05 | Critical | UX | Demo mode banner not dismissible and unusable on mobile | Open | Takes up too much space, needs dismiss option |
-| DEMO-002 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Design | Demo mode banner not using coral theme colors | Open | Should use coral palette contrast colors |
-| ACCESS-001 | 2025-08-05-07_02_24 | 2025-08-05 | High | Accessibility | Inactive tab contrast too low for WCAG compliance | Open | "Completed (3)" and "Integrate" tabs need better contrast |
-| LOGO-002 | 2025-08-05-07_02_24 | 2025-08-05 | High | Branding | OneJob logo missing from app header | Open | Should show logo in app interface |
-| ADD-BTN-001 | 2025-08-05-07_02_24 | 2025-08-05 | Critical | UX | "Add New Task" button cut off at bottom of screen | Open | Button must be fully visible and accessible |
-| ANIM-001 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Animation | Flash/flicker when swiping left (defer action) | Open | Need to investigate animation behavior |
-| TYPO-003 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Typography | Need to verify Inter font applied throughout app | Open | Check if all text using Inter typography |
+| DEMO-001 | 2025-08-05-07_02_24 | 2025-08-05 | Critical | UX | Demo mode banner not dismissible and unusable on mobile | Resolved 2025-08 | Banner collapses instead of disappearing (commit 1802342) |
+| DEMO-002 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Design | Demo mode banner not using coral theme colors | Resolved 2025-08 | Switched to blue banner deliberately (commit 977d653, documented in design system) |
+| ACCESS-001 | 2025-08-05-07_02_24 | 2025-08-05 | High | Accessibility | Inactive tab contrast too low for WCAG compliance | Obsolete | Tabs removed by Card Deck pivot |
+| LOGO-002 | 2025-08-05-07_02_24 | 2025-08-05 | High | Branding | OneJob logo missing from app header | Obsolete | Card Deck spec removes header chrome; logo lives on the card back |
+| ADD-BTN-001 | 2025-08-05-07_02_24 | 2025-08-05 | Critical | UX | "Add New Task" button cut off at bottom of screen | Resolved 2026-07-01 | Add Task now a modal from the arc menu; empty-state form sits inside the card outline |
+| ANIM-001 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Animation | Flash/flicker when swiping left (defer action) | Resolved 2026-07-01 | SwipeableCard rebuild: cards track the finger and fling off-screen (verified via Playwright) |
+| TYPO-003 | 2025-08-05-07_02_24 | 2025-08-05 | Medium | Typography | Need to verify Inter font applied throughout app | Open | Inter is loaded and set as --font-family-primary; needs a visual pass on real device |
 
 ## Screenshot Analysis: 2025-08-05-06_50_55.png
 
