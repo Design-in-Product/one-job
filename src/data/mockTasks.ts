@@ -16,6 +16,7 @@ export const mockTasks: Task[] = [
       {
         id: uuidv4(),
         name: "Backend fixes",
+        createdAt: new Date(),
         tasks: [
           {
             id: uuidv4(),
@@ -70,6 +71,7 @@ export const mockTasks: Task[] = [
       {
         id: uuidv4(),
         name: "Shopping list",
+        createdAt: new Date(),
         tasks: [
           {
             id: uuidv4(),

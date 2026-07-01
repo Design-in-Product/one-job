@@ -158,7 +158,8 @@ export class DemoService {
     const newSubstack: Substack = {
       id: uuidv4(),
       name,
-      tasks: []
+      tasks: [],
+      createdAt: new Date()
     };
 
     if (!task.substacks) {

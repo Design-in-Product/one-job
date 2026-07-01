@@ -6,10 +6,12 @@ export interface Task {
   title: string;
   description?: string;
   completed: boolean;
-  status: string;
+  /** Backend-assigned ('todo' | 'done'); absent on client-created tasks until persisted */
+  status?: string;
   createdAt: Date;
   completedAt?: Date;
   deferredAt?: Date;
+  deferralCount?: number;
   sortOrder?: number; // <--- ADDED THIS LINE
   source?: string;
   externalId?: string;
