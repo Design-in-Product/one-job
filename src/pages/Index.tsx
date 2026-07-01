@@ -73,7 +73,6 @@ const Index = () => {
         // Use demo service instead of API
         const demoService = DemoService.getInstance();
         frontendTasks = await demoService.getAllTasks();
-        console.log("Demo Mode - Fetched Tasks:", frontendTasks);
       } else {
         // Use real API
         const response = await fetch(`${API_BASE_URL}/tasks`);
@@ -85,8 +84,6 @@ const Index = () => {
         const backendData: any[] = await response.json();
         frontendTasks = backendData.map(mapBackendTaskToFrontendTask);
         
-        console.log("Fetched Backend Data (raw):", backendData);
-        console.log("Transformed Frontend Tasks:", frontendTasks);
       }
 
       setTasks(frontendTasks);
@@ -107,20 +104,22 @@ const Index = () => {
   // --- NEW: handleUpdateTask function to send PUT request for title/description ---
   const handleUpdateTask = async (taskId: string, updates: { title?: string; description?: string }) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+      if (isDemoMode) {
+        const demoService = DemoService.getInstance();
+        await demoService.updateTask(taskId, updates);
+      } else {
+        const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updates),
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
-
-      const updatedTask = await response.json();
-      console.log("Task updated in backend:", updatedTask);
       toast.success('Task updated!');
       refreshTasks();
       setIsTaskDetailsOpen(false);
@@ -140,7 +139,6 @@ const Index = () => {
           // Use demo service
           const demoService = DemoService.getInstance();
           const addedTask = await demoService.createTask(newTask.title, newTask.description);
-          console.log("Demo Mode - Task added:", addedTask);
           toast.success(demoService.getDemoMessage('taskAdded'));
         } else {
           // Use real API
@@ -160,7 +158,6 @@ const Index = () => {
           }
 
           const addedTask = await response.json();
-          console.log("Task added to backend:", addedTask);
           toast.success('Task added!');
         }
         refreshTasks();
@@ -242,7 +239,6 @@ const Index = () => {
           // Use demo service
           const demoService = DemoService.getInstance();
           await demoService.updateTask(taskId, { completed: true, status: 'done' });
-          console.log("Demo Mode - Task completed:", taskId);
           toast.success(demoService.getDemoMessage('taskCompleted'));
         } else {
           // Use real API
@@ -259,7 +255,6 @@ const Index = () => {
           }
 
           const updatedTask = await response.json();
-          console.log("Task completed in backend:", updatedTask);
           toast.success('Task completed!');
         }
         refreshTasks();
@@ -315,7 +310,6 @@ const Index = () => {
           // Use demo service
           const demoService = DemoService.getInstance();
           await demoService.updateTask(taskId, { status: 'todo' }); // This triggers deferral logic in demo service
-          console.log("Demo Mode - Task deferred:", taskId);
           toast.info(demoService.getDemoMessage('taskDeferred'));
         } else {
           // Use real API
@@ -332,7 +326,6 @@ const Index = () => {
           }
 
           const updatedTask = await response.json();
-          console.log("Task deferred in backend:", updatedTask);
           toast.info('Task moved to the bottom of stack!');
         }
         refreshTasks();
@@ -351,21 +344,25 @@ const Index = () => {
   const handleCreateSubstack = async (taskId: string, name: string) => {
     setIsCreatingSubstack(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/tasks/${taskId}/substacks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name }),
-      });
+      if (isDemoMode) {
+        const demoService = DemoService.getInstance();
+        await demoService.createSubstack(taskId, name);
+        toast.success(demoService.getDemoMessage('substackCreated'));
+      } else {
+        const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/substacks`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        toast.success(`Substack "${name}" created!`);
       }
-
-      const newSubstack = await response.json();
-      console.log("Substack created in backend:", newSubstack);
-      toast.success(`Substack "${name}" created!`);
       
       // Refresh tasks to get the updated task with substacks
       await refreshTasks();
