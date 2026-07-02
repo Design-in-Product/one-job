@@ -1,0 +1,82 @@
+# Cowork Agent Brief: One Job iOS — first device build + TestFlight
+
+**From**: Coral (One Job repo agent)
+**For**: any Cowork agent operating Xian's Mac
+**Goal**: get One Job running on Xian's iPhone via Xcode, then archive and
+upload to TestFlight.
+**Prereqs on the Mac**: Xcode installed and signed into Xian's Apple
+Developer account (Xcode → Settings → Accounts); Node 20+.
+
+Everything web-side is already built and verified. Your job is the parts
+that require macOS + Apple signing. Work top to bottom; each phase has a
+checkpoint.
+
+## Phase 1 — Clone and build (10 min)
+
+```bash
+git clone https://github.com/Design-in-Product/one-job.git
+cd one-job
+npm install
+npm run build:native     # → dist-native/ (verified working bundle)
+npx cap sync ios
+npx cap open ios         # opens ios/App in Xcode
+```
+
+**Checkpoint**: Xcode opens the App workspace without red errors.
+(SPM package resolution may take a minute on first open.)
+
+## Phase 2 — Signing (5 min)
+
+In Xcode, select the **App** target → **Signing & Capabilities**:
+1. Check "Automatically manage signing".
+2. Team: select Xian's developer team.
+3. Bundle Identifier: `co.onejob.app` (confirmed by Xian — do not change).
+   Xcode will register the App ID with the portal automatically.
+
+**Checkpoint**: "Signing Certificate: Apple Development" shows with no
+warnings.
+
+## Phase 3 — Run on device (10 min)
+
+1. Connect Xian's iPhone via cable (or same-network wireless debugging).
+2. Select the phone as the run destination; press Run (⌘R).
+3. First run: the phone will ask to trust the developer profile
+   (Settings → General → VPN & Device Management).
+
+**Verify on the phone** (all of these are expected to work):
+- App launches to the coral splash, then the deck (or empty state)
+- Add a task (long-press → Add Task, or empty-state form)
+- Tap deck → card flips; swipe right completes **with a haptic thunk**;
+  swipe left defers
+- Kill the app, relaunch: tasks persist
+- Airplane mode: everything still works
+
+If any of these fail, stop and report back to Xian/Coral with a screen
+recording — do not improvise fixes in the native project.
+
+## Phase 4 — Archive → TestFlight (15 min + Apple processing)
+
+1. In Xcode set the run destination to "Any iOS Device (arm64)".
+2. Product → Archive.
+3. Organizer opens → Distribute App → App Store Connect → Upload
+   (accept defaults; automatic signing).
+4. If prompted that the app record doesn't exist: create it in
+   App Store Connect first (appstoreconnect.apple.com → My Apps → "+" →
+   New App → platform iOS, name **One Job**, bundle id `co.onejob.app`,
+   SKU `onejob-ios-1`, language English).
+5. When the build finishes processing (~15–30 min, email arrives), enable
+   it for internal TestFlight testing and add Xian as a tester.
+
+**Checkpoint**: Xian gets the TestFlight invite on his phone.
+
+## Notes for the store listing (later, not this session)
+
+All listing copy, screenshots, and privacy answers are pre-drafted in
+`store/LISTING.md` and `store/screenshots/` in the repo. Privacy policy is
+live at https://onejob.co/privacy.html. Apple privacy label: **Data Not
+Collected**.
+
+## Report back
+
+Post results (and any deviations) to Xian; Coral will fold them into the
+coral log and fix anything web-side that surfaced.
