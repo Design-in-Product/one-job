@@ -5,6 +5,7 @@
 import { Task, Substack } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
+import { mirrorToNativeStorage } from './nativeStorageBridge';
 
 export class LocalTaskStore implements TaskStore {
   protected tasks: Task[] = [];
@@ -37,7 +38,9 @@ export class LocalTaskStore implements TaskStore {
   }
 
   protected saveTasks() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
+    const serialized = JSON.stringify(this.tasks);
+    localStorage.setItem(this.storageKey, serialized);
+    mirrorToNativeStorage(this.storageKey, serialized);
   }
 
   private sortTasks(tasks: Task[]): Task[] {
