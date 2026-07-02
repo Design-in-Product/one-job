@@ -76,6 +76,21 @@ All listing copy, screenshots, and privacy answers are pre-drafted in
 live at https://onejob.co/privacy.html. Apple privacy label: **Data Not
 Collected**.
 
+## Optional addendum — Android keystore (5 min, same Mac)
+
+If Xian asks you to handle the Android keystore too:
+
+```bash
+brew install --cask temurin        # keytool needs a real JDK (macOS ships a stub)
+cd one-job
+bash scripts/make-android-keystore.sh
+```
+The script prompts for a password (generate a strong one, save it to
+Xian's password manager) and prints the three GitHub secrets to add at
+github.com/Design-in-Product/one-job → Settings → Secrets and variables →
+Actions. Add them (or hand the values to Xian to add). Do NOT commit the
+keystore; it is gitignored.
+
 ## Report back
 
 Post results (and any deviations) to Xian; Coral will fold them into the

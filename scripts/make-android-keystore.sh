@@ -13,6 +13,13 @@
 
 set -euo pipefail
 
+# macOS ships a Java stub that errors at runtime, so probe keytool for real
+if ! keytool -help >/dev/null 2>&1; then
+  echo "keytool needs a Java runtime and none is installed." >&2
+  echo "On macOS: brew install --cask temurin   (then rerun this script)" >&2
+  exit 1
+fi
+
 KEYSTORE="onejob-upload.keystore"
 ALIAS="onejob-upload"
 
