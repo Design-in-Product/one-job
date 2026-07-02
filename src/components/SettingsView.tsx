@@ -151,6 +151,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
           </>
         )}
       </section>
+
+      <p className="text-center text-xs text-gray-400">One Job v{__APP_VERSION__}</p>
     </div>
   );
 };

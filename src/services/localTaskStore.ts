@@ -7,6 +7,20 @@ import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
 
+// Revive Date fields on a task and its nested substacks after JSON parsing
+// (localStorage loads and backup imports both carry dates as strings).
+const reviveTask = (t: Task): Task => ({
+  ...t,
+  createdAt: new Date(t.createdAt),
+  completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
+  deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
+  substacks: t.substacks?.map(s => ({
+    ...s,
+    createdAt: new Date(s.createdAt),
+    tasks: s.tasks.map(reviveTask)
+  }))
+});
+
 export class LocalTaskStore implements TaskStore {
   protected tasks: Task[] = [];
 
@@ -22,12 +36,7 @@ export class LocalTaskStore implements TaskStore {
     const saved = localStorage.getItem(this.storageKey);
     if (saved) {
       try {
-        this.tasks = JSON.parse(saved);
-        this.tasks.forEach(task => {
-          task.createdAt = new Date(task.createdAt);
-          if (task.completedAt) task.completedAt = new Date(task.completedAt);
-          if (task.deferredAt) task.deferredAt = new Date(task.deferredAt);
-        });
+        this.tasks = (JSON.parse(saved) as Task[]).map(reviveTask);
         return;
       } catch {
         console.warn(`Failed to load tasks from localStorage key "${this.storageKey}", reseeding`);
@@ -164,19 +173,6 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async importTasks(tasks: Task[]): Promise<void> {
-    // Revive dates on tasks and nested substack tasks; imported JSON
-    // carries them as strings.
-    const reviveTask = (t: Task): Task => ({
-      ...t,
-      createdAt: new Date(t.createdAt),
-      completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
-      deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
-      substacks: t.substacks?.map(s => ({
-        ...s,
-        createdAt: new Date(s.createdAt),
-        tasks: s.tasks.map(reviveTask)
-      }))
-    });
     this.tasks = tasks.map(reviveTask);
     this.saveTasks();
   }

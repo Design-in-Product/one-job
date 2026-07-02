@@ -209,6 +209,9 @@ const CardDeck: React.FC<CardDeckProps> = ({
             What a wonderful feeling to have no pending tasks.
           </p>
           <TaskForm onAddTask={onAddTask} />
+          <p className="mt-4 text-xs text-gray-400">
+            Tasks stay on this device — back up anytime from Settings (hold anywhere).
+          </p>
         </div>
         {menu}
       </div>

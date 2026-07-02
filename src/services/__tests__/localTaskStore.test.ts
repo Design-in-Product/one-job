@@ -1,0 +1,174 @@
+// Tests for the local-first persistence layer — the store that holds real
+// user data on-device. RED ZONE per CLAUDE.md: task state, ordering, and
+// deferral logic must be covered.
+
+import { describe, it, expect, beforeEach } from 'vitest';
+import { LocalTaskStore } from '../localTaskStore';
+import { Task } from '@/types/task';
+
+const KEY = 'testTasks';
+
+const freshStore = () => new LocalTaskStore(KEY);
+
+beforeEach(() => {
+  localStorage.clear();
+});
+
+describe('LocalTaskStore basics', () => {
+  it('starts empty without seed tasks', async () => {
+    expect(await freshStore().getAllTasks()).toEqual([]);
+  });
+
+  it('seeds only when storage is empty', async () => {
+    const seed: Task[] = [{
+      id: 's1', title: 'Seeded', completed: false, createdAt: new Date(), sortOrder: 1
+    }];
+    const seeded = new LocalTaskStore(KEY, seed);
+    expect((await seeded.getAllTasks()).map(t => t.title)).toEqual(['Seeded']);
+
+    // A second instance with a different seed must respect stored data
+    const second = new LocalTaskStore(KEY, [{ ...seed[0], id: 's2', title: 'Other' }]);
+    expect((await second.getAllTasks()).map(t => t.title)).toEqual(['Seeded']);
+  });
+
+  it('creates tasks with sequential sort order', async () => {
+    const store = freshStore();
+    const a = await store.createTask('A');
+    const b = await store.createTask('B');
+    expect(a.sortOrder).toBe(1);
+    expect(b.sortOrder).toBe(2);
+    expect(a.status).toBe('todo');
+    expect(a.completed).toBe(false);
+  });
+
+  it('persists across store instances (cold start)', async () => {
+    await freshStore().createTask('Survives', 'a description');
+    const tasks = await freshStore().getAllTasks();
+    expect(tasks).toHaveLength(1);
+    expect(tasks[0].title).toBe('Survives');
+    expect(tasks[0].description).toBe('a description');
+    expect(tasks[0].createdAt).toBeInstanceOf(Date);
+  });
+
+  it('recovers from corrupt storage by reseeding', async () => {
+    localStorage.setItem(KEY, '{not json');
+    const store = new LocalTaskStore(KEY, []);
+    expect(await store.getAllTasks()).toEqual([]);
+    // and storage is now valid again
+    expect(() => JSON.parse(localStorage.getItem(KEY)!)).not.toThrow();
+  });
+
+  it('keeps stores with different keys isolated', async () => {
+    await new LocalTaskStore('keyA').createTask('A-task');
+    const b = new LocalTaskStore('keyB');
+    expect(await b.getAllTasks()).toEqual([]);
+  });
+});
+
+describe('completion and deferral', () => {
+  it('completeTask sets status, completed flag, and timestamp', async () => {
+    const store = freshStore();
+    const t = await store.createTask('Do me');
+    const done = await store.completeTask(t.id);
+    expect(done.completed).toBe(true);
+    expect(done.status).toBe('done');
+    expect(done.completedAt).toBeInstanceOf(Date);
+  });
+
+  it('deferTask moves the task to the bottom and counts deferrals', async () => {
+    const store = freshStore();
+    const first = await store.createTask('First');
+    await store.createTask('Second');
+    await store.createTask('Third');
+
+    const deferred = await store.deferTask(first.id);
+    expect(deferred.deferralCount).toBe(1);
+    expect(deferred.deferredAt).toBeInstanceOf(Date);
+    expect(deferred.status ?? 'todo').toBe('todo');
+
+    const order = (await store.getAllTasks()).map(t => t.title);
+    expect(order).toEqual(['Second', 'Third', 'First']);
+
+    await store.deferTask(first.id);
+    expect((await store.getAllTasks()).find(t => t.title === 'First')!.deferralCount).toBe(2);
+  });
+
+  it('sorts active by sortOrder and completed by completion date desc, active first', async () => {
+    const store = freshStore();
+    const a = await store.createTask('A');
+    const b = await store.createTask('B');
+    await store.createTask('C');
+
+    await store.completeTask(a.id);
+    // ensure distinct timestamps
+    await new Promise(r => setTimeout(r, 5));
+    await store.completeTask(b.id);
+
+    const tasks = await store.getAllTasks();
+    expect(tasks.map(t => t.title)).toEqual(['C', 'B', 'A']);
+  });
+
+  it('throws on unknown task ids', async () => {
+    await expect(freshStore().completeTask('nope')).rejects.toThrow('Task not found');
+  });
+});
+
+describe('substacks', () => {
+  it('creates substacks and persists their tasks through completion', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Parent');
+    const sub = await store.createSubstack(parent.id, 'Steps');
+    expect(sub.name).toBe('Steps');
+
+    const st = await store.addSubstackTask(sub.id, 'Step one', 'details');
+    await store.completeSubstackTask(st.id);
+
+    // cold start: everything survived
+    const reloaded = (await freshStore().getAllTasks())[0];
+    expect(reloaded.substacks).toHaveLength(1);
+    expect(reloaded.substacks![0].tasks).toHaveLength(1);
+    expect(reloaded.substacks![0].tasks[0].completed).toBe(true);
+    expect(reloaded.substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+  });
+
+  it('throws when the substack does not exist', async () => {
+    await expect(freshStore().addSubstackTask('nope', 'x')).rejects.toThrow('Substack not found');
+  });
+});
+
+describe('backup import (restore path)', () => {
+  it('replaces tasks and revives dates, including nested substack tasks', async () => {
+    const store = freshStore();
+    await store.createTask('Will be replaced');
+
+    // Simulate a parsed JSON backup: dates are strings
+    const backup = JSON.parse(JSON.stringify([{
+      id: 'r1',
+      title: 'Restored',
+      completed: false,
+      createdAt: '2026-01-15T10:00:00.000Z',
+      sortOrder: 1,
+      substacks: [{
+        id: 'sub1',
+        name: 'Restored sub',
+        createdAt: '2026-01-16T10:00:00.000Z',
+        tasks: [{
+          id: 'st1', title: 'Sub task', completed: true,
+          createdAt: '2026-01-17T10:00:00.000Z',
+          completedAt: '2026-01-18T10:00:00.000Z', sortOrder: 1
+        }]
+      }]
+    }]));
+
+    await store.importTasks(backup);
+    const tasks = await store.getAllTasks();
+    expect(tasks).toHaveLength(1);
+    expect(tasks[0].title).toBe('Restored');
+    expect(tasks[0].createdAt).toBeInstanceOf(Date);
+    expect(tasks[0].substacks![0].createdAt).toBeInstanceOf(Date);
+    expect(tasks[0].substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+
+    // and the round trip survives a cold start
+    expect((await freshStore().getAllTasks())[0].title).toBe('Restored');
+  });
+});
