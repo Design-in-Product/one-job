@@ -21,6 +21,7 @@ import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
 import TaskIntegration from '@/components/TaskIntegration';
 import TaskDetails from '@/components/TaskDetails';
+import SettingsView from '@/components/SettingsView';
 import SubstackView from '@/components/SubstackView';
 import { Task, Substack } from '@/types/task';
 import { toast } from '@/components/ui/sonner';
@@ -42,7 +43,7 @@ const Index = () => {
     substack: Substack;
   } | null>(null);
   const [isCreatingSubstack, setIsCreatingSubstack] = useState(false);
-  const [currentView, setCurrentView] = useState<'main' | 'completed' | 'integrate'>('main');
+  const [currentView, setCurrentView] = useState<'main' | 'completed' | 'integrate' | 'settings'>('main');
 
   // --- NEW: refreshTasks function ---
   const refreshTasks = useCallback(async () => {
@@ -348,6 +349,7 @@ const Index = () => {
                 onAddTask={handleAddTask}
                 onViewCompleted={() => setCurrentView('completed')}
                 onViewIntegrations={() => setCurrentView('integrate')}
+                onViewSettings={() => setCurrentView('settings')}
               />
             )}
             
@@ -365,6 +367,20 @@ const Index = () => {
               </div>
             )}
             
+            {currentView === 'settings' && (
+              <div className="flex flex-col flex-1">
+                <div className="p-4">
+                  <button
+                    onClick={() => setCurrentView('main')}
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ← Back to Tasks
+                  </button>
+                </div>
+                <SettingsView onDataImported={refreshTasks} />
+              </div>
+            )}
+
             {currentView === 'integrate' && (
               <div className="flex flex-col flex-1">
                 <div className="p-4">

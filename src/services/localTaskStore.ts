@@ -160,6 +160,24 @@ export class LocalTaskStore implements TaskStore {
     throw new Error('Substack task not found');
   }
 
+  async importTasks(tasks: Task[]): Promise<void> {
+    // Revive dates on tasks and nested substack tasks; imported JSON
+    // carries them as strings.
+    const reviveTask = (t: Task): Task => ({
+      ...t,
+      createdAt: new Date(t.createdAt),
+      completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
+      deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
+      substacks: t.substacks?.map(s => ({
+        ...s,
+        createdAt: new Date(s.createdAt),
+        tasks: s.tasks.map(reviveTask)
+      }))
+    });
+    this.tasks = tasks.map(reviveTask);
+    this.saveTasks();
+  }
+
   /** Wipe this store's data (used by the demo reset) */
   protected reset(seedTasks: Task[]) {
     localStorage.removeItem(this.storageKey);

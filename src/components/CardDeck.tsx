@@ -29,6 +29,7 @@ interface CardDeckProps {
   onAddTask: (task: Task) => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
+  onViewSettings: () => void;
 }
 
 const CardDeck: React.FC<CardDeckProps> = ({
@@ -40,7 +41,8 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onCardClick,
   onAddTask,
   onViewCompleted,
-  onViewIntegrations
+  onViewIntegrations,
+  onViewSettings
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [flipPreset, setFlipPreset] = useState<FlipPreset>('classic');
@@ -139,6 +141,10 @@ const CardDeck: React.FC<CardDeckProps> = ({
         onViewIntegrations={() => {
           setShowMenu(false);
           onViewIntegrations();
+        }}
+        onSettings={() => {
+          setShowMenu(false);
+          onViewSettings();
         }}
       />
 
