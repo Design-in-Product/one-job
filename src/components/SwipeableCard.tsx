@@ -7,6 +7,14 @@ import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { Check, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Capacitor } from '@capacitor/core';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+
+// A physical thunk when a swipe commits — native builds only.
+const hapticImpact = () => {
+  if (!Capacitor.isNativePlatform()) return;
+  void Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
+};
 
 const SWIPE_DISTANCE = 100; // px of drag that commits a swipe
 const SWIPE_VELOCITY = 500; // px/s of release velocity that commits a swipe
@@ -51,9 +59,11 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       offset.x < -SWIPE_DISTANCE || (offset.x < -30 && velocity.x < -SWIPE_VELOCITY);
 
     if (commitRight) {
+      hapticImpact();
       setExitX(window.innerWidth * 1.2);
       onSwipeRight();
     } else if (commitLeft) {
+      hapticImpact();
       setExitX(-window.innerWidth * 1.2);
       onSwipeLeft();
     }

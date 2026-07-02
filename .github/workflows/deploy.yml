@@ -44,6 +44,7 @@ jobs:
           mkdir -p deploy
           cp landing-page.html deploy/index.html
           cp demo.html deploy/
+          cp privacy.html deploy/ 2>/dev/null || true
           cp -r app deploy/
           cp public/favicon.svg deploy/ 2>/dev/null || true
           cp og-image.png deploy/ 2>/dev/null || true

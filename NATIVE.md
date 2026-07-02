@@ -75,13 +75,26 @@ the live PWA; updates ship with the website. Requires serving
 `/.well-known/assetlinks.json` on onejob.co (PWABuilder provides it; add to
 the Pages deploy).
 
-## What's intentionally NOT done yet
+## Done since the first draft of this runbook
 
-- Haptics on swipe (waiting for Apple-review need or taste decision)
-- 1024px app icon render + full icon set generation
-  (`npx @capacitor/assets generate` once a 1024 source is added)
-- CI workflow for signed Android builds
-- Store listing copy/screenshots
+- ✅ Haptics: medium impact fires on swipe commit (SwipeableCard), native
+  only — feel it in the first TestFlight build
+- ✅ Full icon/splash sets generated into both scaffolds (masters in
+  `resources/`, HTML sources in `scripts/`; @capacitor/assets couldn't
+  install in the sandbox, so sizes are rendered via the browser pipeline)
+- ✅ CI: `.github/workflows/android-build.yml` (manual trigger) builds a
+  sideloadable debug APK as a workflow artifact — no local Android SDK
+  needed to try the shell
+- ✅ Store listing copy drafted (`store/LISTING.md`) + screenshots at
+  6.7"/5.5"/Android sizes (`store/screenshots/`)
+- ✅ Privacy policy: `privacy.html` → onejob.co/privacy.html (deployed by
+  Pages workflow); "Data Not Collected" posture
+
+## Still open
+
+- Release signing: Android keystore creation + Play Console; iOS
+  certificates via Xcode
+- 1.0 version stamp before archive (android/app/build.gradle + Xcode)
 
 ## Version bumps
 
