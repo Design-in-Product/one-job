@@ -101,7 +101,13 @@ One Job is a mobile-first task management application built with domain-driven d
 
 ### FR4: Data Persistence and API
 
-#### FR4.1 Backend API
+#### FR4.0 Local-First Storage (1.0)
+- **FR4.0.1** Tasks SHALL persist on-device by default with no backend dependency
+- **FR4.0.2** All persistence SHALL flow through the TaskStore interface (local, demo, remote)
+- **FR4.0.3** The remote (API) store SHALL activate only when explicitly configured (VITE_API_URL or ?remote)
+- **FR4.0.4** The app SHALL be installable as a PWA and function offline
+
+#### FR4.1 Backend API (optional in 1.0; required for integrations/sync)
 - **FR4.1.1** System SHALL provide RESTful API for all operations
 - **FR4.1.2** API SHALL follow OpenAPI 3.0 specification
 - **FR4.1.3** All changes SHALL be persisted immediately to database

@@ -228,6 +228,8 @@ origins = [
     "http://localhost:8080",  # Frontend URL
     "http://127.0.0.1:8080",  # Alternative frontend URL
     "http://localhost:5173",  # Vite default port
+    "http://localhost:4173",  # Vite preview
+    "http://127.0.0.1:4173",  # Vite preview
     "https://onejob.co",      # Production domain
     "https://www.onejob.co",  # Production www domain
     "https://design-in-product.github.io",  # GitHub Pages domain

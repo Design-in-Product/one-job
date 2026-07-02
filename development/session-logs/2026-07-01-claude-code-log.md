@@ -48,3 +48,20 @@
   (Procfile/railway.json/nixpacks.toml)
 - Next Session: production cutover + mobile QA checklist; Phase 2 spec features
   (expanded detail view) if desired
+
+---
+## Session #2 (2026-07-02): Local-first 1.0 + PWA
+
+- Direction set: 1.0 = works for one person (Xian) on a phone, no backend
+  unless a third-party task source is configured
+- TaskStore seam: LocalTaskStore (default) / DemoService (seeded local) /
+  ApiTaskStore (VITE_API_URL or ?remote); Index.tsx fully rewired, all
+  fetch branches gone
+- Substack tasks now persist (local + remote via existing endpoints)
+- PWA: vite-plugin-pwa autoUpdate, card-medallion icons, offline verified
+- Also: website refresh (coral, Inter, hero logo, TYPO-001 flex fix),
+  og-image.png social banner, dead code sweep, merged to main
+- Verified via Playwright: local empty-start, persistence across reload,
+  SW + manifest, offline reload, demo isolation, remote round-trip
+- Gotcha discovered: merging the untracking commit deleted working-tree
+  copies of formerly tracked files (backend/onejob.db) — dev data only
