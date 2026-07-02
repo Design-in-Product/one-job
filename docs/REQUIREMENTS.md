@@ -315,6 +315,10 @@ One Job is a mobile-first task management application built with domain-driven d
 - [ ] **Multi-user data isolation**
 - [ ] **Team and workspace support**
 
+#### Localization (added 2026-07-02)
+- [ ] **App i18n pass** (externalize strings; en first, es/fr/de candidates)
+- [ ] **Localized store listings** (App Store + Play, after app i18n)
+
 #### Advanced Integrations
 - [ ] **Real-time sync with external services**
 - [ ] **Bi-directional task synchronization**

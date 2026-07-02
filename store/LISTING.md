@@ -6,12 +6,15 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 ## Identity
 
 - **App name**: One Job
-- **Bundle/package id**: co.onejob.app  ← CONFIRM before first upload (hard to change later)
+- **Bundle/package id**: co.onejob.app  (confirmed by Xian 2026-07-02)
 - **Category**: Productivity
 - **Price**: Free
 - **Privacy policy URL**: https://onejob.co/privacy.html
 - **Support URL**: https://onejob.co
 - **Marketing URL**: https://onejob.co
+
+> Listing copy approved by Xian 2026-07-02. Localization of the app and
+> then the listings is on the post-1.0 roadmap.
 
 ## App Store subtitle (30 chars max)
 
