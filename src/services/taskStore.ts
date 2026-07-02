@@ -23,6 +23,11 @@ export interface TaskStore {
   createSubstack(taskId: string, name: string): Promise<Substack>;
   addSubstackTask(substackId: string, title: string, description?: string): Promise<Task>;
   completeSubstackTask(id: string): Promise<Task>;
+  /**
+   * Replace all tasks with an imported backup. Absent on stores that
+   * don't own their data (the API store) — the UI disables import there.
+   */
+  importTasks?(tasks: Task[]): Promise<void>;
 }
 
 let store: TaskStore | null = null;

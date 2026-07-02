@@ -65,3 +65,6 @@
   SW + manifest, offline reload, demo isolation, remote round-trip
 - Gotcha discovered: merging the untracking commit deleted working-tree
   copies of formerly tracked files (backend/onejob.db) — dev data only
+- Settings view shipped: arc-menu Settings button now opens a real view
+  with storage-mode indicator and JSON export/import backup (local +
+  demo; remote is export-only). Verified export→wipe→import round-trip.
