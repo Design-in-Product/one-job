@@ -65,7 +65,7 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
           ))
           .reverse()}
 
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           <motion.div
             key={`${topTask.id}:${deal}`}
             className="absolute inset-0"

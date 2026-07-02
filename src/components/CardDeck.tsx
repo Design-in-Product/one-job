@@ -237,7 +237,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
           )}
 
           {/* Active card: flips to reveal, drags to complete/defer */}
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             <motion.div
               key={`${currentTask.id}:${deal}`}
               className="absolute inset-0"

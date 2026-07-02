@@ -293,8 +293,8 @@ const Index = () => {
 
   if (currentSubstack) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
-        <div className="w-full max-w-md mx-auto flex flex-col h-screen">
+      <div className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
+        <div className="w-full max-w-md mx-auto flex flex-col h-app-screen">
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
@@ -332,9 +332,9 @@ const Index = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
+        className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
       >
-        <div className="w-full max-w-md mx-auto flex flex-col h-screen">
+        <div className="w-full max-w-md mx-auto flex flex-col h-app-screen">
 
           {/* Card Deck Experience - Single View */}
           <div className="flex flex-col flex-1">

@@ -68,3 +68,8 @@
 - Settings view shipped: arc-menu Settings button now opens a real view
   with storage-mode indicator and JSON export/import backup (local +
   demo; remote is export-only). Verified export→wipe→import round-trip.
+- First real-device feedback (Xian): two nitpicks fixed — (1) vertical
+  drift from 100vh counting the collapsed URL bar → .h-app-screen /
+  .min-h-app-screen (dvh with vh fallback); (2) duplicate card-back
+  flash on mount → AnimatePresence initial={false} so the first card
+  renders instantly instead of cross-fading over the deck underlay.

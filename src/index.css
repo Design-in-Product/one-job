@@ -606,4 +606,17 @@
 
   /* Card flip animations live in FlipCard.tsx as Framer Motion transition
    * presets (classic/quick/smooth/wave) on a single 3D rotation. */
+
+  /* App shell height: 100vh overshoots on mobile browsers (the collapsing
+   * URL bar is counted), pushing the card off-center. Dynamic viewport
+   * units track the *visible* height; the vh line is the fallback for
+   * browsers without dvh support. */
+  .h-app-screen {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .min-h-app-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
