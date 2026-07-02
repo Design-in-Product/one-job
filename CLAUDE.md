@@ -436,7 +436,11 @@ grep -r "mobile\|responsive" src/ --include="*"
 
 #### First Session of Each Day
 
-1. **Create new session log**: `development/session-logs/YYYY-MM-DD-claude-code-log.md`
+1. **Create new session log**: `development/coral-logs/YYYY-MM-DD-coral-log.md`
+   (canonical since 2026-07-02; the older `development/session-logs/` files
+   are the historical record. Coral logs feed the Design in Product
+   cross-pollination briefing sweep — include an "Innovations worth
+   cross-pollinating" section.)
 2. **Include standard header**:
    - Session start time and timezone
    - Git status and recent commits
