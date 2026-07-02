@@ -6,9 +6,12 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/app/' : '/',
+  // 'capacitor' mode builds the native (app store) bundle: relative asset
+  // paths for the WebView's local files, separate output dir, no service
+  // worker (assets are already on-device).
+  base: mode === 'production' ? '/app/' : mode === 'capacitor' ? './' : '/',
   build: {
-    outDir: 'app',
+    outDir: mode === 'capacitor' ? 'dist-native' : 'app',
   },
   server: {
     // Bind all interfaces (IPv4 + IPv6). The previous "::" was IPv6-only,
@@ -20,6 +23,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'development' &&
     componentTagger(),
+    mode !== 'capacitor' &&
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "icons/apple-touch-icon.png"],
