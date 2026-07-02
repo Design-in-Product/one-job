@@ -1,15 +1,25 @@
 // API Configuration
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
-// Check if we're running in production (GitHub Pages)
-export const isProduction = window.location.hostname === 'onejob.co' || 
-                           window.location.hostname === 'www.onejob.co' ||
-                           window.location.hostname.includes('github.io');
+export type StorageMode = 'demo' | 'local' | 'remote';
 
-// Demo mode - enable when:
-// 1. In production without API URL, OR
-// 2. Explicitly enabled via URL parameter, OR  
-// 3. Explicitly enabled via environment variable
-export const isDemoMode = isProduction && !import.meta.env.VITE_API_URL ||
-                         new URLSearchParams(window.location.search).has('demo') ||
-                         import.meta.env.VITE_DEMO_MODE === 'true';
+const params = new URLSearchParams(window.location.search);
+
+/**
+ * One Job is local-first: tasks live on the device by default.
+ *
+ * - 'demo':   seeded, sandboxed local store — demo.html, ?demo, or VITE_DEMO_MODE
+ * - 'remote': FastAPI backend — only when VITE_API_URL is baked into the build
+ *             (or ?remote during development, e.g. http://localhost:8080/?remote)
+ * - 'local':  everything else (the default)
+ */
+export const storageMode: StorageMode =
+  params.has('demo') ||
+  window.location.pathname.endsWith('/demo.html') ||
+  import.meta.env.VITE_DEMO_MODE === 'true'
+    ? 'demo'
+    : import.meta.env.VITE_API_URL || params.has('remote')
+      ? 'remote'
+      : 'local';
+
+export const isDemoMode = storageMode === 'demo';

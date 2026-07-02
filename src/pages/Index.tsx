@@ -25,28 +25,10 @@ import SubstackView from '@/components/SubstackView';
 import { Task, Substack } from '@/types/task';
 import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
-import { v4 as uuidv4 } from 'uuid';
-import { API_BASE_URL, isDemoMode } from '@/config';
+import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
+import { getTaskStore } from '@/services/taskStore';
 
-
-// Helper function to convert backend's task format to frontend's Task interface
-const mapBackendTaskToFrontendTask = (backendTask: any): Task => {
-  return {
-    id: backendTask.id,
-    title: backendTask.title,
-    description: backendTask.description,
-    completed: backendTask.completed,
-    status: backendTask.status,
-    createdAt: new Date(backendTask.created_at),
-    completedAt: backendTask.completed_at ? new Date(backendTask.completed_at) : undefined,
-    deferredAt: backendTask.deferred_at ? new Date(backendTask.deferred_at) : undefined,
-    sortOrder: backendTask.sort_order,
-    source: backendTask.source,
-    externalId: backendTask.external_id,
-    substacks: backendTask.substacks || []
-  };
-};
 
 const Index = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -67,26 +49,7 @@ const Index = () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      let frontendTasks: Task[];
-      
-      if (isDemoMode) {
-        // Use demo service instead of API
-        const demoService = DemoService.getInstance();
-        frontendTasks = await demoService.getAllTasks();
-      } else {
-        // Use real API
-        const response = await fetch(`${API_BASE_URL}/tasks`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const backendData: any[] = await response.json();
-        frontendTasks = backendData.map(mapBackendTaskToFrontendTask);
-        
-      }
-
-      setTasks(frontendTasks);
+      setTasks(await getTaskStore().getAllTasks());
     } catch (err) {
       console.error("Could not fetch tasks:", err);
       setError((err as Error).message);
@@ -104,22 +67,7 @@ const Index = () => {
   // --- NEW: handleUpdateTask function to send PUT request for title/description ---
   const handleUpdateTask = async (taskId: string, updates: { title?: string; description?: string }) => {
     try {
-      if (isDemoMode) {
-        const demoService = DemoService.getInstance();
-        await demoService.updateTask(taskId, updates);
-      } else {
-        const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updates),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-      }
+      await getTaskStore().updateTask(taskId, updates);
       toast.success('Task updated!');
       refreshTasks();
       setIsTaskDetailsOpen(false);
@@ -135,59 +83,48 @@ const Index = () => {
   const handleAddTask = async (newTask: Task) => {
     if (!currentSubstack) {
       try {
-        if (isDemoMode) {
-          // Use demo service
-          const demoService = DemoService.getInstance();
-          const addedTask = await demoService.createTask(newTask.title, newTask.description);
-          toast.success(demoService.getDemoMessage('taskAdded'));
-        } else {
-          // Use real API
-          const response = await fetch(`${API_BASE_URL}/tasks`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: newTask.title,
-              description: newTask.description,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const addedTask = await response.json();
-          toast.success('Task added!');
-        }
+        await getTaskStore().createTask(newTask.title, newTask.description);
+        toast.success(isDemoMode
+          ? DemoService.getInstance().getDemoMessage('taskAdded')
+          : 'Task added!');
         refreshTasks();
       } catch (err) {
         console.error("Failed to add task:", err);
         toast.error(`Failed to add task: ${(err as Error).message}`);
       }
     } else {
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
-          task.id === currentSubstack.parentTask.id
-            ? {
-                ...task,
-                substacks: task.substacks?.map(sub =>
-                  sub.id === currentSubstack.substack.id
-                    ? { ...sub, tasks: [newTask, ...sub.tasks] }
-                    : sub
-                ) || []
-              }
-            : task
-        )
-      );
-      setCurrentSubstack(prev => prev ? {
-        ...prev,
-        substack: {
-          ...prev.substack,
-          tasks: [newTask, ...prev.substack.tasks]
-        }
-      } : null);
-      toast.success('Task added to substack (local only)');
+      try {
+        const addedTask = await getTaskStore().addSubstackTask(
+          currentSubstack.substack.id,
+          newTask.title,
+          newTask.description
+        );
+        setTasks(prevTasks =>
+          prevTasks.map(task =>
+            task.id === currentSubstack.parentTask.id
+              ? {
+                  ...task,
+                  substacks: task.substacks?.map(sub =>
+                    sub.id === currentSubstack.substack.id
+                      ? { ...sub, tasks: [...sub.tasks, addedTask] }
+                      : sub
+                  ) || []
+                }
+              : task
+          )
+        );
+        setCurrentSubstack(prev => prev ? {
+          ...prev,
+          substack: {
+            ...prev.substack,
+            tasks: [...prev.substack.tasks, addedTask]
+          }
+        } : null);
+        toast.success('Task added to substack');
+      } catch (err) {
+        console.error("Failed to add substack task:", err);
+        toast.error(`Failed to add task: ${(err as Error).message}`);
+      }
     }
   };
 
@@ -232,31 +169,19 @@ const Index = () => {
           )
         }
       } : null);
-      toast.success('Substack task completed (local only)!');
+      try {
+        await getTaskStore().completeSubstackTask(taskId);
+        toast.success('Substack task completed!');
+      } catch (err) {
+        console.error("Failed to persist substack task completion:", err);
+        toast.error(`Failed to complete task: ${(err as Error).message}`);
+      }
     } else {
       try {
-        if (isDemoMode) {
-          // Use demo service
-          const demoService = DemoService.getInstance();
-          await demoService.updateTask(taskId, { completed: true, status: 'done' });
-          toast.success(demoService.getDemoMessage('taskCompleted'));
-        } else {
-          // Use real API
-          const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status: 'done' }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const updatedTask = await response.json();
-          toast.success('Task completed!');
-        }
+        await getTaskStore().completeTask(taskId);
+        toast.success(isDemoMode
+          ? DemoService.getInstance().getDemoMessage('taskCompleted')
+          : 'Task completed!');
         refreshTasks();
       } catch (err) {
         console.error("Failed to complete task:", err);
@@ -303,31 +228,13 @@ const Index = () => {
           }
         };
       });
-      toast.info('Substack task moved to the bottom (local only)!');
+      toast.info('Substack task moved to the bottom!');
     } else {
       try {
-        if (isDemoMode) {
-          // Use demo service
-          const demoService = DemoService.getInstance();
-          await demoService.updateTask(taskId, { status: 'todo' }); // This triggers deferral logic in demo service
-          toast.info(demoService.getDemoMessage('taskDeferred'));
-        } else {
-          // Use real API
-          const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ is_deferral: true }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const updatedTask = await response.json();
-          toast.info('Task moved to the bottom of stack!');
-        }
+        await getTaskStore().deferTask(taskId);
+        toast.info(isDemoMode
+          ? DemoService.getInstance().getDemoMessage('taskDeferred')
+          : 'Task moved to the bottom of stack!');
         refreshTasks();
       } catch (err) {
         console.error("Failed to defer task:", err);
@@ -344,25 +251,10 @@ const Index = () => {
   const handleCreateSubstack = async (taskId: string, name: string) => {
     setIsCreatingSubstack(true);
     try {
-      if (isDemoMode) {
-        const demoService = DemoService.getInstance();
-        await demoService.createSubstack(taskId, name);
-        toast.success(demoService.getDemoMessage('substackCreated'));
-      } else {
-        const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/substacks`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        toast.success(`Substack "${name}" created!`);
-      }
+      await getTaskStore().createSubstack(taskId, name);
+      toast.success(isDemoMode
+        ? DemoService.getInstance().getDemoMessage('substackCreated')
+        : `Substack "${name}" created!`);
       
       // Refresh tasks to get the updated task with substacks
       await refreshTasks();

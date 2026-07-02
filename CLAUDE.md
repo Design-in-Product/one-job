@@ -654,7 +654,32 @@ Based on recent commits and project status:
 
 **Key Insight**: The verification-first methodology prevented the deferral bug from becoming a multi-hour debugging session. Systematic pattern discovery is the foundation of our velocity.
 
-## CURRENT SESSION STATUS (Updated 2026-07-01)
+## CURRENT SESSION STATUS (Updated 2026-07-02)
+
+### 1.0 direction: local-first PWA
+
+One Job is now **local-first**: tasks live on the device (localStorage) and no
+backend is required unless explicitly configured. The persistence seam is
+`src/services/taskStore.ts` (TaskStore interface):
+
+- **LocalTaskStore** — default; key `oneJobTasks`
+- **DemoService** — LocalTaskStore + seed data + playful messages; key
+  `oneJobDemoTasks` (demo.html, `?demo`, or VITE_DEMO_MODE)
+- **ApiTaskStore** — FastAPI backend; only when `VITE_API_URL` is baked into
+  the build, or `?remote` during development
+
+All UI goes through `getTaskStore()` — future adapters (Todoist, Jira, MCP)
+plug in at this interface. Substack tasks now persist in local AND remote
+modes (remote uses POST /substacks/{id}/tasks + PUT /substack-tasks/{id}).
+
+The app is an installable PWA (vite-plugin-pwa, autoUpdate): manifest +
+card-medallion icons + service worker; verified offline reload. Install from
+onejob.co/app/ via "Add to Home Screen."
+
+Dev note: `npm run dev` now runs in local mode by default — append `?remote`
+to hit a local FastAPI backend at 127.0.0.1:8000.
+
+## PREVIOUS SESSION STATUS (2026-07-01)
 
 ### Card Deck Experience: mechanics rebuilt and verified
 
