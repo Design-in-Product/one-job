@@ -30,7 +30,8 @@ npx cap open ios         # opens ios/App in Xcode
 In Xcode, select the **App** target → **Signing & Capabilities**:
 1. Check "Automatically manage signing".
 2. Team: select Xian's developer team.
-3. Bundle Identifier: `co.onejob.app` (confirmed by Xian — do not change).
+3. Bundle Identifier: `co.onejob.deck` (renamed 2026-07-03 after co.onejob.app
+   was burned by the free-team trap below — do not change again).
    Xcode will register the App ID with the portal automatically.
 
 **Checkpoint**: "Signing Certificate: Apple Development" shows with no
@@ -70,7 +71,7 @@ recording — do not improvise fixes in the native project.
    (accept defaults; automatic signing).
 4. If prompted that the app record doesn't exist: create it in
    App Store Connect first (appstoreconnect.apple.com → My Apps → "+" →
-   New App → platform iOS, name **One Job**, bundle id `co.onejob.app`,
+   New App → platform iOS, name **One Job**, bundle id `co.onejob.deck`,
    SKU `onejob-ios-1`, language English).
 5. When the build finishes processing (~15–30 min, email arrives), enable
    it for internal TestFlight testing and add Xian as a tester.

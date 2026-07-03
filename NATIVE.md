@@ -10,7 +10,7 @@ here so Xian or a Cowork agent can run them.
 - `npm run build:native` → `dist-native/` — the native bundle: relative
   asset paths, hash routing (no server in a WebView), **no** service worker
   (assets ship inside the app).
-- `capacitor.config.ts` — appId `co.onejob.app`, webDir `dist-native`.
+- `capacitor.config.ts` — appId `co.onejob.deck`, webDir `dist-native`.
 - `android/`, `ios/` — generated Capacitor projects (committed; regenerate
   with `npx cap add <platform>` if ever deleted).
 - **Storage durability**: `src/services/nativeStorageBridge.ts` mirrors
@@ -37,7 +37,7 @@ npx cap open ios       # opens ios/App in Xcode
 
 In Xcode:
 1. App target → Signing & Capabilities → select the team; bundle id
-   `co.onejob.app` (register it in the developer portal if prompted).
+   `co.onejob.deck` (register it in the developer portal if prompted).
 2. App icons: drag the 1024px icon into Assets.xcassets/AppIcon
    (regenerate from `scripts/og-image.html`'s medallion styling or
    `public/icons/icon-512.png` upscaled; a proper 1024 source lives in
@@ -92,15 +92,20 @@ the Pages deploy).
 
 ## Still open
 
-- **BUNDLEID-BLOCKED (2026-07-03)**: co.onejob.app was auto-registered to
-  the free Personal Team during the first on-device run; the paid team
-  can't register it. Fix: Apple Developer Support release request
-  (developer.apple.com/contact, ~1 business day) — reference the paid
-  team name and the identifier — or wait ~7 days for the free
-  provisioning to lapse (often frees the ID). Do NOT change the bundle id.
 - Release signing: Android keystore creation + Play Console
-- iOS Phase 4 (Archive → TestFlight) resumes once the identifier is
-  registrable under the paid team
+- iOS Phase 4 (Archive → TestFlight): ready to resume under the renamed
+  id `co.onejob.deck` — ensure the PAID team is selected before any
+  device run (see the trap note below)
+
+## BUNDLEID history (resolved by rename, 2026-07-03)
+
+`co.onejob.app` was auto-registered to the free Personal Team during the
+first on-device run (automatic signing + wrong team); bundle ids are
+globally unique and free-team App IDs are invisible/undeletable in the
+portal, so the paid team couldn't register it. Since nothing had shipped,
+Xian chose to abandon it and rename to `co.onejob.deck` rather than wait
+on an Apple support ticket. The abandoned id stays reserved to the
+personal team, harmlessly.
 
 ## Version bumps
 
