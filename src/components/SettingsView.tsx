@@ -9,6 +9,7 @@ import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { toast } from '@/components/ui/sonner';
 import { Download, Upload, Smartphone, Cloud, FlaskConical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const BACKUP_VERSION = 1;
 
@@ -17,30 +18,15 @@ interface SettingsViewProps {
   onDataImported: () => void;
 }
 
-const MODE_INFO = {
-  local: {
-    icon: Smartphone,
-    label: 'On this device',
-    description: 'Tasks are stored locally in this browser. Nothing leaves your phone — export a backup now and then.'
-  },
-  demo: {
-    icon: FlaskConical,
-    label: 'Demo sandbox',
-    description: 'You are in the demo. Tasks live in a separate sandbox and never touch your real data.'
-  },
-  remote: {
-    icon: Cloud,
-    label: 'Backend sync',
-    description: 'Tasks are stored on your configured One Job server. Import from file is disabled in this mode.'
-  }
-} as const;
+// Icons per storage mode; labels/descriptions live in the locale files
+const MODE_ICONS = { local: Smartphone, demo: FlaskConical, remote: Cloud } as const;
 
 const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingImport, setPendingImport] = useState<Task[] | null>(null);
 
-  const mode = MODE_INFO[storageMode];
-  const ModeIcon = mode.icon;
+  const ModeIcon = MODE_ICONS[storageMode];
   const canImport = !!getTaskStore().importTasks;
 
   const handleExport = async () => {
@@ -59,9 +45,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
       a.download = `onejob-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success(`Exported ${tasks.length} task${tasks.length === 1 ? '' : 's'}`);
+      toast.success(t('settings.exported', { count: tasks.length }));
     } catch (err) {
-      toast.error(`Export failed: ${(err as Error).message}`);
+      toast.error(t('settings.exportFailed', { message: (err as Error).message }));
     }
   };
 
@@ -72,11 +58,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     try {
       const parsed = JSON.parse(await file.text());
       if (parsed?.app !== 'one-job' || !Array.isArray(parsed.tasks)) {
-        throw new Error('Not a One Job backup file');
+        throw new Error(t('settings.notABackup'));
       }
       setPendingImport(parsed.tasks);
     } catch (err) {
-      toast.error(`Could not read backup: ${(err as Error).message}`);
+      toast.error(t('settings.readFailed', { message: (err as Error).message }));
     }
   };
 
@@ -84,17 +70,17 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     if (!pendingImport) return;
     try {
       await getTaskStore().importTasks!(pendingImport);
-      toast.success(`Restored ${pendingImport.length} task${pendingImport.length === 1 ? '' : 's'} from backup`);
+      toast.success(t('settings.restored', { count: pendingImport.length }));
       setPendingImport(null);
       onDataImported();
     } catch (err) {
-      toast.error(`Import failed: ${(err as Error).message}`);
+      toast.error(t('settings.importFailed', { message: (err as Error).message }));
     }
   };
 
   return (
     <div className="px-4 pb-6 space-y-6">
-      <h2 className="text-xl font-bold text-gray-800">Settings</h2>
+      <h2 className="text-xl font-bold text-gray-800">{t('settings.title')}</h2>
 
       {/* Storage mode */}
       <section className="bg-white rounded-xl shadow p-4">
@@ -103,18 +89,20 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
             <ModeIcon className="w-5 h-5 text-taskGradient-start" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800">Storage: {mode.label}</h3>
+            <h3 className="font-semibold text-gray-800">
+              {t('settings.storageTitle', { mode: t(`settings.mode.${storageMode}.label`) })}
+            </h3>
           </div>
         </div>
-        <p className="text-sm text-gray-600">{mode.description}</p>
+        <p className="text-sm text-gray-600">{t(`settings.mode.${storageMode}.description`)}</p>
       </section>
 
       {/* Backup */}
       <section className="bg-white rounded-xl shadow p-4 space-y-3">
-        <h3 className="font-semibold text-gray-800">Backup</h3>
+        <h3 className="font-semibold text-gray-800">{t('settings.backup')}</h3>
         <Button onClick={handleExport} className="w-full justify-start gap-2" variant="outline">
           <Download className="w-4 h-4" />
-          Export tasks to file
+          {t('settings.export')}
         </Button>
 
         {canImport && (
@@ -125,7 +113,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
               variant="outline"
             >
               <Upload className="w-4 h-4" />
-              Import backup...
+              {t('settings.import')}
             </Button>
             <input
               ref={fileInputRef}
@@ -137,13 +125,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
             {pendingImport && (
               <div className="border border-amber-300 bg-amber-50 rounded-lg p-3 text-sm space-y-2">
                 <p className="text-amber-800">
-                  Replace your current tasks with <strong>{pendingImport.length}</strong> task
-                  {pendingImport.length === 1 ? '' : 's'} from this backup? This cannot be undone.
+                  {t('settings.importConfirm', { count: pendingImport.length })}
                 </p>
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={confirmImport}>Replace tasks</Button>
+                  <Button size="sm" onClick={confirmImport}>{t('settings.replace')}</Button>
                   <Button size="sm" variant="outline" onClick={() => setPendingImport(null)}>
-                    Cancel
+                    {t('settings.cancel')}
                   </Button>
                 </div>
               </div>
@@ -152,7 +139,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         )}
       </section>
 
-      <p className="text-center text-xs text-gray-400">One Job v{__APP_VERSION__}</p>
+      <p className="text-center text-xs text-gray-400">{t('settings.version', { version: __APP_VERSION__ })}</p>
     </div>
   );
 };

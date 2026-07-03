@@ -15,6 +15,7 @@ import LongPressMenu from './LongPressMenu';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const FACE_DOWN_TIMEOUT_MS = 60000; // idle time before the card turns face-down
 const AUTO_REVEAL_DELAY_MS = 650;   // pause before the next card flips up after a swipe
@@ -45,6 +46,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onViewIntegrations,
   onViewSettings
 }) => {
+  const { t } = useTranslation();
   const [isFlipped, setIsFlipped] = useState(false);
   const [flipPreset, setFlipPreset] = useState<FlipPreset>('classic');
   const [showMenu, setShowMenu] = useState(false);
@@ -133,7 +135,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
           2025-08 decluttering pivot); long-press arc menu remains too. */}
       <button
         onClick={() => setShowAddForm(true)}
-        aria-label="Add a new task"
+        aria-label={t('deck.addAria')}
         className={cn(
           'fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full',
           'bg-gradient-to-br from-taskGradient-start to-taskGradient-end',
@@ -194,7 +196,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your tasks...</p>
+          <p className="text-muted-foreground">{t('deck.loading')}</p>
         </div>
       </div>
     );
@@ -205,7 +207,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-red-500 p-4">
-          <p className="font-medium mb-2">Oops! Something went wrong</p>
+          <p className="font-medium mb-2">{t('deck.errorTitle')}</p>
           <p className="text-sm text-muted-foreground">{error}</p>
         </div>
       </div>
@@ -223,13 +225,13 @@ const CardDeck: React.FC<CardDeckProps> = ({
             'flex flex-col items-center justify-center text-center p-6'
           )}
         >
-          <h3 className="text-xl font-medium mb-2 text-gray-500">You're all caught up! 🌟</h3>
+          <h3 className="text-xl font-medium mb-2 text-gray-500">{t('deck.emptyTitle')}</h3>
           <p className="text-muted-foreground mb-4 text-sm">
-            What a wonderful feeling to have no pending tasks.
+            {t('deck.emptyBody')}
           </p>
           <TaskForm onAddTask={onAddTask} />
           <p className="mt-4 text-xs text-gray-400">
-            Tasks stay on this device — back up anytime from Settings (hold anywhere).
+            {t('deck.emptyHint')}
           </p>
         </div>
         {menu}

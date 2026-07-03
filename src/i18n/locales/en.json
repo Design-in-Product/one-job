@@ -1,0 +1,158 @@
+{
+  "translation": {
+    "deck": {
+      "loading": "Loading your tasks...",
+      "errorTitle": "Oops! Something went wrong",
+      "emptyTitle": "You're all caught up! 🌟",
+      "emptyBody": "What a wonderful feeling to have no pending tasks.",
+      "emptyHint": "Tasks stay on this device — back up anytime from Settings (hold anywhere).",
+      "addAria": "Add a new task",
+      "revealAria": "Reveal task"
+    },
+    "cardBack": {
+      "appName": "One Job",
+      "tapHint": "Tap to reveal your task"
+    },
+    "card": {
+      "hints": "Swipe right to complete, left to defer, or tap to view details"
+    },
+    "swipe": {
+      "done": "Done",
+      "later": "Later"
+    },
+    "menu": {
+      "addTask": "Add Task",
+      "completed": "Completed",
+      "integrations": "Integrations",
+      "settings": "Settings"
+    },
+    "form": {
+      "addNew": "Add New Task",
+      "heading": "Add New Task",
+      "titlePlaceholder": "Task title",
+      "descriptionPlaceholder": "Description (optional)",
+      "add": "Add Task",
+      "cancel": "Cancel"
+    },
+    "nav": {
+      "backToTasks": "← Back to Tasks"
+    },
+    "substackView": {
+      "heading": "{{parent}} — {{substack}}",
+      "activeCount_one": "{{count}} active task",
+      "activeCount_other": "{{count}} active tasks",
+      "allDone": "All done! 🎉",
+      "addPrompt": "Add a new task to get started again."
+    },
+    "completed": {
+      "empty": "No completed tasks yet.",
+      "completedAgo": "Completed {{ago}}",
+      "completedRecently": "Completed recently"
+    },
+    "details": {
+      "created": "Created",
+      "substacks": "Substacks",
+      "descriptionPlaceholder": "Add a detailed description...",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    },
+    "substack": {
+      "create": "Create Substack",
+      "nameLabel": "Substack Name",
+      "namePlaceholder": "Enter substack name...",
+      "confirm": "Create"
+    },
+    "settings": {
+      "title": "Settings",
+      "storageTitle": "Storage: {{mode}}",
+      "mode": {
+        "local": {
+          "label": "On this device",
+          "description": "Tasks are stored locally in this browser. Nothing leaves your phone — export a backup now and then."
+        },
+        "demo": {
+          "label": "Demo sandbox",
+          "description": "You are in the demo. Tasks live in a separate sandbox and never touch your real data."
+        },
+        "remote": {
+          "label": "Backend sync",
+          "description": "Tasks are stored on your configured One Job server. Import from file is disabled in this mode."
+        }
+      },
+      "backup": "Backup",
+      "export": "Export tasks to file",
+      "import": "Import backup...",
+      "importConfirm_one": "Replace your current tasks with {{count}} task from this backup? This cannot be undone.",
+      "importConfirm_other": "Replace your current tasks with {{count}} tasks from this backup? This cannot be undone.",
+      "replace": "Replace tasks",
+      "cancel": "Cancel",
+      "version": "One Job v{{version}}",
+      "exported_one": "Exported {{count}} task",
+      "exported_other": "Exported {{count}} tasks",
+      "restored_one": "Restored {{count}} task from backup",
+      "restored_other": "Restored {{count}} tasks from backup",
+      "exportFailed": "Export failed: {{message}}",
+      "importFailed": "Import failed: {{message}}",
+      "notABackup": "Not a One Job backup file",
+      "readFailed": "Could not read backup: {{message}}"
+    },
+    "toasts": {
+      "taskUpdated": "Task updated!",
+      "taskAdded": "Task added!",
+      "taskCompleted": "Task completed!",
+      "taskDeferred": "Task moved to the bottom of stack!",
+      "substackTaskCompleted": "Substack task completed!",
+      "substackTaskDeferred": "Substack task moved to the bottom!",
+      "addedToSubstack": "Task added to substack",
+      "imported": "Tasks imported (local only for now)",
+      "substackCreated": "Substack \"{{name}}\" created!",
+      "updateFailed": "Failed to update task: {{message}}",
+      "addFailed": "Failed to add task: {{message}}",
+      "completeFailed": "Failed to complete task: {{message}}",
+      "deferFailed": "Failed to defer task: {{message}}",
+      "substackCreateFailed": "Failed to create substack: {{message}}"
+    },
+    "integration": {
+      "selectServiceFirst": "Please select a service first",
+      "exportedToZapier": "Tasks exported to Zapier webhook",
+      "selectService": "Select Service",
+      "asanaLabel": "Asana Personal Access Token",
+      "asanaPlaceholder": "Enter your Asana PAT",
+      "todoistLabel": "Todoist API Token",
+      "todoistPlaceholder": "Enter your Todoist API token",
+      "zapierLabel": "Zapier Webhook URL",
+      "zapierPlaceholder": "Enter your Zapier webhook URL"
+    },
+    "notFound": {
+      "title": "404",
+      "body": "Oops! Page not found",
+      "home": "Return to Home"
+    },
+    "demo": {
+      "taskCompleted": [
+        "Great job! 🎉 In a real app, this would sync to your backend.",
+        "Task completed! ✅ This is how satisfying it feels to finish something.",
+        "Nice work! 👏 One less thing on your mind.",
+        "Completed! 🚀 Ready for the next challenge?"
+      ],
+      "taskDeferred": [
+        "Task moved to bottom of stack. 📚 It'll come back when you're ready.",
+        "No worries! 🌸 Sometimes later is better than never.",
+        "Deferred successfully. ⏰ Focus on what's urgent first.",
+        "Task postponed. 🔄 You can tackle it when the time is right."
+      ],
+      "taskAdded": [
+        "New task added! 📝 It's been queued up for you.",
+        "Task created! ✨ Ready to tackle it?",
+        "Added to your stack! 📋 One more step toward your goals.",
+        "New task ready! 🎯 You've got this!"
+      ],
+      "substackCreated": [
+        "Substack created! 📚 Break big tasks into smaller wins.",
+        "Great way to organize! 🗂️ Substacks make complex work manageable.",
+        "Substack ready! 📋 Divide and conquer approach activated.",
+        "Perfect! 🎯 Breaking it down makes it less overwhelming."
+      ]
+    }
+  }
+}

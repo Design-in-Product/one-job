@@ -6,6 +6,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/task';
 import { Layers } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface TaskCardProps {
   task: Task;
@@ -21,6 +22,7 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, className }) => {
+  const { t } = useTranslation();
   const hasSubstacks = task.substacks && task.substacks.length > 0;
 
   return (
@@ -65,7 +67,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, c
 
           {showHints && (
             <div className="text-center text-xs text-gray-500 border-t pt-3">
-              Swipe right to complete, left to defer, or tap to view details
+              {t('card.hints')}
             </div>
           )}
         </div>

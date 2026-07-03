@@ -9,6 +9,7 @@ import { Check, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Capacitor } from '@capacitor/core';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { useTranslation } from 'react-i18next';
 
 // A physical thunk when a swipe commits — native builds only.
 const hapticImpact = () => {
@@ -36,6 +37,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   className,
 }) => {
   const x = useMotionValue(0);
+  const { t } = useTranslation();
   const rotate = useTransform(x, [-200, 200], [-12, 12]);
   const completeOpacity = useTransform(x, [40, SWIPE_DISTANCE], [0, 1]);
   const deferOpacity = useTransform(x, [-SWIPE_DISTANCE, -40], [1, 0]);
@@ -100,7 +102,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
           >
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 text-white shadow-md">
               <Check className="w-4 h-4" />
-              <span className="text-sm font-semibold">Done</span>
+              <span className="text-sm font-semibold">{t('swipe.done')}</span>
             </div>
           </motion.div>
           <motion.div
@@ -109,7 +111,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
           >
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500 text-white shadow-md">
               <RotateCcw className="w-4 h-4" />
-              <span className="text-sm font-semibold">Later</span>
+              <span className="text-sm font-semibold">{t('swipe.later')}</span>
             </div>
           </motion.div>
         </>

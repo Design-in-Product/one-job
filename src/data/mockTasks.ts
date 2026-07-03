@@ -146,37 +146,3 @@ export const mockTasks: Task[] = [
     source: 'Demo'
   }
 ];
-
-// Demo messages to show when certain actions are performed
-export const demoMessages = {
-  taskCompleted: [
-    "Great job! 🎉 In a real app, this would sync to your backend.",
-    "Task completed! ✅ This is how satisfying it feels to finish something.",
-    "Nice work! 👏 One less thing on your mind.",
-    "Completed! 🚀 Ready for the next challenge?"
-  ],
-  taskDeferred: [
-    "Task moved to bottom of stack. 📚 It'll come back when you're ready.",
-    "No worries! 🌸 Sometimes later is better than never.",
-    "Deferred successfully. ⏰ Focus on what's urgent first.",
-    "Task postponed. 🔄 You can tackle it when the time is right."
-  ],
-  taskAdded: [
-    "New task added! 📝 It's been queued up for you.",
-    "Task created! ✨ Ready to tackle it?",
-    "Added to your stack! 📋 One more step toward your goals.",
-    "New task ready! 🎯 You've got this!"
-  ],
-  substackCreated: [
-    "Substack created! 📚 Break big tasks into smaller wins.",
-    "Great way to organize! 🗂️ Substacks make complex work manageable.",
-    "Substack ready! 📋 Divide and conquer approach activated.",
-    "Perfect! 🎯 Breaking it down makes it less overwhelming."
-  ]
-};
-
-// Get random message for demo feedback
-export const getRandomDemoMessage = (type: keyof typeof demoMessages): string => {
-  const messages = demoMessages[type];
-  return messages[Math.floor(Math.random() * messages.length)];
-};
