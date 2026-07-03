@@ -6,7 +6,7 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 ## Identity
 
 - **App name**: One Job
-- **Bundle/package id**: co.onejob.app  (confirmed by Xian 2026-07-02)
+- **Bundle/package id**: co.onejob.deck  (renamed 2026-07-03; co.onejob.app abandoned to the free-team registration trap)
 - **Category**: Productivity
 - **Price**: Free
 - **Privacy policy URL**: https://onejob.co/privacy.html
