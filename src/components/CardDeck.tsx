@@ -14,6 +14,7 @@ import SwipeableCard from './SwipeableCard';
 import LongPressMenu from './LongPressMenu';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Plus } from 'lucide-react';
 
 const FACE_DOWN_TIMEOUT_MS = 60000; // idle time before the card turns face-down
 const AUTO_REVEAL_DELAY_MS = 650;   // pause before the next card flips up after a swipe
@@ -127,6 +128,24 @@ const CardDeck: React.FC<CardDeckProps> = ({
 
   const menu = (
     <>
+      {/* Persistent capture affordance: the one piece of standing chrome.
+          Restores the always-available "add" the tabbed UI had (lost in the
+          2025-08 decluttering pivot); long-press arc menu remains too. */}
+      <button
+        onClick={() => setShowAddForm(true)}
+        aria-label="Add a new task"
+        className={cn(
+          'fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full',
+          'bg-gradient-to-br from-taskGradient-start to-taskGradient-end',
+          'text-white shadow-lg flex items-center justify-center',
+          'opacity-90 hover:opacity-100 active:scale-95 transition',
+          'border-2 border-white/70'
+        )}
+        style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <Plus className="w-7 h-7" />
+      </button>
+
       <LongPressMenu
         isOpen={showMenu}
         onClose={() => setShowMenu(false)}
