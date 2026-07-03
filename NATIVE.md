@@ -92,9 +92,15 @@ the Pages deploy).
 
 ## Still open
 
-- Release signing: Android keystore creation + Play Console; iOS
-  certificates via Xcode
-- 1.0 version stamp before archive (android/app/build.gradle + Xcode)
+- **BUNDLEID-BLOCKED (2026-07-03)**: co.onejob.app was auto-registered to
+  the free Personal Team during the first on-device run; the paid team
+  can't register it. Fix: Apple Developer Support release request
+  (developer.apple.com/contact, ~1 business day) — reference the paid
+  team name and the identifier — or wait ~7 days for the free
+  provisioning to lapse (often frees the ID). Do NOT change the bundle id.
+- Release signing: Android keystore creation + Play Console
+- iOS Phase 4 (Archive → TestFlight) resumes once the identifier is
+  registrable under the paid team
 
 ## Version bumps
 

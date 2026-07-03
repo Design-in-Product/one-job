@@ -170,7 +170,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
       {/* Add Task modal, reachable from the arc menu */}
       {showAddForm && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-4 pt-[max(3rem,env(safe-area-inset-top))]"
           onClick={() => setShowAddForm(false)}
         >
           <div className="w-full max-w-md" onClick={(e) => e.stopPropagation()}>

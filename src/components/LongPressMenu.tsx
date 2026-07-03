@@ -51,10 +51,12 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
 
   // Calculate positions for gentle arc (60-90 degrees)
   const getItemPosition = (index: number, total: number) => {
-    const arcStart = -30; // degrees from center
-    const arcEnd = 30;    // degrees from center
+    // 90-degree arc at 150px: adjacent 56px bubbles get ~77px between
+    // centers, so buttons and their labels never crowd each other.
+    const arcStart = -45; // degrees from center
+    const arcEnd = 45;    // degrees from center
     const angle = arcStart + (index * (arcEnd - arcStart)) / (total - 1);
-    const radius = 120; // pixels from center
+    const radius = 150; // pixels from center
     
     // Convert to cartesian coordinates (y negative because CSS y increases downward)
     const x = Math.sin((angle * Math.PI) / 180) * radius;
@@ -73,13 +75,14 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black bg-opacity-20 z-40"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
             onClick={onClose}
           />
         )}
       </AnimatePresence>
 
-      {/* Menu Items */}
+      {/* Menu items: each is one positioned unit — bubble with its label
+          stacked beneath — so labels can never overlap the bubbles. */}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
@@ -87,28 +90,13 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
               {menuItems.map((item, index) => {
                 const position = getItemPosition(index, menuItems.length);
                 const Icon = item.icon;
-                
+
                 return (
-                  <motion.button
+                  <motion.div
                     key={item.label}
-                    initial={{ 
-                      opacity: 0, 
-                      scale: 0.5,
-                      x: 0,
-                      y: 0
-                    }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      x: position.x,
-                      y: position.y
-                    }}
-                    exit={{ 
-                      opacity: 0, 
-                      scale: 0.5,
-                      x: 0,
-                      y: 0
-                    }}
+                    initial={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
+                    animate={{ opacity: 1, scale: 1, x: position.x, y: position.y }}
+                    exit={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
                     transition={{
                       duration: 0.3,
                       delay: index * 0.05,
@@ -116,61 +104,26 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
                       stiffness: 300,
                       damping: 25
                     }}
-                    onClick={item.action}
-                    className={`
-                      absolute w-14 h-14 rounded-full shadow-lg
-                      ${item.color} text-white
-                      flex items-center justify-center
-                      transform -translate-x-1/2 -translate-y-1/2
-                      hover:scale-110 active:scale-95
-                      transition-transform duration-150
-                      border-2 border-white
-                    `}
-                    style={{
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                    }}
-                    aria-label={item.label}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-20"
                   >
-                    <Icon className="w-6 h-6" />
-                  </motion.button>
-                );
-              })}
-              
-              {/* Center point indicator (optional, for development) */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="absolute w-2 h-2 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 opacity-50" />
-              )}
-            </div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Labels (appear on hover/touch) */}
-      <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 flex items-center justify-center z-45 pointer-events-none">
-            <div className="relative">
-              {menuItems.map((item, index) => {
-                const position = getItemPosition(index, menuItems.length);
-                
-                return (
-                  <motion.div
-                    key={`label-${item.label}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.2,
-                      delay: index * 0.05 + 0.2
-                    }}
-                    className="absolute text-xs text-white bg-black bg-opacity-75 px-2 py-1 rounded whitespace-nowrap transform -translate-x-1/2"
-                    style={{
-                      left: position.x,
-                      top: position.y + 40, // Below the button
-                      transform: 'translateX(-50%)'
-                    }}
-                  >
-                    {item.label}
+                    <button
+                      onClick={item.action}
+                      className={`
+                        w-14 h-14 rounded-full shadow-lg
+                        ${item.color} text-white
+                        flex items-center justify-center
+                        hover:scale-110 active:scale-95
+                        transition-transform duration-150
+                        border-2 border-white
+                      `}
+                      style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)' }}
+                      aria-label={item.label}
+                    >
+                      <Icon className="w-6 h-6" />
+                    </button>
+                    <span className="mt-1.5 text-xs font-medium text-white bg-black/75 px-2 py-0.5 rounded whitespace-nowrap">
+                      {item.label}
+                    </span>
                   </motion.div>
                 );
               })}
