@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SubstackCreatorProps {
   onCreateSubstack: (name: string) => void;
 }
 
 const SubstackCreator: React.FC<SubstackCreatorProps> = ({ onCreateSubstack }) => {
+  const { t } = useTranslation();
   const [substackName, setSubstackName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
 
@@ -30,7 +32,7 @@ const SubstackCreator: React.FC<SubstackCreatorProps> = ({ onCreateSubstack }) =
         className="w-full"
       >
         <Plus className="w-4 h-4 mr-2" />
-        Create Substack
+        {t('substack.create')}
       </Button>
     );
   }
@@ -38,18 +40,18 @@ const SubstackCreator: React.FC<SubstackCreatorProps> = ({ onCreateSubstack }) =
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
-        <Label htmlFor="substackName">Substack Name</Label>
+        <Label htmlFor="substackName">{t('substack.nameLabel')}</Label>
         <Input
           id="substackName"
           value={substackName}
           onChange={(e) => setSubstackName(e.target.value)}
-          placeholder="Enter substack name..."
+          placeholder={t('substack.namePlaceholder')}
           autoFocus
         />
       </div>
       <div className="flex gap-2">
         <Button type="submit" disabled={!substackName.trim()}>
-          Create
+          {t('substack.confirm')}
         </Button>
         <Button 
           type="button" 

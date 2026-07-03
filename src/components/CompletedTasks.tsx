@@ -3,18 +3,20 @@ import React from 'react';
 import { Task } from '@/types/task';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface CompletedTasksProps {
   tasks: Task[];
 }
 
 const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
+  const { t } = useTranslation();
   const completedTasks = tasks.filter(task => task.completed);
 
   if (completedTasks.length === 0) {
     return (
       <div className="text-center p-4 text-muted-foreground">
-        No completed tasks yet.
+        {t('completed.empty')}
       </div>
     );
   }
@@ -38,10 +40,10 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
               {task.completedAt && (() => {
                 try {
                   const date = task.completedAt instanceof Date ? task.completedAt : new Date(task.completedAt);
-                  return `Completed ${formatDistanceToNow(date, { addSuffix: true })}`;
+                  return t('completed.completedAgo', { ago: formatDistanceToNow(date, { addSuffix: true }) });
                 } catch (e) {
                   console.error('Date formatting error:', e, task.completedAt);
-                  return 'Completed recently';
+                  return t('completed.completedRecently');
                 }
               })()}
             </span>

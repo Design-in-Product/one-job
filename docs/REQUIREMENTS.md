@@ -320,7 +320,7 @@ One Job is a mobile-first task management application built with domain-driven d
 - [ ] **Pull-down to deal a blank card** (chromeless power gesture, post-1.0)
 
 #### Localization (added 2026-07-02)
-- [ ] **App i18n pass** (externalize strings; en first, es/fr/de candidates)
+- [x] **App i18n pass** (i18next; all UI strings in src/i18n/locales/en.json; new locales = one JSON file, 2026-07-03)
 - [ ] **Localized store listings** (App Store + Play, after app i18n)
 
 #### Advanced Integrations

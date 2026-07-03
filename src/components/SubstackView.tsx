@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import TaskStack from './TaskStack';
 import TaskForm from './TaskForm';
 import TaskDetails from './TaskDetails';
+import { useTranslation } from 'react-i18next';
 
 interface SubstackViewProps {
   parentTask: Task;
@@ -36,6 +37,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
   onCreateSubstack,
   onOpenSubstack
 }) => {
+  const { t } = useTranslation();
   const activeTasks = substack.tasks.filter(task => !task.completed);
 
   return (
@@ -51,10 +53,10 @@ const SubstackView: React.FC<SubstackViewProps> = ({
         </Button>
         <div className="flex-1">
           <h2 className="font-semibold text-lg">
-            {parentTask.title} — {substack.name}
+            {t('substackView.heading', { parent: parentTask.title, substack: substack.name })}
           </h2>
           <p className="text-sm text-gray-600">
-            {activeTasks.length} active tasks
+            {t('substackView.activeCount', { count: activeTasks.length })}
           </p>
         </div>
       </div>

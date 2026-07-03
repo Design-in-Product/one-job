@@ -29,9 +29,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
+import { useTranslation } from 'react-i18next';
 
 
 const Index = () => {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -69,13 +71,13 @@ const Index = () => {
   const handleUpdateTask = async (taskId: string, updates: { title?: string; description?: string }) => {
     try {
       await getTaskStore().updateTask(taskId, updates);
-      toast.success('Task updated!');
+      toast.success(t('toasts.taskUpdated'));
       refreshTasks();
       setIsTaskDetailsOpen(false);
       setSelectedTask(null);
     } catch (err) {
       console.error("Failed to update task in backend:", err);
-      toast.error(`Failed to update task: ${(err as Error).message}`);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
 
@@ -87,11 +89,11 @@ const Index = () => {
         await getTaskStore().createTask(newTask.title, newTask.description);
         toast.success(isDemoMode
           ? DemoService.getInstance().getDemoMessage('taskAdded')
-          : 'Task added!');
+          : t('toasts.taskAdded'));
         refreshTasks();
       } catch (err) {
         console.error("Failed to add task:", err);
-        toast.error(`Failed to add task: ${(err as Error).message}`);
+        toast.error(t('toasts.addFailed', { message: (err as Error).message }));
       }
     } else {
       try {
@@ -121,17 +123,17 @@ const Index = () => {
             tasks: [...prev.substack.tasks, addedTask]
           }
         } : null);
-        toast.success('Task added to substack');
+        toast.success(t('toasts.addedToSubstack'));
       } catch (err) {
         console.error("Failed to add substack task:", err);
-        toast.error(`Failed to add task: ${(err as Error).message}`);
+        toast.error(t('toasts.addFailed', { message: (err as Error).message }));
       }
     }
   };
 
   const handleImportTasks = (importedTasks: Task[]) => {
     setTasks(prevTasks => [...importedTasks, ...prevTasks]);
-    toast.info('Tasks imported (local only for now)');
+    toast.info(t('toasts.imported'));
   };
 
 
@@ -172,21 +174,21 @@ const Index = () => {
       } : null);
       try {
         await getTaskStore().completeSubstackTask(taskId);
-        toast.success('Substack task completed!');
+        toast.success(t('toasts.substackTaskCompleted'));
       } catch (err) {
         console.error("Failed to persist substack task completion:", err);
-        toast.error(`Failed to complete task: ${(err as Error).message}`);
+        toast.error(t('toasts.completeFailed', { message: (err as Error).message }));
       }
     } else {
       try {
         await getTaskStore().completeTask(taskId);
         toast.success(isDemoMode
           ? DemoService.getInstance().getDemoMessage('taskCompleted')
-          : 'Task completed!');
+          : t('toasts.taskCompleted'));
         refreshTasks();
       } catch (err) {
         console.error("Failed to complete task:", err);
-        toast.error(`Failed to complete task: ${(err as Error).message}`);
+        toast.error(t('toasts.completeFailed', { message: (err as Error).message }));
       }
     }
   };
@@ -229,17 +231,17 @@ const Index = () => {
           }
         };
       });
-      toast.info('Substack task moved to the bottom!');
+      toast.info(t('toasts.substackTaskDeferred'));
     } else {
       try {
         await getTaskStore().deferTask(taskId);
         toast.info(isDemoMode
           ? DemoService.getInstance().getDemoMessage('taskDeferred')
-          : 'Task moved to the bottom of stack!');
+          : t('toasts.taskDeferred'));
         refreshTasks();
       } catch (err) {
         console.error("Failed to defer task:", err);
-        toast.error(`Failed to defer task: ${(err as Error).message}`);
+        toast.error(t('toasts.deferFailed', { message: (err as Error).message }));
       }
     }
   };
@@ -255,7 +257,7 @@ const Index = () => {
       await getTaskStore().createSubstack(taskId, name);
       toast.success(isDemoMode
         ? DemoService.getInstance().getDemoMessage('substackCreated')
-        : `Substack "${name}" created!`);
+        : t('toasts.substackCreated', { name }));
       
       // Refresh tasks to get the updated task with substacks
       await refreshTasks();
@@ -265,7 +267,7 @@ const Index = () => {
       setSelectedTask(null);
     } catch (err) {
       console.error("Failed to create substack in backend:", err);
-      toast.error(`Failed to create substack: ${(err as Error).message}`);
+      toast.error(t('toasts.substackCreateFailed', { message: (err as Error).message }));
     } finally {
       setIsCreatingSubstack(false);
     }
@@ -360,7 +362,7 @@ const Index = () => {
                     onClick={() => setCurrentView('main')}
                     className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    ← Back to Tasks
+                    {t('nav.backToTasks')}
                   </button>
                 </div>
                 <CompletedTasks tasks={completedTasks} />
@@ -374,7 +376,7 @@ const Index = () => {
                     onClick={() => setCurrentView('main')}
                     className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    ← Back to Tasks
+                    {t('nav.backToTasks')}
                   </button>
                 </div>
                 <SettingsView onDataImported={refreshTasks} />
@@ -388,7 +390,7 @@ const Index = () => {
                     onClick={() => setCurrentView('main')}
                     className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    ← Back to Tasks
+                    {t('nav.backToTasks')}
                   </button>
                 </div>
                 <TaskIntegration onImportTasks={handleImportTasks} />

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronRight } from 'lucide-react';
 import SubstackCreator from './SubstackCreator';
+import { useTranslation } from 'react-i18next';
 
 interface TaskDetailsProps {
   task: Task | null;
@@ -25,6 +26,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   onOpenSubstack,
   onUpdateTask // <--- Destructure the new prop
 }) => {
+  const { t } = useTranslation();
   if (!task) return null;
 
   // <--- ADD LOCAL STATE FOR EDITABLE FIELDS
@@ -82,7 +84,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               rows={5} // Set initial rows for textarea height
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
-              placeholder="Add a detailed description..."
+              placeholder={t('details.descriptionPlaceholder')}
             />
           </div>
 
@@ -107,7 +109,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           )}
 
           <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Created</h4>
+            <h4 className="font-semibold text-gray-700 mb-2">{t('details.created')}</h4>
             <p className="text-gray-600 text-sm">
               {formatDistanceToNow(task.createdAt, { addSuffix: true })}
             </p>
@@ -123,7 +125,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           )}
 
           <div>
-            <h4 className="font-semibold text-gray-700 mb-3">Substacks</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">{t('details.substacks')}</h4>
 
             {task.substacks && task.substacks.length > 0 && (
               <div className="space-y-2 mb-3">
@@ -153,10 +155,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         {/* <--- ADD DIALOG FOOTER WITH SAVE/CANCEL BUTTONS */}
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('details.cancel')}
           </Button>
           <Button onClick={handleSave}>
-            Save Changes
+            {t('details.save')}
           </Button>
         </DialogFooter>
       </DialogContent>
