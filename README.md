@@ -54,28 +54,23 @@
 
 ## 🚀 Get Started
 
-### 🌐 Try it Online (Recommended)
+### 🌐 Use it now (Recommended)
 
-**👉 [Use One Job Now](https://onejob.co)** - No installation needed! Works on any device.
+**👉 [onejob.co/app](https://onejob.co/app/)** — no installation, no account.
+Your tasks live on your device, work offline, and never touch a server.
+On your phone: Share → **Add to Home Screen** to install it as an app.
 
 ### 💻 Run Locally
 
-Want to run it yourself? Get started in under 2 minutes:
-
 ```bash
-# Clone and enter the project
 git clone https://github.com/Design-in-Product/one-job.git
 cd one-job
-
-# Install and start everything
-npm install && npm run dev      # Start frontend (port 8080)
-
-# In a new terminal:
-cd backend && python -m venv venv && source venv/bin/activate
-pip install -r ../requirements.txt && uvicorn main:app --reload
+npm install && npm run dev      # http://localhost:8080 — that's it
 ```
 
-**That's it!** Open http://localhost:8080 and start focusing.
+One Job is **local-first**: no backend needed. (The optional FastAPI
+backend in `backend/` exists for future sync and integrations — run the
+app with `?remote` to use it in development.)
 
 ## ❓ FAQ
 
@@ -89,15 +84,18 @@ A: Yes, but why would you want that anxiety? Focus on what's in front of you.
 A: They move to the bottom of your stack. They'll come back when you're ready.
 
 **Q: Is my data safe?**  
-A: Your tasks are saved locally and to your backend. We don't track or sell anything.
+A: Your tasks live on your own device — no account, no cloud, no tracking. Export a backup anytime from Settings.
 
 **Q: Can I import from other apps?**  
 A: Jira, Linear, and Todoist imports coming soon. For now, start fresh - it's liberating!
 
 ## 🎯 Project Status
 
-**✅ MVP Complete** - Core task management with swipe gestures  
-**🚧 Coming Soon** - Jira/Linear imports, team features, native mobile apps
+**✅ 1.0 (release candidate)** — Card Deck Experience: 3D card flips, swipe
+gestures with haptics, substacks, offline-capable installable PWA,
+local-first storage with JSON backup/restore  
+**🚧 In flight** — iOS (TestFlight) and Android (Play) store releases  
+**🔭 Next** — agent inbox via MCP, Todoist/Jira/Linear imports, cross-device sync
 
 ## 🤝 Contributing
 
@@ -135,27 +133,28 @@ Made with ❤️ by people who hate todo lists
 
 One Job follows **domain-driven design** with clear separation of concerns:
 
-- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + Framer Motion
-- **Backend**: FastAPI + SQLAlchemy + Pydantic + SQLite/PostgreSQL  
-- **API-First**: RESTful API with complete OpenAPI documentation
-- **Mobile-First**: Touch-optimized responsive design
-- **Test-Driven**: Comprehensive test coverage with pytest
+- **Local-first**: all persistence flows through the `TaskStore` seam
+  (`src/services/taskStore.ts`) — device storage by default; demo and
+  backend stores plug into the same interface, as will future adapters
+- **Frontend**: React 18 + TypeScript + Vite + TailwindCSS + Framer Motion,
+  installable PWA, i18n-ready (strings in `src/i18n/locales/`)
+- **Native shells**: Capacitor projects for iOS/Android in `ios/` and
+  `android/` (see `NATIVE.md`)
+- **Optional backend**: FastAPI + SQLAlchemy + Pydantic (SQLite/PostgreSQL)
+  for future sync/integrations
 
 ### Technology Stack
 
-**Frontend**: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui, Framer Motion  
-**Backend**: FastAPI, SQLAlchemy, Pydantic, pytest  
-**Database**: SQLite (dev) / PostgreSQL (production)  
-**Testing**: pytest for backend, Jest/Vitest planned for frontend
+**Frontend**: React 18, TypeScript, Vite, TailwindCSS, shadcn/ui, Framer Motion, i18next  
+**Native**: Capacitor (iOS + Android)  
+**Backend (optional)**: FastAPI, SQLAlchemy, Pydantic  
+**Testing**: vitest (frontend store layer), pytest (backend)
 
 ### Running Tests
 
 ```bash
-# Backend tests
-cd backend && python -m pytest -v
-
-# Frontend tests (coming soon)
-npm test
+npm test                          # frontend (vitest)
+cd backend && python -m pytest    # backend
 ```
 
 </details>
