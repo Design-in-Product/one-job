@@ -1,10 +1,10 @@
 # One Job — Roadmap
 
-**Author**: Coral · 2026-07-03 · **Status**: DRAFT for Xian's review —
-this is a proposal, not a decree. Supersedes the tier sketch in
-BIG-PICTURE-2026-07-03.md. Companion docs: DOMAIN-MODEL.md (what we're
-building toward), DEPENDENCIES.md (why this order), VISION-2026-07.md
-(source material).
+**Author**: Coral · 2026-07-03 · **Status**: BASELINE — converged with
+Xian 2026-07-04 ("I'm ready for convergence if you are!"). Supersedes
+the tier sketch in BIG-PICTURE-2026-07-03.md. Companion docs: VISION.md
+(the distillation), DOMAIN-MODEL.md (what we're building toward),
+DEPENDENCIES.md (why this order), VISION-2026-07.md (capture record).
 
 **Ordering principle** (Xian): Gall's law, Cunningham-style — a complex
 system that works evolves from a simple system that works; do the
@@ -26,6 +26,7 @@ off immediately.
 
 | # | Item | Source |
 |---|---|---|
+| R0.0 | **Data durability** — ✅ safety net shipped 07-04 (meta + dated snapshots + quarantine + auto-restore, test-first); remaining: export-age nudge in Settings, wipe forensics if it recurs | Item 13 🔴 |
 | R0.1 | **Undo toast** after complete/defer (5s window, one tap) | audit gap 1 |
 | R0.2 | **Deck-depth signal** (design call needed: number vs. suggestion) | audit gap 4 |
 | R0.3 | **Portal crispness pass** — kill the "swimming in an ill-fitting frame" feel (background/theme-color/overscroll/dvh suspects listed in Vision Item 9) | Item 9a |
@@ -88,7 +89,8 @@ ever corrupted or surprised.
 |---|---|---|
 | R4.1 | **MCP inbox** — agents deal cards into a per-user inbox; the phone pulls; status events flow back (MCP-DESIGN.md's model, its 4 open questions answered by then-real R3 infrastructure — an agent is just another source) | MCP memo |
 | R4.2 | **Piper Morgan as first agent client** — deals cards into Xian's deck; the family dogfoods the protocol | Item 12 |
-| R4.3 | **Text-entry relief** — capture via share-sheet/voice/agent so typing on cards stops being the bottleneck | Item 4 |
+| R4.3 | **Dispatch: deal a card to an agent** — assign from the card ("Pard could do this"); the card lands on the agent's deck, stays visible on yours with its fate in their hands; completion flows back. The outbound twin of R4.1 | Item 14 |
+| R4.4 | **Text-entry relief** — capture via share-sheet/voice/agent so typing on cards stops being the bottleneck | Item 4 |
 
 Gate: an agent-dealt card is indistinguishable in feel from a
 hand-written one, and no agent can ever reorder your deck.
@@ -117,7 +119,36 @@ hand-written one, and no agent can ever reorder your deck.
 
 ---
 
-*Next action on this document: Xian reviews the ordering, especially the
-R0 scope and the R1.1/R1.2 sequence. Then REQUIREMENTS.md gets
-re-baselined to match, and REQUIREMENTS FR2 (substacks) is rewritten
-against the domain model.*
+## The build sequence (converged 2026-07-04 — the next ten moves)
+
+The stages above are strategy; this is the order work actually leaves
+the shop. Each move is small, shippable, and verified before the next
+starts (tests + Playwright; real device where gestures are involved).
+
+1. ✅ **Data safety net** (R0.0) — shipped 07-04, test-first.
+2. **Undo toast** (R0.1) — the biggest daily-trust win still open.
+3. **Backup-age nudge** (R0.0 tail) — Settings shows "last export N
+   days ago"; gentle prompt past a week. Small, pairs with 1.
+4. **Portal crispness pass** (R0.3) — background/theme-color/
+   overscroll/dvh audit with before/after screenshots on device.
+5. **Deck-depth signal** (R0.2) — needs Xian's design call first
+   (number vs. suggestion); implementation is small once called.
+6. **Domain layer extraction** (R1 prep) — pure-TS `src/domain/` with
+   today's *exact* behavior, fully tested, zero visible change. The
+   safe stepping stone the migration stands on.
+7. **Schema v2 + migration** (R1.3) — RED ZONE, test-first, must
+   round-trip through backup export/import. The riskiest single move
+   on the map; nothing else ships alongside it.
+8. **Recursive cards** (R1.1) — interiors replace substacks in the UI;
+   migrated data already fits.
+9. **Lifecycle chain** (R1.2) — Done/Archive/Trash decks, advance/
+   regress gestures, provenance return. Un-complete and delete arrive
+   here.
+10. **R1 gate week** — Xian runs a real week on the new model; odd
+    behaviors fixed as they surface; then R2 (canvas) planning begins.
+
+Store track (R0.5) proceeds in parallel throughout, human-gated:
+Cowork Phase 4 → TestFlight; keystore → Play internal. Fun-shelf items
+may jump the queue whenever morale wants them.
+
+*REQUIREMENTS.md re-baselined against this document 2026-07-04.*
