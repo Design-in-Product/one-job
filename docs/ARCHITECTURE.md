@@ -1,582 +1,147 @@
-# Architecture Guide
+# One Job — Architecture
 
-This document provides a comprehensive overview of One Job's architecture, design patterns, and technical decisions.
+**Rewritten**: 2026-07-03 (Coral) to match the shipped local-first 1.0
+and the target domain model. The previous version of this file described
+the pre-1.0 backend-centric three-tier design; see git history if you
+need it. Companions: DOMAIN-MODEL.md (concepts), ROADMAP.md (sequence),
+DEPENDENCIES.md (why that sequence).
 
-## 🏛️ High-Level Architecture
+## Architecture in one paragraph
 
-One Job follows a **three-tier architecture** with clear separation of concerns:
+One Job is a **local-first React PWA** (also shipped as Capacitor
+iOS/Android shells) whose entire persistence story passes through one
+seam: the **TaskStore interface**. The device owns the data; a backend
+is an opt-in adapter, not a requirement. Everything on the roadmap —
+recursive cards, lifecycle decks, source federation, agent inboxes —
+lands as either a domain-layer change *behind* that seam or a new
+adapter *implementing* it.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Frontend Layer                      │
-│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│   │  React UI   │  │   Hooks     │  │  API Client │    │
-│   │ Components  │  │  & State    │  │             │    │
-│   └─────────────┘  └─────────────┘  └─────────────┘    │
-└────────────────────────┬────────────────────────────────┘
-                         │ HTTP/REST API
-┌────────────────────────▼────────────────────────────────┐
-│                     Backend Layer                       │
-│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│   │   FastAPI   │  │  Business   │  │ Data Access │    │
-│   │  Endpoints  │  │    Logic    │  │    Layer    │    │
-│   └─────────────┘  └─────────────┘  └─────────────┘    │
-└────────────────────────┬────────────────────────────────┘
-                         │ SQLAlchemy ORM
-┌────────────────────────▼────────────────────────────────┐
-│                   Persistence Layer                     │
-│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│   │   SQLite    │  │ PostgreSQL  │  │   Future    │    │
-│   │    (dev)    │  │   (prod)    │  │ Databases   │    │
-│   └─────────────┘  └─────────────┘  └─────────────┘    │
-└─────────────────────────────────────────────────────────┘
-```
-
-## 🎯 Domain-Driven Design
-
-The application is organized around **core business domains**:
-
-### Core Domains
-
-#### 1. **Task Management Domain**
-```
-Task Aggregate Root
-├── Task Entity (id, title, description, status, timestamps)
-├── Task Status (todo, done)
-├── Task Operations (create, complete, defer, update)
-└── Task Ordering (sort_order, deferral logic)
-```
-
-#### 2. **Substack Domain** 
-```
-Substack Aggregate Root
-├── Substack Entity (id, name, parent_task_id)
-├── SubstackTask Entities (tasks within substacks)
-├── Hierarchical Operations (create, navigate, manage)
-└── Parent-Child Relationships
-```
-
-#### 3. **Integration Domain** (Future)
-```
-Integration Services
-├── External System Adapters (Linear, Jira, etc.)
-├── Import/Export Operations
-├── Data Transformation
-└── Sync Management
-```
-
-### Bounded Contexts
-
-| Context | Responsibility | Key Models |
-|---------|----------------|------------|
-| **Task Management** | Core task CRUD operations | Task, TaskStatus |
-| **Organization** | Hierarchical task structure | Substack, SubstackTask |
-| **User Interface** | Presentation and interaction | TaskCard, TaskStack |
-| **Persistence** | Data storage and retrieval | DBTask, DBSubstack |
-| **Integration** | External system connectivity | ImportService, ExportService |
-
-## 🗄️ Data Layer Architecture
-
-### Database Schema
-
-```sql
--- Core tasks table
-CREATE TABLE tasks (
-    id UUID PRIMARY KEY,
-    title VARCHAR NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT FALSE,
-    status VARCHAR DEFAULT 'todo', -- 'todo' | 'done'
-    created_at TIMESTAMP WITH TIME ZONE,
-    completed_at TIMESTAMP WITH TIME ZONE,
-    deferred_at TIMESTAMP WITH TIME ZONE,
-    deferral_count INTEGER DEFAULT 0,
-    sort_order INTEGER,
-    external_id VARCHAR,
-    source VARCHAR
-);
-
--- Substacks for hierarchical organization
-CREATE TABLE substacks (
-    id UUID PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    parent_task_id UUID REFERENCES tasks(id),
-    created_at TIMESTAMP WITH TIME ZONE
-);
-
--- Tasks within substacks
-CREATE TABLE substack_tasks (
-    id UUID PRIMARY KEY,
-    title VARCHAR NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT FALSE,
-    substack_id UUID REFERENCES substacks(id),
-    created_at TIMESTAMP WITH TIME ZONE,
-    completed_at TIMESTAMP WITH TIME ZONE,
-    sort_order INTEGER DEFAULT 0
-);
-```
-
-### Data Access Patterns
-
-#### Repository Pattern
-```python
-# Abstract repository interface
-class TaskRepository(ABC):
-    @abstractmethod
-    async def create(self, task: TaskCreate) -> Task: ...
-    
-    @abstractmethod
-    async def get_all(self) -> List[Task]: ...
-    
-    @abstractmethod 
-    async def update(self, task_id: UUID, updates: TaskUpdate) -> Task: ...
-
-# SQLAlchemy implementation
-class SQLTaskRepository(TaskRepository):
-    def __init__(self, session: Session):
-        self.session = session
-    
-    async def create(self, task: TaskCreate) -> Task:
-        db_task = DBTask(**task.dict())
-        self.session.add(db_task)
-        self.session.commit()
-        return Task.from_orm(db_task)
-```
-
-#### Unit of Work Pattern
-```python
-class UnitOfWork:
-    def __init__(self, session_factory):
-        self.session_factory = session_factory
-    
-    def __enter__(self):
-        self.session = self.session_factory()
-        return self
-    
-    def __exit__(self, *args):
-        self.session.rollback()
-        self.session.close()
-    
-    def commit(self):
-        self.session.commit()
-```
-
-## 🔄 API Layer Architecture
-
-### RESTful Design Principles
-
-The API follows REST conventions with clear resource hierarchies:
+## Current layers (shipped, 1.0-rc)
 
 ```
-/tasks                          # Task collection
-├── POST /tasks                 # Create task
-├── GET /tasks                  # List all tasks  
-├── PUT /tasks/{id}             # Update task
-└── /tasks/{id}/substacks       # Substack collection
-    ├── POST /tasks/{id}/substacks        # Create substack
-    └── /substacks/{id}/tasks             # Substack tasks
-        ├── POST /substacks/{id}/tasks    # Add task to substack
-        └── PUT /substack-tasks/{id}      # Update substack task
+┌───────────────────────────────────────────────────────────┐
+│ Presentation (React 18 + TS + Tailwind + Framer Motion)   │
+│  CardDeck → FlipCard → SwipeableCard → TaskCard/CardBack  │
+│  LongPressMenu · TaskForm · TaskDetails · SettingsView    │
+│  SubstackView/TaskStack · CompletedTasksView              │
+│  i18n: all strings via i18next (src/i18n/locales/en.json) │
+├───────────────────────────────────────────────────────────┤
+│ Store seam (src/services/taskStore.ts)                    │
+│  getTaskStore() selects by storageMode (src/config.ts):   │
+│   • LocalTaskStore   – default; localStorage 'oneJobTasks'│
+│   • DemoService      – LocalTaskStore + seeds + messages  │
+│   • ApiTaskStore     – FastAPI backend (VITE_API_URL /    │
+│                        ?remote only)                      │
+├───────────────────────────────────────────────────────────┤
+│ Platform                                                  │
+│  PWA: vite-plugin-pwa (autoUpdate), offline-verified      │
+│  Native: Capacitor (co.onejob.deck), dist-native build,   │
+│   nativeStorageBridge mirrors localStorage → Preferences, │
+│   haptics on swipe commit                                 │
+│  Backend (optional): FastAPI + SQLAlchemy (backend/),     │
+│   Render-ready; unused in local mode                      │
+└───────────────────────────────────────────────────────────┘
 ```
 
-### Request/Response Flow
+Key invariants already enforced:
 
-```mermaid
-sequenceDiagram
-    participant UI as Frontend
-    participant API as FastAPI
-    participant BL as Business Logic
-    participant DB as Database
+- **UI never touches storage directly** — every mutation goes through
+  `getTaskStore()`.
+- **Dates are revived recursively** on load and import (shared
+  `reviveTask`; regression-tested).
+- **Backup round-trip** (Settings export/import) is the migration and
+  disaster story; any schema change must survive it.
+- **Verification is behavioral**: UI changes are driven in Chromium at
+  mobile viewport (Playwright) before shipping; store logic is covered
+  by the vitest suite.
 
-    UI->>API: POST /tasks {"title": "New Task"}
-    API->>BL: TaskService.create_task()
-    BL->>DB: SQLAlchemy ORM
-    DB->>BL: DBTask object
-    BL->>API: TaskResponse model
-    API->>UI: JSON response
+## Known divergences from the domain model
+
+Today's shapes predate the vision conversation (2026-07-03). They work,
+and they are wrong in these specific ways (details in DOMAIN-MODEL.md
+§7):
+
+1. Nesting is `Substack { name, tasks[] }` — one level, named,
+   mandatory — instead of recursive card interiors.
+2. State is `completed: boolean` instead of deck membership; Done is a
+   read-only view, not a place with gestures.
+3. There is one deck; no canvas, no multiple top-level decks.
+4. `source`/`externalId` exist but nothing consumes them — provenance
+   is not yet a concept.
+
+## Target seams (where roadmap stages attach)
+
+### 1. Domain layer (R1) — new module, pure TypeScript
+
+Extract the rules from components into `src/domain/`: card/deck/canvas
+types, the operations (`complete`, `defer`, `advance`, `regress`,
+`promote`, `addCard`), and the lifecycle-chain logic — no React, no
+storage, fully unit-testable. Components become thin: gesture →
+domain operation → store persist → re-render.
+
+**Schema v2** (R1.3) lives here: a versioned document
+(`{ schemaVersion, canvases/decks/cards }`) with a one-way migration
+from v1 (flat tasks + substacks). Migration rules: v1 substack tasks
+become interior cards of the parent; `completed: true` cards move to
+the Done system deck; every card gains a provenance path. The store
+seam keeps the same interface; only the document shape changes.
+
+### 2. View state machine (R2)
+
+The zoom continuum (canvas ⇄ deck ⇄ card) is a small explicit state
+machine, not routing: `{ focus: canvasPath, zoom: level }`. Pinch and
+pan mutate it; system decks and settings live at canvas coordinates.
+The long-press menu becomes a shortcut layer over spatial locations
+rather than the only door.
+
+### 3. Source adapters (R3)
+
 ```
-
-### Error Handling Strategy
-
-```python
-# Custom exception hierarchy
-class OneJobError(Exception): ...
-
-class ValidationError(OneJobError): ...
-class NotFoundError(OneJobError): ...
-class BusinessLogicError(OneJobError): ...
-
-# Global exception handlers
-@app.exception_handler(ValidationError)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=400,
-        content={"error": "validation_error", "detail": str(exc)}
-    )
-```
-
-## 🎨 Frontend Architecture
-
-### Component Hierarchy
-
-```
-App.tsx
-├── Router
-│   └── Index.tsx (Main Page)
-│       ├── TaskStack.tsx (Card Interface)
-│       │   └── TaskCard.tsx (Individual Cards)
-│       ├── CompletedTasks.tsx (Completed View)
-│       ├── TaskIntegration.tsx (Import/Export)
-│       └── TaskDetails.tsx (Detail Modal)
-│           └── SubstackCreator.tsx (Substack Management)
-└── SubstackView.tsx (Nested Task View)
-```
-
-### State Management Architecture
-
-```typescript
-// Global state patterns
-interface AppState {
-  tasks: Task[]
-  selectedTask: Task | null
-  currentSubstack: SubstackContext | null
-  loading: boolean
-  error: string | null
-}
-
-// Custom hooks for business logic
-const useTaskManagement = () => {
-  const [tasks, setTasks] = useState<Task[]>([])
-  
-  const refreshTasks = useCallback(async () => {
-    const response = await fetch('/api/tasks')
-    const data = await response.json()
-    setTasks(data.map(mapBackendTaskToFrontendTask))
-  }, [])
-  
-  return { tasks, refreshTasks }
+interface SourceAdapter {
+  service: string;                          // 'asana' | 'trello' | ...
+  pull(): Promise<ExternalCard[]>;          // R3.2 import (read-only)
+  push?(change: CardChange): Promise<void>; // R3.4 sync (earned later)
 }
 ```
 
-### Component Design Patterns
+Adapters *feed* the local store; they never replace it. The **mapping
+store** (R3.3) — `oneJobId ⇄ {service, externalId, fieldMap,
+lastSyncedHash}` — is a first-class, user-inspectable artifact,
+persisted next to the deck document. Normalization happens at the
+adapter edge; the One Job overlay (deck order, interiors, history,
+lifecycle placement) is never written back to sources.
 
-#### Compound Components
-```typescript
-// TaskStack compound pattern
-const TaskStack = ({ tasks, onComplete, onDefer }) => {
-  return (
-    <TaskStack.Container>
-      {tasks.map(task => (
-        <TaskStack.Card 
-          key={task.id} 
-          task={task}
-          onSwipeRight={onComplete}
-          onSwipeLeft={onDefer}
-        />
-      ))}
-    </TaskStack.Container>
-  )
-}
-```
+ApiTaskStore's future is *inside* this seam: the FastAPI backend
+becomes one more source ("your One Job server"), not a privileged mode.
 
-#### Render Props Pattern
-```typescript
-// Gesture handling abstraction
-const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight }) => {
-  const handlers = useSwipeable({
-    onSwipedLeft: onSwipeLeft,
-    onSwipedRight: onSwipeRight,
-  })
-  
-  return <div {...handlers}>{children}</div>
-}
-```
+### 4. Agent inbox (R4)
 
-## 🔄 Business Logic Patterns
+The MCP server (design memo: docs/MCP-DESIGN.md) is architecturally a
+`SourceAdapter` whose service is an agent inbox: agents deal cards into
+a server-side mail slot; the app *pulls* them like any import; status
+events flow back on complete/defer. Local-first authority is preserved
+— agents never write into the authoritative store, and (invariant) no
+agent can reorder a deck. Piper Morgan is the intended first client.
 
-### Service Layer
-```python
-class TaskService:
-    def __init__(self, task_repo: TaskRepository):
-        self.task_repo = task_repo
-    
-    async def create_task(self, task_data: TaskCreate) -> TaskResponse:
-        # Business rules
-        max_order = await self.task_repo.get_max_sort_order()
-        task_data.sort_order = (max_order or 0) + 1
-        
-        # Persistence
-        task = await self.task_repo.create(task_data)
-        return TaskResponse.from_domain(task)
-    
-    async def defer_task(self, task_id: UUID) -> TaskResponse:
-        # Complex business logic for deferral
-        task = await self.task_repo.get_by_id(task_id)
-        if task.status != "todo":
-            raise BusinessLogicError("Cannot defer non-todo task")
-        
-        # Move to end of queue
-        await self._move_task_to_end(task)
-        task.deferred_at = datetime.now()
-        task.deferral_count += 1
-        
-        return await self.task_repo.update(task)
-```
+## Build & delivery pipeline (unchanged by the above)
 
-### Domain Events (Future Enhancement)
-```python
-from dataclasses import dataclass
-from datetime import datetime
+- `npm run dev` — local mode (append `?remote` for a local FastAPI).
+- `npm run build` — web/PWA to `app/`, then syncs demo.html hashed
+  bundle refs (scripts/sync-demo-assets.mjs).
+- `npm run build:native` — capacitor mode (base './', HashRouter) to
+  `dist-native/`, then `npx cap sync`.
+- GitHub Pages deploy on push to main (VITE_API_URL repo var: unset ⇒
+  local/demo; set ⇒ remote mode baked in).
+- Android CI: debug APK + signed AAB workflows (secrets pending
+  keystore).
 
-@dataclass
-class TaskCompleted:
-    task_id: UUID
-    completed_at: datetime
-    user_id: UUID
+## Testing architecture
 
-@dataclass  
-class TaskDeferred:
-    task_id: UUID
-    deferred_at: datetime
-    deferral_count: int
-
-# Event handlers
-class TaskEventHandler:
-    async def handle_task_completed(self, event: TaskCompleted):
-        # Analytics, notifications, etc.
-        pass
-```
-
-## 🧪 Testing Architecture
-
-### Testing Pyramid
-
-```
-                    ┌─────────────────┐
-                    │   E2E Tests     │ <- Browser automation
-                    │   (Playwright)  │
-                    └─────────────────┘
-                   ┌─────────────────────┐
-                   │  Integration Tests  │ <- API + DB tests
-                   │     (pytest)        │
-                   └─────────────────────┘
-                 ┌───────────────────────────┐
-                 │     Unit Tests            │ <- Component/function tests
-                 │  (pytest + React Testing) │
-                 └───────────────────────────┘
-```
-
-### Test Strategies
-
-#### Backend Testing
-```python
-# Domain logic tests
-def test_task_deferral_updates_sort_order():
-    task = Task(id=uuid4(), title="Test", sort_order=1)
-    service = TaskService(MockRepository())
-    
-    result = await service.defer_task(task.id)
-    
-    assert result.sort_order > 1
-    assert result.deferred_at is not None
-
-# Integration tests
-def test_complete_workflow(test_client):
-    # Create task
-    response = test_client.post("/tasks", json={"title": "Test"})
-    task_id = response.json()["id"]
-    
-    # Create substack
-    response = test_client.post(f"/tasks/{task_id}/substacks", 
-                               json={"name": "Sub"})
-    
-    # Verify hierarchy
-    response = test_client.get("/tasks")
-    tasks = response.json()
-    assert len(tasks[0]["substacks"]) == 1
-```
-
-#### Frontend Testing
-```typescript
-// Component tests
-test('TaskCard swipe gestures work correctly', () => {
-  const onComplete = jest.fn()
-  const onDefer = jest.fn()
-  
-  render(<TaskCard task={mockTask} onSwipeRight={onComplete} onSwipeLeft={onDefer} />)
-  
-  fireEvent.swipeRight(screen.getByTestId('task-card'))
-  expect(onComplete).toHaveBeenCalledWith(mockTask.id)
-})
-
-// Integration tests
-test('Task creation workflow', async () => {
-  render(<App />)
-  
-  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'New Task' } })
-  fireEvent.click(screen.getByRole('button', { name: /add task/i }))
-  
-  await waitFor(() => {
-    expect(screen.getByText('New Task')).toBeInTheDocument()
-  })
-})
-```
-
-## 🚀 Performance Considerations
-
-### Frontend Optimizations
-- **React.memo()** for component memoization
-- **useMemo()** for expensive calculations
-- **useCallback()** for stable function references
-- **Code splitting** with React.lazy()
-- **Virtual scrolling** for large task lists (future)
-
-### Backend Optimizations
-- **Database indexing** on frequently queried columns
-- **Connection pooling** for database connections
-- **Async/await** patterns for non-blocking operations
-- **Query optimization** with SQLAlchemy
-- **Caching** with Redis (future enhancement)
-
-### Mobile Performance
-- **Touch-optimized gestures** with react-use-gesture
-- **Smooth animations** at 60fps with Framer Motion
-- **Responsive images** and asset optimization
-- **Service Worker** for offline capabilities (future)
-
-## 🔒 Security Architecture
-
-### Current Security Measures
-- **Input validation** with Pydantic
-- **SQL injection prevention** via SQLAlchemy ORM
-- **CORS configuration** for cross-origin requests
-- **Data sanitization** in API endpoints
-
-### Future Security Enhancements
-```python
-# Authentication & Authorization
-class AuthService:
-    async def authenticate_user(self, token: str) -> User:
-        # JWT validation, user lookup
-        pass
-    
-    async def authorize_task_access(self, user: User, task_id: UUID) -> bool:
-        # Check task ownership/sharing permissions
-        pass
-
-# Security middleware
-@app.middleware("http")
-async def security_middleware(request: Request, call_next):
-    # Rate limiting, security headers, etc.
-    response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    return response
-```
-
-## 🔄 Integration Architecture
-
-### External System Integration
-```python
-# Adapter pattern for external systems
-class ExternalTaskAdapter(ABC):
-    @abstractmethod
-    async def import_tasks(self) -> List[ExternalTask]: ...
-    
-    @abstractmethod
-    async def export_task(self, task: Task) -> bool: ...
-
-class LinearAdapter(ExternalTaskAdapter):
-    def __init__(self, api_key: str):
-        self.client = LinearClient(api_key)
-    
-    async def import_tasks(self) -> List[ExternalTask]:
-        issues = await self.client.get_issues()
-        return [self._map_issue_to_task(issue) for issue in issues]
-
-class JiraAdapter(ExternalTaskAdapter):
-    # Jira-specific implementation
-    pass
-```
-
-### Event-Driven Architecture (Future)
-```python
-# Message bus for decoupled communication
-class MessageBus:
-    def __init__(self):
-        self.handlers = defaultdict(list)
-    
-    def register_handler(self, event_type: Type, handler: Callable):
-        self.handlers[event_type].append(handler)
-    
-    async def publish(self, event: DomainEvent):
-        for handler in self.handlers[type(event)]:
-            await handler(event)
-```
-
-## 🎛️ Configuration Management
-
-### Environment-Based Configuration
-```python
-class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str
-    
-    # API
-    API_HOST: str = "127.0.0.1"
-    API_PORT: int = 8000
-    
-    # External integrations
-    LINEAR_API_KEY: Optional[str] = None
-    JIRA_API_KEY: Optional[str] = None
-    
-    # Feature flags
-    ENABLE_INTEGRATIONS: bool = False
-    ENABLE_ANALYTICS: bool = False
-    
-    class Config:
-        env_file = ".env"
-```
-
-## 📈 Monitoring & Observability (Future)
-
-### Metrics Collection
-```python
-# Custom metrics
-from prometheus_client import Counter, Histogram, Gauge
-
-TASK_OPERATIONS = Counter('task_operations_total', 'Total task operations', ['operation'])
-REQUEST_DURATION = Histogram('request_duration_seconds', 'Request duration')
-ACTIVE_TASKS = Gauge('active_tasks_total', 'Number of active tasks')
-
-# Usage
-@REQUEST_DURATION.time()
-async def create_task(task_data: TaskCreate):
-    TASK_OPERATIONS.labels(operation='create').inc()
-    # ... business logic
-```
-
-### Logging Strategy
-```python
-import structlog
-
-logger = structlog.get_logger()
-
-async def defer_task(task_id: UUID):
-    logger.info("Task deferral initiated", task_id=str(task_id))
-    try:
-        result = await task_service.defer_task(task_id)
-        logger.info("Task deferred successfully", 
-                   task_id=str(task_id), 
-                   new_sort_order=result.sort_order)
-        return result
-    except Exception as e:
-        logger.error("Task deferral failed", 
-                    task_id=str(task_id), 
-                    error=str(e))
-        raise
-```
-
----
-
-This architecture provides a solid foundation for the current MVP while maintaining flexibility for future enhancements like multi-user support, advanced integrations, and scale-out scenarios.
+- **Store/domain**: vitest + jsdom (`src/services/__tests__/`, 13 tests
+  today; the domain layer lands with its own suite — RED ZONE for
+  schema v2 and lifecycle logic).
+- **Backend**: pytest with per-test in-memory SQLite (conftest.py).
+- **Behavioral**: Playwright at 390×844 against the dev server — the
+  standard of proof for every UI change ("screenshots beat guessing").
+- **Migration** (upcoming, R1.3): fixture v1 documents → migrate →
+  assert v2 shape → export → import → assert round-trip.

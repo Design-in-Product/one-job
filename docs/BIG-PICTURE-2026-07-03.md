@@ -3,7 +3,10 @@
 **Author**: Coral · 2026-07-03
 **Prompted by**: Xian — "These ideas [MCP, adapters] are quite advanced, and
 I don't know if we have the basics right yet."
-**Status**: discussion substrate; roadmap updates pending the conversation.
+**Status**: SUPERSEDED same day — the vision conversation happened
+(docs/VISION-2026-07.md, 12 items) and produced docs/ROADMAP.md,
+docs/DOMAIN-MODEL.md, and docs/DEPENDENCIES.md, which replace the tier
+sketch below. Kept for the audit findings, which remain accurate.
 
 ## The honest one-line summary
 
