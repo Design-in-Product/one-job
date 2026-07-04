@@ -136,6 +136,48 @@ describe('substacks', () => {
   });
 });
 
+describe('undo via restoreTask', () => {
+  it('restoring a pre-completion snapshot un-completes the task', async () => {
+    const store = freshStore();
+    const t = await store.createTask('Oops');
+    const snapshot = structuredClone(t);
+    await store.completeTask(t.id);
+
+    await store.restoreTask(snapshot);
+    const restored = (await store.getAllTasks()).find(x => x.id === t.id)!;
+    expect(restored.completed).toBe(false);
+    expect(restored.completedAt).toBeUndefined();
+    expect(restored.status).toBe('todo');
+
+    // survives a cold start with dates revived
+    const cold = (await freshStore().getAllTasks()).find(x => x.id === t.id)!;
+    expect(cold.completed).toBe(false);
+    expect(cold.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('restoring a pre-deferral snapshot puts the task back on top', async () => {
+    const store = freshStore();
+    const first = await store.createTask('First');
+    await store.createTask('Second');
+    const snapshot = structuredClone(first);
+
+    await store.deferTask(first.id);
+    expect((await store.getAllTasks())[0].title).toBe('Second');
+
+    await store.restoreTask(snapshot);
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].title).toBe('First');
+    expect(tasks[0].deferralCount ?? 0).toBe(0);
+  });
+
+  it('throws when the snapshot task no longer exists', async () => {
+    const ghost: Task = {
+      id: 'ghost', title: 'Ghost', completed: false, createdAt: new Date(), sortOrder: 1
+    };
+    await expect(freshStore().restoreTask(ghost)).rejects.toThrow('Task not found');
+  });
+});
+
 describe('data safety net (wipe protection)', () => {
   const snapshotKeys = () => {
     const keys: string[] = [];
