@@ -21,6 +21,9 @@ const reviveTask = (t: Task): Task => ({
   }))
 });
 
+/** Dated snapshots kept as a wipe/corruption safety net */
+const SNAPSHOT_RETENTION = 7;
+
 export class LocalTaskStore implements TaskStore {
   protected tasks: Task[] = [];
 
@@ -32,23 +35,92 @@ export class LocalTaskStore implements TaskStore {
     this.initializeTasks(seedTasks);
   }
 
+  private metaKey() {
+    return `${this.storageKey}.meta`;
+  }
+
+  private snapshotPrefix() {
+    return `${this.storageKey}.snapshot.`;
+  }
+
+  private listSnapshotKeys(): string[] {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith(this.snapshotPrefix())) keys.push(k);
+    }
+    return keys.sort(); // ISO dates sort chronologically
+  }
+
   private initializeTasks(seedTasks: Task[]) {
     const saved = localStorage.getItem(this.storageKey);
-    if (saved) {
+    if (saved !== null) {
       try {
         this.tasks = (JSON.parse(saved) as Task[]).map(reviveTask);
+        this.writeSnapshot(saved);
         return;
       } catch {
-        console.warn(`Failed to load tasks from localStorage key "${this.storageKey}", reseeding`);
+        // Preserve the unreadable payload for manual recovery — never clobber it
+        localStorage.setItem(`${this.storageKey}.corrupt.${Date.now()}`, saved);
+        console.warn(`Corrupt data in "${this.storageKey}" quarantined; attempting snapshot restore`);
+        if (this.restoreFromSnapshot()) return;
       }
+    } else if (this.restoreFromSnapshot()) {
+      return;
     }
     this.tasks = [...seedTasks];
     this.saveTasks();
   }
 
+  /**
+   * The main key vanished or was unreadable. If meta says data existed,
+   * bring back the newest readable snapshot rather than starting empty.
+   */
+  private restoreFromSnapshot(): boolean {
+    const metaRaw = localStorage.getItem(this.metaKey());
+    if (!metaRaw) return false; // genuinely fresh install
+    try {
+      if (!(JSON.parse(metaRaw).count > 0)) return false;
+    } catch {
+      return false;
+    }
+    for (const key of this.listSnapshotKeys().reverse()) {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      try {
+        const tasks = (JSON.parse(raw) as Task[]).map(reviveTask);
+        if (tasks.length === 0) continue;
+        this.tasks = tasks;
+        console.warn(`"${this.storageKey}" was missing; restored ${tasks.length} tasks from ${key}`);
+        this.saveTasks();
+        return true;
+      } catch {
+        // unreadable snapshot — try the next older one
+      }
+    }
+    return false;
+  }
+
+  private writeSnapshot(serialized: string) {
+    const key = `${this.snapshotPrefix()}${new Date().toISOString().slice(0, 10)}`;
+    // Guard: an empty deck never overwrites a non-empty snapshot
+    if (this.tasks.length === 0) {
+      const existing = localStorage.getItem(key);
+      if (existing && existing !== '[]') return;
+    }
+    localStorage.setItem(key, serialized);
+    const stale = this.listSnapshotKeys().reverse().slice(SNAPSHOT_RETENTION);
+    stale.forEach(k => localStorage.removeItem(k));
+  }
+
   protected saveTasks() {
     const serialized = JSON.stringify(this.tasks);
     localStorage.setItem(this.storageKey, serialized);
+    localStorage.setItem(
+      this.metaKey(),
+      JSON.stringify({ count: this.tasks.length, updatedAt: new Date().toISOString() })
+    );
+    this.writeSnapshot(serialized);
     mirrorToNativeStorage(this.storageKey, serialized);
   }
 

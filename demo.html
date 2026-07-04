@@ -161,7 +161,11 @@
 
         function resetDemo() {
             if (confirm('Reset demo to original state? This will clear all your changes.')) {
-                localStorage.removeItem('oneJobDemoTasks');
+                // Clear the demo store AND its safety-net keys (.meta/.snapshot.*),
+                // or the wipe-protection layer would faithfully restore the data
+                Object.keys(localStorage)
+                    .filter(k => k.startsWith('oneJobDemoTasks'))
+                    .forEach(k => localStorage.removeItem(k));
                 localStorage.removeItem('demoBannerCollapsed');
                 localStorage.removeItem('demoBannerDismissed'); // Clean up old key
                 window.location.reload();
@@ -289,7 +293,7 @@
     </script>
 
     <!-- Load the built React app from root assets -->  
-    <script type="module" crossorigin src="/app/assets/index-Tgwfifk3.js"></script>
+    <script type="module" crossorigin src="/app/assets/index-Q8ssUq5Y.js"></script>
     <link rel="stylesheet" crossorigin href="/app/assets/index-BOJPzDpu.css">
 </body>
 </html>

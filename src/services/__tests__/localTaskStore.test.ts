@@ -50,7 +50,7 @@ describe('LocalTaskStore basics', () => {
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
   });
 
-  it('recovers from corrupt storage by reseeding', async () => {
+  it('recovers from corrupt storage by reseeding when no snapshot exists', async () => {
     localStorage.setItem(KEY, '{not json');
     const store = new LocalTaskStore(KEY, []);
     expect(await store.getAllTasks()).toEqual([]);
@@ -133,6 +133,78 @@ describe('substacks', () => {
 
   it('throws when the substack does not exist', async () => {
     await expect(freshStore().addSubstackTask('nope', 'x')).rejects.toThrow('Substack not found');
+  });
+});
+
+describe('data safety net (wipe protection)', () => {
+  const snapshotKeys = () => {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith(`${KEY}.snapshot.`)) keys.push(k);
+    }
+    return keys.sort();
+  };
+
+  it('writes meta and a dated snapshot on every save', async () => {
+    await freshStore().createTask('Precious');
+    const meta = JSON.parse(localStorage.getItem(`${KEY}.meta`)!);
+    expect(meta.count).toBe(1);
+    expect(meta.updatedAt).toBeTruthy();
+    const snaps = snapshotKeys();
+    expect(snaps).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!)).toHaveLength(1);
+  });
+
+  it('restores from the newest snapshot when the main key disappears', async () => {
+    await freshStore().createTask('Survivor');
+    localStorage.removeItem(KEY); // the wipe
+    const tasks = await freshStore().getAllTasks();
+    expect(tasks.map(t => t.title)).toEqual(['Survivor']);
+    expect(tasks[0].createdAt).toBeInstanceOf(Date);
+    // main key is re-established
+    expect(JSON.parse(localStorage.getItem(KEY)!)).toHaveLength(1);
+  });
+
+  it('does not restore for a genuinely fresh install (no meta)', async () => {
+    // simulate a stray snapshot without meta — e.g. partial manual cleanup
+    localStorage.setItem(`${KEY}.snapshot.2026-01-01`, JSON.stringify([{ id: 'x', title: 'Ghost', completed: false, createdAt: '2026-01-01T00:00:00.000Z' }]));
+    expect(await freshStore().getAllTasks()).toEqual([]);
+  });
+
+  it('quarantines corrupt data instead of overwriting it, then restores from snapshot', async () => {
+    await freshStore().createTask('Fragile');
+    localStorage.setItem(KEY, '{not json'); // corruption
+    const tasks = await freshStore().getAllTasks();
+    expect(tasks.map(t => t.title)).toEqual(['Fragile']);
+    // the corrupt payload was preserved, not clobbered
+    const quarantined: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith(`${KEY}.corrupt.`)) quarantined.push(k);
+    }
+    expect(quarantined).toHaveLength(1);
+    expect(localStorage.getItem(quarantined[0])).toBe('{not json');
+  });
+
+  it('never overwrites a non-empty snapshot with an empty deck', async () => {
+    const store = freshStore();
+    await store.createTask('Keep me');
+    await store.importTasks([]); // legitimate empty save
+    const snaps = snapshotKeys();
+    expect(snaps).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!)).toHaveLength(1);
+  });
+
+  it('prunes snapshots beyond the retention window', async () => {
+    for (let d = 1; d <= 9; d++) {
+      localStorage.setItem(`${KEY}.snapshot.2026-06-0${d}`, '[]');
+    }
+    await freshStore().createTask('Today');
+    const snaps = snapshotKeys();
+    expect(snaps.length).toBeLessThanOrEqual(7);
+    // the newest (today's) snapshot is among the survivors
+    expect(snaps.some(k => !k.includes('2026-06-'))).toBe(true);
   });
 });
 
