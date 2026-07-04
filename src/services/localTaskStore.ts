@@ -6,20 +6,7 @@ import { Task, Substack } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-
-// Revive Date fields on a task and its nested substacks after JSON parsing
-// (localStorage loads and backup imports both carry dates as strings).
-const reviveTask = (t: Task): Task => ({
-  ...t,
-  createdAt: new Date(t.createdAt),
-  completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
-  deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
-  substacks: t.substacks?.map(s => ({
-    ...s,
-    createdAt: new Date(s.createdAt),
-    tasks: s.tasks.map(reviveTask)
-  }))
-});
+import { reviveTask, sortTasks, nextSortOrder, applyCompletion, applyDeferral } from '@/domain/tasks';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -124,25 +111,6 @@ export class LocalTaskStore implements TaskStore {
     mirrorToNativeStorage(this.storageKey, serialized);
   }
 
-  private sortTasks(tasks: Task[]): Task[] {
-    return tasks.sort((a, b) => {
-      if (a.completed !== b.completed) {
-        return a.completed ? 1 : -1;
-      }
-      if (!a.completed && !b.completed) {
-        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-      }
-      const aDate = a.completedAt?.getTime() || 0;
-      const bDate = b.completedAt?.getTime() || 0;
-      return bDate - aDate;
-    });
-  }
-
-  private nextSortOrder(): number {
-    const active = this.tasks.filter(t => !t.completed);
-    return active.length > 0 ? Math.max(...active.map(t => t.sortOrder ?? 0)) + 1 : 1;
-  }
-
   private findTask(id: string): Task {
     const task = this.tasks.find(t => t.id === id);
     if (!task) throw new Error('Task not found');
@@ -150,7 +118,7 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async getAllTasks(): Promise<Task[]> {
-    return this.sortTasks([...this.tasks]);
+    return sortTasks([...this.tasks]);
   }
 
   async createTask(title: string, description?: string): Promise<Task> {
@@ -161,7 +129,7 @@ export class LocalTaskStore implements TaskStore {
       completed: false,
       status: 'todo',
       createdAt: new Date(),
-      sortOrder: this.nextSortOrder(),
+      sortOrder: nextSortOrder(this.tasks),
       source: this.sourceLabel,
       substacks: []
     };
@@ -178,19 +146,13 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async completeTask(id: string): Promise<Task> {
-    const task = this.findTask(id);
-    task.completed = true;
-    task.status = 'done';
-    task.completedAt = new Date();
+    const task = applyCompletion(this.findTask(id));
     this.saveTasks();
     return task;
   }
 
   async deferTask(id: string): Promise<Task> {
-    const task = this.findTask(id);
-    task.sortOrder = this.nextSortOrder();
-    task.deferredAt = new Date();
-    task.deferralCount = (task.deferralCount || 0) + 1;
+    const task = applyDeferral(this.findTask(id), this.tasks);
     this.saveTasks();
     return task;
   }
