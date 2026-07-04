@@ -137,6 +137,36 @@ const Index = () => {
   };
 
 
+  // Undo support: restore a pre-action snapshot of a task (5s toast window).
+  // Only offered when the active store implements restoreTask (local/demo).
+  const undoTaskAction = async (snapshot: Task) => {
+    const store = getTaskStore();
+    if (!store.restoreTask) return;
+    try {
+      await store.restoreTask(snapshot);
+      toast.success(t('toasts.undone'));
+      refreshTasks();
+    } catch (err) {
+      console.error("Failed to undo:", err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Snapshot a task's current state before mutating it, for undo. Must be a
+  // deep clone: the local store mutates the same objects React state holds.
+  const snapshotTask = (taskId: string): Task | undefined => {
+    const task = tasks.find(tk => tk.id === taskId);
+    return task ? structuredClone(task) : undefined;
+  };
+
+  const undoToastOptions = (snapshot: Task | undefined) =>
+    snapshot && getTaskStore().restoreTask
+      ? {
+          duration: 5000,
+          action: { label: t('toasts.undo'), onClick: () => undoTaskAction(snapshot) },
+        }
+      : undefined;
+
   // --- MODIFIED: handleCompleteTask to send PUT request ---
   const handleCompleteTask = async (taskId: string) => {
     if (currentSubstack) {
@@ -180,11 +210,12 @@ const Index = () => {
         toast.error(t('toasts.completeFailed', { message: (err as Error).message }));
       }
     } else {
+      const snapshot = snapshotTask(taskId);
       try {
         await getTaskStore().completeTask(taskId);
         toast.success(isDemoMode
           ? DemoService.getInstance().getDemoMessage('taskCompleted')
-          : t('toasts.taskCompleted'));
+          : t('toasts.taskCompleted'), undoToastOptions(snapshot));
         refreshTasks();
       } catch (err) {
         console.error("Failed to complete task:", err);
@@ -233,11 +264,12 @@ const Index = () => {
       });
       toast.info(t('toasts.substackTaskDeferred'));
     } else {
+      const snapshot = snapshotTask(taskId);
       try {
         await getTaskStore().deferTask(taskId);
         toast.info(isDemoMode
           ? DemoService.getInstance().getDemoMessage('taskDeferred')
-          : t('toasts.taskDeferred'));
+          : t('toasts.taskDeferred'), undoToastOptions(snapshot));
         refreshTasks();
       } catch (err) {
         console.error("Failed to defer task:", err);

@@ -97,6 +97,8 @@
       "readFailed": "Could not read backup: {{message}}"
     },
     "toasts": {
+      "undo": "Undo",
+      "undone": "Undone — the card is back",
       "taskUpdated": "Task updated!",
       "taskAdded": "Task added!",
       "taskCompleted": "Task completed!",

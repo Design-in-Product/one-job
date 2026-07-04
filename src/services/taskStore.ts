@@ -28,6 +28,12 @@ export interface TaskStore {
    * don't own their data (the API store) — the UI disables import there.
    */
   importTasks?(tasks: Task[]): Promise<void>;
+  /**
+   * Undo support: restore a task to a pre-action snapshot. Absent on
+   * stores that can't guarantee it (the API store) — the UI only offers
+   * Undo when this exists.
+   */
+  restoreTask?(snapshot: Task): Promise<void>;
 }
 
 let store: TaskStore | null = null;

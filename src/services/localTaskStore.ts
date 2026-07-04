@@ -244,6 +244,17 @@ export class LocalTaskStore implements TaskStore {
     throw new Error('Substack task not found');
   }
 
+  /**
+   * Undo support: put a task back exactly as it was in the snapshot
+   * (completion, timestamps, deferral count, sort order).
+   */
+  async restoreTask(snapshot: Task): Promise<void> {
+    const index = this.tasks.findIndex(t => t.id === snapshot.id);
+    if (index === -1) throw new Error('Task not found');
+    this.tasks[index] = reviveTask(structuredClone(snapshot));
+    this.saveTasks();
+  }
+
   async importTasks(tasks: Task[]): Promise<void> {
     this.tasks = tasks.map(reviveTask);
     this.saveTasks();
