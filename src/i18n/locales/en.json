@@ -80,6 +80,10 @@
         }
       },
       "backup": "Backup",
+      "lastBackupNever": "No backup file yet — export one so your tasks live somewhere besides this device.",
+      "lastBackupToday": "Last backup: today",
+      "lastBackupDays_one": "Last backup: {{count}} day ago",
+      "lastBackupDays_other": "Last backup: {{count}} days ago",
       "export": "Export tasks to file",
       "import": "Import backup...",
       "importConfirm_one": "Replace your current tasks with {{count}} task from this backup? This cannot be undone.",
