@@ -1,9 +1,10 @@
 # One Job — Domain Model
 
-**Author**: Coral · 2026-07-03 · distilled from docs/VISION-2026-07.md
-(Xian's twelve vision items) plus the shipped 1.0 codebase.
-**Status**: DRAFT for Xian's review. This is the concept model the code
-should converge on; where today's code differs, the difference is noted.
+**Author**: Coral · 2026-07-03, baselined 2026-07-04 after Xian's review
+("your reflections are apt") · distilled from docs/VISION-2026-07.md
+(fourteen vision items) plus the shipped 1.0 codebase.
+**Status**: BASELINE. This is the concept model the code converges on;
+where today's code differs, the difference is noted.
 
 ## The one-sentence model
 
@@ -33,6 +34,12 @@ A card does **not** have a status field in the domain model. Its
 lifecycle state is *where it is* — which deck it sits in. (Code today:
 `completed: boolean` + backend `status`; both become derivable from
 deck membership.)
+
+**"In progress" is emergent, not stored** (Item 14, Xian's own
+resolution): a card is binary — done or not — at leaf level, always. A
+card whose interior holds unfinished cards *is* in progress: it comes
+back to the top of the deck and you see the remaining work. The
+containment tree already knows; no third state exists.
 
 ## 2. Deck
 
@@ -148,6 +155,19 @@ A key unification: an **agent dealing a card** (MCP inbox) and an
 **imported Asana task** are the same domain event — a card arriving
 with external provenance. One seam serves both (see ARCHITECTURE.md).
 
+## 6b. Actors and assignment (Item 14, far horizon)
+
+**Decks belong to actors.** The human owns theirs; a known agent
+("Pard," "Carl") can own one too. **Assignment = dealing a card onto
+another actor's deck** — the same move-between-decks mechanic as
+everything else; "state is place" extends to *whose* place. The card
+stays visible on the human's deck while assigned (delegation reads as
+"the inside of this is in someone else's hands" — the same visual
+language as an unfinished interior). Completion events flow back, and
+the card advances exactly as if the human had swiped it. Inbox
+(agent→human) and dispatch (human→agent) are the two directions of one
+card-dealing protocol.
+
 ## 7. What this supersedes
 
 | Today (code) | Domain model |
@@ -172,3 +192,6 @@ with external provenance. One seam serves both (see ARCHITECTURE.md).
    connected service's shape.
 6. **Local-first**: the device owns the deck; everything remote is an
    adapter at the store seam.
+7. **An update never costs the user their data** (Item 13). Every save
+   is snapshotted; loss paths restore, corruption quarantines; schema
+   changes migrate and round-trip through backup — or they don't ship.
