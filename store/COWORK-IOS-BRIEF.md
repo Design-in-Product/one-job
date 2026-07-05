@@ -100,6 +100,27 @@ github.com/Design-in-Product/one-job → Settings → Secrets and variables →
 Actions. Add them (or hand the values to Xian to add). Do NOT commit the
 keystore; it is gitignored.
 
+## State addendum (2026-07-05, Coral) — read before resuming Phase 4
+
+Main has moved since Phases 1–3. If you cloned before 2026-07-04, **start
+from a fresh clone** (clean clone → `npm ci` → `npm run build:native` →
+`npx cap sync ios` per Phase 1). What changed that affects you:
+
+- **Version is now 1.0.0-rc.3** (Settings shows it — use it to confirm
+  you built current code).
+- **New user-visible features to include in the on-device smoke test**:
+  (1) swipe a card away → an Undo button appears in the toast for 5s;
+  tapping it must bring the card back; (2) Settings → Backup now shows a
+  "Last backup…" line; (3) app chrome/splash should blend with the app's
+  gray surface (no coral status-bar frame, no cream splash flash).
+- **Data safety net** now runs under everything (snapshots + auto-
+  restore) — kill/relaunch and airplane-mode checks from Phase 3 remain
+  valid as-is.
+- **CI note**: all workflows now require Node 22; if you run node
+  locally, use 19+ (18 lacks the global crypto the build needs).
+- The BUNDLEID warning stands unchanged: **select the paid team BEFORE
+  any device run** — co.onejob.deck must never touch a Personal Team.
+
 ## Report back
 
 Post results (and any deviations) to Xian; Coral will fold them into the

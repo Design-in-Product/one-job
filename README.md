@@ -49,7 +49,7 @@
 **👆 Swipe Gestures** • Complete (→) or defer (←) with natural gestures  
 **📚 Smart Substacks** • Break big tasks into smaller ones without losing focus  
 **🔄 Intelligent Ordering** • Deferred tasks automatically move to the back  
-**💾 Always Saved** • Every action syncs instantly - never lose work  
+**💾 Always Saved** • Every action persists instantly, with automatic daily snapshots and one-tap Undo  
 **🌐 Integration Ready** • Import from Jira, Linear, Todoist (coming soon)
 
 ## 🚀 Get Started
@@ -93,7 +93,8 @@ A: Jira, Linear, and Todoist imports coming soon. For now, start fresh - it's li
 
 **✅ 1.0 (release candidate)** — Card Deck Experience: 3D card flips, swipe
 gestures with haptics, substacks, offline-capable installable PWA,
-local-first storage with JSON backup/restore  
+local-first storage with JSON backup/restore, undo, and a wipe-proof
+snapshot safety net  
 **🚧 In flight** — iOS (TestFlight) and Android (Play) store releases  
 **🔭 Next** — agent inbox via MCP, Todoist/Jira/Linear imports, cross-device sync
 
