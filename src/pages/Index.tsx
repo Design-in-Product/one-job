@@ -137,6 +137,21 @@ const Index = () => {
   };
 
 
+  // Recovery: return an accidentally-completed task to the top of the deck.
+  const handleUncompleteTask = async (taskId: string) => {
+    const store = getTaskStore();
+    if (!store.uncompleteTask) return;
+    try {
+      await store.uncompleteTask(taskId);
+      toast.success(t('toasts.uncompleted'));
+      refreshTasks();
+      setCurrentView('main');
+    } catch (err) {
+      console.error("Failed to un-complete:", err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
   // Undo support: restore a pre-action snapshot of a task (5s toast window).
   // Only offered when the active store implements restoreTask (local/demo).
   const undoTaskAction = async (snapshot: Task) => {
@@ -154,9 +169,18 @@ const Index = () => {
 
   // Snapshot a task's current state before mutating it, for undo. Must be a
   // deep clone: the local store mutates the same objects React state holds.
+  // Never throws — a failed snapshot only costs the Undo offer, not the swipe.
   const snapshotTask = (taskId: string): Task | undefined => {
-    const task = tasks.find(tk => tk.id === taskId);
-    return task ? structuredClone(task) : undefined;
+    try {
+      const task = tasks.find(tk => tk.id === taskId);
+      if (!task) return undefined;
+      return typeof structuredClone === 'function'
+        ? structuredClone(task)
+        : (JSON.parse(JSON.stringify(task)) as Task);
+    } catch (err) {
+      console.warn('Snapshot for undo failed:', err);
+      return undefined;
+    }
   };
 
   const undoToastOptions = (snapshot: Task | undefined) =>
@@ -397,7 +421,10 @@ const Index = () => {
                     {t('nav.backToTasks')}
                   </button>
                 </div>
-                <CompletedTasks tasks={completedTasks} />
+                <CompletedTasks
+                  tasks={completedTasks}
+                  onUncomplete={getTaskStore().uncompleteTask ? handleUncompleteTask : undefined}
+                />
               </div>
             )}
             

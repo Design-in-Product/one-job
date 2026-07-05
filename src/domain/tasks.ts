@@ -65,3 +65,18 @@ export const applyDeferral = (task: Task, tasks: Task[]): Task => {
   task.deferralCount = (task.deferralCount || 0) + 1;
   return task;
 };
+
+/**
+ * Un-complete: recover an accidentally-finished task to the TOP of the
+ * active deck ("actually, I didn't finish that"). Mutates in place.
+ */
+export const applyUncompletion = (task: Task, tasks: Task[]): Task => {
+  const active = tasks.filter(t => !t.completed && t.id !== task.id);
+  task.completed = false;
+  task.status = 'todo';
+  task.completedAt = undefined;
+  task.sortOrder = active.length > 0
+    ? Math.min(...active.map(t => t.sortOrder ?? 0)) - 1
+    : 1;
+  return task;
+};
