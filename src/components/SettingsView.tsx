@@ -8,7 +8,7 @@ import { Task } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { toast } from '@/components/ui/sonner';
-import { Download, Upload, Smartphone, Cloud, FlaskConical } from 'lucide-react';
+import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const BACKUP_VERSION = 1;
@@ -47,29 +47,81 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         ? t('settings.lastBackupToday')
         : t('settings.lastBackupDays', { count: backupAgeDays });
 
+  const buildBackup = async () => {
+    const tasks = await getTaskStore().getAllTasks();
+    const json = JSON.stringify(
+      { app: 'one-job', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), tasks },
+      null,
+      2
+    );
+    return { tasks, json, filename: `onejob-backup-${new Date().toISOString().slice(0, 10)}.json` };
+  };
+
+  const recordExport = () => {
+    const now = new Date().toISOString();
+    localStorage.setItem(LAST_EXPORT_KEY, now);
+    setLastExport(now);
+  };
+
+  // HARD LESSON (2026-07-05, real data lost): iOS home-screen web apps can
+  // silently drop programmatic blob downloads, and the old code toasted
+  // success after merely ATTEMPTING one. Success toasts must report
+  // observed outcomes. Path 1: the share sheet — its promise resolves only
+  // after the user completes saving. Path 2 (no share support, i.e.
+  // desktop browsers where downloads are dependable): anchor download,
+  // messaged honestly with the filename to verify.
   const handleExport = async () => {
     try {
-      const tasks = await getTaskStore().getAllTasks();
-      const backup = {
-        app: 'one-job',
-        version: BACKUP_VERSION,
-        exportedAt: new Date().toISOString(),
-        tasks
-      };
-      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+      const { tasks, json, filename } = await buildBackup();
+      const file = new File([json], filename, { type: 'application/json' });
+
+      if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file] });
+          recordExport();
+          toast.success(t('settings.exported', { count: tasks.length }));
+          return;
+        } catch (err) {
+          if ((err as Error).name === 'AbortError') {
+            toast.info(t('settings.exportCancelled'));
+            return;
+          }
+          // share failed for another reason — fall through to download
+        }
+      }
+
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
       const a = document.createElement('a');
       a.href = url;
-      a.download = `onejob-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-      const now = new Date().toISOString();
-      localStorage.setItem(LAST_EXPORT_KEY, now);
-      setLastExport(now);
-      toast.success(t('settings.exported', { count: tasks.length }));
+      recordExport();
+      toast.info(t('settings.exportDownloaded', { filename }), { duration: 8000 });
     } catch (err) {
       toast.error(t('settings.exportFailed', { message: (err as Error).message }));
     }
+  };
+
+  // Path 3, the bulletproof one: the clipboard write is a promise that
+  // resolves only when the data is actually on the clipboard.
+  const handleCopyBackup = async () => {
+    try {
+      const { tasks, json } = await buildBackup();
+      await navigator.clipboard.writeText(json);
+      recordExport();
+      toast.success(t('settings.copied', { count: tasks.length }));
+    } catch (err) {
+      toast.error(t('settings.copyFailed', { message: (err as Error).message }));
+    }
+  };
+
+  const stageImport = (raw: string) => {
+    const parsed = JSON.parse(raw);
+    if (parsed?.app !== 'one-job' || !Array.isArray(parsed.tasks)) {
+      throw new Error(t('settings.notABackup'));
+    }
+    setPendingImport(parsed.tasks);
   };
 
   const handleFileChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,11 +129,17 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     e.target.value = ''; // allow re-picking the same file
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
-      if (parsed?.app !== 'one-job' || !Array.isArray(parsed.tasks)) {
-        throw new Error(t('settings.notABackup'));
-      }
-      setPendingImport(parsed.tasks);
+      stageImport(await file.text());
+    } catch (err) {
+      toast.error(t('settings.readFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Restore half of the clipboard path (iOS shows its paste-permission
+  // prompt; the read only happens on explicit user gesture)
+  const handlePasteImport = async () => {
+    try {
+      stageImport(await navigator.clipboard.readText());
     } catch (err) {
       toast.error(t('settings.readFailed', { message: (err as Error).message }));
     }
@@ -152,6 +210,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
           <Download className="w-4 h-4" />
           {t('settings.export')}
         </Button>
+        <Button onClick={handleCopyBackup} className="w-full justify-start gap-2" variant="outline">
+          <Copy className="w-4 h-4" />
+          {t('settings.copyBackup')}
+        </Button>
 
         {canImport && (
           <>
@@ -162,6 +224,14 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
             >
               <Upload className="w-4 h-4" />
               {t('settings.import')}
+            </Button>
+            <Button
+              onClick={handlePasteImport}
+              className="w-full justify-start gap-2"
+              variant="outline"
+            >
+              <ClipboardPaste className="w-4 h-4" />
+              {t('settings.pasteImport')}
             </Button>
             <input
               ref={fileInputRef}

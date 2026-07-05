@@ -16,6 +16,15 @@ no stage builds on an unproven stage.
 1.0 is declared when **Xian trusts it with a real week** — and each
 later stage has an equivalent felt-trust gate, not a feature count.
 
+**HARD GATE (added 2026-07-05 after the first real data loss):** no
+public invitation, store listing activation, or landing-page CTA while
+the backup story is unproven on a real device. A backup path counts as
+proven only when its success signal reports an OBSERVED outcome (share
+sheet resolved, clipboard write resolved, download event seen) and the
+restore half has been exercised on-device. Losing a user's deck once is
+a bug; inviting users before the backup story is trustworthy would be a
+choice.
+
 ---
 
 ## R0 — Trust for daily use (finish 1.0) — NOW
@@ -26,7 +35,7 @@ off immediately.
 
 | # | Item | Source |
 |---|---|---|
-| R0.0 | **Data durability** — ✅ safety net shipped 07-04 (meta + dated snapshots + quarantine + auto-restore, test-first); remaining: export-age nudge in Settings, wipe forensics if it recurs | Item 13 🔴 |
+| R0.0 | **Data durability** — ✅ safety net (snapshots/quarantine/restore, 07-04); ✅ backup-age nudge (07-04); ✅ honest export: share-sheet + clipboard copy/paste paths, outcome-verified toasts (07-05, after real data loss); remaining: on-device proof of the share-sheet path (Xian), export-location hint | Item 13 🔴 |
 | R0.1 | **Undo toast** after complete/defer (5s window, one tap) | audit gap 1 |
 | R0.2 | **Deck-depth signal** (design call needed: number vs. suggestion) | audit gap 4 |
 | R0.3 | **Portal crispness pass** — kill the "swimming in an ill-fitting frame" feel (background/theme-color/overscroll/dvh suspects listed in Vision Item 9) | Item 9a |
