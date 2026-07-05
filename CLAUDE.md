@@ -21,6 +21,28 @@ The **Systematic Verification First** approach is our most transformative breakt
 
 If you haven't internalized these pillars, everything else will be slower and more error-prone.
 
+## DESTRUCTIVE-ACTION PROTOCOL (standing rule, 2026-07-05 — from Xian, after real data loss)
+
+**Never reassure the user into destroying data, no matter how recent or
+slight.** Before advising ANY step that deletes user data (removing a
+PWA icon, clearing storage, replacing via import, uninstalling):
+
+1. **Verify the safety copy by observation, not indication** — the user
+   must OPEN the backup and see their tasks in it. A success toast, a
+   file listing, or "the export ran" is not verification.
+2. **Stage the steps** so verification sits BETWEEN backup and
+   destruction, as its own halting step — the procedure stops there if
+   verification fails.
+3. **Weigh the stakes asymmetrically**: a stale, broken, or annoying app
+   state is always preferable to any risk to user data. When a fix
+   requires a destructive step, first look for the path that doesn't.
+
+Context: on 2026-07-05 an iOS export silently failed while the UI
+claimed success; the sanctioned reinstall procedure then destroyed the
+user's real deck. The toast was fixed the same hour (FR4.0b.8: success
+signals report observed outcomes only) — but the deeper rule is this
+protocol.
+
 ## Project Overview
 
 One Job is a mobile-first task management application built with domain-driven design principles. It features a card-based interface where users see one task at a time, enabling focused work through swipe-based interactions and hierarchical task organization (substacks).
