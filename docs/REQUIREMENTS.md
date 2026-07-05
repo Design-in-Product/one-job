@@ -131,8 +131,10 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR4.0b.3** Unreadable (corrupt) data SHALL be quarantined, never overwritten ✅
 - **FR4.0b.4** An empty deck SHALL never overwrite a non-empty snapshot ✅
 - **FR4.0b.5** Users SHALL be able to export/import their full deck as human-readable JSON ✅ (Settings)
-- **FR4.0b.6** Settings SHALL surface backup age and nudge when stale (build sequence #3)
+- **FR4.0b.6** Settings SHALL surface backup age and nudge when stale ✅
 - **FR4.0b.7** Schema migrations SHALL round-trip through backup export/import before shipping (R1.3 gate)
+- **FR4.0b.8** Export success indicators SHALL report OBSERVED outcomes only — a resolved share sheet, a resolved clipboard write, or an observed download — never a mere attempt ✅ (added 2026-07-05 after real data loss from a silently-failed iOS download)
+- **FR4.0b.9** Backup SHALL offer a clipboard path (copy AND paste-restore) that requires no filesystem or download machinery ✅
 
 #### FR4.1 Backend API (optional in 1.0; required for integrations/sync)
 - **FR4.1.1** System SHALL provide RESTful API for all operations
