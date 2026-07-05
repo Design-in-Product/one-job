@@ -87,6 +87,30 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     }
   };
 
+  // Manual escape hatch for stuck service workers (iOS PWAs can lag on
+  // the automatic checks — observed 2026-07-04). If a new version is
+  // found, the autoUpdate registration activates it and reloads.
+  const handleCheckForUpdates = async () => {
+    if (!('serviceWorker' in navigator)) {
+      toast.info(t('settings.updatesUnavailable'));
+      return;
+    }
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) {
+        toast.info(t('settings.updatesUnavailable'));
+        return;
+      }
+      toast.info(t('settings.updateChecking'));
+      await reg.update();
+      // If an update was found, the page reloads on activation; if we're
+      // still here after a beat, we're current.
+      setTimeout(() => toast.success(t('settings.updateCurrent', { version: __APP_VERSION__ })), 4000);
+    } catch (err) {
+      toast.error(t('settings.updateCheckFailed', { message: (err as Error).message }));
+    }
+  };
+
   const confirmImport = async () => {
     if (!pendingImport) return;
     try {
@@ -163,7 +187,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         )}
       </section>
 
-      <p className="text-center text-xs text-gray-400">{t('settings.version', { version: __APP_VERSION__ })}</p>
+      <div className="text-center space-y-1">
+        <p className="text-xs text-gray-400">{t('settings.version', { version: __APP_VERSION__ })}</p>
+        <button
+          onClick={handleCheckForUpdates}
+          className="text-xs text-gray-500 underline underline-offset-2"
+        >
+          {t('settings.checkForUpdates')}
+        </button>
+      </div>
     </div>
   );
 };
