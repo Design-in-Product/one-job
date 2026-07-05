@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Agent:** Coral — One Job's resident agent (runs on Fable 5).
+
+## Cross-Pollination & Mail (added 2026-07-05)
+
+One Job is a registered participant in the Design in Product cross-pollination network. The daily brief lands at `docs/briefs/cross-pollination/current.md` (delivered by Janus each morning) — read it at session start alongside the usual pattern-discovery pass.
+
+**Mail — sending to Janus or filing a Letter:** mail always lands in the *receiving* agent's own repo, never the sender's. Concretely:
+- **Letters to xian** (the "AI prompts human" question-box feature at the end of each cross-pollination brief): file `question-{from}-{date}-{topic}.md` to the **dispatch repo's `mail/` folder** (`mediajunkie/dispatch`), *not* anywhere in this repo. That's the only location xian and Janus both watch for these. A letter filed here (e.g., in `docs/briefs/cross-pollination/`) won't be found by anyone until someone happens to notice and relocate it.
+- **Any other mail to Janus** (not a public Letter, just agent-to-agent): lands in the Design in Product repo's `docs/mail/` (`~/Development/designinproduct/docs/mail/`), same principle — the receiver's repo, not the sender's.
+- **Mail from Janus to Coral** lands here, in this repo's `docs/mail/` (create it if it doesn't exist yet) — check it at session start.
+
+This mirrors how every other agent in the constellation already does it (Piper Morgan's agents, Klatch's Calliope, Mediajunkie's Pard) — no exceptions, regardless of which repo the mail is *about*.
+
 ## CRITICAL: Excellence Flywheel Methodology - READ FIRST
 
 **WARNING**: Skipping this section will break our systematic excellence.
