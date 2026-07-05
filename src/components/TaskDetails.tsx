@@ -26,20 +26,23 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   onOpenSubstack,
   onUpdateTask // <--- Destructure the new prop
 }) => {
+  // ALL hooks must run before any early return (Rules of Hooks): this
+  // component stays mounted with task=null and receives a task later,
+  // so a hook after the null-return crashes React with "rendered more
+  // hooks than during the previous render" (the 2026-07-05 white screen).
   const { t } = useTranslation();
-  if (!task) return null;
+  const [editedTitle, setEditedTitle] = useState(task?.title ?? '');
+  const [editedDescription, setEditedDescription] = useState(task?.description || '');
 
-  // <--- ADD LOCAL STATE FOR EDITABLE FIELDS
-  const [editedTitle, setEditedTitle] = useState(task.title);
-  const [editedDescription, setEditedDescription] = useState(task.description || ''); // Initialize with empty string for convenience
-
-  // <--- EFFECT TO SYNC LOCAL STATE WITH PROP CHANGES (when different task is opened)
+  // Sync local state when a different task is opened
   useEffect(() => {
     if (task) {
       setEditedTitle(task.title);
       setEditedDescription(task.description || '');
     }
   }, [task]);
+
+  if (!task) return null;
 
   const handleCreateSubstack = (name: string) => {
     onCreateSubstack(task.id, name);
