@@ -4,12 +4,16 @@ import { Task } from '@/types/task';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { Undo2 } from 'lucide-react';
 
 interface CompletedTasksProps {
   tasks: Task[];
+  /** Recover an accidentally-completed task to the top of the deck.
+      Absent when the active store can't support it. */
+  onUncomplete?: (taskId: string) => void;
 }
 
-const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
+const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks, onUncomplete }) => {
   const { t } = useTranslation();
   const completedTasks = tasks.filter(task => task.completed);
 
@@ -31,10 +35,24 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks }) => {
             "rounded-lg p-3 shadow-md text-white"
           )}
         >
-          <h3 className="font-medium">{task.title}</h3>
-          {task.description && (
-            <p className="text-sm text-white/90 mt-1">{task.description}</p>
-          )}
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <h3 className="font-medium">{task.title}</h3>
+              {task.description && (
+                <p className="text-sm text-white/90 mt-1">{task.description}</p>
+              )}
+            </div>
+            {onUncomplete && (
+              <button
+                onClick={() => onUncomplete(task.id)}
+                className="flex items-center gap-1 shrink-0 bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full px-3 py-1.5 text-xs font-medium"
+                aria-label={t('completed.uncompleteAria', { title: task.title })}
+              >
+                <Undo2 className="w-3.5 h-3.5" />
+                {t('completed.uncomplete')}
+              </button>
+            )}
+          </div>
           <div className="flex justify-between items-center mt-2 text-xs text-white/70">
             <span>
               {task.completedAt && (() => {

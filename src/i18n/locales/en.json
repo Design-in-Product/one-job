@@ -46,6 +46,8 @@
     },
     "completed": {
       "empty": "No completed tasks yet.",
+      "uncomplete": "Return to deck",
+      "uncompleteAria": "Return \"{{title}}\" to the deck",
       "completedAgo": "Completed {{ago}}",
       "completedRecently": "Completed recently"
     },
@@ -103,6 +105,7 @@
     "toasts": {
       "undo": "Undo",
       "undone": "Undone — the card is back",
+      "uncompleted": "Back on the deck — it's your next job",
       "taskUpdated": "Task updated!",
       "taskAdded": "Task added!",
       "taskCompleted": "Task completed!",

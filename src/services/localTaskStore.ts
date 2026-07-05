@@ -6,7 +6,7 @@ import { Task, Substack } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, nextSortOrder, applyCompletion, applyDeferral } from '@/domain/tasks';
+import { reviveTask, sortTasks, nextSortOrder, applyCompletion, applyDeferral, applyUncompletion } from '@/domain/tasks';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -153,6 +153,12 @@ export class LocalTaskStore implements TaskStore {
 
   async deferTask(id: string): Promise<Task> {
     const task = applyDeferral(this.findTask(id), this.tasks);
+    this.saveTasks();
+    return task;
+  }
+
+  async uncompleteTask(id: string): Promise<Task> {
+    const task = applyUncompletion(this.findTask(id), this.tasks);
     this.saveTasks();
     return task;
   }

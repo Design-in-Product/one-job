@@ -178,6 +178,39 @@ describe('undo via restoreTask', () => {
   });
 });
 
+describe('un-complete (recovery from accidental completion)', () => {
+  it('returns a completed task to the TOP of the active deck', async () => {
+    const store = freshStore();
+    const oops = await store.createTask('Oops done');
+    await store.createTask('Still active');
+    await store.completeTask(oops.id);
+
+    const revived = await store.uncompleteTask(oops.id);
+    expect(revived.completed).toBe(false);
+    expect(revived.status).toBe('todo');
+    expect(revived.completedAt).toBeUndefined();
+
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].title).toBe('Oops done'); // top of deck, not bottom
+
+    // survives cold start
+    expect((await freshStore().getAllTasks())[0].title).toBe('Oops done');
+  });
+
+  it('works when it is the only task', async () => {
+    const store = freshStore();
+    const t = await store.createTask('Solo');
+    await store.completeTask(t.id);
+    await store.uncompleteTask(t.id);
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].completed).toBe(false);
+  });
+
+  it('throws on unknown ids', async () => {
+    await expect(freshStore().uncompleteTask('nope')).rejects.toThrow('Task not found');
+  });
+});
+
 describe('data safety net (wipe protection)', () => {
   const snapshotKeys = () => {
     const keys: string[] = [];

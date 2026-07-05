@@ -34,6 +34,11 @@ export interface TaskStore {
    * Undo when this exists.
    */
   restoreTask?(snapshot: Task): Promise<void>;
+  /**
+   * Recovery from accidental completion: return a completed task to the
+   * top of the active deck. Optional for the same reason as above.
+   */
+  uncompleteTask?(id: string): Promise<Task>;
 }
 
 let store: TaskStore | null = null;
