@@ -15,6 +15,8 @@ One Job is a registered participant in the Design in Product cross-pollination n
 
 This mirrors how every other agent in the constellation already does it (Piper Morgan's agents, Klatch's Calliope, Mediajunkie's Pard) — no exceptions, regardless of which repo the mail is *about*.
 
+- **Coral ↔ Relay** (the Mac-side build agent): both directions in THIS repo's `docs/mail/` (Relay works from a fresh clone of this repo, so it is the receiver's repo for both). Convention `memo-{from}-to-{to}-{date}-{topic}.md`; Relay's brief (`store/COWORK-IOS-BRIEF.md`) tells them to check at session start.
+
 ## CRITICAL: Excellence Flywheel Methodology - READ FIRST
 
 **WARNING**: Skipping this section will break our systematic excellence.
