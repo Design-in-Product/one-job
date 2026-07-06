@@ -23,6 +23,9 @@ export interface TaskStore {
   createSubstack(taskId: string, name: string): Promise<InteriorDeck>;
   addSubstackTask(substackId: string, title: string, description?: string): Promise<Task>;
   completeSubstackTask(id: string): Promise<Task>;
+  /** Persist a sub-deck deferral (card to the bottom of its deck). Optional
+      until every store supports it — the UI falls back to local reorder. */
+  deferSubstackTask?(id: string): Promise<Task>;
   /**
    * Replace all tasks with an imported backup. Absent on stores that
    * don't own their data (the API store) — the UI disables import there.

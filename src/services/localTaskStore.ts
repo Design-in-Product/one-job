@@ -238,6 +238,23 @@ export class LocalTaskStore implements TaskStore {
     throw new Error('Substack task not found');
   }
 
+  async deferSubstackTask(id: string): Promise<Task> {
+    for (const task of this.tasks) {
+      for (const deck of task.decks || []) {
+        const index = deck.cards.findIndex(c => c.id === id);
+        if (index !== -1) {
+          const card = applyDeferral(deck.cards[index], deck.cards);
+          // display order = array order in sub-decks: move to the bottom
+          deck.cards.splice(index, 1);
+          deck.cards.push(card);
+          this.saveTasks();
+          return card;
+        }
+      }
+    }
+    throw new Error('Substack task not found');
+  }
+
   /**
    * Undo support: put a task back exactly as it was in the snapshot
    * (completion, timestamps, deferral count, sort order).
