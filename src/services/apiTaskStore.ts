@@ -2,7 +2,7 @@
 // TaskStore backed by the FastAPI backend. Used only when a backend is
 // explicitly configured (VITE_API_URL at build time, or ?remote in dev).
 
-import { Task, Substack } from '@/types/task';
+import { Task, InteriorDeck } from '@/types/task';
 import { API_BASE_URL } from '@/config';
 import type { TaskStore } from './taskStore';
 
@@ -20,7 +20,7 @@ const mapTask = (t: any): Task => ({
   sortOrder: t.sort_order,
   source: t.source,
   externalId: t.external_id,
-  substacks: (t.substacks || []).map(mapSubstack)
+  decks: (t.substacks || []).map(mapSubstack) // backend wire format is still v1 'substacks'
 });
 
 const mapSubstackTask = (t: any): Task => ({
@@ -33,11 +33,11 @@ const mapSubstackTask = (t: any): Task => ({
   sortOrder: t.sort_order
 });
 
-const mapSubstack = (s: any): Substack => ({
+const mapSubstack = (s: any): InteriorDeck => ({
   id: s.id,
   name: s.name,
   createdAt: new Date(s.created_at),
-  tasks: (s.tasks || []).map(mapSubstackTask)
+  cards: (s.tasks || []).map(mapSubstackTask)
 });
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -91,7 +91,7 @@ export class ApiTaskStore implements TaskStore {
     return mapTask(data);
   }
 
-  async createSubstack(taskId: string, name: string): Promise<Substack> {
+  async createSubstack(taskId: string, name: string): Promise<InteriorDeck> {
     const data = await request<any>(`/tasks/${taskId}/substacks`, {
       method: 'POST',
       body: JSON.stringify({ name })

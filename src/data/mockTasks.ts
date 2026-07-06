@@ -12,12 +12,12 @@ export const mockTasks: Task[] = [
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
     sortOrder: 1,
     source: 'Demo',
-    substacks: [
+    decks: [
       {
         id: uuidv4(),
         name: "Backend fixes",
         createdAt: new Date(),
-        tasks: [
+        cards: [
           {
             id: uuidv4(),
             title: "Review password validation regex",
@@ -67,12 +67,12 @@ export const mockTasks: Task[] = [
     createdAt: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
     sortOrder: 4,
     source: 'Demo',
-    substacks: [
+    decks: [
       {
         id: uuidv4(),
         name: "Shopping list",
         createdAt: new Date(),
-        tasks: [
+        cards: [
           {
             id: uuidv4(),
             title: "Dairy: Milk, eggs, cheese",

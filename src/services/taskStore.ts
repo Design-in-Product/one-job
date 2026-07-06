@@ -6,7 +6,7 @@
 // Everything the UI does goes through this interface, which is also the
 // place future adapters (Todoist, Jira, MCP...) will plug in.
 
-import { Task, Substack } from '@/types/task';
+import { Task, InteriorDeck } from '@/types/task';
 import { storageMode } from '@/config';
 import { LocalTaskStore } from './localTaskStore';
 import { ApiTaskStore } from './apiTaskStore';
@@ -20,7 +20,7 @@ export interface TaskStore {
   completeTask(id: string): Promise<Task>;
   /** Move a task to the bottom of the stack, tracking deferral count */
   deferTask(id: string): Promise<Task>;
-  createSubstack(taskId: string, name: string): Promise<Substack>;
+  createSubstack(taskId: string, name: string): Promise<InteriorDeck>;
   addSubstackTask(substackId: string, title: string, description?: string): Promise<Task>;
   completeSubstackTask(id: string): Promise<Task>;
   /**
