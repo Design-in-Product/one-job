@@ -41,7 +41,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
   const activeTasks = substack.cards.filter(task => !task.completed);
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
       <div className="flex items-center gap-3 px-4 py-3 border-b">
         <Button
           variant="ghost"
