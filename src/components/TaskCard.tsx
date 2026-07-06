@@ -65,7 +65,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, c
           </h3>
           {description && (
             <p
-              className="text-gray-600 leading-snug mt-[0.5em] [overflow-wrap:normal]"
+              className="text-gray-600 leading-snug mt-[0.5em] whitespace-pre-line [overflow-wrap:normal]"
               style={{ fontSize: '0.6em' }}
             >
               {description}
