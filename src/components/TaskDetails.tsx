@@ -33,12 +33,16 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const { t } = useTranslation();
   const [editedTitle, setEditedTitle] = useState(task?.title ?? '');
   const [editedDescription, setEditedDescription] = useState(task?.description || '');
+  // R1.4 (Vision Item 18): the card opens for READING, like a baseball
+  // card; a tap on the text (or the Edit button) switches to editing.
+  const [isEditing, setIsEditing] = useState(false);
 
   // Sync local state when a different task is opened
   useEffect(() => {
     if (task) {
       setEditedTitle(task.title);
       setEditedDescription(task.description || '');
+      setIsEditing(false);
     }
   }, [task]);
 
@@ -69,26 +73,42 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          {/* <--- MAKE TITLE EDITABLE */}
-          <input
-            type="text"
-            className="text-xl font-bold break-words w-full p-2 -ml-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
-          />
+          {isEditing ? (
+            <input
+              type="text"
+              className="text-xl font-bold break-words w-full p-2 -ml-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+            />
+          ) : (
+            <DialogTitle
+              className="text-xl font-bold break-words cursor-text"
+              onClick={() => setIsEditing(true)}
+            >
+              {task.title}
+            </DialogTitle>
+          )}
         </DialogHeader>
 
         <div className="space-y-4">
-          <div> {/* <--- WRAP DESCRIPTION IN A DIV TO ENSURE IT ALWAYS APPEARS */}
+          <div>
             <h4 className="font-semibold text-gray-700 mb-2">Description</h4>
-            {/* <--- MAKE DESCRIPTION EDITABLE */}
-            <textarea
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px]" // Added min-h for better UX
-              rows={5} // Set initial rows for textarea height
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-              placeholder={t('details.descriptionPlaceholder')}
-            />
+            {isEditing ? (
+              <textarea
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px]"
+                rows={5}
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+                placeholder={t('details.descriptionPlaceholder')}
+              />
+            ) : (
+              <p
+                className="text-gray-700 whitespace-pre-line cursor-text min-h-[1.5rem]"
+                onClick={() => setIsEditing(true)}
+              >
+                {task.description || <span className="text-gray-400">{t('details.noDescription')}</span>}
+              </p>
+            )}
           </div>
 
           <div>
@@ -157,12 +177,27 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
         {/* <--- ADD DIALOG FOOTER WITH SAVE/CANCEL BUTTONS */}
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            {t('details.cancel')}
-          </Button>
-          <Button onClick={handleSave}>
-            {t('details.save')}
-          </Button>
+          {isEditing ? (
+            <>
+              <Button variant="outline" onClick={() => setIsEditing(false)}>
+                {t('details.cancel')}
+              </Button>
+              <Button onClick={handleSave}>
+                {t('details.save')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={onClose}>
+                {t('details.close')}
+              </Button>
+              {onUpdateTask && (
+                <Button onClick={() => setIsEditing(true)}>
+                  {t('details.edit')}
+                </Button>
+              )}
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

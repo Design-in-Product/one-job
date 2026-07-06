@@ -56,7 +56,10 @@
       "decks": "Sub-decks",
       "descriptionPlaceholder": "Add a detailed description...",
       "cancel": "Cancel",
-      "save": "Save Changes"
+      "save": "Save Changes",
+      "close": "Close",
+      "edit": "Edit",
+      "noDescription": "No description — tap to add one"
     },
     "substack": {
       "create": "Create Substack",
