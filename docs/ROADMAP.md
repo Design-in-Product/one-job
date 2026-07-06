@@ -72,6 +72,7 @@ lost, stranded, or unrecoverable.
 | R2.2 | **Zoom continuum** — canvas ⇄ deck ⇄ card-fills-the-phone; pinch navigation; deck-is-the-UI mode | Item 6 |
 | R2.3 | **The table surface** — design the dead space (empty/black/white/reflection/abstract); same material as the canvas | Item 9b |
 | R2.4 | **Discoverability dissolve** — arc menu items find homes on the canvas (Settings/Integrations); menu may remain as shortcut | audit gap 6 |
+| R2.5 | **Details-as-expansion** — the founding spec's "tap face-up → full-viewport expansion" replaces the modal once the zoom continuum exists; breadcrumbs/place-trail and the search-vs-philosophy question are design inputs here | archaeology |
 
 Gate: navigation needs no menu for daily flow; a new user finds
 Completed by *looking around*, not by long-pressing.
@@ -116,6 +117,12 @@ hand-written one, and no agent can ever reorder your deck.
 - Toast quiet mode (Item 16 — needs an undo surface decision first)
 - **Card aging** (Item 22 — cards yellow like library stock; design
   together with the deck-depth material language, R2-era)
+- **Recovered from the Nov-2025 stratum** (archaeology, 2026-07-06):
+  sparkle empty state · skeleton shimmer loader · designed error state ·
+  M-for-menu keyboard shortcut · swipe tint overlays (A/B vs. pills) ·
+  pulsing dot on live-source badges (R3-era)
+- **Dark mode** (existed Nov 2025, lost in the rebuild — also a store
+  expectation; bigger than fun but shelved here until scheduled)
 
 ## The premium shelf (post-launch, candidates)
 
