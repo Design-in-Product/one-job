@@ -2,11 +2,12 @@
 // Device-local persistence (localStorage). This is the default store:
 // One Job runs entirely on-device unless a backend is configured.
 
-import { Task, Substack } from '@/types/task';
+import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
 import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion } from '@/domain/tasks';
+import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -43,8 +44,20 @@ export class LocalTaskStore implements TaskStore {
     const saved = localStorage.getItem(this.storageKey);
     if (saved !== null) {
       try {
-        this.tasks = (JSON.parse(saved) as Task[]).map(reviveTask);
-        this.writeSnapshot(saved);
+        const raw = JSON.parse(saved);
+        const wasV1 = Array.isArray(raw);
+        if (wasV1 && !localStorage.getItem(`${this.storageKey}.v1backup`)) {
+          // Migration paranoia: preserve the untouched v1 document once,
+          // BEFORE anything writes the new shape (irreversibility umbrella)
+          localStorage.setItem(`${this.storageKey}.v1backup`, saved);
+        }
+        this.tasks = migrateDocument(raw).cards.map(reviveTask);
+        if (wasV1) {
+          console.warn(`Migrated "${this.storageKey}" v1 → v${CURRENT_SCHEMA_VERSION}; v1 copy kept at ${this.storageKey}.v1backup`);
+          this.saveTasks(); // persist the v2 envelope immediately
+        } else {
+          this.writeSnapshot(this.serialize());
+        }
         return;
       } catch {
         // Preserve the unreadable payload for manual recovery — never clobber it
@@ -57,6 +70,11 @@ export class LocalTaskStore implements TaskStore {
     }
     this.tasks = [...seedTasks];
     this.saveTasks();
+  }
+
+  /** Current storage document as a string (v2 envelope). */
+  private serialize(): string {
+    return JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, cards: this.tasks });
   }
 
   /**
@@ -75,7 +93,8 @@ export class LocalTaskStore implements TaskStore {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
       try {
-        const tasks = (JSON.parse(raw) as Task[]).map(reviveTask);
+        // Snapshots may predate v2 (bare arrays) — migrate on the way in
+        const tasks = migrateDocument(JSON.parse(raw)).cards.map(reviveTask);
         if (tasks.length === 0) continue;
         this.tasks = tasks;
         console.warn(`"${this.storageKey}" was missing; restored ${tasks.length} tasks from ${key}`);
@@ -93,7 +112,13 @@ export class LocalTaskStore implements TaskStore {
     // Guard: an empty deck never overwrites a non-empty snapshot
     if (this.tasks.length === 0) {
       const existing = localStorage.getItem(key);
-      if (existing && existing !== '[]') return;
+      if (existing) {
+        try {
+          if (migrateDocument(JSON.parse(existing)).cards.length > 0) return;
+        } catch {
+          /* unreadable existing snapshot — overwriting is an improvement */
+        }
+      }
     }
     localStorage.setItem(key, serialized);
     const stale = this.listSnapshotKeys().reverse().slice(SNAPSHOT_RETENTION);
@@ -101,7 +126,7 @@ export class LocalTaskStore implements TaskStore {
   }
 
   protected saveTasks() {
-    const serialized = JSON.stringify(this.tasks);
+    const serialized = this.serialize();
     localStorage.setItem(this.storageKey, serialized);
     localStorage.setItem(
       this.metaKey(),
@@ -131,7 +156,7 @@ export class LocalTaskStore implements TaskStore {
       createdAt: new Date(),
       sortOrder: topSortOrder(this.tasks),
       source: this.sourceLabel,
-      substacks: []
+      decks: []
     };
     this.tasks.push(newTask);
     this.saveTasks();
@@ -163,36 +188,36 @@ export class LocalTaskStore implements TaskStore {
     return task;
   }
 
-  async createSubstack(taskId: string, name: string): Promise<Substack> {
+  async createSubstack(taskId: string, name: string): Promise<InteriorDeck> {
     const task = this.findTask(taskId);
-    const newSubstack: Substack = {
+    const newDeck: InteriorDeck = {
       id: uuidv4(),
       name,
-      tasks: [],
+      cards: [],
       createdAt: new Date()
     };
-    task.substacks = task.substacks || [];
-    task.substacks.push(newSubstack);
+    task.decks = task.decks || [];
+    task.decks.push(newDeck);
     this.saveTasks();
-    return newSubstack;
+    return newDeck;
   }
 
   async addSubstackTask(substackId: string, title: string, description?: string): Promise<Task> {
     for (const task of this.tasks) {
-      const substack = task.substacks?.find(s => s.id === substackId);
-      if (substack) {
-        const newSubstackTask: Task = {
+      const deck = task.decks?.find(d => d.id === substackId);
+      if (deck) {
+        const newCard: Task = {
           id: uuidv4(),
           title,
           description,
           completed: false,
           createdAt: new Date(),
-          sortOrder: topSortOrder(substack.tasks)
+          sortOrder: topSortOrder(deck.cards)
         };
         // New items land on top in sub-decks too (display order = array order)
-        substack.tasks.unshift(newSubstackTask);
+        deck.cards.unshift(newCard);
         this.saveTasks();
-        return newSubstackTask;
+        return newCard;
       }
     }
     throw new Error('Substack not found');
@@ -200,13 +225,13 @@ export class LocalTaskStore implements TaskStore {
 
   async completeSubstackTask(id: string): Promise<Task> {
     for (const task of this.tasks) {
-      for (const substack of task.substacks || []) {
-        const subtask = substack.tasks.find(st => st.id === id);
-        if (subtask) {
-          subtask.completed = true;
-          subtask.completedAt = new Date();
+      for (const deck of task.decks || []) {
+        const card = deck.cards.find(c => c.id === id);
+        if (card) {
+          card.completed = true;
+          card.completedAt = new Date();
           this.saveTasks();
-          return subtask;
+          return card;
         }
       }
     }
@@ -225,7 +250,8 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async importTasks(tasks: Task[]): Promise<void> {
-    this.tasks = tasks.map(reviveTask);
+    // Backups may be v1 (substacks) or v2 (decks) — migrate either way in
+    this.tasks = migrateDocument(tasks).cards.map(reviveTask);
     this.saveTasks();
   }
 

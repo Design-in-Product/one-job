@@ -26,7 +26,7 @@ const truncateText = (text: string, maxLength: number) => {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, className }) => {
   const { t } = useTranslation();
-  const hasSubstacks = task.substacks && task.substacks.length > 0;
+  const hasSubstacks = task.decks && task.decks.length > 0;
   const description = task.description ? truncateText(task.description, 180) : '';
 
   const { containerRef, contentRef, fontSize } = useFitText(
@@ -48,7 +48,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, c
           <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded-full">
             <Layers className="w-4 h-4 text-blue-600" />
             <span className="text-xs text-blue-600 font-medium">
-              {task.substacks!.length}
+              {task.decks!.length}
             </span>
           </div>
         </div>

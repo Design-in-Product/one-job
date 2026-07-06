@@ -38,7 +38,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
   onOpenSubstack
 }) => {
   const { t } = useTranslation();
-  const activeTasks = substack.tasks.filter(task => !task.completed);
+  const activeTasks = substack.cards.filter(task => !task.completed);
 
   return (
     <div className="flex flex-col flex-1">
@@ -62,7 +62,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
       </div>
 
       <TaskStack 
-        tasks={substack.tasks} 
+        tasks={substack.cards} 
         onComplete={onCompleteTask} 
         onDefer={onDeferTask}
         onCardClick={onCardClick}

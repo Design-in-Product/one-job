@@ -27,9 +27,9 @@ describe('v1 fixture corpus loads through the current store', () => {
       for (const task of tasks) {
         expect(task.createdAt).toBeInstanceOf(Date);
         if (task.completed) expect(task.completedAt).toBeInstanceOf(Date);
-        for (const sub of task.substacks ?? []) {
-          expect(sub.createdAt).toBeInstanceOf(Date);
-          for (const st of sub.tasks) expect(st.createdAt).toBeInstanceOf(Date);
+        for (const deck of task.decks ?? []) {
+          expect(deck.createdAt).toBeInstanceOf(Date);
+          for (const c of deck.cards) expect(c.createdAt).toBeInstanceOf(Date);
         }
       }
 
@@ -61,17 +61,17 @@ describe('v1 semantics the migration must preserve', () => {
 
   it('substack states: mixed progress, all-done, and empty all load', async () => {
     const [parent] = await loadFixture(substackDeck).getAllTasks();
-    expect(parent.substacks).toHaveLength(3);
-    const byName = Object.fromEntries(parent.substacks!.map(s => [s.name, s]));
-    expect(byName['Logistics'].tasks.filter(t => !t.completed)).toHaveLength(1);
-    expect(byName['Agenda'].tasks.every(t => t.completed)).toBe(true);
-    expect(byName['Empty ideas'].tasks).toHaveLength(0);
+    expect(parent.decks).toHaveLength(3);
+    const byName = Object.fromEntries(parent.decks!.map(d => [d.name, d]));
+    expect(byName['Logistics'].cards.filter(t => !t.completed)).toHaveLength(1);
+    expect(byName['Agenda'].cards.every(t => t.completed)).toBe(true);
+    expect(byName['Empty ideas'].cards).toHaveLength(0);
   });
 
   it('stranded interior: completed parent with open sub-tasks exists in v1 data', async () => {
     const [parent] = await loadFixture(strandedInteriorDeck).getAllTasks();
     expect(parent.completed).toBe(true);
-    const stranded = parent.substacks![0].tasks.filter(t => !t.completed);
+    const stranded = parent.decks![0].cards.filter(t => !t.completed);
     expect(stranded).toHaveLength(1); // migration must NOT lose this task
   });
 
@@ -79,7 +79,7 @@ describe('v1 semantics the migration must preserve', () => {
     const tasks = await loadFixture(allFixtures.legacyFieldsDeck).getAllTasks();
     const preStatus = tasks.find(t => t.id === 'e1')!;
     expect(preStatus.status).toBeUndefined();
-    expect(preStatus.substacks).toBeUndefined();
+    expect(preStatus.decks).toEqual([]); // migration normalizes missing nesting to an empty list
     const imported = tasks.find(t => t.id === 'e2')!;
     expect(imported.source).toBe('Asana');
     expect(imported.externalId).toBe('asana-12345');

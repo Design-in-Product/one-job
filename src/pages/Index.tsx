@@ -107,9 +107,9 @@ const Index = () => {
             task.id === currentSubstack.parentTask.id
               ? {
                   ...task,
-                  substacks: task.substacks?.map(sub =>
+                  decks: task.decks?.map(sub =>
                     sub.id === currentSubstack.substack.id
-                      ? { ...sub, tasks: [...sub.tasks, addedTask] }
+                      ? { ...sub, cards: [...sub.cards, addedTask] }
                       : sub
                   ) || []
                 }
@@ -120,7 +120,7 @@ const Index = () => {
           ...prev,
           substack: {
             ...prev.substack,
-            tasks: [...prev.substack.tasks, addedTask]
+            cards: [...prev.substack.cards, addedTask]
           }
         } : null);
         toast.success(t('toasts.addedToSubstack'));
@@ -199,11 +199,11 @@ const Index = () => {
           task.id === currentSubstack.parentTask.id
             ? {
                 ...task,
-                substacks: task.substacks?.map(sub =>
+                decks: task.decks?.map(sub =>
                   sub.id === currentSubstack.substack.id
                     ? {
                         ...sub,
-                        tasks: sub.tasks.map(t =>
+                        tasks: sub.cards.map(t =>
                           t.id === taskId
                             ? { ...t, completed: true, completedAt: new Date() }
                             : t
@@ -219,7 +219,7 @@ const Index = () => {
         ...prev,
         substack: {
           ...prev.substack,
-          tasks: prev.substack.tasks.map(t =>
+          tasks: prev.substack.cards.map(t =>
             t.id === taskId
               ? { ...t, completed: true, completedAt: new Date() }
               : t
@@ -256,14 +256,14 @@ const Index = () => {
           task.id === currentSubstack.parentTask.id
             ? {
                 ...task,
-                substacks: task.substacks?.map(sub =>
+                decks: task.decks?.map(sub =>
                   sub.id === currentSubstack.substack.id
                     ? {
                         ...sub,
                         tasks: (() => {
-                          const taskToMove = sub.tasks.find(t => t.id === taskId);
-                          if (!taskToMove) return sub.tasks;
-                          const otherTasks = sub.tasks.filter(t => t.id !== taskId);
+                          const taskToMove = sub.cards.find(t => t.id === taskId);
+                          if (!taskToMove) return sub.cards;
+                          const otherTasks = sub.cards.filter(t => t.id !== taskId);
                           return [...otherTasks, taskToMove];
                         })()
                       }
@@ -275,9 +275,9 @@ const Index = () => {
       );
       setCurrentSubstack(prev => {
         if (!prev) return null;
-        const taskToMove = prev.substack.tasks.find(t => t.id === taskId);
+        const taskToMove = prev.substack.cards.find(t => t.id === taskId);
         if (!taskToMove) return prev;
-        const otherTasks = prev.substack.tasks.filter(t => t.id !== taskId);
+        const otherTasks = prev.substack.cards.filter(t => t.id !== taskId);
         return {
           ...prev,
           substack: {
@@ -337,14 +337,14 @@ const Index = () => {
     setCurrentSubstack(null);
   };
 
-  const currentTasks = currentSubstack ? currentSubstack.substack.tasks : tasks;
+  const currentTasks = currentSubstack ? currentSubstack.substack.cards : tasks;
   const activeTasks = currentTasks.filter(task => !task.completed);
   const completedTasks = currentTasks.filter(task => task.completed);
 
   const getCurrentSelectedTask = () => {
     if (!selectedTask) return null;
     if (currentSubstack) {
-      return currentSubstack.substack.tasks.find(task => task.id === selectedTask.id) || selectedTask;
+      return currentSubstack.substack.cards.find(task => task.id === selectedTask.id) || selectedTask;
     }
     return tasks.find(task => task.id === selectedTask.id) || selectedTask;
   };

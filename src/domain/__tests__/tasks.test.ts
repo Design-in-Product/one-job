@@ -71,14 +71,14 @@ describe('reviveTask', () => {
   it('revives dates recursively through substacks', () => {
     const revived = reviveTask(JSON.parse(JSON.stringify(mk({
       completedAt: new Date('2026-02-02'),
-      substacks: [{
+      decks: [{
         id: 's', name: 'S', createdAt: new Date('2026-01-05'),
-        tasks: [mk({ deferredAt: new Date('2026-01-06') })]
+        cards: [mk({ deferredAt: new Date('2026-01-06') })]
       }]
     }))));
     expect(revived.createdAt).toBeInstanceOf(Date);
     expect(revived.completedAt).toBeInstanceOf(Date);
-    expect(revived.substacks![0].createdAt).toBeInstanceOf(Date);
-    expect(revived.substacks![0].tasks[0].deferredAt).toBeInstanceOf(Date);
+    expect(revived.decks![0].createdAt).toBeInstanceOf(Date);
+    expect(revived.decks![0].cards[0].deferredAt).toBeInstanceOf(Date);
   });
 });

@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/sonner';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const BACKUP_VERSION = 1;
+const BACKUP_VERSION = 2; // v2: cards with named interior decks (import accepts v1 and v2)
 // Backup-age tracking, per storage mode (a demo export shouldn't quiet
 // the nudge for your real deck)
 const LAST_EXPORT_KEY = `oneJobLastExport-${storageMode}`;

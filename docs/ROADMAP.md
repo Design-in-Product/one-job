@@ -58,7 +58,8 @@ after each.
 |---|---|---|
 | R1.1 | **Recursive cards** — card interior = canvas with a deck; subtasks are cards; migrate `Substack` data (each old substack's tasks become interior cards; names preserved in migration notes) | Items 1, 8, 10 |
 | R1.2 | **Lifecycle chain** — Done/Archive/Trash as system decks with advance/regress gestures; provenance (home-deck memory); un-complete and delete arrive here for free | Items 2, 10 |
-| R1.3 | **Store schema v2** — deck-membership-as-state, provenance fields, versioned migration from v1 (13-test suite extended before the migration ships — RED ZONE) | domain §7 |
+| R1.3 | **Store schema v2** — versioned envelope, substacks become named interior decks holding full recursive cards, migration from v1 (fixture-corpus tests first — RED ZONE; deck-membership-as-state deferred to the R1.2 chain) | domain §7, Item 17 |
+| R1.4 | **Card-face ergonomics** — details open read-first like a baseball card, second tap edits (create still opens in edit); line breaks render in descriptions | Items 18, 20 |
 
 Gate: the chain feels *safe* — a week of real use where no card is ever
 lost, stranded, or unrecoverable.
@@ -110,6 +111,16 @@ hand-written one, and no agent can ever reorder your deck.
   generator (Item 7)
 - Flip-preset settings, deck themes, haptic tuning
 - Localization files (i18n plumbing already done)
+- Flip-back gesture (Item 19 — timer is acceptable meanwhile; design
+  with the zoom grammar)
+- Toast quiet mode (Item 16 — needs an undo surface decision first)
+
+## The premium shelf (post-launch, candidates)
+
+- Multiple named sub-decks per card (Item 17 — model supports it today)
+- Bold/italic and image attachments in descriptions (Item 20 upper tier)
+- Advanced card metadata riding the federation mapping — due dates,
+  assignees, labels arriving WITH connected sources (Item 21, R3-era)
 
 ## Parallel track (human-gated, any time)
 

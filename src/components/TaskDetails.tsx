@@ -128,11 +128,11 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           )}
 
           <div>
-            <h4 className="font-semibold text-gray-700 mb-3">{t('details.substacks')}</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">{t('details.decks')}</h4>
 
-            {task.substacks && task.substacks.length > 0 && (
+            {task.decks && task.decks.length > 0 && (
               <div className="space-y-2 mb-3">
-                {task.substacks.map((substack) => (
+                {task.decks.map((substack) => (
                   <Button
                     key={substack.id}
                     variant="outline"
@@ -142,7 +142,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                     <span>{substack.name}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">
-                        {substack.tasks.filter(t => !t.completed).length} tasks
+                        {substack.cards.filter(t => !t.completed).length} tasks
                       </span>
                       <ChevronRight className="w-4 h-4" />
                     </div>
