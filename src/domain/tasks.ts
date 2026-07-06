@@ -47,6 +47,16 @@ export const nextSortOrder = (tasks: Task[]): number => {
   return active.length > 0 ? Math.max(...active.map(t => t.sortOrder ?? 0)) + 1 : 1;
 };
 
+/**
+ * The sortOrder a task must take to sit on TOP of the active deck.
+ * New cards land here (Xian's call, 2026-07-05): what you just captured
+ * IS your one job until you swipe it away.
+ */
+export const topSortOrder = (tasks: Task[]): number => {
+  const active = tasks.filter(t => !t.completed);
+  return active.length > 0 ? Math.min(...active.map(t => t.sortOrder ?? 0)) - 1 : 1;
+};
+
 /** Complete a task (mutates in place — store semantics today). */
 export const applyCompletion = (task: Task): Task => {
   task.completed = true;
