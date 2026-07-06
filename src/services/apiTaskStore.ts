@@ -114,4 +114,12 @@ export class ApiTaskStore implements TaskStore {
     });
     return mapSubstackTask(data);
   }
+
+  async deferSubstackTask(id: string): Promise<Task> {
+    const data = await request<any>(`/substack-tasks/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_deferral: true })
+    });
+    return mapSubstackTask(data);
+  }
 }
