@@ -31,14 +31,15 @@ describe('LocalTaskStore basics', () => {
     expect((await second.getAllTasks()).map(t => t.title)).toEqual(['Seeded']);
   });
 
-  it('creates tasks with sequential sort order', async () => {
+  it('new tasks land on TOP of the deck (2026-07-05 design call)', async () => {
     const store = freshStore();
     const a = await store.createTask('A');
-    const b = await store.createTask('B');
-    expect(a.sortOrder).toBe(1);
-    expect(b.sortOrder).toBe(2);
     expect(a.status).toBe('todo');
     expect(a.completed).toBe(false);
+    await store.createTask('B');
+    await store.createTask('C');
+    const order = (await store.getAllTasks()).map(t => t.title);
+    expect(order).toEqual(['C', 'B', 'A']);
   });
 
   it('persists across store instances (cold start)', async () => {
@@ -50,7 +51,7 @@ describe('LocalTaskStore basics', () => {
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
   });
 
-  it('recovers from corrupt storage by reseeding', async () => {
+  it('recovers from corrupt storage by reseeding when no snapshot exists', async () => {
     localStorage.setItem(KEY, '{not json');
     const store = new LocalTaskStore(KEY, []);
     expect(await store.getAllTasks()).toEqual([]);
@@ -75,22 +76,22 @@ describe('completion and deferral', () => {
     expect(done.completedAt).toBeInstanceOf(Date);
   });
 
-  it('deferTask moves the task to the bottom and counts deferrals', async () => {
+  it('deferTask moves the top task to the bottom and counts deferrals', async () => {
     const store = freshStore();
-    const first = await store.createTask('First');
+    await store.createTask('First');
     await store.createTask('Second');
-    await store.createTask('Third');
+    const third = await store.createTask('Third'); // newest → on top
 
-    const deferred = await store.deferTask(first.id);
+    const deferred = await store.deferTask(third.id);
     expect(deferred.deferralCount).toBe(1);
     expect(deferred.deferredAt).toBeInstanceOf(Date);
     expect(deferred.status ?? 'todo').toBe('todo');
 
     const order = (await store.getAllTasks()).map(t => t.title);
-    expect(order).toEqual(['Second', 'Third', 'First']);
+    expect(order).toEqual(['Second', 'First', 'Third']);
 
-    await store.deferTask(first.id);
-    expect((await store.getAllTasks()).find(t => t.title === 'First')!.deferralCount).toBe(2);
+    await store.deferTask(third.id);
+    expect((await store.getAllTasks()).find(t => t.title === 'Third')!.deferralCount).toBe(2);
   });
 
   it('sorts active by sortOrder and completed by completion date desc, active first', async () => {
@@ -125,14 +126,256 @@ describe('substacks', () => {
 
     // cold start: everything survived
     const reloaded = (await freshStore().getAllTasks())[0];
-    expect(reloaded.substacks).toHaveLength(1);
-    expect(reloaded.substacks![0].tasks).toHaveLength(1);
-    expect(reloaded.substacks![0].tasks[0].completed).toBe(true);
-    expect(reloaded.substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+    expect(reloaded.decks).toHaveLength(1);
+    expect(reloaded.decks![0].cards).toHaveLength(1);
+    expect(reloaded.decks![0].cards[0].completed).toBe(true);
+    expect(reloaded.decks![0].cards[0].completedAt).toBeInstanceOf(Date);
   });
 
   it('throws when the substack does not exist', async () => {
     await expect(freshStore().addSubstackTask('nope', 'x')).rejects.toThrow('Substack not found');
+  });
+
+  it('creates the default (unnamed) sub-deck — no naming ritual (Item 23)', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Parent');
+    const deck = await store.createSubstack(parent.id, null);
+    expect(deck.name).toBeNull();
+    await store.addSubstackTask(deck.id, 'First sub-task');
+    const reloaded = (await freshStore().getAllTasks())[0];
+    expect(reloaded.decks![0].name).toBeNull();
+    expect(reloaded.decks![0].cards).toHaveLength(1);
+  });
+
+  it('sub-deck deferral persists: card moves to the bottom and survives cold start', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Parent');
+    const deck = await store.createSubstack(parent.id, 'Steps');
+    await store.addSubstackTask(deck.id, 'Old top');
+    const newest = await store.addSubstackTask(deck.id, 'Newest'); // lands on top
+
+    const deferred = await store.deferSubstackTask(newest.id);
+    expect(deferred.deferralCount).toBe(1);
+    expect(deferred.deferredAt).toBeInstanceOf(Date);
+
+    // display order = array order: deferred card is now last
+    const reloaded = (await freshStore().getAllTasks())[0];
+    expect(reloaded.decks![0].cards.map(c => c.title)).toEqual(['Old top', 'Newest']);
+    expect(reloaded.decks![0].cards[1].deferralCount).toBe(1);
+  });
+
+  it('deferSubstackTask throws on unknown ids', async () => {
+    await expect(freshStore().deferSubstackTask('nope')).rejects.toThrow('Substack task not found');
+  });
+});
+
+describe('undo via restoreTask', () => {
+  it('restoring a pre-completion snapshot un-completes the task', async () => {
+    const store = freshStore();
+    const t = await store.createTask('Oops');
+    const snapshot = structuredClone(t);
+    await store.completeTask(t.id);
+
+    await store.restoreTask(snapshot);
+    const restored = (await store.getAllTasks()).find(x => x.id === t.id)!;
+    expect(restored.completed).toBe(false);
+    expect(restored.completedAt).toBeUndefined();
+    expect(restored.status).toBe('todo');
+
+    // survives a cold start with dates revived
+    const cold = (await freshStore().getAllTasks()).find(x => x.id === t.id)!;
+    expect(cold.completed).toBe(false);
+    expect(cold.createdAt).toBeInstanceOf(Date);
+  });
+
+  it('restoring a pre-deferral snapshot puts the task back on top', async () => {
+    const store = freshStore();
+    await store.createTask('First');
+    const second = await store.createTask('Second'); // newest → on top
+    const snapshot = structuredClone(second);
+
+    await store.deferTask(second.id);
+    expect((await store.getAllTasks())[0].title).toBe('First');
+
+    await store.restoreTask(snapshot);
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].title).toBe('Second');
+    expect(tasks[0].deferralCount ?? 0).toBe(0);
+  });
+
+  it('throws when the snapshot task no longer exists', async () => {
+    const ghost: Task = {
+      id: 'ghost', title: 'Ghost', completed: false, createdAt: new Date(), sortOrder: 1
+    };
+    await expect(freshStore().restoreTask(ghost)).rejects.toThrow('Task not found');
+  });
+});
+
+describe('un-complete (recovery from accidental completion)', () => {
+  it('returns a completed task to the TOP of the active deck', async () => {
+    const store = freshStore();
+    const oops = await store.createTask('Oops done');
+    await store.createTask('Still active');
+    await store.completeTask(oops.id);
+
+    const revived = await store.uncompleteTask(oops.id);
+    expect(revived.completed).toBe(false);
+    expect(revived.status).toBe('todo');
+    expect(revived.completedAt).toBeUndefined();
+
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].title).toBe('Oops done'); // top of deck, not bottom
+
+    // survives cold start
+    expect((await freshStore().getAllTasks())[0].title).toBe('Oops done');
+  });
+
+  it('works when it is the only task', async () => {
+    const store = freshStore();
+    const t = await store.createTask('Solo');
+    await store.completeTask(t.id);
+    await store.uncompleteTask(t.id);
+    const tasks = await store.getAllTasks();
+    expect(tasks[0].completed).toBe(false);
+  });
+
+  it('throws on unknown ids', async () => {
+    await expect(freshStore().uncompleteTask('nope')).rejects.toThrow('Task not found');
+  });
+});
+
+describe('lifecycle chain (R1.2): Done → Archive → Trash and back', () => {
+  const walkToDone = async (store: LocalTaskStore, title = 'Traveler') => {
+    const t = await store.createTask(title);
+    await store.completeTask(t.id);
+    return t;
+  };
+
+  it('walks a card all the way down the chain and all the way back home', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+
+    await store.archiveTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.archivedAt).toBeInstanceOf(Date);
+
+    await store.trashTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.trashedAt).toBeInstanceOf(Date);
+
+    // walk back: trash → archive → done → home (top of deck)
+    await store.restoreFromTrash(t.id);
+    await store.unarchiveTask(t.id);
+    const home = await store.uncompleteTask(t.id);
+    expect(home.completed).toBe(false);
+    expect(home.archivedAt).toBeUndefined();
+    expect(home.trashedAt).toBeUndefined();
+    expect((await store.getAllTasks())[0].id).toBe(t.id); // top of the deck
+
+    // and the whole journey survives a cold start
+    const cold = (await freshStore().getAllTasks()).find(x => x.id === t.id)!;
+    expect(cold.completed).toBe(false);
+  });
+
+  it('guards every move: no skipping rooms', async () => {
+    const store = freshStore();
+    const active = await store.createTask('Active');
+    await expect(store.archiveTask(active.id)).rejects.toThrow('Only done cards');
+    await expect(store.trashTask(active.id)).rejects.toThrow('Only archived cards');
+    await expect(store.purgeTask(active.id)).rejects.toThrow('Only trashed cards');
+
+    const done = await walkToDone(store, 'Done one');
+    await expect(store.unarchiveTask(done.id)).rejects.toThrow('not archived');
+    await expect(store.trashTask(done.id)).rejects.toThrow('Only archived cards');
+  });
+
+  it('purge permanently removes a trashed card', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+    await store.archiveTask(t.id);
+    await store.trashTask(t.id);
+    await store.purgeTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)).toBeUndefined();
+    // gone after cold start too
+    expect((await freshStore().getAllTasks()).find(x => x.id === t.id)).toBeUndefined();
+  });
+
+  it('archived and trashed cards never appear in the active deck filter', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+    await store.archiveTask(t.id);
+    const active = (await store.getAllTasks()).filter(x => !x.completed);
+    expect(active.find(x => x.id === t.id)).toBeUndefined();
+  });
+});
+
+describe('data safety net (wipe protection)', () => {
+  const snapshotKeys = () => {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith(`${KEY}.snapshot.`)) keys.push(k);
+    }
+    return keys.sort();
+  };
+
+  it('writes meta and a dated snapshot on every save', async () => {
+    await freshStore().createTask('Precious');
+    const meta = JSON.parse(localStorage.getItem(`${KEY}.meta`)!);
+    expect(meta.count).toBe(1);
+    expect(meta.updatedAt).toBeTruthy();
+    const snaps = snapshotKeys();
+    expect(snaps).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
+  });
+
+  it('restores from the newest snapshot when the main key disappears', async () => {
+    await freshStore().createTask('Survivor');
+    localStorage.removeItem(KEY); // the wipe
+    const tasks = await freshStore().getAllTasks();
+    expect(tasks.map(t => t.title)).toEqual(['Survivor']);
+    expect(tasks[0].createdAt).toBeInstanceOf(Date);
+    // main key is re-established (v2 envelope)
+    expect(JSON.parse(localStorage.getItem(KEY)!).cards).toHaveLength(1);
+  });
+
+  it('does not restore for a genuinely fresh install (no meta)', async () => {
+    // simulate a stray snapshot without meta — e.g. partial manual cleanup
+    localStorage.setItem(`${KEY}.snapshot.2026-01-01`, JSON.stringify([{ id: 'x', title: 'Ghost', completed: false, createdAt: '2026-01-01T00:00:00.000Z' }]));
+    expect(await freshStore().getAllTasks()).toEqual([]);
+  });
+
+  it('quarantines corrupt data instead of overwriting it, then restores from snapshot', async () => {
+    await freshStore().createTask('Fragile');
+    localStorage.setItem(KEY, '{not json'); // corruption
+    const tasks = await freshStore().getAllTasks();
+    expect(tasks.map(t => t.title)).toEqual(['Fragile']);
+    // the corrupt payload was preserved, not clobbered
+    const quarantined: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)!;
+      if (k.startsWith(`${KEY}.corrupt.`)) quarantined.push(k);
+    }
+    expect(quarantined).toHaveLength(1);
+    expect(localStorage.getItem(quarantined[0])).toBe('{not json');
+  });
+
+  it('never overwrites a non-empty snapshot with an empty deck', async () => {
+    const store = freshStore();
+    await store.createTask('Keep me');
+    await store.importTasks([]); // legitimate empty save
+    const snaps = snapshotKeys();
+    expect(snaps).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
+  });
+
+  it('prunes snapshots beyond the retention window', async () => {
+    for (let d = 1; d <= 9; d++) {
+      localStorage.setItem(`${KEY}.snapshot.2026-06-0${d}`, '[]');
+    }
+    await freshStore().createTask('Today');
+    const snaps = snapshotKeys();
+    expect(snaps.length).toBeLessThanOrEqual(7);
+    // the newest (today's) snapshot is among the survivors
+    expect(snaps.some(k => !k.includes('2026-06-'))).toBe(true);
   });
 });
 
@@ -148,11 +391,11 @@ describe('backup import (restore path)', () => {
       completed: false,
       createdAt: '2026-01-15T10:00:00.000Z',
       sortOrder: 1,
-      substacks: [{
+      decks: [{
         id: 'sub1',
         name: 'Restored sub',
         createdAt: '2026-01-16T10:00:00.000Z',
-        tasks: [{
+        cards: [{
           id: 'st1', title: 'Sub task', completed: true,
           createdAt: '2026-01-17T10:00:00.000Z',
           completedAt: '2026-01-18T10:00:00.000Z', sortOrder: 1
@@ -165,8 +408,8 @@ describe('backup import (restore path)', () => {
     expect(tasks).toHaveLength(1);
     expect(tasks[0].title).toBe('Restored');
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
-    expect(tasks[0].substacks![0].createdAt).toBeInstanceOf(Date);
-    expect(tasks[0].substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+    expect(tasks[0].decks![0].createdAt).toBeInstanceOf(Date);
+    expect(tasks[0].decks![0].cards[0].completedAt).toBeInstanceOf(Date);
 
     // and the round trip survives a cold start
     expect((await freshStore().getAllTasks())[0].title).toBe('Restored');

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface CardBackProps {
   /** Show the "Tap to reveal" hint (only on the interactive top card) */
@@ -12,6 +13,7 @@ interface CardBackProps {
 }
 
 const CardBack: React.FC<CardBackProps> = ({ showHint = false, className }) => {
+  const { t } = useTranslation();
   return (
     <div
       className={cn(
@@ -42,10 +44,10 @@ const CardBack: React.FC<CardBackProps> = ({ showHint = false, className }) => {
           </span>
         </div>
         <h2 className="mt-4 text-2xl font-bold text-white drop-shadow-sm tracking-wide">
-          One Job
+          {t('cardBack.appName')}
         </h2>
         {showHint && (
-          <p className="mt-2 text-sm text-white/80">Tap to reveal your task</p>
+          <p className="mt-2 text-sm text-white/80">{t('cardBack.tapHint')}</p>
         )}
       </div>
     </div>

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Task } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
 interface TaskFormProps {
   onAddTask: (task: Task) => void;
@@ -15,6 +16,7 @@ interface TaskFormProps {
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onCancel }) => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(defaultOpen);
@@ -45,16 +47,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
           onClick={() => setIsFormOpen(true)}
           className="w-full bg-gradient-to-r from-taskGradient-start to-taskGradient-end hover:opacity-90 text-white"
         >
-          Add New Task
+          {t('form.addNew')}
         </Button>
       ) : (
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-4 animate-slide-up">
-          <h3 className="text-lg font-medium mb-3">Add New Task</h3>
+          <h3 className="text-lg font-medium mb-3">{t('form.heading')}</h3>
           <div className="space-y-3">
             <div>
               <Input
                 type="text"
-                placeholder="Task title"
+                placeholder={t('form.titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full"
@@ -63,7 +65,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
             </div>
             <div>
               <Textarea
-                placeholder="Description (optional)"
+                placeholder={t('form.descriptionPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full resize-none"
@@ -75,7 +77,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
                 type="submit"
                 className="flex-1 bg-gradient-to-r from-taskGradient-start to-taskGradient-end hover:opacity-90 text-white"
               >
-                Add Task
+                {t('form.add')}
               </Button>
               <Button
                 type="button"
@@ -86,7 +88,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
                 }}
                 className="flex-1"
               >
-                Cancel
+                {t('form.cancel')}
               </Button>
             </div>
           </div>

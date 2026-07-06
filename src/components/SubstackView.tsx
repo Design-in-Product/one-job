@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import TaskStack from './TaskStack';
 import TaskForm from './TaskForm';
 import TaskDetails from './TaskDetails';
+import { useTranslation } from 'react-i18next';
 
 interface SubstackViewProps {
   parentTask: Task;
@@ -18,7 +19,7 @@ interface SubstackViewProps {
   onDeferTask: (taskId: string) => void;
   onCardClick: (task: Task) => void;
   onCloseTaskDetails: () => void;
-  onCreateSubstack: (taskId: string, name: string) => void;
+  onAddSubtasks?: (taskId: string) => void;
   onOpenSubstack: (task: Task, substack: Substack) => void;
 }
 
@@ -33,10 +34,11 @@ const SubstackView: React.FC<SubstackViewProps> = ({
   onDeferTask,
   onCardClick,
   onCloseTaskDetails,
-  onCreateSubstack,
+  onAddSubtasks,
   onOpenSubstack
 }) => {
-  const activeTasks = substack.tasks.filter(task => !task.completed);
+  const { t } = useTranslation();
+  const activeTasks = substack.cards.filter(task => !task.completed);
 
   return (
     <div className="flex flex-col flex-1">
@@ -51,16 +53,18 @@ const SubstackView: React.FC<SubstackViewProps> = ({
         </Button>
         <div className="flex-1">
           <h2 className="font-semibold text-lg">
-            {parentTask.title} — {substack.name}
+            {substack.name
+              ? t('substackView.heading', { parent: parentTask.title, substack: substack.name })
+              : t('substackView.headingUnnamed', { parent: parentTask.title })}
           </h2>
           <p className="text-sm text-gray-600">
-            {activeTasks.length} active tasks
+            {t('substackView.activeCount', { count: activeTasks.length })}
           </p>
         </div>
       </div>
 
       <TaskStack 
-        tasks={substack.tasks} 
+        tasks={substack.cards} 
         onComplete={onCompleteTask} 
         onDefer={onDeferTask}
         onCardClick={onCardClick}
@@ -74,7 +78,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
         task={selectedTask}
         isOpen={isTaskDetailsOpen}
         onClose={onCloseTaskDetails}
-        onCreateSubstack={onCreateSubstack}
+        onAddSubtasks={onAddSubtasks}
         onOpenSubstack={onOpenSubstack}
       />
     </div>

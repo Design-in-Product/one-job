@@ -7,12 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/components/ui/sonner';
 import { Task } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
 interface TaskIntegrationProps {
   onImportTasks: (tasks: Task[]) => void;
 }
 
 const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
+  const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [webhookUrl, setWebhookUrl] = useState<string>("");
@@ -20,7 +22,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
 
   const handleImport = async () => {
     if (!selectedService) {
-      toast.error("Please select a service first");
+      toast.error(t('integration.selectServiceFirst'));
       return;
     }
 
@@ -71,7 +73,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
           }),
         });
         
-        toast.success("Tasks exported to Zapier webhook");
+        toast.success(t('integration.exportedToZapier'));
         importedTasks = []; // No tasks to import in this case
       }
       
@@ -92,11 +94,11 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
       case "asana":
         return (
           <div className="space-y-2">
-            <Label htmlFor="apiKey">Asana Personal Access Token</Label>
+            <Label htmlFor="apiKey">{t('integration.asanaLabel')}</Label>
             <Input
               id="apiKey"
               type="password"
-              placeholder="Enter your Asana PAT"
+              placeholder={t('integration.asanaPlaceholder')}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
@@ -109,11 +111,11 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
       case "todoist":
         return (
           <div className="space-y-2">
-            <Label htmlFor="apiKey">Todoist API Token</Label>
+            <Label htmlFor="apiKey">{t('integration.todoistLabel')}</Label>
             <Input
               id="apiKey"
               type="password"
-              placeholder="Enter your Todoist API token"
+              placeholder={t('integration.todoistPlaceholder')}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
@@ -126,11 +128,11 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
       case "zapier":
         return (
           <div className="space-y-2">
-            <Label htmlFor="webhookUrl">Zapier Webhook URL</Label>
+            <Label htmlFor="webhookUrl">{t('integration.zapierLabel')}</Label>
             <Input
               id="webhookUrl"
               type="text"
-              placeholder="Enter your Zapier webhook URL"
+              placeholder={t('integration.zapierPlaceholder')}
               value={webhookUrl}
               onChange={(e) => setWebhookUrl(e.target.value)}
             />
@@ -157,7 +159,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
       <h3 className="text-lg font-medium">Integrate with Task Services</h3>
       
       <div className="space-y-2">
-        <Label htmlFor="service">Select Service</Label>
+        <Label htmlFor="service">{t('integration.selectService')}</Label>
         <Select value={selectedService} onValueChange={setSelectedService}>
           <SelectTrigger id="service" className="w-full">
             <SelectValue placeholder="Select service" />
