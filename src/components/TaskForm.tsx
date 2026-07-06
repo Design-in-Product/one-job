@@ -15,6 +15,14 @@ interface TaskFormProps {
   onCancel?: () => void;
 }
 
+// iOS can't auto-pan focused fields inside fixed 100dvh columns (the
+// sub-deck form sits at the bottom of one — Relay + Xian both hit it).
+// After the keyboard's ~300ms animation, pull the field above it.
+const liftAboveKeyboard = (e: React.FocusEvent<HTMLElement>) => {
+  const el = e.currentTarget;
+  setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300);
+};
+
 const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onCancel }) => {
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
@@ -57,6 +65,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
               <Input
                 type="text"
                 placeholder={t('form.titlePlaceholder')}
+                onFocus={liftAboveKeyboard}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full"
@@ -65,6 +74,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
             </div>
             <div>
               <Textarea
+                onFocus={liftAboveKeyboard}
                 placeholder={t('form.descriptionPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
