@@ -114,6 +114,8 @@ hand-written one, and no agent can ever reorder your deck.
 - Flip-back gesture (Item 19 — timer is acceptable meanwhile; design
   with the zoom grammar)
 - Toast quiet mode (Item 16 — needs an undo surface decision first)
+- **Card aging** (Item 22 — cards yellow like library stock; design
+  together with the deck-depth material language, R2-era)
 
 ## The premium shelf (post-launch, candidates)
 
