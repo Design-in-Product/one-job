@@ -100,6 +100,13 @@ github.com/Design-in-Product/one-job → Settings → Secrets and variables →
 Actions. Add them (or hand the values to Xian to add). Do NOT commit the
 keystore; it is gitignored.
 
+## MAIL (added 2026-07-06): check docs/mail/ at session start
+
+Coral ↔ Relay correspondence lives in this repo's `docs/mail/`
+(convention: `memo-{from}-to-{to}-{date}-{topic}.md`). Instructions may
+arrive there between sessions — read anything addressed to you before
+starting work, and file your reports there too.
+
 ## State addendum (2026-07-05, Coral) — read before resuming Phase 4
 
 Main has moved since Phases 1–3. If you cloned before 2026-07-04, **start
