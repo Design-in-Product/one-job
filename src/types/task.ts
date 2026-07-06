@@ -12,6 +12,10 @@ export interface Task {
   status?: string;
   createdAt: Date;
   completedAt?: Date;
+  /** Lifecycle chain (R1.2): set when the card advances past Done */
+  archivedAt?: Date;
+  /** Lifecycle chain (R1.2): set when the card advances past Archive */
+  trashedAt?: Date;
   deferredAt?: Date;
   deferralCount?: number;
   sortOrder?: number;
