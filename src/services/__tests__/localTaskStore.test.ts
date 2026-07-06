@@ -135,6 +135,27 @@ describe('substacks', () => {
   it('throws when the substack does not exist', async () => {
     await expect(freshStore().addSubstackTask('nope', 'x')).rejects.toThrow('Substack not found');
   });
+
+  it('sub-deck deferral persists: card moves to the bottom and survives cold start', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Parent');
+    const deck = await store.createSubstack(parent.id, 'Steps');
+    await store.addSubstackTask(deck.id, 'Old top');
+    const newest = await store.addSubstackTask(deck.id, 'Newest'); // lands on top
+
+    const deferred = await store.deferSubstackTask(newest.id);
+    expect(deferred.deferralCount).toBe(1);
+    expect(deferred.deferredAt).toBeInstanceOf(Date);
+
+    // display order = array order: deferred card is now last
+    const reloaded = (await freshStore().getAllTasks())[0];
+    expect(reloaded.decks![0].cards.map(c => c.title)).toEqual(['Old top', 'Newest']);
+    expect(reloaded.decks![0].cards[1].deferralCount).toBe(1);
+  });
+
+  it('deferSubstackTask throws on unknown ids', async () => {
+    await expect(freshStore().deferSubstackTask('nope')).rejects.toThrow('Substack task not found');
+  });
 });
 
 describe('undo via restoreTask', () => {

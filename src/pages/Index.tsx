@@ -203,7 +203,7 @@ const Index = () => {
                   sub.id === currentSubstack.substack.id
                     ? {
                         ...sub,
-                        tasks: sub.cards.map(t =>
+                        cards: sub.cards.map(t =>
                           t.id === taskId
                             ? { ...t, completed: true, completedAt: new Date() }
                             : t
@@ -219,7 +219,7 @@ const Index = () => {
         ...prev,
         substack: {
           ...prev.substack,
-          tasks: prev.substack.cards.map(t =>
+          cards: prev.substack.cards.map(t =>
             t.id === taskId
               ? { ...t, completed: true, completedAt: new Date() }
               : t
@@ -234,6 +234,18 @@ const Index = () => {
         toast.error(t('toasts.completeFailed', { message: (err as Error).message }));
       }
     } else {
+      // Vision Item 15 (decided core): a parent with unfinished interior
+      // cards cannot complete. The block is the reveal — the card returns
+      // and the blocking sub-deck comes into focus.
+      const parent = tasks.find(tk => tk.id === taskId);
+      const unfinished = parent?.decks?.flatMap(d => d.cards).filter(c => !c.completed) ?? [];
+      if (parent && unfinished.length > 0) {
+        toast.info(t('toasts.parentBlocked', { count: unfinished.length }), { duration: 6000 });
+        refreshTasks(); // re-deal the refused card
+        const blockingDeck = parent.decks!.find(d => d.cards.some(c => !c.completed))!;
+        setCurrentSubstack({ parentTask: parent, substack: blockingDeck });
+        return;
+      }
       const snapshot = snapshotTask(taskId);
       try {
         await getTaskStore().completeTask(taskId);
@@ -260,7 +272,7 @@ const Index = () => {
                   sub.id === currentSubstack.substack.id
                     ? {
                         ...sub,
-                        tasks: (() => {
+                        cards: (() => {
                           const taskToMove = sub.cards.find(t => t.id === taskId);
                           if (!taskToMove) return sub.cards;
                           const otherTasks = sub.cards.filter(t => t.id !== taskId);
@@ -282,11 +294,19 @@ const Index = () => {
           ...prev,
           substack: {
             ...prev.substack,
-            tasks: [...otherTasks, taskToMove]
+            cards: [...otherTasks, taskToMove]
           }
         };
       });
-      toast.info(t('toasts.substackTaskDeferred'));
+      // Persist the deferral when the store supports it (sub-deck order
+      // used to be local-only and silently reset on reload)
+      try {
+        await getTaskStore().deferSubstackTask?.(taskId);
+        toast.info(t('toasts.substackTaskDeferred'));
+      } catch (err) {
+        console.error("Failed to persist sub-deck deferral:", err);
+        toast.error(t('toasts.deferFailed', { message: (err as Error).message }));
+      }
     } else {
       const snapshot = snapshotTask(taskId);
       try {

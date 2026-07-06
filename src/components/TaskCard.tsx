@@ -26,11 +26,15 @@ const truncateText = (text: string, maxLength: number) => {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, className }) => {
   const { t } = useTranslation();
-  const hasSubstacks = task.decks && task.decks.length > 0;
+  // Honest badge (Item 15 corollary): show the count of UNFINISHED interior
+  // cards; a card whose inside is done reads as childless.
+  const unfinishedInside = (task.decks ?? [])
+    .flatMap(d => d.cards)
+    .filter(c => !c.completed).length;
   const description = task.description ? truncateText(task.description, 180) : '';
 
   const { containerRef, contentRef, fontSize } = useFitText(
-    [task.title, description, hasSubstacks, task.source, showHints]
+    [task.title, description, unfinishedInside, task.source, showHints]
   );
 
   return (
@@ -43,12 +47,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, c
       )}
       onClick={onClick ? () => onClick(task) : undefined}
     >
-      {hasSubstacks && (
+      {unfinishedInside > 0 && (
         <div className="flex justify-end mb-2">
           <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded-full">
             <Layers className="w-4 h-4 text-blue-600" />
             <span className="text-xs text-blue-600 font-medium">
-              {task.decks!.length}
+              {unfinishedInside}
             </span>
           </div>
         </div>

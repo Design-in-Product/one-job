@@ -121,6 +121,8 @@
       "taskUpdated": "Task updated!",
       "taskAdded": "Task added!",
       "taskCompleted": "Task completed!",
+      "parentBlocked_one": "{{count}} sub-task still open inside — finish or clear it first",
+      "parentBlocked_other": "{{count}} sub-tasks still open inside — finish or clear them first",
       "taskDeferred": "Task moved to the bottom of stack!",
       "substackTaskCompleted": "Substack task completed!",
       "substackTaskDeferred": "Substack task moved to the bottom!",
