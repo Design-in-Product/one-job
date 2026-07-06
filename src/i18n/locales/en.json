@@ -44,6 +44,28 @@
       "allDone": "All done! 🎉",
       "addPrompt": "Add a new task to get started again."
     },
+    "chain": {
+      "done": "Done",
+      "archive": "Archive",
+      "trash": "Trash",
+      "unDone": "Un-done",
+      "toArchive": "Archive",
+      "toDone": "To Done",
+      "toTrash": "Trash",
+      "restore": "Restore",
+      "purge": "Delete forever",
+      "purgeCancel": "Cancel",
+      "purgeConfirm": "Permanently delete \"{{title}}\"? There is no undo for this.",
+      "hintsBoth": "← {{left}} · swipe · {{right}} →",
+      "hintsLeft": "← {{left}}",
+      "moreBelow_one": "{{count}} more below",
+      "moreBelow_other": "{{count}} more below",
+      "empty": {
+        "done": "Nothing done yet — it'll land here when you swipe right.",
+        "archive": "The archive is empty. Swipe a done card right to file it here.",
+        "trash": "The trash is empty."
+      }
+    },
     "completed": {
       "empty": "No completed tasks yet.",
       "uncomplete": "Return to deck",
@@ -121,6 +143,11 @@
       "undo": "Undo",
       "undone": "Undone — the card is back",
       "uncompleted": "Back on the deck — it's your next job",
+      "archived": "Archived",
+      "unarchived": "Back in Done",
+      "trashed": "Moved to trash",
+      "restoredFromTrash": "Restored to the archive",
+      "purged": "Deleted forever",
       "taskUpdated": "Task updated!",
       "taskAdded": "Task added!",
       "taskCompleted": "Task completed!",
