@@ -1,8 +1,12 @@
 # One Job - Requirements Specification
 
-> **Document Version**: 1.0  
-> **Last Updated**: January 2025  
-> **Status**: MVP Complete, Integration Phase Planning
+> **Document Version**: 2.0 (re-baselined against the converged vision)  
+> **Last Updated**: 2026-07-04  
+> **Status**: 1.0-rc shipped local-first; concept-model rebuild (R1) is next  
+> **Governing docs**: VISION.md (product vision) · DOMAIN-MODEL.md (concept
+> baseline) · ROADMAP.md (staging + build sequence) · DEPENDENCIES.md
+> (ordering rationale). Where this spec and DOMAIN-MODEL.md disagree,
+> the domain model wins and this file needs a patch.
 
 ## 🎯 Project Overview
 
@@ -36,6 +40,11 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR1.2.3** Task completion SHALL automatically set `completed_at` timestamp
 - **FR1.2.4** Task reactivation SHALL clear `completed_at` timestamp
 
+> **R1.2 direction**: state becomes *place* — a card's lifecycle state is
+> the deck it sits in (Todo decks → Done → Archive → Trash, right to
+> advance / left to regress, provenance-aware return). FR1.2.1's binary
+> truth is preserved at leaf level; the flags above become derived.
+
 #### FR1.3 Task Deferral System
 - **FR1.3.1** Users SHALL be able to defer todo tasks through swipe-left gesture
 - **FR1.3.2** Deferred tasks SHALL move to bottom of task stack
@@ -49,7 +58,16 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR1.4.3** System SHALL display task count badges for active and completed tasks
 - **FR1.4.4** Frontend SHALL show only the top task in the main view
 
-### FR2: Hierarchical Organization (Substacks)
+### FR2: Hierarchical Organization (Substacks) — SUNSET at R1
+
+> **Note (2026-07-04)**: FR2 describes the *shipped* substack mechanism,
+> which remains supported until R1. The converged model (DOMAIN-MODEL.md
+> §1–2, Vision Items 1/8/10) replaces named substacks with **recursive
+> cards**: every card's interior is a canvas holding a deck; subtasks
+> are cards with identical mechanics at any depth; "in progress" is
+> emergent (an unfinished interior), never a stored status. R1.1
+> migrates existing substack data (tasks become interior cards). Named
+> multi-deck interiors may return later as a rare power feature.
 
 #### FR2.1 Substack Creation
 - **FR2.1.1** Users SHALL be able to create named substacks within any task
@@ -107,6 +125,17 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR4.0.3** The remote (API) store SHALL activate only when explicitly configured (VITE_API_URL or ?remote)
 - **FR4.0.4** The app SHALL be installable as a PWA and function offline
 
+#### FR4.0b Data Durability (added 2026-07-04 — Vision Item 13; covenant: an update never costs the user their data)
+- **FR4.0b.1** Every save SHALL write a meta record (count, timestamp) and a dated snapshot; snapshots SHALL be retained for 7 days ✅
+- **FR4.0b.2** If the primary store is missing but meta indicates data existed, the system SHALL restore the newest readable snapshot automatically ✅
+- **FR4.0b.3** Unreadable (corrupt) data SHALL be quarantined, never overwritten ✅
+- **FR4.0b.4** An empty deck SHALL never overwrite a non-empty snapshot ✅
+- **FR4.0b.5** Users SHALL be able to export/import their full deck as human-readable JSON ✅ (Settings)
+- **FR4.0b.6** Settings SHALL surface backup age and nudge when stale ✅
+- **FR4.0b.7** Schema migrations SHALL round-trip through backup export/import before shipping (R1.3 gate)
+- **FR4.0b.8** Export success indicators SHALL report OBSERVED outcomes only — a resolved share sheet, a resolved clipboard write, or an observed download — never a mere attempt ✅ (added 2026-07-05 after real data loss from a silently-failed iOS download)
+- **FR4.0b.9** Backup SHALL offer a clipboard path (copy AND paste-restore) that requires no filesystem or download machinery ✅
+
 #### FR4.1 Backend API (optional in 1.0; required for integrations/sync)
 - **FR4.1.1** System SHALL provide RESTful API for all operations
 - **FR4.1.2** API SHALL follow OpenAPI 3.0 specification
@@ -125,7 +154,18 @@ One Job is a mobile-first task management application built with domain-driven d
 - **FR4.3.3** Error responses SHALL include descriptive messages
 - **FR4.3.4** System SHALL prevent SQL injection through ORM usage
 
-### FR5: Integration Capabilities
+### FR5: Integration Capabilities — REFRAMED as the 2.0 Experience Layer
+
+> **Note (2026-07-04, Vision Item 11)**: integrations are no longer
+> push-export conveniences; they are the 2.0 identity. One Job is a
+> better experience layer over the user's already-chosen task backends:
+> **import first (read-only), then two-way sync**; metadata federated
+> and normalized in; the id/field **mapping preserved both ways** as a
+> first-class artifact; One Job's value-added overlay (deck order,
+> interiors, history, lifecycle placement) never flattened into a
+> source; multiple sources side by side. Agents (MCP inbox/dispatch)
+> are the same seam — a card arriving or leaving with provenance. See
+> ROADMAP.md R3–R4 and ARCHITECTURE.md §Source adapters.
 
 #### FR5.1 External Service Integration Framework
 - **FR5.1.1** System SHALL provide pluggable integration architecture
@@ -320,7 +360,7 @@ One Job is a mobile-first task management application built with domain-driven d
 - [ ] **Pull-down to deal a blank card** (chromeless power gesture, post-1.0)
 
 #### Localization (added 2026-07-02)
-- [ ] **App i18n pass** (externalize strings; en first, es/fr/de candidates)
+- [x] **App i18n pass** (i18next; all UI strings in src/i18n/locales/en.json; new locales = one JSON file, 2026-07-03)
 - [ ] **Localized store listings** (App Store + Play, after app i18n)
 
 #### Advanced Integrations
