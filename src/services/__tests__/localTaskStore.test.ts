@@ -233,6 +233,69 @@ describe('un-complete (recovery from accidental completion)', () => {
   });
 });
 
+describe('lifecycle chain (R1.2): Done → Archive → Trash and back', () => {
+  const walkToDone = async (store: LocalTaskStore, title = 'Traveler') => {
+    const t = await store.createTask(title);
+    await store.completeTask(t.id);
+    return t;
+  };
+
+  it('walks a card all the way down the chain and all the way back home', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+
+    await store.archiveTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.archivedAt).toBeInstanceOf(Date);
+
+    await store.trashTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.trashedAt).toBeInstanceOf(Date);
+
+    // walk back: trash → archive → done → home (top of deck)
+    await store.restoreFromTrash(t.id);
+    await store.unarchiveTask(t.id);
+    const home = await store.uncompleteTask(t.id);
+    expect(home.completed).toBe(false);
+    expect(home.archivedAt).toBeUndefined();
+    expect(home.trashedAt).toBeUndefined();
+    expect((await store.getAllTasks())[0].id).toBe(t.id); // top of the deck
+
+    // and the whole journey survives a cold start
+    const cold = (await freshStore().getAllTasks()).find(x => x.id === t.id)!;
+    expect(cold.completed).toBe(false);
+  });
+
+  it('guards every move: no skipping rooms', async () => {
+    const store = freshStore();
+    const active = await store.createTask('Active');
+    await expect(store.archiveTask(active.id)).rejects.toThrow('Only done cards');
+    await expect(store.trashTask(active.id)).rejects.toThrow('Only archived cards');
+    await expect(store.purgeTask(active.id)).rejects.toThrow('Only trashed cards');
+
+    const done = await walkToDone(store, 'Done one');
+    await expect(store.unarchiveTask(done.id)).rejects.toThrow('not archived');
+    await expect(store.trashTask(done.id)).rejects.toThrow('Only archived cards');
+  });
+
+  it('purge permanently removes a trashed card', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+    await store.archiveTask(t.id);
+    await store.trashTask(t.id);
+    await store.purgeTask(t.id);
+    expect((await store.getAllTasks()).find(x => x.id === t.id)).toBeUndefined();
+    // gone after cold start too
+    expect((await freshStore().getAllTasks()).find(x => x.id === t.id)).toBeUndefined();
+  });
+
+  it('archived and trashed cards never appear in the active deck filter', async () => {
+    const store = freshStore();
+    const t = await walkToDone(store);
+    await store.archiveTask(t.id);
+    const active = (await store.getAllTasks()).filter(x => !x.completed);
+    expect(active.find(x => x.id === t.id)).toBeUndefined();
+  });
+});
+
 describe('data safety net (wipe protection)', () => {
   const snapshotKeys = () => {
     const keys: string[] = [];

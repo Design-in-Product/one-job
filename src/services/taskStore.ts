@@ -42,6 +42,15 @@ export interface TaskStore {
    * top of the active deck. Optional for the same reason as above.
    */
   uncompleteTask?(id: string): Promise<Task>;
+  /** Lifecycle chain (R1.2): Done → Archive → Trash, right advances,
+      left regresses. Optional as a set — the UI shows the chain only
+      when the store supports it. */
+  archiveTask?(id: string): Promise<Task>;
+  unarchiveTask?(id: string): Promise<Task>;
+  trashTask?(id: string): Promise<Task>;
+  restoreFromTrash?(id: string): Promise<Task>;
+  /** Permanent removal; only from trash; UI confirms first. */
+  purgeTask?(id: string): Promise<void>;
 }
 
 let store: TaskStore | null = null;

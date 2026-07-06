@@ -15,6 +15,8 @@ export const reviveTask = (t: Task): Task => ({
   ...t,
   createdAt: new Date(t.createdAt),
   completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
+  archivedAt: t.archivedAt ? new Date(t.archivedAt) : undefined,
+  trashedAt: t.trashedAt ? new Date(t.trashedAt) : undefined,
   deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
   decks: t.decks?.map(d => ({
     ...d,
@@ -88,5 +90,39 @@ export const applyUncompletion = (task: Task, tasks: Task[]): Task => {
   task.sortOrder = active.length > 0
     ? Math.min(...active.map(t => t.sortOrder ?? 0)) - 1
     : 1;
+  return task;
+};
+
+// ---- Lifecycle chain (R1.2): Todo -> Done -> Archive -> Trash ----
+// Right advances, left regresses; state is derived from timestamps,
+// never stored as an enum (Vision Items 2/10; docs/R1.2-CHAIN-DESIGN.md).
+
+export type Room = 'deck' | 'done' | 'archive' | 'trash';
+
+/** Which room of the lifecycle a card currently sits in. */
+export const cardRoom = (t: Task): Room => {
+  if (t.trashedAt) return 'trash';
+  if (t.archivedAt) return 'archive';
+  if (t.completed) return 'done';
+  return 'deck';
+};
+
+export const applyArchive = (task: Task): Task => {
+  task.archivedAt = new Date();
+  return task;
+};
+
+export const applyUnarchive = (task: Task): Task => {
+  task.archivedAt = undefined;
+  return task;
+};
+
+export const applyTrash = (task: Task): Task => {
+  task.trashedAt = new Date();
+  return task;
+};
+
+export const applyRestoreFromTrash = (task: Task): Task => {
+  task.trashedAt = undefined;
   return task;
 };

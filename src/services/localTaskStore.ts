@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -236,6 +236,53 @@ export class LocalTaskStore implements TaskStore {
       }
     }
     throw new Error('Substack task not found');
+  }
+
+  // ---- Lifecycle chain (R1.2): each move guards on the room the card
+  // is actually in, so a stale UI can never skip a card down the chain.
+
+  async archiveTask(id: string): Promise<Task> {
+    const task = this.findTask(id);
+    if (cardRoom(task) !== 'done') throw new Error('Only done cards can be archived');
+    applyArchive(task);
+    this.saveTasks();
+    return task;
+  }
+
+  async unarchiveTask(id: string): Promise<Task> {
+    const task = this.findTask(id);
+    if (cardRoom(task) !== 'archive') throw new Error('Card is not archived');
+    applyUnarchive(task);
+    this.saveTasks();
+    return task;
+  }
+
+  async trashTask(id: string): Promise<Task> {
+    const task = this.findTask(id);
+    if (cardRoom(task) !== 'archive') throw new Error('Only archived cards can be trashed');
+    applyTrash(task);
+    this.saveTasks();
+    return task;
+  }
+
+  async restoreFromTrash(id: string): Promise<Task> {
+    const task = this.findTask(id);
+    if (cardRoom(task) !== 'trash') throw new Error('Card is not in the trash');
+    applyRestoreFromTrash(task);
+    this.saveTasks();
+    return task;
+  }
+
+  /** The only destructive operation in the app: permanent removal,
+      allowed ONLY from the trash, confirmed by the UI beforehand. */
+  async purgeTask(id: string): Promise<void> {
+    const index = this.tasks.findIndex(t => t.id === id);
+    if (index === -1) throw new Error('Task not found');
+    if (cardRoom(this.tasks[index]) !== 'trash') {
+      throw new Error('Only trashed cards can be purged');
+    }
+    this.tasks.splice(index, 1);
+    this.saveTasks();
   }
 
   async deferSubstackTask(id: string): Promise<Task> {
