@@ -167,31 +167,38 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 ))}
               </div>
             ) : task.decks?.[0] ? (
-              <Button
-                variant="outline"
-                className="w-full justify-between"
+              /* The interior deck IS a little deck: tap to expand into it
+                 (top card arrives face-up). Xian, 2026-07-06. */
+              <button
                 onClick={() => handleOpenSubstack(task.decks![0])}
+                className="flex flex-col items-center gap-1.5 mx-auto"
+                aria-label={t('details.subtasksAria', {
+                  count: task.decks[0].cards.filter(c => !c.completed).length
+                })}
               >
-                <span className="flex items-center gap-2">
-                  <Layers className="w-4 h-4" />
-                  {t('details.subtasks')}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">
-                    {t('details.openCount', { count: task.decks[0].cards.filter(c => !c.completed).length })}
-                  </span>
-                  <ChevronRight className="w-4 h-4" />
+                <div className="relative w-16 aspect-[5/7]">
+                  <div className="absolute inset-0 translate-y-2 scale-[0.92] rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end opacity-40" />
+                  <div className="absolute inset-0 translate-y-1 scale-[0.96] rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end opacity-70" />
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end shadow-md flex items-center justify-center">
+                    <span className="w-8 h-8 rounded-full bg-white/95 text-sm font-bold flex items-center justify-center text-taskGradient-start">
+                      {task.decks[0].cards.filter(c => !c.completed).length}
+                    </span>
+                  </div>
                 </div>
-              </Button>
+                <span className="text-xs text-gray-500">{t('details.subtasks')}</span>
+              </button>
             ) : onAddSubtasks ? (
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2"
+              /* Ghost mini-deck: same shape, dashed — the affordance to start one */
+              <button
                 onClick={() => onAddSubtasks(task.id)}
+                className="flex flex-col items-center gap-1.5 mx-auto"
+                aria-label={t('details.addSubtasks')}
               >
-                <Plus className="w-4 h-4" />
-                {t('details.addSubtasks')}
-              </Button>
+                <div className="w-16 aspect-[5/7] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                  <Plus className="w-5 h-5 text-gray-400" />
+                </div>
+                <span className="text-xs text-gray-500">{t('details.addSubtasks')}</span>
+              </button>
             ) : null}
           </div>
         </div>

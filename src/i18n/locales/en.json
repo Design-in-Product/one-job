@@ -86,7 +86,9 @@
       "subtasks": "Sub-tasks",
       "addSubtasks": "Add sub-tasks",
       "openCount_one": "{{count}} open",
-      "openCount_other": "{{count}} open"
+      "openCount_other": "{{count}} open",
+      "subtasksAria_one": "Open sub-tasks ({{count}} open)",
+      "subtasksAria_other": "Open sub-tasks ({{count}} open)"
     },
     "substack": {
       "create": "Create Substack",
