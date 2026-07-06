@@ -91,10 +91,10 @@ export class ApiTaskStore implements TaskStore {
     return mapTask(data);
   }
 
-  async createSubstack(taskId: string, name: string): Promise<InteriorDeck> {
+  async createSubstack(taskId: string, name: string | null): Promise<InteriorDeck> {
     const data = await request<any>(`/tasks/${taskId}/substacks`, {
       method: 'POST',
-      body: JSON.stringify({ name })
+      body: JSON.stringify({ name: name ?? 'Sub-tasks' })
     });
     return mapSubstack(data);
   }
