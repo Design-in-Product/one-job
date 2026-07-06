@@ -136,6 +136,17 @@ describe('substacks', () => {
     await expect(freshStore().addSubstackTask('nope', 'x')).rejects.toThrow('Substack not found');
   });
 
+  it('creates the default (unnamed) sub-deck — no naming ritual (Item 23)', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Parent');
+    const deck = await store.createSubstack(parent.id, null);
+    expect(deck.name).toBeNull();
+    await store.addSubstackTask(deck.id, 'First sub-task');
+    const reloaded = (await freshStore().getAllTasks())[0];
+    expect(reloaded.decks![0].name).toBeNull();
+    expect(reloaded.decks![0].cards).toHaveLength(1);
+  });
+
   it('sub-deck deferral persists: card moves to the bottom and survives cold start', async () => {
     const store = freshStore();
     const parent = await store.createTask('Parent');

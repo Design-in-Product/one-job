@@ -42,7 +42,8 @@
       "activeCount_one": "{{count}} active task",
       "activeCount_other": "{{count}} active tasks",
       "allDone": "All done! 🎉",
-      "addPrompt": "Add a new task to get started again."
+      "addPrompt": "Add a new task to get started again.",
+      "headingUnnamed": "{{parent}}"
     },
     "chain": {
       "done": "Done",
@@ -81,7 +82,11 @@
       "save": "Save Changes",
       "close": "Close",
       "edit": "Edit",
-      "noDescription": "No description — tap to add one"
+      "noDescription": "No description — tap to add one",
+      "subtasks": "Sub-tasks",
+      "addSubtasks": "Add sub-tasks",
+      "openCount_one": "{{count}} open",
+      "openCount_other": "{{count}} open"
     },
     "substack": {
       "create": "Create Substack",
@@ -163,7 +168,8 @@
       "addFailed": "Failed to add task: {{message}}",
       "completeFailed": "Failed to complete task: {{message}}",
       "deferFailed": "Failed to defer task: {{message}}",
-      "substackCreateFailed": "Failed to create substack: {{message}}"
+      "substackCreateFailed": "Failed to create substack: {{message}}",
+      "subdeckReady": "Sub-deck ready — deal in your first sub-task"
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",

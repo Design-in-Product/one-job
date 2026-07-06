@@ -98,32 +98,19 @@ const Index = () => {
       }
     } else {
       try {
-        const addedTask = await getTaskStore().addSubstackTask(
+        await getTaskStore().addSubstackTask(
           currentSubstack.substack.id,
           newTask.title,
           newTask.description
         );
-        setTasks(prevTasks =>
-          prevTasks.map(task =>
-            task.id === currentSubstack.parentTask.id
-              ? {
-                  ...task,
-                  decks: task.decks?.map(sub =>
-                    sub.id === currentSubstack.substack.id
-                      ? { ...sub, cards: [...sub.cards, addedTask] }
-                      : sub
-                  ) || []
-                }
-              : task
-          )
-        );
-        setCurrentSubstack(prev => prev ? {
-          ...prev,
-          substack: {
-            ...prev.substack,
-            cards: [...prev.substack.cards, addedTask]
-          }
-        } : null);
+        // Re-read from the store rather than hand-stitching state: the
+        // local store mutates the same objects React holds, so optimistic
+        // appends double-count (seen 2026-07-06).
+        const all = await getTaskStore().getAllTasks();
+        setTasks(all);
+        const parent = all.find(tk => tk.id === currentSubstack.parentTask.id);
+        const deck = parent?.decks?.find(d => d.id === currentSubstack.substack.id);
+        if (parent && deck) setCurrentSubstack({ parentTask: parent, substack: deck });
         toast.success(t('toasts.addedToSubstack'));
       } catch (err) {
         console.error("Failed to add substack task:", err);
@@ -362,22 +349,23 @@ const Index = () => {
     setIsTaskDetailsOpen(true);
   };
 
-  const handleCreateSubstack = async (taskId: string, name: string) => {
+  // Item 23: "Add sub-tasks" creates the default (unnamed) deck and the
+  // card's back expands straight into it — no naming ritual.
+  const handleAddSubtasks = async (taskId: string) => {
     setIsCreatingSubstack(true);
     try {
-      await getTaskStore().createSubstack(taskId, name);
-      toast.success(isDemoMode
-        ? DemoService.getInstance().getDemoMessage('substackCreated')
-        : t('toasts.substackCreated', { name }));
-      
-      // Refresh tasks to get the updated task with substacks
-      await refreshTasks();
-      
-      // Close task details modal since we're refreshing
+      const deck = await getTaskStore().createSubstack(taskId, null);
+      const all = await getTaskStore().getAllTasks();
+      setTasks(all);
+      const parent = all.find(tk => tk.id === taskId);
       setIsTaskDetailsOpen(false);
       setSelectedTask(null);
+      if (parent) setCurrentSubstack({ parentTask: parent, substack: deck });
+      toast.success(isDemoMode
+        ? DemoService.getInstance().getDemoMessage('substackCreated')
+        : t('toasts.subdeckReady'));
     } catch (err) {
-      console.error("Failed to create substack in backend:", err);
+      console.error("Failed to create sub-deck:", err);
       toast.error(t('toasts.substackCreateFailed', { message: (err as Error).message }));
     } finally {
       setIsCreatingSubstack(false);
@@ -425,7 +413,7 @@ const Index = () => {
               onDeferTask={handleDeferTask}
               onCardClick={handleCardClick}
               onCloseTaskDetails={() => setIsTaskDetailsOpen(false)}
-              onCreateSubstack={handleCreateSubstack}
+              onAddSubtasks={handleAddSubtasks}
               onOpenSubstack={handleOpenSubstack}
               // NOTE: onUpdateTask prop should also be handled for substack tasks
               // if you implement update functionality for them in the future.
@@ -528,7 +516,7 @@ const Index = () => {
             task={getCurrentSelectedTask()}
             isOpen={isTaskDetailsOpen}
             onClose={() => setIsTaskDetailsOpen(false)}
-            onCreateSubstack={handleCreateSubstack}
+            onAddSubtasks={handleAddSubtasks}
             onOpenSubstack={handleOpenSubstack}
             onUpdateTask={handleUpdateTask} 
           />

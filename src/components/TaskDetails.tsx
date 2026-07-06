@@ -3,15 +3,15 @@ import { Task, Substack } from '@/types/task';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'; // <--- ADD DialogFooter
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronRight } from 'lucide-react';
-import SubstackCreator from './SubstackCreator';
+import { ChevronRight, Layers, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface TaskDetailsProps {
   task: Task | null;
   isOpen: boolean;
   onClose: () => void;
-  onCreateSubstack: (taskId: string, name: string) => void;
+  /** Item 23: creates the default (unnamed) sub-deck AND opens it */
+  onAddSubtasks?: (taskId: string) => void;
   onOpenSubstack: (task: Task, substack: Substack) => void;
   // <--- NEW PROP: Function to send updates to the parent (Index.tsx)
   /** Optional: substack views don't support editing yet */
@@ -22,9 +22,9 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
   isOpen,
   onClose,
-  onCreateSubstack,
+  onAddSubtasks,
   onOpenSubstack,
-  onUpdateTask // <--- Destructure the new prop
+  onUpdateTask
 }) => {
   // ALL hooks must run before any early return (Rules of Hooks): this
   // component stays mounted with task=null and receives a task later,
@@ -47,10 +47,6 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   }, [task]);
 
   if (!task) return null;
-
-  const handleCreateSubstack = (name: string) => {
-    onCreateSubstack(task.id, name);
-  };
 
   const handleOpenSubstack = (substack: Substack) => {
     onOpenSubstack(task, substack);
@@ -147,31 +143,56 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             </div>
           )}
 
+          {/* Sub-tasks (Item 23): one default deck, no naming ritual.
+              Legacy cards with multiple named decks keep a plain list;
+              names return as a surface only with multi-deck support. */}
           <div>
-            <h4 className="font-semibold text-gray-700 mb-3">{t('details.decks')}</h4>
-
-            {task.decks && task.decks.length > 0 && (
-              <div className="space-y-2 mb-3">
-                {task.decks.map((substack) => (
+            {(task.decks?.length ?? 0) > 1 ? (
+              <div className="space-y-2">
+                {task.decks!.map((deck) => (
                   <Button
-                    key={substack.id}
+                    key={deck.id}
                     variant="outline"
                     className="w-full justify-between"
-                    onClick={() => handleOpenSubstack(substack)}
+                    onClick={() => handleOpenSubstack(deck)}
                   >
-                    <span>{substack.name}</span>
+                    <span>{deck.name ?? t('details.subtasks')}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">
-                        {substack.cards.filter(t => !t.completed).length} tasks
+                        {t('details.openCount', { count: deck.cards.filter(c => !c.completed).length })}
                       </span>
                       <ChevronRight className="w-4 h-4" />
                     </div>
                   </Button>
                 ))}
               </div>
-            )}
-
-            <SubstackCreator onCreateSubstack={handleCreateSubstack} />
+            ) : task.decks?.[0] ? (
+              <Button
+                variant="outline"
+                className="w-full justify-between"
+                onClick={() => handleOpenSubstack(task.decks![0])}
+              >
+                <span className="flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  {t('details.subtasks')}
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500">
+                    {t('details.openCount', { count: task.decks[0].cards.filter(c => !c.completed).length })}
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </Button>
+            ) : onAddSubtasks ? (
+              <Button
+                variant="outline"
+                className="w-full justify-start gap-2"
+                onClick={() => onAddSubtasks(task.id)}
+              >
+                <Plus className="w-4 h-4" />
+                {t('details.addSubtasks')}
+              </Button>
+            ) : null}
           </div>
         </div>
 
