@@ -395,7 +395,7 @@ const Index = () => {
   if (currentSubstack) {
     return (
       <div className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
-        <div className="w-full max-w-md mx-auto flex flex-col h-app-screen pt-[env(safe-area-inset-top)]">
+        <div className="w-full max-w-md mx-auto flex flex-col h-app-screen pt-[max(0.75rem,env(safe-area-inset-top))]">
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
