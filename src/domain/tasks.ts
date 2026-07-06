@@ -16,10 +16,10 @@ export const reviveTask = (t: Task): Task => ({
   createdAt: new Date(t.createdAt),
   completedAt: t.completedAt ? new Date(t.completedAt) : undefined,
   deferredAt: t.deferredAt ? new Date(t.deferredAt) : undefined,
-  substacks: t.substacks?.map(s => ({
-    ...s,
-    createdAt: new Date(s.createdAt),
-    tasks: s.tasks.map(reviveTask)
+  decks: t.decks?.map(d => ({
+    ...d,
+    createdAt: new Date(d.createdAt),
+    cards: d.cards.map(reviveTask)
   }))
 });
 

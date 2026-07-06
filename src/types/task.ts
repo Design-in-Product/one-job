@@ -1,5 +1,7 @@
 // src/types/task.ts
-// 06-06-2025   Added sortOrder task
+// Core card types. Schema v2 (2026-07-06): nesting is InteriorDeck —
+// named decks of FULL cards, recursion-capable (Vision Item 17). The
+// UI ships one deck per card; the model allows many.
 
 export interface Task {
   id: string;
@@ -12,15 +14,20 @@ export interface Task {
   completedAt?: Date;
   deferredAt?: Date;
   deferralCount?: number;
-  sortOrder?: number; // <--- ADDED THIS LINE
+  sortOrder?: number;
   source?: string;
   externalId?: string;
-  substacks?: Substack[];
+  /** Interior decks — named sub-decks of full cards. Replaces v1 `substacks`. */
+  decks?: InteriorDeck[];
 }
 
-export interface Substack {
+export interface InteriorDeck {
   id: string;
-  name: string;
-  tasks: Task[];
+  /** null = the unnamed default sub-deck; multiple named decks are a later/premium layer */
+  name: string | null;
+  cards: Task[];
   createdAt: Date;
 }
+
+/** @deprecated v1 name — use InteriorDeck. Removed once R1.1 UI lands. */
+export type Substack = InteriorDeck;

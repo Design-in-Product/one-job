@@ -126,10 +126,10 @@ describe('substacks', () => {
 
     // cold start: everything survived
     const reloaded = (await freshStore().getAllTasks())[0];
-    expect(reloaded.substacks).toHaveLength(1);
-    expect(reloaded.substacks![0].tasks).toHaveLength(1);
-    expect(reloaded.substacks![0].tasks[0].completed).toBe(true);
-    expect(reloaded.substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+    expect(reloaded.decks).toHaveLength(1);
+    expect(reloaded.decks![0].cards).toHaveLength(1);
+    expect(reloaded.decks![0].cards[0].completed).toBe(true);
+    expect(reloaded.decks![0].cards[0].completedAt).toBeInstanceOf(Date);
   });
 
   it('throws when the substack does not exist', async () => {
@@ -229,7 +229,7 @@ describe('data safety net (wipe protection)', () => {
     expect(meta.updatedAt).toBeTruthy();
     const snaps = snapshotKeys();
     expect(snaps).toHaveLength(1);
-    expect(JSON.parse(localStorage.getItem(snaps[0])!)).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
   });
 
   it('restores from the newest snapshot when the main key disappears', async () => {
@@ -238,8 +238,8 @@ describe('data safety net (wipe protection)', () => {
     const tasks = await freshStore().getAllTasks();
     expect(tasks.map(t => t.title)).toEqual(['Survivor']);
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
-    // main key is re-established
-    expect(JSON.parse(localStorage.getItem(KEY)!)).toHaveLength(1);
+    // main key is re-established (v2 envelope)
+    expect(JSON.parse(localStorage.getItem(KEY)!).cards).toHaveLength(1);
   });
 
   it('does not restore for a genuinely fresh install (no meta)', async () => {
@@ -269,7 +269,7 @@ describe('data safety net (wipe protection)', () => {
     await store.importTasks([]); // legitimate empty save
     const snaps = snapshotKeys();
     expect(snaps).toHaveLength(1);
-    expect(JSON.parse(localStorage.getItem(snaps[0])!)).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
   });
 
   it('prunes snapshots beyond the retention window', async () => {
@@ -296,11 +296,11 @@ describe('backup import (restore path)', () => {
       completed: false,
       createdAt: '2026-01-15T10:00:00.000Z',
       sortOrder: 1,
-      substacks: [{
+      decks: [{
         id: 'sub1',
         name: 'Restored sub',
         createdAt: '2026-01-16T10:00:00.000Z',
-        tasks: [{
+        cards: [{
           id: 'st1', title: 'Sub task', completed: true,
           createdAt: '2026-01-17T10:00:00.000Z',
           completedAt: '2026-01-18T10:00:00.000Z', sortOrder: 1
@@ -313,8 +313,8 @@ describe('backup import (restore path)', () => {
     expect(tasks).toHaveLength(1);
     expect(tasks[0].title).toBe('Restored');
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
-    expect(tasks[0].substacks![0].createdAt).toBeInstanceOf(Date);
-    expect(tasks[0].substacks![0].tasks[0].completedAt).toBeInstanceOf(Date);
+    expect(tasks[0].decks![0].createdAt).toBeInstanceOf(Date);
+    expect(tasks[0].decks![0].cards[0].completedAt).toBeInstanceOf(Date);
 
     // and the round trip survives a cold start
     expect((await freshStore().getAllTasks())[0].title).toBe('Restored');

@@ -53,7 +53,7 @@
     },
     "details": {
       "created": "Created",
-      "substacks": "Substacks",
+      "decks": "Sub-decks",
       "descriptionPlaceholder": "Add a detailed description...",
       "cancel": "Cancel",
       "save": "Save Changes"

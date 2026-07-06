@@ -56,6 +56,14 @@ user's real deck. The toast was fixed the same hour (FR4.0b.8: success
 signals report observed outcomes only) — but the deeper rule is this
 protocol.
 
+**Umbrella (added 2026-07-06, from Piper Morgan's three-incident
+pattern via the cross-pollination brief):** before ANY action with no
+undo — `rm -rf`, force-push, volume/DB deletion, bulk updates,
+full-replace API mutations, storage schema rewrites — pause and ask
+whether a narrower, reversible alternative exists. "Probably disposable
+state" is not verified-disposable. Tool-specific rules don't
+self-generalize; this principle is the cross-tool version.
+
 ## Project Overview
 
 One Job is a mobile-first task management application built with domain-driven design principles. It features a card-based interface where users see one task at a time, enabling focused work through swipe-based interactions and hierarchical task organization (substacks).
