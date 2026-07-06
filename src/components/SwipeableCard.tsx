@@ -24,8 +24,13 @@ interface SwipeableCardProps {
   children: React.ReactNode;
   /** Disable dragging (e.g. while the card is face-down) */
   disabled?: boolean;
-  onSwipeRight: () => void;
+  /** Absent = right swipe doesn't commit (springs back) — e.g. the Trash
+      room, where the only way forward is the confirmed purge button */
+  onSwipeRight?: () => void;
   onSwipeLeft: () => void;
+  /** Hint labels; default to Done/Later (the main-deck meanings) */
+  rightHint?: string;
+  leftHint?: string;
   className?: string;
 }
 
@@ -34,6 +39,8 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   disabled = false,
   onSwipeRight,
   onSwipeLeft,
+  rightHint,
+  leftHint,
   className,
 }) => {
   const x = useMotionValue(0);
@@ -56,14 +63,15 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
     // velocity points the same way as the drag — otherwise a drag that
     // springs back to center could register as a swipe.
     const commitRight =
-      offset.x > SWIPE_DISTANCE || (offset.x > 30 && velocity.x > SWIPE_VELOCITY);
+      !!onSwipeRight &&
+      (offset.x > SWIPE_DISTANCE || (offset.x > 30 && velocity.x > SWIPE_VELOCITY));
     const commitLeft =
       offset.x < -SWIPE_DISTANCE || (offset.x < -30 && velocity.x < -SWIPE_VELOCITY);
 
     if (commitRight) {
       hapticImpact();
       setExitX(window.innerWidth * 1.2);
-      onSwipeRight();
+      onSwipeRight!();
     } else if (commitLeft) {
       hapticImpact();
       setExitX(-window.innerWidth * 1.2);
@@ -96,22 +104,24 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       {/* Swipe direction hints, revealed proportionally to drag distance */}
       {!disabled && (
         <>
-          <motion.div
-            className="absolute top-4 left-4 pointer-events-none"
-            style={{ opacity: completeOpacity }}
-          >
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 text-white shadow-md">
-              <Check className="w-4 h-4" />
-              <span className="text-sm font-semibold">{t('swipe.done')}</span>
-            </div>
-          </motion.div>
+          {onSwipeRight !== undefined && (
+            <motion.div
+              className="absolute top-4 left-4 pointer-events-none"
+              style={{ opacity: completeOpacity }}
+            >
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 text-white shadow-md">
+                <Check className="w-4 h-4" />
+                <span className="text-sm font-semibold">{rightHint ?? t('swipe.done')}</span>
+              </div>
+            </motion.div>
+          )}
           <motion.div
             className="absolute top-4 right-4 pointer-events-none"
             style={{ opacity: deferOpacity }}
           >
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500 text-white shadow-md">
               <RotateCcw className="w-4 h-4" />
-              <span className="text-sm font-semibold">{t('swipe.later')}</span>
+              <span className="text-sm font-semibold">{leftHint ?? t('swipe.later')}</span>
             </div>
           </motion.div>
         </>
