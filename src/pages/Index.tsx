@@ -19,6 +19,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CardDeck from '@/components/CardDeck';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
+import ChainView from '@/components/ChainView';
 import TaskIntegration from '@/components/TaskIntegration';
 import TaskDetails from '@/components/TaskDetails';
 import SettingsView from '@/components/SettingsView';
@@ -148,6 +149,40 @@ const Index = () => {
       setCurrentView('main');
     } catch (err) {
       console.error("Failed to un-complete:", err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Lifecycle chain handlers (R1.2). Every move offers the same 5s undo
+  // as the main deck; purge is confirm-before in the UI, never undoable.
+  const chainMove = async (
+    taskId: string,
+    op: 'archiveTask' | 'unarchiveTask' | 'trashTask' | 'restoreFromTrash',
+    toastKey: string
+  ) => {
+    const store = getTaskStore();
+    const fn = store[op];
+    if (!fn) return;
+    const snapshot = snapshotTask(taskId);
+    try {
+      await fn.call(store, taskId);
+      toast.success(t(toastKey), undoToastOptions(snapshot));
+      refreshTasks();
+    } catch (err) {
+      console.error(`Chain move ${op} failed:`, err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
+  const handlePurgeTask = async (taskId: string) => {
+    const store = getTaskStore();
+    if (!store.purgeTask) return;
+    try {
+      await store.purgeTask(taskId);
+      toast.success(t('toasts.purged'));
+      refreshTasks();
+    } catch (err) {
+      console.error("Purge failed:", err);
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
@@ -441,10 +476,22 @@ const Index = () => {
                     {t('nav.backToTasks')}
                   </button>
                 </div>
-                <CompletedTasks
-                  tasks={completedTasks}
-                  onUncomplete={getTaskStore().uncompleteTask ? handleUncompleteTask : undefined}
-                />
+                {getTaskStore().archiveTask ? (
+                  <ChainView
+                    tasks={tasks}
+                    onUncomplete={handleUncompleteTask}
+                    onArchive={(id) => chainMove(id, 'archiveTask', 'toasts.archived')}
+                    onUnarchive={(id) => chainMove(id, 'unarchiveTask', 'toasts.unarchived')}
+                    onTrash={(id) => chainMove(id, 'trashTask', 'toasts.trashed')}
+                    onRestoreFromTrash={(id) => chainMove(id, 'restoreFromTrash', 'toasts.restoredFromTrash')}
+                    onPurge={handlePurgeTask}
+                  />
+                ) : (
+                  <CompletedTasks
+                    tasks={completedTasks}
+                    onUncomplete={getTaskStore().uncompleteTask ? handleUncompleteTask : undefined}
+                  />
+                )}
               </div>
             )}
             
