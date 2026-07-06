@@ -188,7 +188,7 @@ export class LocalTaskStore implements TaskStore {
     return task;
   }
 
-  async createSubstack(taskId: string, name: string): Promise<InteriorDeck> {
+  async createSubstack(taskId: string, name: string | null): Promise<InteriorDeck> {
     const task = this.findTask(taskId);
     const newDeck: InteriorDeck = {
       id: uuidv4(),

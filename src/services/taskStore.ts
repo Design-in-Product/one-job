@@ -20,7 +20,8 @@ export interface TaskStore {
   completeTask(id: string): Promise<Task>;
   /** Move a task to the bottom of the stack, tracking deferral count */
   deferTask(id: string): Promise<Task>;
-  createSubstack(taskId: string, name: string): Promise<InteriorDeck>;
+  /** name null = the default unnamed sub-deck (Item 23) */
+  createSubstack(taskId: string, name: string | null): Promise<InteriorDeck>;
   addSubstackTask(substackId: string, title: string, description?: string): Promise<Task>;
   completeSubstackTask(id: string): Promise<Task>;
   /** Persist a sub-deck deferral (card to the bottom of its deck). Optional
