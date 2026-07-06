@@ -92,10 +92,31 @@ the Pages deploy).
 
 ## Still open
 
-- Release signing: Android keystore creation + Play Console
-- iOS Phase 4 (Archive → TestFlight): ready to resume under the renamed
-  id `co.onejob.deck` — ensure the PAID team is selected before any
-  device run (see the trap note below)
+- ~~Release signing: Android keystore creation~~ ✅ keystore created
+  2026-07-05 (Xian); remaining: add the three secrets to GitHub Actions,
+  then Play Console
+- ~~iOS Phase 4 (Archive → TestFlight)~~ ✅ **rc.2 live on TestFlight
+  2026-07-05** (Relay)
+
+## Keeping TestFlight in sync with the web app (2026-07-05)
+
+The native shell **bundles the web assets at build time** — a TestFlight
+build is a snapshot, and it does NOT follow web deploys. The PWA
+self-updates; the native app updates only when a new build is uploaded.
+
+- **Today's loop**: new TestFlight build = Relay reruns the tail of the
+  brief on the Mac — fresh pull → `npm ci` → `npm run build:native` →
+  `npx cap sync ios` → bump the build number → Archive → Upload
+  (~15 min). Suggested cadence: per milestone (rc stamps), not per
+  commit — the PWA is the fast channel; TestFlight is the stable one.
+- **Verify which build you're in**: Settings shows the web bundle's
+  version (`__APP_VERSION__` baked at build time), so a TestFlight build
+  reports the version it was built FROM.
+- **Future options if per-milestone rebuilds get tedious** (decision
+  parked): a Capacitor live-update plugin (e.g. capacitor-updater) to
+  ship web-asset updates into the installed native app; or pointing the
+  shell at the hosted app (`server.url`) — each has store-policy and
+  offline tradeoffs to weigh deliberately, not by default.
 
 ## BUNDLEID history (resolved by rename, 2026-07-03)
 

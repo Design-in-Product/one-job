@@ -421,8 +421,17 @@
     @apply border-border;
   }
 
+  /* Portal crispness: html/body share the app's top surface color and
+     never rubber-band, so overscroll and safe-area gaps reveal the same
+     material as the app — one continuous surface, no visible frame. */
+  html,
   body {
-    @apply bg-background text-foreground;
+    background-color: #f9fafb; /* gray-50, top of the app gradient */
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    @apply text-foreground;
     font-family: var(--font-family-primary);
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);

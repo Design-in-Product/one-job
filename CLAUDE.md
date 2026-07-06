@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Agent:** Coral — One Job's resident agent (runs on Fable 5).
+
+## Cross-Pollination & Mail (added 2026-07-05)
+
+One Job is a registered participant in the Design in Product cross-pollination network. The daily brief lands at `docs/briefs/cross-pollination/current.md` (delivered by Janus each morning) — read it at session start alongside the usual pattern-discovery pass.
+
+**Mail — sending to Janus or filing a Letter:** mail always lands in the *receiving* agent's own repo, never the sender's. Concretely:
+- **Letters to xian** (the "AI prompts human" question-box feature at the end of each cross-pollination brief): file `question-{from}-{date}-{topic}.md` to the **dispatch repo's `mail/` folder** (`mediajunkie/dispatch`), *not* anywhere in this repo. That's the only location xian and Janus both watch for these. A letter filed here (e.g., in `docs/briefs/cross-pollination/`) won't be found by anyone until someone happens to notice and relocate it.
+- **Any other mail to Janus** (not a public Letter, just agent-to-agent): lands in the Design in Product repo's `docs/mail/` (`~/Development/designinproduct/docs/mail/`), same principle — the receiver's repo, not the sender's.
+- **Mail from Janus to Coral** lands here, in this repo's `docs/mail/` (create it if it doesn't exist yet) — check it at session start.
+
+This mirrors how every other agent in the constellation already does it (Piper Morgan's agents, Klatch's Calliope, Mediajunkie's Pard) — no exceptions, regardless of which repo the mail is *about*.
+
+- **Coral ↔ Relay** (the Mac-side build agent): both directions in THIS repo's `docs/mail/` (Relay works from a fresh clone of this repo, so it is the receiver's repo for both). Convention `memo-{from}-to-{to}-{date}-{topic}.md`; Relay's brief (`store/COWORK-IOS-BRIEF.md`) tells them to check at session start.
+
 ## CRITICAL: Excellence Flywheel Methodology - READ FIRST
 
 **WARNING**: Skipping this section will break our systematic excellence.
@@ -20,6 +35,36 @@ The **Systematic Verification First** approach is our most transformative breakt
 4. **Documentation-Driven Development** - Update docs, requirements, and architecture with implementation
 
 If you haven't internalized these pillars, everything else will be slower and more error-prone.
+
+## DESTRUCTIVE-ACTION PROTOCOL (standing rule, 2026-07-05 — from Xian, after real data loss)
+
+**Never reassure the user into destroying data, no matter how recent or
+slight.** Before advising ANY step that deletes user data (removing a
+PWA icon, clearing storage, replacing via import, uninstalling):
+
+1. **Verify the safety copy by observation, not indication** — the user
+   must OPEN the backup and see their tasks in it. A success toast, a
+   file listing, or "the export ran" is not verification.
+2. **Stage the steps** so verification sits BETWEEN backup and
+   destruction, as its own halting step — the procedure stops there if
+   verification fails.
+3. **Weigh the stakes asymmetrically**: a stale, broken, or annoying app
+   state is always preferable to any risk to user data. When a fix
+   requires a destructive step, first look for the path that doesn't.
+
+Context: on 2026-07-05 an iOS export silently failed while the UI
+claimed success; the sanctioned reinstall procedure then destroyed the
+user's real deck. The toast was fixed the same hour (FR4.0b.8: success
+signals report observed outcomes only) — but the deeper rule is this
+protocol.
+
+**Umbrella (added 2026-07-06, from Piper Morgan's three-incident
+pattern via the cross-pollination brief):** before ANY action with no
+undo — `rm -rf`, force-push, volume/DB deletion, bulk updates,
+full-replace API mutations, storage schema rewrites — pause and ask
+whether a narrower, reversible alternative exists. "Probably disposable
+state" is not verified-disposable. Tool-specific rules don't
+self-generalize; this principle is the cross-tool version.
 
 ## Project Overview
 

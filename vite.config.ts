@@ -33,8 +33,10 @@ export default defineConfig(({ mode }) => ({
         name: "One Job",
         short_name: "One Job",
         description: "See one task. Do one task. Feel accomplished.",
-        theme_color: "#f35343",
-        background_color: "#FFF7ED",
+        // One continuous surface: chrome and splash match the app's
+        // gray-50 background so the app never sits inside a colored frame
+        theme_color: "#f9fafb",
+        background_color: "#f9fafb",
         display: "standalone",
         orientation: "portrait",
         start_url: ".",

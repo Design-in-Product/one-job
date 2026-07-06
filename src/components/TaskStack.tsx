@@ -9,6 +9,7 @@ import SwipeableCard from './SwipeableCard';
 import { CARD_GEOMETRY } from './FlipCard';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface TaskStackProps {
   tasks: Task[];
@@ -18,6 +19,7 @@ interface TaskStackProps {
 }
 
 const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick }) => {
+  const { t } = useTranslation();
   // Remount the top card on every swipe, even when the same task returns to
   // the top (deferring the only remaining task).
   const [deal, setDeal] = useState(0);
@@ -35,9 +37,9 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
             'flex flex-col items-center justify-center text-center p-6'
           )}
         >
-          <h3 className="text-xl font-semibold mb-2 text-gray-500">All done! 🎉</h3>
+          <h3 className="text-xl font-semibold mb-2 text-gray-500">{t('substackView.allDone')}</h3>
           <p className="text-muted-foreground text-sm">
-            Add a new task to get started again.
+            {t('substackView.addPrompt')}
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@
 import React from 'react';
 import { Plus, RotateCcw, Link2, Settings } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface LongPressMenuProps {
   isOpen: boolean;
@@ -22,28 +23,29 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onViewIntegrations,
   onSettings
 }) => {
+  const { t } = useTranslation();
   const menuItems = [
     {
       icon: Plus,
-      label: 'Add Task',
+      label: t('menu.addTask'),
       action: onAddTask,
       color: 'bg-green-500 hover:bg-green-600'
     },
     {
       icon: RotateCcw,
-      label: 'Completed',
+      label: t('menu.completed'),
       action: onViewCompleted,
       color: 'bg-blue-500 hover:bg-blue-600'
     },
     {
       icon: Link2,
-      label: 'Integrations',
+      label: t('menu.integrations'),
       action: onViewIntegrations,
       color: 'bg-purple-500 hover:bg-purple-600'
     },
     {
       icon: Settings,
-      label: 'Settings',
+      label: t('menu.settings'),
       action: onSettings || (() => {}),
       color: 'bg-gray-500 hover:bg-gray-600'
     }

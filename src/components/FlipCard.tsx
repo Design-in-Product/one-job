@@ -6,6 +6,7 @@
 import React from 'react';
 import { motion, Transition } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Shared card geometry. Every card face (front, back, deck underlays) uses
@@ -51,6 +52,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
   onTapBack,
   className,
 }) => {
+  const { t } = useTranslation();
   const transition = PRESET_TRANSITIONS[preset];
 
   return (
@@ -74,7 +76,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
           style={faceStyle}
           onClick={!isFlipped ? onTapBack : undefined}
           role={onTapBack && !isFlipped ? 'button' : undefined}
-          aria-label={onTapBack && !isFlipped ? 'Reveal task' : undefined}
+          aria-label={onTapBack && !isFlipped ? t('deck.revealAria') : undefined}
         >
           {back}
         </div>
