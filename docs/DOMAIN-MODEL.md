@@ -53,6 +53,8 @@ The decks you create: top-level decks on the root canvas ("Work,"
 "Health"…) and the deck inside every card. **Uniform mechanics at every
 depth:**
 
+- **New cards land on TOP** (decided 2026-07-05): what you just
+  captured is your one job until you swipe it away.
 - **Swipe right** → complete: the card leaves for Done (carrying
   provenance).
 - **Swipe left** → defer: the card goes to the bottom of *this* deck.
@@ -102,10 +104,12 @@ appears:
 - **Every card's interior**: same surface, one level down. Initially
   empty; first subtask creates its first deck.
 
-Whether an interior canvas can hold *multiple* decks (that would be the
-old "substack" as a rare power feature — Item 1 says "worry about it
-later") is deliberately unresolved. The model permits it; 
-the roadmap doesn't promise it.
+**RESOLVED (Item 17, 2026-07-05)**: an interior canvas CAN hold
+multiple decks, **distinguished by names** — the model allows many from
+day one; the UI ships exactly one until the rare case earns its
+surface (candidate premium feature; also the federation mapping target
+for tools with multiple subtask lists). Same shape as multiple named
+top-level decks on the root canvas — one rule, both levels.
 
 ## 4. The zoom continuum (Items 6 + 9)
 

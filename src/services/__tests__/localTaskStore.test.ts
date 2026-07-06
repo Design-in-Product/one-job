@@ -31,14 +31,15 @@ describe('LocalTaskStore basics', () => {
     expect((await second.getAllTasks()).map(t => t.title)).toEqual(['Seeded']);
   });
 
-  it('creates tasks with sequential sort order', async () => {
+  it('new tasks land on TOP of the deck (2026-07-05 design call)', async () => {
     const store = freshStore();
     const a = await store.createTask('A');
-    const b = await store.createTask('B');
-    expect(a.sortOrder).toBe(1);
-    expect(b.sortOrder).toBe(2);
     expect(a.status).toBe('todo');
     expect(a.completed).toBe(false);
+    await store.createTask('B');
+    await store.createTask('C');
+    const order = (await store.getAllTasks()).map(t => t.title);
+    expect(order).toEqual(['C', 'B', 'A']);
   });
 
   it('persists across store instances (cold start)', async () => {
@@ -75,22 +76,22 @@ describe('completion and deferral', () => {
     expect(done.completedAt).toBeInstanceOf(Date);
   });
 
-  it('deferTask moves the task to the bottom and counts deferrals', async () => {
+  it('deferTask moves the top task to the bottom and counts deferrals', async () => {
     const store = freshStore();
-    const first = await store.createTask('First');
+    await store.createTask('First');
     await store.createTask('Second');
-    await store.createTask('Third');
+    const third = await store.createTask('Third'); // newest → on top
 
-    const deferred = await store.deferTask(first.id);
+    const deferred = await store.deferTask(third.id);
     expect(deferred.deferralCount).toBe(1);
     expect(deferred.deferredAt).toBeInstanceOf(Date);
     expect(deferred.status ?? 'todo').toBe('todo');
 
     const order = (await store.getAllTasks()).map(t => t.title);
-    expect(order).toEqual(['Second', 'Third', 'First']);
+    expect(order).toEqual(['Second', 'First', 'Third']);
 
-    await store.deferTask(first.id);
-    expect((await store.getAllTasks()).find(t => t.title === 'First')!.deferralCount).toBe(2);
+    await store.deferTask(third.id);
+    expect((await store.getAllTasks()).find(t => t.title === 'Third')!.deferralCount).toBe(2);
   });
 
   it('sorts active by sortOrder and completed by completion date desc, active first', async () => {
@@ -157,16 +158,16 @@ describe('undo via restoreTask', () => {
 
   it('restoring a pre-deferral snapshot puts the task back on top', async () => {
     const store = freshStore();
-    const first = await store.createTask('First');
-    await store.createTask('Second');
-    const snapshot = structuredClone(first);
+    await store.createTask('First');
+    const second = await store.createTask('Second'); // newest → on top
+    const snapshot = structuredClone(second);
 
-    await store.deferTask(first.id);
-    expect((await store.getAllTasks())[0].title).toBe('Second');
+    await store.deferTask(second.id);
+    expect((await store.getAllTasks())[0].title).toBe('First');
 
     await store.restoreTask(snapshot);
     const tasks = await store.getAllTasks();
-    expect(tasks[0].title).toBe('First');
+    expect(tasks[0].title).toBe('Second');
     expect(tasks[0].deferralCount ?? 0).toBe(0);
   });
 

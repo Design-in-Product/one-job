@@ -6,7 +6,7 @@ import { Task, Substack } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, nextSortOrder, applyCompletion, applyDeferral, applyUncompletion } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion } from '@/domain/tasks';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -129,7 +129,7 @@ export class LocalTaskStore implements TaskStore {
       completed: false,
       status: 'todo',
       createdAt: new Date(),
-      sortOrder: nextSortOrder(this.tasks),
+      sortOrder: topSortOrder(this.tasks),
       source: this.sourceLabel,
       substacks: []
     };
@@ -187,9 +187,10 @@ export class LocalTaskStore implements TaskStore {
           description,
           completed: false,
           createdAt: new Date(),
-          sortOrder: substack.tasks.length + 1
+          sortOrder: topSortOrder(substack.tasks)
         };
-        substack.tasks.push(newSubstackTask);
+        // New items land on top in sub-decks too (display order = array order)
+        substack.tasks.unshift(newSubstackTask);
         this.saveTasks();
         return newSubstackTask;
       }
