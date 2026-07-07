@@ -82,3 +82,23 @@ describe('reviveTask', () => {
     expect(revived.decks![0].cards[0].deferredAt).toBeInstanceOf(Date);
   });
 });
+
+describe('flattenWithParent (chain rooms gather cards from every depth)', () => {
+  it('walks the whole tree, tagging each card with its parent card', async () => {
+    const { flattenWithParent } = await import('../tasks');
+    const now = new Date();
+    const mk = (id: string, extra: object = {}): Task =>
+      ({ id, title: id, completed: false, createdAt: now, sortOrder: 1, ...extra });
+    const tree: Task[] = [
+      mk('top1', { decks: [{ id: 'd1', name: null, createdAt: now, cards: [
+        mk('sub1'),
+        mk('sub2', { decks: [{ id: 'd2', name: null, createdAt: now, cards: [mk('subsub1')] }] }),
+      ]}]}),
+      mk('top2'),
+    ];
+    const flat = flattenWithParent(tree);
+    expect(flat.map(e => `${e.card.id}<${e.parent?.id ?? ''}`)).toEqual([
+      'top1<', 'sub1<top1', 'sub2<top1', 'subsub1<sub2', 'top2<',
+    ]);
+  });
+});

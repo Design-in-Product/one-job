@@ -441,3 +441,82 @@ describe('backup import (restore path)', () => {
     expect((await freshStore().getAllTasks())[0].title).toBe('Restored');
   });
 });
+
+describe('Chain at depth: completed sub-cards live in the rooms too (2026-07-07)', () => {
+  const buildNest = async (store: LocalTaskStore) => {
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    const subA = await store.addSubstackTask(deck.id, 'sub A');
+    const subB = await store.addSubstackTask(deck.id, 'sub B');
+    return { parent, deck, subA, subB };
+  };
+
+  it('walks a completed sub-card down the whole chain and back', async () => {
+    const store = freshStore();
+    const { subA } = await buildNest(store);
+    await store.completeSubstackTask(subA.id);
+
+    const archived = await store.archiveTask(subA.id);
+    expect(archived.archivedAt).toBeInstanceOf(Date);
+    const trashed = await store.trashTask(subA.id);
+    expect(trashed.trashedAt).toBeInstanceOf(Date);
+    const restored = await store.restoreFromTrash(subA.id);
+    expect(restored.trashedAt).toBeUndefined();
+    expect(restored.archivedAt).toBeInstanceOf(Date);
+
+    // and it survives a reload at the right place in the tree
+    const reloaded = await freshStore().getAllTasks();
+    const deckCards = reloaded[0].decks![0].cards;
+    expect(deckCards.find(c => c.title === 'sub A')!.archivedAt).toBeInstanceOf(Date);
+  });
+
+  it('purges a trashed sub-card out of its deck (and only its deck)', async () => {
+    const store = freshStore();
+    const { subA } = await buildNest(store);
+    await store.completeSubstackTask(subA.id);
+    await store.archiveTask(subA.id);
+    await store.trashTask(subA.id);
+
+    await store.purgeTask(subA.id);
+
+    const all = await store.getAllTasks();
+    expect(all).toHaveLength(1); // parent untouched
+    expect(all[0].decks![0].cards.map(c => c.title)).toEqual(['sub B']);
+  });
+
+  it('refuses to purge a sub-card that is not in the trash', async () => {
+    const store = freshStore();
+    const { subA } = await buildNest(store);
+    await store.completeSubstackTask(subA.id);
+    await expect(store.purgeTask(subA.id)).rejects.toThrow(/trash/i);
+  });
+
+  it('un-does a completed sub-card back to the TOP of its own deck', async () => {
+    const store = freshStore();
+    const { subA } = await buildNest(store);
+    await store.completeSubstackTask(subA.id);
+
+    const undone = await store.uncompleteTask(subA.id);
+    expect(undone.completed).toBe(false);
+    expect(undone.completedAt).toBeUndefined();
+
+    const all = await store.getAllTasks();
+    // display order in decks = array order; the returned card leads it
+    expect(all[0].decks![0].cards.map(c => c.title)).toEqual(['sub A', 'sub B']);
+  });
+
+  it('undo (restoreTask) reaches snapshots of cards at depth', async () => {
+    const store = freshStore();
+    const { subA } = await buildNest(store);
+    const snapshot = structuredClone(
+      (await store.getAllTasks())[0].decks![0].cards.find(c => c.id === subA.id)!
+    );
+    await store.completeSubstackTask(subA.id);
+
+    await store.restoreTask(snapshot);
+    const all = await store.getAllTasks();
+    const restored = all[0].decks![0].cards.find(c => c.id === subA.id)!;
+    expect(restored.completed).toBe(false);
+    expect(restored.completedAt).toBeUndefined();
+  });
+});

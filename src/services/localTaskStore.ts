@@ -184,7 +184,17 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async uncompleteTask(id: string): Promise<Task> {
-    const task = applyUncompletion(this.findTask(id), this.tasks);
+    // Un-done returns the card to the TOP of whichever deck holds it:
+    // sortOrder for the main deck, array order for interior decks.
+    const deck = this.tasks.some(t => t.id === id)
+      ? null
+      : findDeckOfCard(this.tasks, id);
+    const task = applyUncompletion(this.findTask(id), deck ? deck.cards : this.tasks);
+    if (deck) {
+      const index = deck.cards.findIndex(c => c.id === id);
+      deck.cards.splice(index, 1);
+      deck.cards.unshift(task);
+    }
     this.saveTasks();
     return task;
   }
@@ -266,14 +276,19 @@ export class LocalTaskStore implements TaskStore {
   }
 
   /** The only destructive operation in the app: permanent removal,
-      allowed ONLY from the trash, confirmed by the UI beforehand. */
+      allowed ONLY from the trash, confirmed by the UI beforehand.
+      Works at any depth — the card is spliced out of whichever
+      collection actually holds it. */
   async purgeTask(id: string): Promise<void> {
-    const index = this.tasks.findIndex(t => t.id === id);
-    if (index === -1) throw new Error('Task not found');
-    if (cardRoom(this.tasks[index]) !== 'trash') {
+    const holder = this.tasks.some(t => t.id === id)
+      ? this.tasks
+      : findDeckOfCard(this.tasks, id)?.cards;
+    const index = holder?.findIndex(c => c.id === id) ?? -1;
+    if (!holder || index === -1) throw new Error('Task not found');
+    if (cardRoom(holder[index]) !== 'trash') {
       throw new Error('Only trashed cards can be purged');
     }
-    this.tasks.splice(index, 1);
+    holder.splice(index, 1);
     this.saveTasks();
   }
 
@@ -294,9 +309,12 @@ export class LocalTaskStore implements TaskStore {
    * (completion, timestamps, deferral count, sort order).
    */
   async restoreTask(snapshot: Task): Promise<void> {
-    const index = this.tasks.findIndex(t => t.id === snapshot.id);
-    if (index === -1) throw new Error('Task not found');
-    this.tasks[index] = reviveTask(structuredClone(snapshot));
+    const holder = this.tasks.some(t => t.id === snapshot.id)
+      ? this.tasks
+      : findDeckOfCard(this.tasks, snapshot.id)?.cards;
+    const index = holder?.findIndex(c => c.id === snapshot.id) ?? -1;
+    if (!holder || index === -1) throw new Error('Task not found');
+    holder[index] = reviveTask(structuredClone(snapshot));
     this.saveTasks();
   }
 
