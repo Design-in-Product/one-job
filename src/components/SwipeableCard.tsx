@@ -28,6 +28,11 @@ interface SwipeableCardProps {
       room, where the only way forward is the confirmed purge button */
   onSwipeRight?: () => void;
   onSwipeLeft: () => void;
+  /** Vertical sifting (Item 28, chain rooms): swipe down digs deeper
+      into the pile, up comes back toward the top. View-only browsing —
+      both optional, absent = vertical drag disabled. */
+  onSwipeDown?: () => void;
+  onSwipeUp?: () => void;
   /** Hint labels; default to Done/Later (the main-deck meanings) */
   rightHint?: string;
   leftHint?: string;
@@ -39,16 +44,21 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   disabled = false,
   onSwipeRight,
   onSwipeLeft,
+  onSwipeDown,
+  onSwipeUp,
   rightHint,
   leftHint,
   className,
 }) => {
   const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const { t } = useTranslation();
+  const hasVertical = !!(onSwipeDown || onSwipeUp);
   const rotate = useTransform(x, [-200, 200], [-12, 12]);
   const completeOpacity = useTransform(x, [40, SWIPE_DISTANCE], [0, 1]);
   const deferOpacity = useTransform(x, [-SWIPE_DISTANCE, -40], [1, 0]);
   const [exitX, setExitX] = useState<number | null>(null);
+  const [exitY, setExitY] = useState<number | null>(null);
   // Framer fires a click after drag release; swallow it so a swipe never
   // doubles as a tap on the card content.
   const draggedRef = useRef(false);
@@ -57,16 +67,28 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
     setTimeout(() => {
       draggedRef.current = false;
     }, 0);
-    if (exitX !== null) return;
+    if (exitX !== null || exitY !== null) return;
     const { offset, velocity } = info;
     // A flick can commit before the full distance, but only when the release
     // velocity points the same way as the drag — otherwise a drag that
     // springs back to center could register as a swipe.
+    // Axis dominance keeps a diagonal drag from firing both meanings.
+    const horizontal = Math.abs(offset.x) >= Math.abs(offset.y);
     const commitRight =
+      horizontal &&
       !!onSwipeRight &&
       (offset.x > SWIPE_DISTANCE || (offset.x > 30 && velocity.x > SWIPE_VELOCITY));
     const commitLeft =
-      offset.x < -SWIPE_DISTANCE || (offset.x < -30 && velocity.x < -SWIPE_VELOCITY);
+      horizontal &&
+      (offset.x < -SWIPE_DISTANCE || (offset.x < -30 && velocity.x < -SWIPE_VELOCITY));
+    const commitDown =
+      !horizontal &&
+      !!onSwipeDown &&
+      (offset.y > SWIPE_DISTANCE || (offset.y > 30 && velocity.y > SWIPE_VELOCITY));
+    const commitUp =
+      !horizontal &&
+      !!onSwipeUp &&
+      (offset.y < -SWIPE_DISTANCE || (offset.y < -30 && velocity.y < -SWIPE_VELOCITY));
 
     if (commitRight) {
       hapticImpact();
@@ -76,15 +98,24 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       hapticImpact();
       setExitX(-window.innerWidth * 1.2);
       onSwipeLeft();
+    } else if (commitDown) {
+      hapticImpact();
+      setExitY(window.innerHeight * 0.5);
+      onSwipeDown!();
+    } else if (commitUp) {
+      hapticImpact();
+      setExitY(-window.innerHeight * 0.5);
+      onSwipeUp!();
     }
   };
 
   return (
     <motion.div
       className={cn('relative touch-none', !disabled && 'cursor-grab active:cursor-grabbing', className)}
-      style={{ x, rotate }}
-      drag={disabled || exitX !== null ? false : 'x'}
-      dragConstraints={{ left: 0, right: 0 }}
+      style={{ x, y, rotate }}
+      drag={disabled || exitX !== null || exitY !== null ? false : hasVertical ? true : 'x'}
+      dragDirectionLock={hasVertical}
+      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={1}
       onDragStart={() => {
         draggedRef.current = true;
@@ -96,7 +127,13 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
           e.stopPropagation();
         }
       }}
-      animate={exitX !== null ? { x: exitX, opacity: 0 } : undefined}
+      animate={
+        exitX !== null
+          ? { x: exitX, opacity: 0 }
+          : exitY !== null
+            ? { y: exitY, opacity: 0, scale: 0.92 }
+            : undefined
+      }
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       {children}
