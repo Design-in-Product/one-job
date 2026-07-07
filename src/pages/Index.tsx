@@ -30,6 +30,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
+import { findCardById } from '@/domain/tasks';
 import { useTranslation } from 'react-i18next';
 
 
@@ -41,10 +42,30 @@ const Index = () => {
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false);
-  const [currentSubstack, setCurrentSubstack] = useState<{
+  // Sub-deck navigation is a STACK (sub-sub-decks, Item 8): push to go
+  // deeper, pop to come back one level. currentSubstack = the top.
+  const [substackStack, setSubstackStack] = useState<{
     parentTask: Task;
     substack: Substack;
-  } | null>(null);
+  }[]>([]);
+  const currentSubstack = substackStack[substackStack.length - 1] ?? null;
+
+  // Re-point every open context at fresh store data after a mutation
+  // (objects in the stack go stale when the store re-reads).
+  const refreshStackFrom = (all: Task[]) => {
+    setSubstackStack(prev => prev.map(level => {
+      const parent = findCardById(all, level.parentTask.id) ?? level.parentTask;
+      const deck = parent.decks?.find(d => d.id === level.substack.id) ?? level.substack;
+      return { parentTask: parent, substack: deck };
+    }));
+  };
+
+  // Reload state and every open sub-deck level from the store
+  const refreshAll = async () => {
+    const all = await getTaskStore().getAllTasks();
+    setTasks(all);
+    refreshStackFrom(all);
+  };
   const [isCreatingSubstack, setIsCreatingSubstack] = useState(false);
   const [currentView, setCurrentView] = useState<'main' | 'completed' | 'integrate' | 'settings'>('main');
 
@@ -73,9 +94,7 @@ const Index = () => {
     try {
       await getTaskStore().updateTask(taskId, updates);
       toast.success(t('toasts.taskUpdated'));
-      refreshTasks();
-      setIsTaskDetailsOpen(false);
-      setSelectedTask(null);
+      await refreshAll(); // stay open — autosave must not yank the modal
     } catch (err) {
       console.error("Failed to update task in backend:", err);
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
@@ -106,11 +125,7 @@ const Index = () => {
         // Re-read from the store rather than hand-stitching state: the
         // local store mutates the same objects React holds, so optimistic
         // appends double-count (seen 2026-07-06).
-        const all = await getTaskStore().getAllTasks();
-        setTasks(all);
-        const parent = all.find(tk => tk.id === currentSubstack.parentTask.id);
-        const deck = parent?.decks?.find(d => d.id === currentSubstack.substack.id);
-        if (parent && deck) setCurrentSubstack({ parentTask: parent, substack: deck });
+        await refreshAll();
         toast.success(t('toasts.addedToSubstack'));
       } catch (err) {
         console.error("Failed to add substack task:", err);
@@ -216,40 +231,20 @@ const Index = () => {
   // --- MODIFIED: handleCompleteTask to send PUT request ---
   const handleCompleteTask = async (taskId: string) => {
     if (currentSubstack) {
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
-          task.id === currentSubstack.parentTask.id
-            ? {
-                ...task,
-                decks: task.decks?.map(sub =>
-                  sub.id === currentSubstack.substack.id
-                    ? {
-                        ...sub,
-                        cards: sub.cards.map(t =>
-                          t.id === taskId
-                            ? { ...t, completed: true, completedAt: new Date() }
-                            : t
-                        )
-                      }
-                    : sub
-                ) || []
-              }
-            : task
-        )
-      );
-      setCurrentSubstack(prev => prev ? {
-        ...prev,
-        substack: {
-          ...prev.substack,
-          cards: prev.substack.cards.map(t =>
-            t.id === taskId
-              ? { ...t, completed: true, completedAt: new Date() }
-              : t
-          )
-        }
-      } : null);
+      // Item 15 applies at every depth: a sub-card with an unfinished
+      // interior refuses to complete, and its sub-deck comes into focus.
+      const card = currentSubstack.substack.cards.find(c => c.id === taskId);
+      const unfinishedInside = card?.decks?.flatMap(d => d.cards).filter(c => !c.completed) ?? [];
+      if (card && unfinishedInside.length > 0) {
+        toast.info(t('toasts.parentBlocked', { count: unfinishedInside.length }), { duration: 6000 });
+        await refreshAll(); // re-deal the refused card
+        const blockingDeck = card.decks!.find(d => d.cards.some(c => !c.completed))!;
+        setSubstackStack(prev => [...prev, { parentTask: card, substack: blockingDeck }]);
+        return;
+      }
       try {
         await getTaskStore().completeSubstackTask(taskId);
+        await refreshAll();
         toast.success(t('toasts.substackTaskCompleted'));
       } catch (err) {
         console.error("Failed to persist substack task completion:", err);
@@ -265,7 +260,7 @@ const Index = () => {
         toast.info(t('toasts.parentBlocked', { count: unfinished.length }), { duration: 6000 });
         refreshTasks(); // re-deal the refused card
         const blockingDeck = parent.decks!.find(d => d.cards.some(c => !c.completed))!;
-        setCurrentSubstack({ parentTask: parent, substack: blockingDeck });
+        setSubstackStack(prev => [...prev, { parentTask: parent, substack: blockingDeck }]);
         return;
       }
       const snapshot = snapshotTask(taskId);
@@ -285,45 +280,9 @@ const Index = () => {
   // --- MODIFIED: handleDeferTask to send PUT request ---
   const handleDeferTask = async (taskId: string) => {
     if (currentSubstack) {
-      setTasks(prevTasks =>
-        prevTasks.map(task =>
-          task.id === currentSubstack.parentTask.id
-            ? {
-                ...task,
-                decks: task.decks?.map(sub =>
-                  sub.id === currentSubstack.substack.id
-                    ? {
-                        ...sub,
-                        cards: (() => {
-                          const taskToMove = sub.cards.find(t => t.id === taskId);
-                          if (!taskToMove) return sub.cards;
-                          const otherTasks = sub.cards.filter(t => t.id !== taskId);
-                          return [...otherTasks, taskToMove];
-                        })()
-                      }
-                    : sub
-                ) || []
-              }
-            : task
-        )
-      );
-      setCurrentSubstack(prev => {
-        if (!prev) return null;
-        const taskToMove = prev.substack.cards.find(t => t.id === taskId);
-        if (!taskToMove) return prev;
-        const otherTasks = prev.substack.cards.filter(t => t.id !== taskId);
-        return {
-          ...prev,
-          substack: {
-            ...prev.substack,
-            cards: [...otherTasks, taskToMove]
-          }
-        };
-      });
-      // Persist the deferral when the store supports it (sub-deck order
-      // used to be local-only and silently reset on reload)
       try {
         await getTaskStore().deferSubstackTask?.(taskId);
+        await refreshAll();
         toast.info(t('toasts.substackTaskDeferred'));
       } catch (err) {
         console.error("Failed to persist sub-deck deferral:", err);
@@ -357,10 +316,11 @@ const Index = () => {
       const deck = await getTaskStore().createSubstack(taskId, null);
       const all = await getTaskStore().getAllTasks();
       setTasks(all);
-      const parent = all.find(tk => tk.id === taskId);
+      refreshStackFrom(all);
+      const parent = findCardById(all, taskId);
       setIsTaskDetailsOpen(false);
       setSelectedTask(null);
-      if (parent) setCurrentSubstack({ parentTask: parent, substack: deck });
+      if (parent) setSubstackStack(prev => [...prev, { parentTask: parent, substack: parent.decks!.find(d => d.id === deck.id)! }]);
       toast.success(isDemoMode
         ? DemoService.getInstance().getDemoMessage('substackCreated')
         : t('toasts.subdeckReady'));
@@ -373,11 +333,11 @@ const Index = () => {
   };
 
   const handleOpenSubstack = (parentTask: Task, substack: Substack) => {
-    setCurrentSubstack({ parentTask, substack });
+    setSubstackStack(prev => [...prev, { parentTask, substack }]);
   };
 
   const handleBackToParent = () => {
-    setCurrentSubstack(null);
+    setSubstackStack(prev => prev.slice(0, -1)); // pop one level
   };
 
   const currentTasks = currentSubstack ? currentSubstack.substack.cards : tasks;
@@ -387,9 +347,11 @@ const Index = () => {
   const getCurrentSelectedTask = () => {
     if (!selectedTask) return null;
     if (currentSubstack) {
-      return currentSubstack.substack.cards.find(task => task.id === selectedTask.id) || selectedTask;
+      return currentSubstack.substack.cards.find(task => task.id === selectedTask.id)
+        || findCardById(tasks, selectedTask.id)
+        || selectedTask;
     }
-    return tasks.find(task => task.id === selectedTask.id) || selectedTask;
+    return findCardById(tasks, selectedTask.id) || selectedTask;
   };
 
   if (currentSubstack) {

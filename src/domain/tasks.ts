@@ -5,7 +5,7 @@
 // on. When the domain model lands (recursive cards, lifecycle decks),
 // the rules change HERE and the stores stay dumb.
 
-import { Task } from '@/types/task';
+import { Task, InteriorDeck } from '@/types/task';
 
 /**
  * Revive Date fields on a task and its nested substacks after JSON
@@ -125,4 +125,42 @@ export const applyTrash = (task: Task): Task => {
 export const applyRestoreFromTrash = (task: Task): Task => {
   task.trashedAt = undefined;
   return task;
+};
+
+// ---- Recursive lookups (cards all the way down — Item 8) ----
+
+/** Find a card anywhere in the containment tree. */
+export const findCardById = (cards: Task[], id: string): Task | undefined => {
+  for (const c of cards) {
+    if (c.id === id) return c;
+    for (const d of c.decks ?? []) {
+      const hit = findCardById(d.cards, id);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
+};
+
+/** Find an interior deck anywhere in the containment tree. */
+export const findDeckById = (cards: Task[], deckId: string): InteriorDeck | undefined => {
+  for (const c of cards) {
+    for (const d of c.decks ?? []) {
+      if (d.id === deckId) return d;
+      const hit = findDeckById(d.cards, deckId);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
+};
+
+/** Find the deck that contains a given card, at any depth. */
+export const findDeckOfCard = (cards: Task[], cardId: string): InteriorDeck | undefined => {
+  for (const c of cards) {
+    for (const d of c.decks ?? []) {
+      if (d.cards.some(x => x.id === cardId)) return d;
+      const hit = findDeckOfCard(d.cards, cardId);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
 };
