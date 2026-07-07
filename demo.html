@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Job - Interactive Demo</title>
+    <title>One Job — Playground</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="description" content="Try the One Job task management app - see one task, do one task, feel accomplished.">
     <meta name="author" content="Design in Product">
     
-    <meta property="og:title" content="One Job - Interactive Demo">
+    <meta property="og:title" content="One Job — Playground">
     <meta property="og:description" content="Try the revolutionary single-task focus app right in your browser">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onejob.co/demo.html">
@@ -19,7 +19,7 @@
     <meta property="og:image:height" content="1260">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="One Job - Interactive Demo">
+    <meta name="twitter:title" content="One Job — Playground">
     <meta name="twitter:description" content="Try the single-task focus app right in your browser">
     <meta name="twitter:image" content="https://onejob.co/og-image.png">
     
@@ -47,7 +47,7 @@
         transition: transform 0.3s ease-out;
     ">
         <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;">
-            <span style="flex-shrink: 0;">🎯 <strong>Demo Mode</strong> - Try all the features!</span>
+            <span style="flex-shrink: 0;">🃏 <strong>Playground</strong> — sample data, safe to break. Your real deck lives in <a href="/app/" style="color: inherit; font-weight: 600;">the app</a>.</span>
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <button onclick="resetDemo()" style="
                     background: rgba(45,52,54,0.1); 
@@ -58,7 +58,7 @@
                     cursor: pointer;
                     font-size: 11px;
                     white-space: nowrap;
-                ">Reset Demo</button>
+                ">Reset sample data</button>
                 <button onclick="hideInstructions()" style="
                     background: rgba(45,52,54,0.1); 
                     border: 1px solid rgba(45,52,54,0.2); 
@@ -160,7 +160,7 @@
         }
 
         function resetDemo() {
-            if (confirm('Reset demo to original state? This will clear all your changes.')) {
+            if (confirm('Reset the playground to its sample data? This clears playground changes only — your real deck in the app is untouched.')) {
                 // Clear the demo store AND its safety-net keys (.meta/.snapshot.*),
                 // or the wipe-protection layer would faithfully restore the data
                 Object.keys(localStorage)
