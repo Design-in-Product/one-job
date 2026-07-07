@@ -57,7 +57,7 @@ after each.
 | # | Item | What changes |
 |---|---|---|
 | R1.1 | **Recursive cards** — card interior = canvas with a deck; subtasks are cards; migrate `Substack` data (each old substack's tasks become interior cards; names preserved in migration notes) | Items 1, 8, 10 |
-| R1.2 | **Lifecycle chain** — Done/Archive/Trash as system decks with advance/regress gestures; provenance (home-deck memory); un-complete and delete arrive here for free | Items 2, 10 |
+| R1.2 | **Lifecycle chain** — Done/Archive/Trash as system decks with advance/regress gestures; provenance (home-deck memory); un-complete and delete arrive here for free. *Amended 2026-07-07 (Xian-approved, shipped in rc.7): rooms gather cards from EVERY depth with a parent breadcrumb — completed interior work was invisible everywhere, the "nothing shows up in Done anymore" trust bug* | Items 2, 10 |
 | R1.3 | **Store schema v2** — versioned envelope, substacks become named interior decks holding full recursive cards, migration from v1 (fixture-corpus tests first — RED ZONE; deck-membership-as-state deferred to the R1.2 chain) | domain §7, Item 17 |
 | R1.4 | **Card-face ergonomics** — details open read-first like a baseball card, second tap edits (create still opens in edit); line breaks render in descriptions | Items 18, 20 |
 
@@ -73,6 +73,8 @@ lost, stranded, or unrecoverable.
 | R2.3 | **The table surface** — design the dead space (empty/black/white/reflection/abstract); same material as the canvas | Item 9b |
 | R2.4 | **Discoverability dissolve** — arc menu items find homes on the canvas (Settings/Integrations); menu may remain as shortcut | audit gap 6 |
 | R2.5 | **Details-as-expansion** — the founding spec's "tap face-up → full-viewport expansion" replaces the modal once the zoom continuum exists; breadcrumbs/place-trail and the search-vs-philosophy question are design inputs here | archaeology |
+| R2.6 | **Per-deck afterlife** — each interior deck keeps its own visible Done pile inside the deck (Xian agreed 2026-07-07; complements the flattened rooms, doesn't replace them). Design with the zoom grammar | option 2 of the Done-room fix |
+| R2.7 | **"Inchworm" mode** — view toggle that flattens the whole tree into one walkable stack, unflattenable at any time; `flattenWithParent` is the ready seam | Item 27 |
 
 Gate: navigation needs no menu for daily flow; a new user finds
 Completed by *looking around*, not by long-pressing.

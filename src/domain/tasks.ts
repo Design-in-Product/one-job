@@ -153,6 +153,20 @@ export const findDeckById = (cards: Task[], deckId: string): InteriorDeck | unde
   return undefined;
 };
 
+/** A card paired with the card that contains it (null at the top level). */
+export interface CardWithParent {
+  card: Task;
+  parent: Task | null;
+}
+
+/** Every card in the tree, depth-first, tagged with its containing card.
+    The chain rooms use this so completed work at any depth stays visible. */
+export const flattenWithParent = (cards: Task[], parent: Task | null = null): CardWithParent[] =>
+  cards.flatMap(c => [
+    { card: c, parent },
+    ...(c.decks ?? []).flatMap(d => flattenWithParent(d.cards, c)),
+  ]);
+
 /** Find the deck that contains a given card, at any depth. */
 export const findDeckOfCard = (cards: Task[], cardId: string): InteriorDeck | undefined => {
   for (const c of cards) {
