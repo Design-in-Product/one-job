@@ -47,6 +47,9 @@ const ChainView: React.FC<ChainViewProps> = ({
   const { t } = useTranslation();
   const [room, setRoom] = useState<ChainRoom>('done');
   const [confirmingPurge, setConfirmingPurge] = useState<Task | null>(null);
+  // Sifting (Item 28): swipe down digs deeper into the pile, up comes
+  // back. Pure view state — browsing never rewrites the pile's order.
+  const [sift, setSift] = useState(0);
 
   // Rooms gather cards from EVERY depth (2026-07-07): work completed
   // inside an interior deck is still work — it lands in Done like any
@@ -57,8 +60,9 @@ const ChainView: React.FC<ChainViewProps> = ({
       .sort((a, b) => roomSortKey[r](b.card) - roomSortKey[r](a.card));
 
   const entries = byRoom(room);
-  const top = entries[0]?.card;
-  const topParent = entries[0]?.parent ?? null;
+  const siftIndex = entries.length > 0 ? ((sift % entries.length) + entries.length) % entries.length : 0;
+  const top = entries[siftIndex]?.card;
+  const topParent = entries[siftIndex]?.parent ?? null;
 
   // Gesture meanings per room: right advances the chain, left walks back
   const gestures: Record<ChainRoom, {
@@ -89,7 +93,7 @@ const ChainView: React.FC<ChainViewProps> = ({
             key={r}
             role="tab"
             aria-selected={room === r}
-            onClick={() => { setRoom(r); setConfirmingPurge(null); }}
+            onClick={() => { setRoom(r); setSift(0); setConfirmingPurge(null); }}
             className={cn(
               'flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors',
               room === r ? 'bg-white shadow text-gray-900' : 'text-gray-500'
@@ -116,6 +120,8 @@ const ChainView: React.FC<ChainViewProps> = ({
             key={`${room}-${top.id}`}
             onSwipeRight={g.onRight ? () => g.onRight!(top.id) : undefined}
             onSwipeLeft={() => g.onLeft(top.id)}
+            onSwipeDown={entries.length > 1 ? () => { setSift(s => s + 1); setConfirmingPurge(null); } : undefined}
+            onSwipeUp={entries.length > 1 ? () => { setSift(s => s - 1); setConfirmingPurge(null); } : undefined}
             rightHint={g.rightHint}
             leftHint={g.leftHint}
             className="w-[min(85vw,20rem)] aspect-[5/7]"
@@ -131,7 +137,7 @@ const ChainView: React.FC<ChainViewProps> = ({
 
           {entries.length > 1 && (
             <p className="text-xs text-gray-400">
-              {t('chain.moreBelow', { count: entries.length - 1 })}
+              {t('chain.siftHint', { n: siftIndex + 1, count: entries.length })}
             </p>
           )}
 
