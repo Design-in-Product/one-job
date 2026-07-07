@@ -94,8 +94,11 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             />
           ) : (
             <DialogTitle
-              className="text-xl font-bold break-words cursor-text"
-              onClick={() => setIsEditing(true)}
+              className={`text-xl font-bold break-words ${onUpdateTask ? 'cursor-text' : ''}`}
+              // Honest surface: never enter edit mode when no save path
+              // exists — an editable field that discards on blur is a lie
+              // (the 2026-07-07 sub-card edit bug).
+              onClick={() => onUpdateTask && setIsEditing(true)}
             >
               {task.title}
             </DialogTitle>
@@ -116,8 +119,8 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               />
             ) : (
               <p
-                className="text-gray-700 whitespace-pre-line cursor-text min-h-[1.5rem]"
-                onClick={() => setIsEditing(true)}
+                className={`text-gray-700 whitespace-pre-line min-h-[1.5rem] ${onUpdateTask ? 'cursor-text' : ''}`}
+                onClick={() => onUpdateTask && setIsEditing(true)}
               >
                 {task.description || <span className="text-gray-400">{t('details.noDescription')}</span>}
               </p>
