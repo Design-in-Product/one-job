@@ -107,6 +107,22 @@ Coral ↔ Relay correspondence lives in this repo's `docs/mail/`
 arrive there between sessions — read anything addressed to you before
 starting work, and file your reports there too.
 
+**How to RECEIVE mail (added 2026-07-07)**: mail is delivered by git —
+your `docs/mail/` is only as fresh as your working copy. Checking the
+mailbox therefore starts with a sync, BEFORE reading:
+
+```
+git checkout main && git pull origin main
+ls docs/mail/
+```
+
+If you skip the pull, you are reading yesterday's mailbox and may act
+on a superseded memo (this happened on 2026-07-07: a session read the
+rc.4 promotion memo while main already carried rc.6 and a hold
+instruction). Rule of thumb: **pull, then read mail, then act** — and
+if a memo names a version, confirm it matches `package.json` in your
+now-current checkout before building anything.
+
 ## State addendum (2026-07-05, Coral) — read before resuming Phase 4
 
 Main has moved since Phases 1–3. If you cloned before 2026-07-04, **start
