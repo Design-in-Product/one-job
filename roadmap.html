@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap — One Job</title>
+    <meta name="description" content="Where One Job is headed: the public roadmap, including the parts we haven't figured out yet.">
+    <meta name="author" content="Design in Product">
+    <meta property="og:title" content="One Job roadmap">
+    <meta property="og:description" content="Where One Job is headed — the public roadmap.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onejob.co/roadmap.html">
+    <meta property="og:image" content="https://onejob.co/og-image.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <meta name="theme-color" content="#f9fafb">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #111827;
+            --ink-soft: #4b5563;
+            --ink-faint: #9ca3af;
+            --surface: #f9fafb;
+            --card: #ffffff;
+            --line: #e5e7eb;
+            --coral-a: #f4533c;
+            --coral-b: #e73c7e;
+            --coral-grad: linear-gradient(135deg, #f4533c, #e73c7e);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        .wrap { max-width: 46rem; margin: 0 auto; padding: 0 1.5rem; }
+        header { padding: 1.5rem 0; }
+        header nav { display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+        .brand img { width: 2rem; height: 2rem; border-radius: 0.5rem; }
+        .brand span { font-weight: 700; font-size: 1.05rem; }
+        .nav-links { display: flex; gap: 1.5rem; font-size: 0.92rem; color: var(--ink-soft); }
+        .nav-links a { text-decoration: none; }
+        .nav-links a:hover { color: var(--ink); }
+
+        .head { padding: 3.5rem 0 1rem; }
+        h1 { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
+        .head p { color: var(--ink-soft); max-width: 56ch; }
+        .stamp { font-size: 0.84rem; color: var(--ink-faint); margin-top: 1rem; }
+
+        .era { padding: 2.25rem 0; }
+        .era > .wrap > h2 {
+            font-size: 0.82rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 1.1rem;
+        }
+        .era.now h2 { color: #059669; }
+        .era.next h2 { color: var(--coral-b); }
+        .era.later h2, .era.someday h2 { color: var(--ink-faint); }
+        .items { display: grid; gap: 0.8rem; }
+        .item {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 0.9rem;
+            padding: 1.15rem 1.35rem;
+        }
+        .item h3 { font-size: 1rem; font-weight: 650; margin-bottom: 0.25rem; }
+        .item p { font-size: 0.93rem; color: var(--ink-soft); }
+        .era.now .item { border-left: 3px solid #059669; }
+
+        .honesty {
+            border: 1px dashed var(--ink-faint);
+            border-radius: 0.9rem;
+            padding: 1.15rem 1.35rem;
+            font-size: 0.92rem;
+            color: var(--ink-soft);
+            margin-top: 2.5rem;
+        }
+        footer { border-top: 1px solid var(--line); padding: 2.5rem 0 3rem; margin-top: 3rem; }
+        footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        footer p, footer a { font-size: 0.88rem; color: var(--ink-faint); }
+        footer a { margin-left: 1.25rem; text-decoration: none; }
+        footer a:hover { color: var(--ink); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="wrap">
+            <nav>
+                <a class="brand" href="/">
+                    <img src="/logo-onejob.svg" alt="One Job logo">
+                    <span>One Job</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
+                    <a href="/app/">Open the app</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="wrap head">
+            <h1>Where One Job is headed</h1>
+            <p>One Job is built on a simple bet: a deck of cards is a better home
+            for your attention than a list. Everything below grows out of that —
+            from the app you can use today to some ideas we're still turning over
+            in our hands. Order within each section is rough; the sections
+            themselves are the real sequence.</p>
+            <p class="stamp">Last updated July 7, 2026 · maintained in the open —
+            <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ROADMAP.md">the working roadmap</a>
+            has all the internal detail.</p>
+        </div>
+
+        <div class="era now">
+            <div class="wrap">
+                <h2>Now — in the app today</h2>
+                <div class="items">
+                    <div class="item">
+                        <h3>The deck</h3>
+                        <p>One card at a time. Swipe right to complete, left to send it
+                        to the bottom for later. Tap to read; edits save themselves.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Cards inside cards</h3>
+                        <p>Any card can hold its own deck of sub-tasks, as deep as the
+                        work goes. A card won't complete while its inside is unfinished.</p>
+                    </div>
+                    <div class="item">
+                        <h3>An honest afterlife</h3>
+                        <p>Done, Archive, and Trash are places, not verdicts — completed
+                        work from anywhere in your deck lands there, every move can be
+                        walked back, and undo is everywhere.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Local-first, with real backups</h3>
+                        <p>No account, no tracking, works offline. Export your whole deck
+                        as a file; the app reminds you when a backup is getting old — and
+                        only says a backup succeeded when it actually saw it happen.</p>
+                    </div>
+                    <div class="item">
+                        <h3>iOS beta</h3>
+                        <p>The native iPhone/iPad app is in TestFlight, on its way to the
+                        App Store.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="era next">
+            <div class="wrap">
+                <h2>Next</h2>
+                <div class="items">
+                    <div class="item">
+                        <h3>App Store &amp; Play Store releases</h3>
+                        <p>iOS first, Android close behind — the builds exist; what's left
+                        is testing and the store paperwork.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Fit and finish</h3>
+                        <p>A visual polish pass across every screen, including a proper
+                        dark theme — likely dark by default.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Every deck gets its own Done pile</h3>
+                        <p>Finished sub-tasks already appear in the main Done room; next
+                        they'll also stay visible inside the deck they belong to.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="era later">
+            <div class="wrap">
+                <h2>Later — the spatial layer</h2>
+                <div class="items">
+                    <div class="item">
+                        <h3>A canvas of decks</h3>
+                        <p>More than one deck, side by side on a surface you can pan and
+                        zoom — work, home, someday — with the system piles as real places.</p>
+                    </div>
+                    <div class="item">
+                        <h3>The zoom continuum</h3>
+                        <p>Pinch from the canvas into a deck into a single card filling
+                        your screen. The card never opens a window — you go into the card.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Rearranging by hand</h3>
+                        <p>Fan the deck out, drag cards where you want them, let it snap
+                        back. Deferring stops being the only way to reprioritize.</p>
+                    </div>
+                    <div class="item">
+                        <h3>One big stack, on demand</h3>
+                        <p>An "inchworm" view that flattens your whole tree of decks into
+                        a single walkable stack — and unflattens the moment you want the
+                        structure back.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="era later">
+            <div class="wrap">
+                <h2>Later — plays well with others</h2>
+                <div class="items">
+                    <div class="item">
+                        <h3>Two-way sync with your existing tools</h3>
+                        <p>Connect Todoist, Jira, Linear, Asana. Your team's system stays
+                        the system of record; One Job becomes the way you actually move
+                        through the work. Changes flow both directions.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Cards that carry their context</h3>
+                        <p>Due dates, assignees, labels, links, and attachments arriving
+                        with connected cards — without cluttering the card face.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="era someday">
+            <div class="wrap">
+                <h2>Someday — cards from your agents</h2>
+                <div class="items">
+                    <div class="item">
+                        <h3>An inbox for AI-dealt cards</h3>
+                        <p>Your agents and assistants deal cards into your deck; you play
+                        them like any other card. An agent-dealt card should feel exactly
+                        like one you wrote — and no agent gets to reorder your deck.</p>
+                    </div>
+                    <div class="item">
+                        <h3>Deal a card the other way</h3>
+                        <p>Hand a card to an agent from the card itself, keep it visible
+                        while the work is theirs, and see completion flow back.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrap">
+            <div class="honesty">
+                This page is the honest version: order and details change as we learn
+                from people actually using the thing. If something here matters to
+                you, <a href="https://github.com/Design-in-Product/one-job/issues">tell us</a> —
+                real usage reports have already reshaped this list more than once.
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <p>© 2026 <a href="https://designinproduct.com" style="margin-left:0">Design in Product</a></p>
+            <p>
+                <a href="/privacy.html">Privacy</a>
+                <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
