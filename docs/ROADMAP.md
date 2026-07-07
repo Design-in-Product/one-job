@@ -75,6 +75,7 @@ lost, stranded, or unrecoverable.
 | R2.5 | **Details-as-expansion** — the founding spec's "tap face-up → full-viewport expansion" replaces the modal once the zoom continuum exists; breadcrumbs/place-trail and the search-vs-philosophy question are design inputs here | archaeology |
 | R2.6 | **Per-deck afterlife** — each interior deck keeps its own visible Done pile inside the deck (Xian agreed 2026-07-07; complements the flattened rooms, doesn't replace them). Design with the zoom grammar | option 2 of the Done-room fix |
 | R2.7 | **"Inchworm" mode** — view toggle that flattens the whole tree into one walkable stack, unflattenable at any time; `flattenWithParent` is the ready seam | Item 27 |
+| R2.8 | **The kinetic conversation** — one design pass over riffle-to-jump (cut the deck vs. pull to top), exploded-view reorder, and the vertical gesture grammar (Xian's confirmed intent: vertical = chain-level movement, rhyming with zoom). Gated on his play with rc.8's sifting; do NOT build further vertical semantics before that | Items 26, 28, 29 |
 
 Gate: navigation needs no menu for daily flow; a new user finds
 Completed by *looking around*, not by long-pressing.
