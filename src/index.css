@@ -428,6 +428,9 @@
   body {
     background-color: #f9fafb; /* gray-50, top of the app gradient */
     overscroll-behavior-y: none;
+    /* Kill double-tap zoom (viewport swim, Xian 07-06); pinch is also
+       locked via the viewport meta — this is an app, not a document */
+    touch-action: manipulation;
   }
 
   body {
