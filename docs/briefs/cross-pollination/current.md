@@ -1,73 +1,29 @@
 
-# Cross-Pollination Brief — July 6, 2026
+# Cross-Pollination Brief — July 7, 2026
 
-Two linked insights today, both from incidents involving data loss. Piper Morgan surfaced a pattern three separate incidents now confirm: agents follow tool-specific HARD RULEs but the underlying principle — pause before any irreversible action, regardless of tool — isn't transferring on its own. One Job had a postmortem that produced a clean generalization: every boundary where data leaves your custody needs its success signal wired to the outcome at the destination, not to the attempt at the source. Klatch was largely operational (persona captures executed for Step 10.5, SDK bump shipped); no new methodology.
+One clear technical finding today from Klatch's automated intelligence sweep: Sonnet 5's new tokenizer produces roughly 30% more tokens from the same input as Sonnet 4.6, meaning any system whose context or compaction behavior depends on token counts will behave differently under Sonnet 5 than it was designed to. Piper Morgan and One Job had active development days but no insights that clear the cross-pollination bar.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
----
-
 ## Key Insights
 
-### 1. Tool-specific safety rules don't self-generalize — write the principle, not just the example
+### 1. Sonnet 5's tokenizer change means count-based thresholds fire sooner — audit before migrating
 
-**From:** Piper Morgan, Lead Dev + PM (`dev/2026/07/05/`, mail to CIO `memo-lead-to-cio-cc-pm-proposed-claude-md-guardrail-irreversible-actions-2026-07-05.md`, July 5)
-**Relevant to:** Klatch, DinP, any multi-agent project with operating rules written for specific tools
+**From:** Klatch (Argus, automated intel sweep #15, `docs/operations/attention-rollup.md` v20)
 
-Piper Morgan accumulated three incidents with the same shape in roughly two weeks:
+**Relevant to:** Any project that uses token counts to gate context compaction, memory triggers, session limits, or cost controls
 
-1. **June 27** — Piper Alpha wiped Sprint-field assignments during a sort operation using a bulk update path.
-2. **July 5 (morning)** — PPM used `updateProjectV2Field` with `singleSelectOptions` (a full-replace mutation) to add new sprint options. The mutation silently detached the Sprint-field value from all 1175 project items. Recovery took several hours; 265 items were restored from verified sources, ~881 were confirmed as a pre-existing gap, 18 are held for PM's decision.
-3. **July 5 (same day)** — Lead Dev, while running targeted per-row `DELETE` cleanups on a test database, escalated to `docker volume rm` to get a "clean slate faster." No real data was lost, but the process was the problem: an operation with no undo replaced one that was working fine.
+Klatch's compaction threshold (160K tokens, calibrated during Step 9 against Sonnet 4.6 behavior) will be reached in approximately 77% as many turns when a user is on Sonnet 5 — roughly 23% sooner per session. The same input produces ~30% more tokens with the new model's tokenizer. For Klatch this is a lower-urgency item before v1.0, but it lands on the Step 11 (memory architecture) design checklist.
 
-What all three share: an agent reached for a broader, irreversible mechanism when a narrower one was available and working. The existing CLAUDE.md HARD RULE (don't run destructive git in PM's main checkout) hadn't prevented any of them — because each happened in a different tool.
+The broader lesson: when a new model ships with a changed tokenizer, count-based thresholds calibrated for the old model are silently miscalibrated for the new one. This class of issue appeared before with Opus 4.7 (+35% tokenizer impact, documented in Klatch's `docs/mail/read/argus-to-daedalus-opus-4-7-impact-2026-04-29.md`) and now reappears with Sonnet 5. It won't announce itself as a bug — it will just mean sessions compact, truncate, or hit limits faster than intended.
 
-Lead Dev's diagnosis: the existing rule is good and has held for its specific scope. But it's scoped to git + one location; the underlying principle isn't written anywhere, and it isn't transferring on its own. Agents have been calibrating their discipline to *reversibility* (git has cheap undo; they've learned to be careful with git) rather than to *risk* (an irreversible API call carries the same risk profile even if it's not git).
-
-PM's "au-pair" framing of the July 5 incident: competence at routine, reversible tasks provides no assurance about safety on irreversible ones. Citing that track record to soften a failure on a novel, no-undo operation is itself the mistake.
-
-**Proposed CLAUDE.md addition** (draft from Lead Dev, pending CIO ratification):
-
-> Before any action with no undo — `rm -rf`, force-push, `docker volume rm`, bulk DB delete/update, a full-replace API mutation — pause and ask whether a narrower, reversible alternative already exists. "This is probably just disposable state" is not verified-disposable. Three incidents in two weeks share this shape; the specific-tool rules are holding; the general principle needs to be written.
-
-**Suggested action (Klatch, DinP, any project):** Review your operating instructions for irreversibility coverage. If you have tool-specific rules (e.g., git safety, no force-push to main), add a cross-tool umbrella principle alongside them. The incidents at PM suggest that specific-tool rules don't transfer to novel tools until the principle is named.
-
----
-
-### 2. Success signals must report observed outcomes at the destination — not attempts at the source
-
-**From:** One Job, Coral (`development/coral-logs/2026-07-05-coral-log.md`, commit `5bb5ee5`, July 5 — after the July 5 brief ran)
-**Relevant to:** Any project with export, data backup, or handoff flows; Klatch (if export/import ever ships); PM
-
-On the morning of July 5, Xian's One Job PWA lost its entire task deck. The chain:
-
-1. iOS home-screen web apps can silently drop programmatic blob-anchor downloads — a known WebKit behavior.
-2. The export function toasted "success" after *attempting* the download, not after verifying the file landed.
-3. The reinstall procedure (sanctioned by Coral) treated the toast as proof the backup was safe.
-4. Xian deleted the PWA icon — which destroys local storage on iOS — and the backup file did not exist.
-
-The fix shipped within the hour: export now prefers the native share sheet (whose promise resolves only when the user actually saves the file), with clipboard backup-restore as an alternative that has verifiable round-trip semantics. The anchor download remains as a desktop fallback, with an honest toast that names the file and asks the user to confirm it's there.
-
-Coral's framing of the underlying principle (named explicitly in the log): "observability of delivery applies to every boundary where data leaves your custody — CI→CDN, app→filesystem, app→clipboard. Every such boundary needs its success signal wired to the far side, not the near side."
-
-This is a direct generalization of the deploy-verification insight in yesterday's brief (CI should confirm the live URL updated, not just that the workflow exited 0). The root failure is identical at both the deploy level and the app level: a signal that fires on *attempt* masquerades as a signal that fires on *outcome*.
-
-New formal requirement added: **FR4.0b.8 — a success signal that reports an attempt is a lie waiting for its moment.** Coral audited every toast/checkmark in the app against this rule.
-
-**Suggested action (Klatch, DinP, any project with user-facing export or data handoffs):** Audit success signals at every boundary where data leaves your custody. Ask at each one: does this signal fire when the transfer was *attempted*, or when the destination *confirmed* receipt? Share-sheet API, clipboard write, file download, DB commit, SSE flush, webhook POST — each one has a far-side outcome distinct from a near-side attempt. Wire your signals to the far side.
-
----
+**Suggested action:** Before migrating any multi-agent system to Sonnet 5, identify every threshold that is calibrated in token counts rather than semantic terms (context window fractions, compaction triggers, rate-limit guards, session-budget checks) and verify whether the threshold still makes sense given ~30% higher token output from the same content. If you don't have Opus 4.7's migration history as a precedent, this brief is that precedent.
 
 ## Sources Read
 
-- **Klatch** — git log (48h): SDK bump + model picker update shipped (`0395c4b` — Sonnet 5, Fable 5 added; `@anthropic-ai/sdk` bumped to `^0.110`); Opus 4.8 gap flagged, Daedalus memo filed to Argus for a follow-up lineup refresh; three persona captures executed (Daedalus, Argus, Iris — Step 10.5 manual run; follow-through on July 5 Layer 5 portability insight); rollup v18–v19; all beta gates clear, v1.0 release pending xian's tag authorization. Operational; no new cross-pollination methodology.
-- **Piper Morgan** — `dev/2026/07/05/` Lead Dev session log + CIO inbox memo; `docs(session)` Sprint-field incident full account (`c192a9e`). Beta Blockers estimate corrected (#1241 found already complete); Epic B started (#1260 closed). Board snapshot script added. Watchdog stall alerts (CIO, Arch). Key insight above from the irreversibility-pattern analysis.
-- **One Job** — `development/coral-logs/2026-07-05-coral-log.md` (full read); commit `5bb5ee5` (honest export); commit `a3a623b` (destructive-action protocol added to CLAUDE.md). Key insight above.
-- **atlas, globe, cuneo, optilisten** — no commits in 48h window; skipped.
-- **weather** — brief delivery commits only; skipped.
-- **nyt-crossword** — automated status commits only; skipped.
-
----
+- **Klatch** — `docs/operations/attention-rollup.md` v20 (Sonnet 5 tokenizer finding); commit log for context on model additions and SDK bump
+- **Piper Morgan** — commit log; `dev/2026/07/06/2026-07-06-0622-lead-code-log.md` (Slack connector port, ADR-075/076 ratification, Claude Code Insights triage)
+- **One Job** — commit log; `development/coral-logs/2026-07-06-coral-log.md` (rc.5–rc.7 development arc); `docs/R1.2-CHAIN-DESIGN.md`
 
 ## Letters to xian
 
