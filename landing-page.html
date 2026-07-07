@@ -3,301 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Job - Focus on one task at a time</title>
-    <meta name="description" content="One Job helps you focus on one task at a time with a beautiful, swipe-to-interact mobile-first interface.">
+    <title>One Job — one task at a time</title>
+    <meta name="description" content="One Job is a deck of cards for your tasks. See one card at a time, swipe right when it's done, and keep your attention where it belongs. Local-first, no account, free to use.">
     <meta name="author" content="Design in Product">
-    
-    <meta property="og:title" content="One Job - Focus on one task at a time">
-    <meta property="og:description" content="See one task. Do one task. Feel accomplished.">
+
+    <meta property="og:title" content="One Job — one task at a time">
+    <meta property="og:description" content="A deck of cards for your tasks. See one, do one, swipe it away.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onejob.co">
     <meta property="og:image" content="https://onejob.co/og-image.png">
     <meta property="og:image:width" content="2400">
     <meta property="og:image:height" content="1260">
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="One Job">
-    <meta name="twitter:description" content="See one task. Do one task. Feel accomplished.">
+    <meta name="twitter:description" content="A deck of cards for your tasks. See one, do one, swipe it away.">
     <meta name="twitter:image" content="https://onejob.co/og-image.png">
-    
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#f9fafb">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
-                    },
-                    colors: {
-                        'task-start': '#f35343',
-                        'task-end': '#E73C7E'
-                    }
-                }
-            }
+
+    <style>
+        :root {
+            --ink: #111827;
+            --ink-soft: #4b5563;
+            --ink-faint: #9ca3af;
+            --surface: #f9fafb;
+            --card: #ffffff;
+            --line: #e5e7eb;
+            --coral-a: #f4533c;
+            --coral-b: #e73c7e;
+            --coral-grad: linear-gradient(135deg, #f4533c, #e73c7e);
         }
-    </script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        .wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Header */
+        header { padding: 1.5rem 0; }
+        .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+        .brand img { width: 2rem; height: 2rem; border-radius: 0.5rem; }
+        .brand span { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; }
+        header nav { display: flex; align-items: center; justify-content: space-between; }
+        .nav-links { display: flex; gap: 1.5rem; font-size: 0.92rem; color: var(--ink-soft); }
+        .nav-links a { text-decoration: none; }
+        .nav-links a:hover { color: var(--ink); }
+
+        /* Hero */
+        .hero { padding: 4.5rem 0 3rem; text-align: center; }
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 3.75rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.08;
+            max-width: 22ch;
+            margin: 0 auto 1.25rem;
+        }
+        .hero h1 em {
+            font-style: normal;
+            background: var(--coral-grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p.lede {
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+            max-width: 44ch;
+            margin: 0 auto 2.25rem;
+        }
+        .cta-row { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+        .btn {
+            display: inline-block;
+            padding: 0.85rem 1.9rem;
+            border-radius: 0.7rem;
+            font-weight: 600;
+            font-size: 1.02rem;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-primary { background: var(--coral-grad); color: #fff; box-shadow: 0 4px 14px rgba(231, 60, 126, 0.25); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(231, 60, 126, 0.32); }
+        .btn-quiet { border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); }
+        .btn-quiet:hover { border-color: var(--ink-faint); color: var(--ink); }
+        .hero .fineprint { font-size: 0.86rem; color: var(--ink-faint); }
+
+        /* Screens */
+        .screens { display: flex; gap: 1.75rem; justify-content: center; align-items: flex-start; padding: 2.5rem 0 1rem; flex-wrap: wrap; }
+        .screen {
+            width: min(240px, 72vw);
+            border-radius: 1.4rem;
+            border: 1px solid var(--line);
+            box-shadow: 0 12px 32px rgba(17, 24, 39, 0.10);
+            overflow: hidden;
+            background: var(--surface);
+        }
+        .screen img { display: block; width: 100%; height: auto; }
+        .screen-caption { text-align: center; font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.6rem; }
+        .screens figure { margin: 0; }
+        .screens figure:nth-child(2) { transform: translateY(1.4rem); }
+
+        /* Sections */
+        section { padding: 3.5rem 0; }
+        section h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.75rem;
+        }
+        .rule { border: 0; border-top: 1px solid var(--line); }
+
+        .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.25rem; }
+        .pillar {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            padding: 1.6rem;
+        }
+        .pillar h3 { font-size: 1.05rem; font-weight: 650; margin-bottom: 0.5rem; }
+        .pillar p { font-size: 0.95rem; color: var(--ink-soft); }
+        .pillar .glyph {
+            width: 2.1rem; height: 2.9rem;
+            border-radius: 0.45rem;
+            background: var(--coral-grad);
+            margin-bottom: 1rem;
+            box-shadow: 0.28rem 0.28rem 0 rgba(231, 60, 126, 0.18);
+        }
+
+        /* Local-first */
+        .quiet-block {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 1.25rem;
+            padding: 2.25rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+            gap: 2rem;
+        }
+        .quiet-block h2 { margin-bottom: 0.75rem; }
+        .quiet-block p { color: var(--ink-soft); font-size: 0.98rem; margin-bottom: 0.9rem; }
+        .quiet-block ul { list-style: none; }
+        .quiet-block li { padding: 0.45rem 0; font-size: 0.95rem; color: var(--ink-soft); border-bottom: 1px solid var(--surface); }
+        .quiet-block li strong { color: var(--ink); font-weight: 600; }
+
+        /* Get it */
+        .get-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.25rem; }
+        .get {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            padding: 1.6rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .get h3 { font-size: 1.02rem; font-weight: 650; margin-bottom: 0.4rem; }
+        .get .status { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+        .status.now { color: #059669; }
+        .status.beta { color: var(--coral-b); }
+        .status.soon { color: var(--ink-faint); }
+        .get p { font-size: 0.92rem; color: var(--ink-soft); flex: 1; margin-bottom: 1rem; }
+        .get a.go { font-size: 0.94rem; font-weight: 600; text-decoration: none; color: var(--coral-b); }
+        .get a.go:hover { text-decoration: underline; }
+
+        /* Roadmap teaser + footer */
+        .roadmap-teaser { text-align: center; }
+        .roadmap-teaser p { color: var(--ink-soft); max-width: 52ch; margin: 0 auto 1.5rem; }
+        footer { border-top: 1px solid var(--line); padding: 2.5rem 0 3rem; margin-top: 2rem; }
+        footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        footer p, footer a { font-size: 0.88rem; color: var(--ink-faint); }
+        footer a { margin-left: 1.25rem; text-decoration: none; }
+        footer a:hover { color: var(--ink); }
+    </style>
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
-    <!-- Hero Section -->
-    <div class="max-w-4xl mx-auto px-4 py-16">
-        <div class="text-center mb-16">
-            <div class="inline-flex items-center justify-center w-24 h-32 rounded-2xl bg-gradient-to-br from-task-start to-task-end shadow-lg mb-6 border-4 border-orange-50">
-                <div class="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center shadow">
-                    <span class="text-3xl font-extrabold bg-gradient-to-br from-task-start to-task-end text-transparent bg-clip-text">1</span>
+<body>
+    <header>
+        <div class="wrap">
+            <nav>
+                <a class="brand" href="/">
+                    <img src="/logo-onejob.svg" alt="One Job logo">
+                    <span>One Job</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/roadmap.html">Roadmap</a>
+                    <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
+                    <a href="/app/">Open the app</a>
                 </div>
-            </div>
-            <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-task-start to-task-end text-transparent bg-clip-text mb-6">
-                One Job
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-600 mb-8">
-                See one task. Do one task. Feel accomplished.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="/demo.html" class="bg-gradient-to-r from-task-start to-task-end text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                    🚀 Try Live Demo
-                </a>
-                <a href="https://github.com/Design-in-Product/one-job" class="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-all duration-300">
-                    💻 View Code
-                </a>
-            </div>
+            </nav>
         </div>
+    </header>
 
-        <!-- Problem/Solution -->
-        <div class="grid md:grid-cols-2 gap-12 mb-16">
-            <div class="bg-white rounded-xl shadow-sm p-8 border">
-                <h2 class="text-2xl font-bold text-red-600 mb-4">😵 The Problem</h2>
-                <ul class="space-y-3 text-gray-700">
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span><strong>47 browser tabs</strong> open, 3 todo apps, sticky notes everywhere</span></li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span><strong>Context switching</strong> kills productivity (studies show 23 minutes to refocus!)</span></li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span>Traditional task lists create <strong>anxiety</strong>, not clarity</span></li>
-                    <li class="flex items-start"><span class="text-red-500 mr-2">•</span><span>You spend more time <strong>organizing</strong> tasks than <strong>doing</strong> them</span></li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-sm p-8 border">
-                <h2 class="text-2xl font-bold text-green-600 mb-4">💡 The Solution</h2>
-                <p class="text-gray-700 mb-4">
-                    <strong>One Job</strong> is a revolutionary task management app that shows you only one task at a time. Built with a beautiful, swipe-to-interact mobile interface, it transforms how you work by eliminating distractions and decision fatigue.
+    <main>
+        <div class="wrap">
+            <div class="hero">
+                <h1>Your tasks are a deck of cards. <em>Play one at a time.</em></h1>
+                <p class="lede">
+                    One Job shows you a single card. Do the thing, swipe it away,
+                    and the next card is waiting. That's the whole idea — and it turns
+                    out to be enough.
                 </p>
-                <p class="text-xl font-semibold text-task-start">
-                    ✨ <strong>Swipe right</strong> to complete. <strong>Swipe left</strong> to defer. That's it.
-                </p>
+                <div class="cta-row">
+                    <a class="btn btn-primary" href="/app/">Open One Job</a>
+                    <a class="btn btn-quiet" href="/roadmap.html">See where it's headed</a>
+                </div>
+                <p class="fineprint">Free · works offline · no account, no tracking — your tasks never leave your device</p>
+            </div>
+
+            <div class="screens">
+                <figure>
+                    <div class="screen"><img src="/site/screen-deck.png" alt="The deck: one task card, face up" loading="lazy"></div>
+                    <figcaption class="screen-caption">One card at a time</figcaption>
+                </figure>
+                <figure>
+                    <div class="screen"><img src="/site/screen-card.png" alt="Inside a card: its own small deck of sub-tasks" loading="lazy"></div>
+                    <figcaption class="screen-caption">Cards hold decks of their own</figcaption>
+                </figure>
+                <figure>
+                    <div class="screen"><img src="/site/screen-done.png" alt="The Done pile, one of three rooms finished cards move through" loading="lazy"></div>
+                    <figcaption class="screen-caption">Finished work has a place</figcaption>
+                </figure>
             </div>
         </div>
 
-        <!-- Why One Job -->
-        <div class="bg-white rounded-xl shadow-sm p-8 border mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8">🤔 Why One Job?</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="text-center">
-                    <div class="text-3xl mb-3">🧠</div>
-                    <h3 class="font-semibold mb-2">Psychology-backed</h3>
-                    <p class="text-gray-600 text-sm">Single-tasking improves focus by 40% and reduces errors by 50%</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl mb-3">📱</div>
-                    <h3 class="font-semibold mb-2">Mobile-first</h3>
-                    <p class="text-gray-600 text-sm">Actually works on your phone (revolutionary, we know!)</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl mb-3">⚡</div>
-                    <h3 class="font-semibold mb-2">Zero friction</h3>
-                    <p class="text-gray-600 text-sm">Swipe right = done. No menus, no clicks, no confusion</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl mb-3">🎯</div>
-                    <h3 class="font-semibold mb-2">Intentional</h3>
-                    <p class="text-gray-600 text-sm">No notifications, badges, or guilt trips about overdue tasks</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl mb-3">🏃</div>
-                    <h3 class="font-semibold mb-2">Momentum-building</h3>
-                    <p class="text-gray-600 text-sm">Each completed task fuels the next one</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl mb-3">🧘</div>
-                    <h3 class="font-semibold mb-2">Peace of mind</h3>
-                    <p class="text-gray-600 text-sm">Focus on now, not the endless list</p>
+        <section>
+            <div class="wrap">
+                <h2>How it works</h2>
+                <div class="pillars">
+                    <div class="pillar">
+                        <div class="glyph"></div>
+                        <h3>One card, face up</h3>
+                        <p>Swipe right when it's done. Swipe left to send it to the bottom
+                        of the deck for later. Tap to read the whole card. No lists, no
+                        badges, no guilt.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="glyph"></div>
+                        <h3>Go into the card</h3>
+                        <p>Any card can hold its own little deck. Break the big thing into
+                        small things and play them the same way — as deep as the work
+                        actually goes. A card won't call itself done while its inside is
+                        unfinished.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="glyph"></div>
+                        <h3>Nothing is a dead end</h3>
+                        <p>Finished cards move through Done, Archive, and Trash — and every
+                        move works in both directions. Un-do a completion, restore from
+                        trash, change your mind. Deleting forever takes a deliberate,
+                        confirmed step. Nothing else is permanent.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Perfect For -->
-        <div class="bg-white rounded-xl shadow-sm p-8 border mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8">💼 Perfect For</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="flex items-start space-x-3">
-                    <div class="text-2xl">👨‍💻</div>
+        <section>
+            <div class="wrap">
+                <div class="quiet-block">
                     <div>
-                        <h3 class="font-semibold">Developers</h3>
-                        <p class="text-gray-600 text-sm">Track your current debugging task without losing context in 47 browser tabs</p>
+                        <h2>Local-first, on purpose</h2>
+                        <p>One Job is quiet software. It has no server watching you work,
+                        no account to create, and nothing to sell about your day.</p>
+                        <p>Your deck lives on your device and works offline. Backup and
+                        restore are built in — a plain file you can keep anywhere — and
+                        the app nudges you when your last backup is getting old.</p>
                     </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                    <div class="text-2xl">📚</div>
-                    <div>
-                        <h3 class="font-semibold">Students</h3>
-                        <p class="text-gray-600 text-sm">One assignment at a time means less overwhelm, better grades</p>
-                    </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                    <div class="text-2xl">💰</div>
-                    <div>
-                        <h3 class="font-semibold">Freelancers</h3>
-                        <p class="text-gray-600 text-sm">Focus on billable work, defer distractions until later</p>
-                    </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                    <div class="text-2xl">🏠</div>
-                    <div>
-                        <h3 class="font-semibold">Parents</h3>
-                        <p class="text-gray-600 text-sm">Tackle household tasks without the mental load of seeing everything at once</p>
-                    </div>
+                    <ul>
+                        <li><strong>No account.</strong> Open it and start.</li>
+                        <li><strong>No tracking.</strong> No analytics, no ads, nothing phones home.</li>
+                        <li><strong>Offline.</strong> Airplane mode is fully supported territory.</li>
+                        <li><strong>Your data is a file.</strong> Export it, keep it, import it anywhere.</li>
+                        <li><strong>Installable.</strong> Add it to your home screen and it feels native.</li>
+                    </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Key Features -->
-        <div class="bg-white rounded-xl shadow-sm p-8 border mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8">✨ Key Features</h2>
-            <div class="space-y-4">
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">🎯</div>
-                    <div>
-                        <strong>Single-Task Focus</strong> • See only what matters right now
+        <section id="get">
+            <div class="wrap">
+                <h2>Get One Job</h2>
+                <div class="get-grid">
+                    <div class="get">
+                        <h3>Web app</h3>
+                        <div class="status now">Available now</div>
+                        <p>Runs in any modern browser. On a phone, use “Add to Home
+                        Screen” for the full app experience — it installs like a native
+                        app and works offline.</p>
+                        <a class="go" href="/app/">Open in your browser →</a>
                     </div>
-                </div>
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">👆</div>
-                    <div>
-                        <strong>Swipe Gestures</strong> • Complete (→) or defer (←) with natural gestures
+                    <div class="get">
+                        <h3>iPhone &amp; iPad</h3>
+                        <div class="status beta">In beta</div>
+                        <p>The native iOS app is in TestFlight now, headed for the App
+                        Store. If you'd like to help test, we'd love to have you.</p>
+                        <a class="go" href="https://github.com/Design-in-Product/one-job/issues/new?title=iOS%20beta%20tester">Ask for a beta invite →</a>
                     </div>
-                </div>
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">📚</div>
-                    <div>
-                        <strong>Smart Substacks</strong> • Break big tasks into smaller ones without losing focus
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">🔄</div>
-                    <div>
-                        <strong>Intelligent Ordering</strong> • Deferred tasks automatically move to the back
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">💾</div>
-                    <div>
-                        <strong>Always Saved</strong> • Every action syncs instantly - never lose work
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="text-2xl">🌐</div>
-                    <div>
-                        <strong>Integration Ready</strong> • Import from Jira, Linear, Todoist (coming soon)
+                    <div class="get">
+                        <h3>Android</h3>
+                        <div class="status soon">In the works</div>
+                        <p>The Android build exists and signing is ready — it's waiting
+                        on its first round of testers before a Play Store listing.</p>
+                        <a class="go" href="https://github.com/Design-in-Product/one-job/issues/new?title=Android%20beta%20tester">Volunteer to test →</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- FAQ -->
-        <div class="bg-white rounded-xl shadow-sm p-8 border mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8">❓ FAQ</h2>
-            <div class="space-y-6">
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Q: What if I have 100 tasks?</h3>
-                    <p class="text-gray-700">A: You still do them one at a time. One Job just makes that obvious.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Q: Can I see all my tasks at once?</h3>
-                    <p class="text-gray-700">A: Yes, but why would you want that anxiety? Focus on what's in front of you.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Q: What happens to deferred tasks?</h3>
-                    <p class="text-gray-700">A: They move to the bottom of your stack. They'll come back when you're ready.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Q: Is my data safe?</h3>
-                    <p class="text-gray-700">A: Your tasks are saved locally and to your backend. We don't track or sell anything.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Q: Can I import from other apps?</h3>
-                    <p class="text-gray-700">A: Jira, Linear, and Todoist imports coming soon. For now, start fresh - it's liberating!</p>
-                </div>
+        <section>
+            <div class="wrap roadmap-teaser">
+                <h2>Where it's headed</h2>
+                <p>A canvas of decks side by side. Two-way sync with the task systems
+                your work already lives in. Cards dealt to you by your own agents.
+                The roadmap is public — including the parts we haven't figured out yet.</p>
+                <a class="btn btn-quiet" href="/roadmap.html">Read the roadmap</a>
             </div>
-        </div>
+        </section>
+    </main>
 
-        <!-- Project Status -->
-        <div class="bg-white rounded-xl shadow-sm p-8 border mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8">🎯 Project Status</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-semibold text-green-600 mb-4">✅ Available Now</h3>
-                    <p class="text-gray-700">Card Deck Experience: flip a card, do the task, swipe it away. Substacks, deferral, and instant sync included.</p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold text-blue-600 mb-4">🚧 Coming Soon</h3>
-                    <p class="text-gray-700">Jira/Linear/Todoist imports, team features, native mobile apps</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA -->
-        <div class="text-center bg-gradient-to-r from-task-start to-task-end rounded-xl text-white p-12">
-            <h2 class="text-4xl font-bold mb-4">🎉 Start Focusing Today</h2>
-            <p class="text-xl mb-6">Stop managing tasks. Start completing them.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/demo.html" class="bg-white text-task-start px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all duration-300">
-                    Try One Job Now →
-                </a>
-                <a href="https://github.com/Design-in-Product/one-job" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-task-start transition-all duration-300">
-                    View on GitHub
-                </a>
-            </div>
-            <p class="text-sm mt-6 opacity-90">
-                <em>Built for humans who want to get things done, not organize things to do.</em>
+    <footer>
+        <div class="wrap">
+            <p>© 2026 <a href="https://designinproduct.com" style="margin-left:0">Design in Product</a></p>
+            <p>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/demo.html">Playground</a>
+                <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
             </p>
         </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-16 pt-8 border-t border-gray-200">
-            <p class="text-gray-600">
-                Made with ❤️ by people who hate todo lists •
-                <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/API.md" class="text-task-start hover:underline">API Reference</a> •
-                <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ARCHITECTURE.md" class="text-task-start hover:underline">Architecture</a> •
-                <a href="https://github.com/Design-in-Product/one-job" class="text-task-start hover:underline">GitHub</a>
-            </p>
-        </div>
-    </div>
-
-    <script>
-        // Add smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Add some hover effects
-        document.querySelectorAll('.hover\\:scale-105').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                el.style.transform = 'scale(1.05)';
-            });
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = 'scale(1)';
-            });
-        });
-    </script>
+    </footer>
 </body>
 </html>
