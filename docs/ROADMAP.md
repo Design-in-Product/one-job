@@ -121,8 +121,11 @@ hand-written one, and no agent can ever reorder your deck.
   sparkle empty state · skeleton shimmer loader · designed error state ·
   M-for-menu keyboard shortcut · swipe tint overlays (A/B vs. pills) ·
   pulsing dot on live-source badges (R3-era)
-- **Dark mode** (existed Nov 2025, lost in the rebuild — also a store
-  expectation; bigger than fun but shelved here until scheduled)
+- **Dark mode — dark background by default** (existed Nov 2025, lost in
+  the rebuild — also a store expectation). Xian endorsed dark-by-default
+  on 2026-07-07: first pull from this shelf when fit-and-finish work
+  resumes after the TestFlight cut. Explicitly does NOT block letting
+  testers in.
 
 ## The premium shelf (post-launch, candidates)
 
