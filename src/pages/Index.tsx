@@ -377,9 +377,7 @@ const Index = () => {
               onCloseTaskDetails={() => setIsTaskDetailsOpen(false)}
               onAddSubtasks={handleAddSubtasks}
               onOpenSubstack={handleOpenSubstack}
-              // NOTE: onUpdateTask prop should also be handled for substack tasks
-              // if you implement update functionality for them in the future.
-              // For now, it's only passed to the main TaskDetails.
+              onUpdateTask={handleUpdateTask}
             />
           </motion.div>
         </div>
