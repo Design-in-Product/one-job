@@ -65,7 +65,8 @@
         "done": "Nothing done yet — it'll land here when you swipe right.",
         "archive": "The archive is empty. Swipe a done card right to file it here.",
         "trash": "The trash is empty."
-      }
+      },
+      "fromParent": "from “{{parent}}”"
     },
     "completed": {
       "empty": "No completed tasks yet.",

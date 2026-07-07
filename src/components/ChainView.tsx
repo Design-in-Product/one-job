@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react';
 import { Task } from '@/types/task';
-import { cardRoom, Room } from '@/domain/tasks';
+import { cardRoom, flattenWithParent, Room } from '@/domain/tasks';
 import TaskCard from './TaskCard';
 import SwipeableCard from './SwipeableCard';
 import { Button } from '@/components/ui/button';
@@ -48,11 +48,17 @@ const ChainView: React.FC<ChainViewProps> = ({
   const [room, setRoom] = useState<ChainRoom>('done');
   const [confirmingPurge, setConfirmingPurge] = useState<Task | null>(null);
 
+  // Rooms gather cards from EVERY depth (2026-07-07): work completed
+  // inside an interior deck is still work — it lands in Done like any
+  // other card, wearing a breadcrumb back to the card that contains it.
   const byRoom = (r: ChainRoom) =>
-    tasks.filter(task => cardRoom(task) === r).sort((a, b) => roomSortKey[r](b) - roomSortKey[r](a));
+    flattenWithParent(tasks)
+      .filter(({ card }) => cardRoom(card) === r)
+      .sort((a, b) => roomSortKey[r](b.card) - roomSortKey[r](a.card));
 
-  const cards = byRoom(room);
-  const top = cards[0];
+  const entries = byRoom(room);
+  const top = entries[0]?.card;
+  const topParent = entries[0]?.parent ?? null;
 
   // Gesture meanings per room: right advances the chain, left walks back
   const gestures: Record<ChainRoom, {
@@ -100,6 +106,11 @@ const ChainView: React.FC<ChainViewProps> = ({
         </p>
       ) : (
         <div className="flex flex-col items-center gap-3">
+          {topParent && (
+            <p className="text-xs text-gray-500">
+              {t('chain.fromParent', { parent: topParent.title })}
+            </p>
+          )}
           {/* key remounts the swipe wrapper per card so exit animations reset */}
           <SwipeableCard
             key={`${room}-${top.id}`}
@@ -118,9 +129,9 @@ const ChainView: React.FC<ChainViewProps> = ({
               : t('chain.hintsLeft', { left: g.leftHint })}
           </p>
 
-          {cards.length > 1 && (
+          {entries.length > 1 && (
             <p className="text-xs text-gray-400">
-              {t('chain.moreBelow', { count: cards.length - 1 })}
+              {t('chain.moreBelow', { count: entries.length - 1 })}
             </p>
           )}
 
