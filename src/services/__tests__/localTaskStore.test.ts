@@ -244,6 +244,32 @@ describe('un-complete (recovery from accidental completion)', () => {
   });
 });
 
+describe('recursion: sub-sub-tasks (cards all the way down)', () => {
+  it('creates a deck ON a sub-card and adds cards to it (was: "Task not found")', async () => {
+    const store = freshStore();
+    const parent = await store.createTask('Project');
+    const deck = await store.createSubstack(parent.id, null);
+    const subCard = await store.addSubstackTask(deck.id, 'Phase one');
+
+    // the bug: creating a deck on a card that lives INSIDE a deck
+    const subDeck = await store.createSubstack(subCard.id, null);
+    const subSub = await store.addSubstackTask(subDeck.id, 'Step 1.1');
+    expect(subSub.title).toBe('Step 1.1');
+
+    // complete + defer at depth 2 work and persist
+    await store.addSubstackTask(subDeck.id, 'Step 1.2');
+    await store.completeSubstackTask(subSub.id);
+    const reloaded = (await freshStore().getAllTasks())[0];
+    const rDeck = reloaded.decks![0].cards[0].decks![0];
+    expect(rDeck.cards).toHaveLength(2);
+    expect(rDeck.cards.find(c => c.title === 'Step 1.1')!.completed).toBe(true);
+
+    await store.deferSubstackTask(rDeck.cards.find(c => !c.completed)!.id);
+    const again = (await freshStore().getAllTasks())[0];
+    expect(again.decks![0].cards[0].decks![0].cards[1].deferralCount).toBe(1);
+  });
+});
+
 describe('lifecycle chain (R1.2): Done → Archive → Trash and back', () => {
   const walkToDone = async (store: LocalTaskStore, title = 'Traveler') => {
     const t = await store.createTask(title);

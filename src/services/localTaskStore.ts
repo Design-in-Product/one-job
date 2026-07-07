@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -137,7 +137,8 @@ export class LocalTaskStore implements TaskStore {
   }
 
   private findTask(id: string): Task {
-    const task = this.tasks.find(t => t.id === id);
+    // Recursive: a card is a card at any depth (sub-sub-tasks, Item 8)
+    const task = findCardById(this.tasks, id);
     if (!task) throw new Error('Task not found');
     return task;
   }
@@ -203,39 +204,30 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async addSubstackTask(substackId: string, title: string, description?: string): Promise<Task> {
-    for (const task of this.tasks) {
-      const deck = task.decks?.find(d => d.id === substackId);
-      if (deck) {
-        const newCard: Task = {
-          id: uuidv4(),
-          title,
-          description,
-          completed: false,
-          createdAt: new Date(),
-          sortOrder: topSortOrder(deck.cards)
-        };
-        // New items land on top in sub-decks too (display order = array order)
-        deck.cards.unshift(newCard);
-        this.saveTasks();
-        return newCard;
-      }
-    }
-    throw new Error('Substack not found');
+    const deck = findDeckById(this.tasks, substackId);
+    if (!deck) throw new Error('Substack not found');
+    const newCard: Task = {
+      id: uuidv4(),
+      title,
+      description,
+      completed: false,
+      createdAt: new Date(),
+      sortOrder: topSortOrder(deck.cards)
+    };
+    // New items land on top in sub-decks too (display order = array order)
+    deck.cards.unshift(newCard);
+    this.saveTasks();
+    return newCard;
   }
 
   async completeSubstackTask(id: string): Promise<Task> {
-    for (const task of this.tasks) {
-      for (const deck of task.decks || []) {
-        const card = deck.cards.find(c => c.id === id);
-        if (card) {
-          card.completed = true;
-          card.completedAt = new Date();
-          this.saveTasks();
-          return card;
-        }
-      }
-    }
-    throw new Error('Substack task not found');
+    const deck = findDeckOfCard(this.tasks, id);
+    const card = deck?.cards.find(c => c.id === id);
+    if (!card) throw new Error('Substack task not found');
+    card.completed = true;
+    card.completedAt = new Date();
+    this.saveTasks();
+    return card;
   }
 
   // ---- Lifecycle chain (R1.2): each move guards on the room the card
@@ -286,20 +278,15 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async deferSubstackTask(id: string): Promise<Task> {
-    for (const task of this.tasks) {
-      for (const deck of task.decks || []) {
-        const index = deck.cards.findIndex(c => c.id === id);
-        if (index !== -1) {
-          const card = applyDeferral(deck.cards[index], deck.cards);
-          // display order = array order in sub-decks: move to the bottom
-          deck.cards.splice(index, 1);
-          deck.cards.push(card);
-          this.saveTasks();
-          return card;
-        }
-      }
-    }
-    throw new Error('Substack task not found');
+    const deck = findDeckOfCard(this.tasks, id);
+    if (!deck) throw new Error('Substack task not found');
+    const index = deck.cards.findIndex(c => c.id === id);
+    const card = applyDeferral(deck.cards[index], deck.cards);
+    // display order = array order in sub-decks: move to the bottom
+    deck.cards.splice(index, 1);
+    deck.cards.push(card);
+    this.saveTasks();
+    return card;
   }
 
   /**

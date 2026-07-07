@@ -48,9 +48,24 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
   if (!task) return null;
 
+  // Autosave (Xian, 07-06): never lose field edits to navigation. Fires
+  // on blur and before any action that leaves the edit surface.
+  const flushPendingEdits = () => {
+    if (!isEditing || !task) return;
+    if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
+      onUpdateTask?.(task.id, { title: editedTitle, description: editedDescription });
+    }
+  };
+
   const handleOpenSubstack = (substack: Substack) => {
+    flushPendingEdits();
     onOpenSubstack(task, substack);
     onClose();
+  };
+
+  const handleAddSubtasksClick = () => {
+    flushPendingEdits();
+    onAddSubtasks?.(task.id);
   };
 
   // <--- NEW: Handler for saving changes
@@ -75,6 +90,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               className="text-xl font-bold break-words w-full p-2 -ml-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
+              onBlur={flushPendingEdits}
             />
           ) : (
             <DialogTitle
@@ -95,6 +111,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 rows={5}
                 value={editedDescription}
                 onChange={(e) => setEditedDescription(e.target.value)}
+                onBlur={flushPendingEdits}
                 placeholder={t('details.descriptionPlaceholder')}
               />
             ) : (
@@ -190,7 +207,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             ) : onAddSubtasks ? (
               /* Ghost mini-deck: same shape, dashed — the affordance to start one */
               <button
-                onClick={() => onAddSubtasks(task.id)}
+                onClick={handleAddSubtasksClick}
                 className="flex flex-col items-center gap-1.5 mx-auto"
                 aria-label={t('details.addSubtasks')}
               >
