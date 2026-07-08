@@ -46,6 +46,7 @@ jobs:
           mkdir -p deploy
           cp landing-page.html deploy/index.html
           cp roadmap.html deploy/
+          cp philosophy.html deploy/
           cp demo.html deploy/
           cp privacy.html deploy/ 2>/dev/null || true
           cp -r site deploy/
