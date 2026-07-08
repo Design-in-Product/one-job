@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophy — One Job</title>
+    <meta name="description" content="Why One Job shows you one card at a time — the ideas the app is built to defend. A small manifesto for single-tasking.">
+    <meta name="author" content="Design in Product">
+    <meta property="og:title" content="The One Job philosophy">
+    <meta property="og:description" content="Why one card at a time — a small manifesto for single-tasking.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onejob.co/philosophy.html">
+    <meta property="og:image" content="https://onejob.co/og-image.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <meta name="theme-color" content="#f9fafb">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #111827;
+            --ink-soft: #4b5563;
+            --ink-faint: #9ca3af;
+            --surface: #f9fafb;
+            --card: #ffffff;
+            --line: #e5e7eb;
+            --coral-a: #f4533c;
+            --coral-b: #e73c7e;
+            --coral-grad: linear-gradient(135deg, #f4533c, #e73c7e);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        .wrap { max-width: 42rem; margin: 0 auto; padding: 0 1.5rem; }
+        header { padding: 1.5rem 0; }
+        header nav { display: flex; align-items: center; justify-content: space-between; max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+        .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+        .brand img { width: 2rem; height: 2rem; border-radius: 0.5rem; }
+        .brand span { font-weight: 700; font-size: 1.05rem; }
+        .nav-links { display: flex; gap: 1.5rem; font-size: 0.92rem; color: var(--ink-soft); }
+        .nav-links a { text-decoration: none; }
+        .nav-links a:hover { color: var(--ink); }
+
+        .head { padding: 3.5rem 0 1rem; }
+        h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+        h1 em { font-style: normal; background: var(--coral-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .head .standfirst { font-size: 1.2rem; color: var(--ink-soft); }
+
+        section { padding: 2.25rem 0; }
+        section:not(:last-child) { border-bottom: 1px solid var(--line); }
+        h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
+        p { margin-bottom: 1rem; color: var(--ink-soft); }
+        p:last-child { margin-bottom: 0; }
+        p strong { color: var(--ink); font-weight: 600; }
+        .lead-in { color: var(--ink); }
+
+        blockquote {
+            border-left: 3px solid var(--coral-b);
+            padding: 0.25rem 0 0.25rem 1.25rem;
+            margin: 1.25rem 0;
+            color: var(--ink);
+            font-size: 1.08rem;
+        }
+        blockquote cite { display: block; font-size: 0.9rem; color: var(--ink-faint); font-style: normal; margin-top: 0.5rem; }
+
+        .gestures { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .gesture { background: var(--card); border: 1px solid var(--line); border-radius: 0.9rem; padding: 1.1rem 1.25rem; }
+        .gesture .g { font-weight: 700; color: var(--ink); }
+        .gesture p { font-size: 0.92rem; margin: 0.3rem 0 0; }
+
+        .close { text-align: center; padding: 3rem 0 1rem; }
+        .close p { font-size: 1.1rem; color: var(--ink); }
+        .btn { display: inline-block; margin-top: 1.25rem; padding: 0.85rem 1.9rem; border-radius: 0.7rem; font-weight: 600; text-decoration: none; background: var(--coral-grad); color: #fff; box-shadow: 0 4px 14px rgba(231, 60, 126, 0.25); }
+
+        footer { border-top: 1px solid var(--line); padding: 2.5rem 0 3rem; margin-top: 2rem; }
+        footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; max-width: 68rem; }
+        footer p, footer a { font-size: 0.88rem; color: var(--ink-faint); }
+        footer a { margin-left: 1.25rem; text-decoration: none; }
+        footer a:hover { color: var(--ink); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="brand" href="/">
+                <img src="/logo-onejob.svg" alt="One Job logo">
+                <span>One Job</span>
+            </a>
+            <div class="nav-links">
+                <a href="/roadmap.html">Roadmap</a>
+                <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
+                <a href="/app/">Open the app</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="wrap head">
+            <h1>You don't have 300 tasks. <em>You have one job.</em></h1>
+            <p class="standfirst">And after that one, another one. Here's the whole idea
+            the app is built to protect.</p>
+        </div>
+
+        <div class="wrap">
+            <section>
+                <h2>The list is the enemy</h2>
+                <p class="lead-in">Every task app shows you the list, and the list radiates
+                guilt in proportion to its length. Forty-seven open items is not
+                information — it's dread, delivered on schedule.</p>
+                <p>One Job shows you <strong>one card</strong>. The thing in front of you,
+                full-screen, nothing else clamoring. Everything about the app is a
+                consequence of defending that single decision — at every scale, forever.</p>
+            </section>
+
+            <section>
+                <h2>Write one song</h2>
+                <p>The musician Jeff Tweedy wrote a book called <em>How to Write One
+                Song</em>. His point: "write songs" is an abstract, anxious, quality-haunted
+                goal, and it freezes you. "Write <em>one</em> song" is concrete — that song
+                has its own qualities and leads you through its own making.</p>
+                <p>Tasks work the same way. "Be productive" is a goal that generates
+                nothing but pressure. <strong>Do this one card</strong> is something you can
+                actually do — and then it's done, and there's another one, and that's the
+                whole rhythm of a day.</p>
+            </section>
+
+            <section>
+                <h2>A pack of cards, not a screen</h2>
+                <p>The phone in your hand isn't a screen showing you a card — it
+                <em>is</em> the card. Text fills it. Swipe it away and the next one is
+                waiting. Any card can hold a small deck of its own, so a big task becomes
+                a few small cards you play the same way, as deep as the work really goes.</p>
+                <p>We love the physical feel of this, but not literally — a real deck of
+                cards doesn't grow 700 inches long. Ours is <strong>felt</strong> physicality:
+                a pile that visibly thickens as it grows and settles into "wow, that's a
+                big deck," never a number. Cards left untended long enough start to yellow
+                at the edges — the passing of time as a bit of whimsy, not a warning.</p>
+            </section>
+
+            <section>
+                <h2>Two gestures carry everything</h2>
+                <p>No menus to learn. The whole system is two directions, and where you
+                are supplies the meaning.</p>
+                <div class="gestures">
+                    <div class="gesture">
+                        <span class="g">Swipe right →</span>
+                        <p>Done. Move it along.</p>
+                    </div>
+                    <div class="gesture">
+                        <span class="g">← Swipe left</span>
+                        <p>Not yet — to the bottom of the deck, back around when you're ready.</p>
+                    </div>
+                </div>
+                <p style="margin-top:1rem;">Finished cards don't vanish into a void. They
+                move through Done, Archive, and Trash — and every step can be walked back.
+                Change your mind, restore a card, send it home to your deck. Deleting
+                forever takes a deliberate, confirmed step. <strong>Nothing else is a dead
+                end.</strong></p>
+            </section>
+
+            <section>
+                <h2>Fun, not dread</h2>
+                <p>Capturing a task and looking at it on a card should be a small
+                pleasure. You'll notice when you keep putting something off — that noticing
+                is useful — but it should feel like a wry observation, not an accusation.</p>
+                <p>No red badges counting your failures. No "you're behind." No missed-
+                deadline guilt trip. The app that helps you focus shouldn't be another
+                thing making you anxious.</p>
+            </section>
+
+            <section>
+                <h2>It's yours, and it stays yours</h2>
+                <p>One Job runs on your device. No account to create, nothing tracking
+                your day, no server holding your tasks hostage. It works offline. Your
+                whole deck exports to a plain file you can keep anywhere — and the app
+                only ever tells you a backup succeeded when it actually watched it happen.</p>
+                <p><strong>An update should never cost you your data.</strong> That one isn't
+                a feature. It's a promise.</p>
+            </section>
+        </div>
+
+        <div class="wrap close">
+            <p>See one task. Do one task. Feel accomplished.</p>
+            <a class="btn" href="/app/">Open One Job</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <p>© 2026 <a href="https://designinproduct.com" style="margin-left:0">Design in Product</a></p>
+            <p>
+                <a href="/roadmap.html">Roadmap</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="https://github.com/Design-in-Product/one-job">GitHub</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
