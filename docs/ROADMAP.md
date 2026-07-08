@@ -37,7 +37,7 @@ off immediately.
 |---|---|---|
 | R0.0 | **Data durability** — ✅ safety net (snapshots/quarantine/restore, 07-04); ✅ backup-age nudge (07-04); ✅ honest export: share-sheet + clipboard copy/paste paths, outcome-verified toasts (07-05, after real data loss); remaining: on-device proof of the share-sheet path (Xian), export-location hint | Item 13 🔴 |
 | R0.1 | **Undo toast** after complete/defer (5s window, one tap) | audit gap 1 |
-| R0.2 | **Deck-depth signal** (design call needed: number vs. suggestion) | audit gap 4 |
+| R0.2 | **Deck-depth signal** — CALLED 2026-07-08: *suggestion, never a number*. A deck that visibly thickens/bulges as it grows and asymptotes at "wow, that's a big deck" — no count anywhere on the deck (covenant 7; badge stays 1-or-none). Design the thickening scale together with **card aging** (Item 22) as ONE material language — time and volume made tactile and gentle | audit gap 4 |
 | R0.3 | **Portal crispness pass** — kill the "swimming in an ill-fitting frame" feel (background/theme-color/overscroll/dvh suspects listed in Vision Item 9) | Item 9a |
 | R0.4 | Xian's odd-behavior reports as they land | testing |
 | R0.5 | iOS TestFlight + Android internal track (in motion, human-gated: Cowork Phase 4, keystore) | store track |
@@ -118,8 +118,10 @@ hand-written one, and no agent can ever reorder your deck.
 - Flip-back gesture (Item 19 — timer is acceptable meanwhile; design
   with the zoom grammar)
 - Toast quiet mode (Item 16 — needs an undo surface decision first)
-- **Card aging** (Item 22 — cards yellow like library stock; design
-  together with the deck-depth material language, R2-era)
+- **Card aging** (Item 22 — cards yellow/craze at the edges when
+  untended; gentle whimsy, never a deadline-nag. One material language
+  with the deck-thickness depth-signal, R0.2 — time and volume made
+  tactile; design the two together, R2-era)
 - **Recovered from the Nov-2025 stratum** (archaeology, 2026-07-06):
   sparkle empty state · skeleton shimmer loader · designed error state ·
   M-for-menu keyboard shortcut · swipe tint overlays (A/B vs. pills) ·

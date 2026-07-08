@@ -43,6 +43,38 @@ meaning:
 
 **Horizontal is fate. Vertical is hierarchy. Zoom is attention.**
 
+## The temperament
+
+The premise is a mechanic; this is the mood that defends it.
+
+**Singularity, all the way to the icon.** The app never quantifies the
+pile. Its home-screen badge shows *nothing* (you're caught up) or *one*
+(there's a card up) — never 300, because you don't have 300 tasks. You
+have one job, and after it, another one. The same rule governs every
+surface: the deck never wears a number, because a number is the list
+sneaking back in. (Counts are allowed exactly where counting is a small
+trophy rather than a threat — the afterlife rooms — never on the deck.)
+
+**The Tweedy principle.** Jeff Tweedy wrote *How to Write One Song*
+because "write songs" is an abstract, anxious, quality-haunted goal,
+while "write *one* song" is concrete and leads you through its own
+process. Tasks are the same. One Job is the productivity version of that
+book: not a system for managing your output, a way to be led by the one
+thing in front of you.
+
+**Fun, not dread.** Capturing a task and looking at it on a card should
+be a small pleasure. You notice when you keep deferring something —
+that noticing is useful — but it reads as a wry observation, never an
+accusation. No "you're behind," no "deadline missed," no red.
+
+**Magical, not literally skeuomorphic.** Literal skeuomorphism is a
+static dead-end — a deck doesn't become 700 inches long. Ours is a *felt*
+physicality: the pile visibly thickens and bulges as it grows and then
+maxes out at "wow, that's a big deck," a gentle asymptote rather than a
+count. Cards left untended long enough yellow and craze at the edges —
+the passage of time as whimsy, not a nag. Deck-thickness and card-aging
+are **one material language**: time and volume made tactile and kind.
+
 ## The strategy
 
 One Job does not compete with task databases; it **faces** them. The
@@ -72,6 +104,9 @@ Asana task are the same event: a card arriving with provenance.
 5. State is place. If a status flag can be a location, it must be.
 6. Simple things work before complex things are attempted (Gall's law,
    the house rule).
+7. The count is one or none. The app never renders the pile as a number
+   that could become dread — depth is felt (a thickening deck), never
+   tallied.
 
 ## The releases, in one line each
 
