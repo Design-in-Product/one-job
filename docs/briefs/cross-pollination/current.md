@@ -1,59 +1,56 @@
 
-# Cross-Pollination Brief — July 9, 2026
+# Cross-Pollination Brief — July 10, 2026
 
-Two findings today. One Job produced a concrete methodology for writing public-facing content from internal docs without leaking internal jargon — explicitly authored for this brief and xian-approved. Piper Morgan uncovered a silent hygiene risk for Claude Code projects: memory artifacts written with a CWD-relative path instead of the documented absolute path can end up committed to the repo tree undetected. Klatch was quiet; no new methodology.
+Two findings from Piper Morgan today. First: when injecting contextual data into an LLM prompt, wrong-confident context is worse than absent context — a fix to the time-of-day flourish encodes this as a durable principle. Second: a stall-detection watchdog that only covers 4 of 11 roles is structurally invisible to the other 7 — "we have a watchdog" and "the watchdog watches everything that matters" are different claims that fail silently apart. Klatch applied the July 9 `.gitignore` suggestion; no new methodology of its own this window.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. Writing for strangers: translate from meaning, don't export from internal docs
+### 1. Wrong-confident context is worse than absent context — omit rather than inject the server clock as user time
 
-**From:** One Job, Coral (`development/coral-logs/2026-07-08-coral-log.md`; `docs/mail/memo-coral-to-janus-2026-07-08-register-shift-howto.md`, July 8 — written deliberately for this brief, xian-approved)
+**From:** Piper Morgan, Lead Dev (fix `c4995f5`, `#1381`, July 9)
 
-**Relevant to:** Any agent producing public-facing content — landing pages, release notes, philosophy pages, changelogs, docs — from internal design docs or working notes. Klatch (near v1.0, will face this); DinP (Janus curates the gallery); PM (Comms, weekly Ship posts).
+**Relevant to:** Any project that injects ephemeral context — current time, location, device state — into LLM prompts or system prompts. Klatch (channel/entity system prompts); One Job (LLM context in future integration layer); DinP (Janus session context).
 
-One Job built a public philosophy page from its internal VISION.md document. The lesson emerging from that work is a concrete two-gate method that Coral names "translate, don't export":
+Piper's floor had a helper that injected a `current_time` flourish into the conversational context — letting Piper say things like "It's 4:30 AM — you're either an early riser or deep in a late night." On a multi-user deployment, that helper read the server's configured timezone (UTC on the droplet), so every user got the server's clock, not their own. Piper was confidently narrating predawn hours to users sitting at their desks at 9:32 PM Pacific.
 
-**The failure mode:** Start from the internal artifact, delete the sensitive parts, soften the rest. This leaks every time, because jargon isn't a layer you can peel off — it's woven through the sentences. "Provenance-carrying source adapters on the storage seam" has no public version hiding inside it. There's nothing to remove; the sentence is made of internal concepts all the way down. The tell: an internal proper noun (a partner project's name, a subsystem, a ticket code) survives into the public copy.
+The fix is not just the bug fix — it's the rule it encodes:
 
-**The method — two gates, in order:**
+> **Precedence for user-contextual data: user's own data → per-tenant config → omit. Never fall back to server state and present it as user state.**
 
-1. **Gate 1: Drop what a stranger doesn't need.** Strategy, competitive positioning, internal milestones, the names of systems doing the work — most of this doesn't go out. This isn't an oversight; it's a decision. Name what you're dropping and why.
-2. **Gate 2: Rebuild the rest from the user's chair.** The ideas that pass Gate 1 still can't go out in internal wording. Rebuild each from the reader's experience. Not simplification — re-derivation from a different starting point. "Horizontal is fate; vertical is hierarchy; zoom is attention" (internal axiom) → "Swipe right and it's done" (same truth, felt from the user's thumb).
+The floor's renderer already skips absent keys gracefully. An absent `current_time` = no flourish. A server-clock `current_time` = confidently wrong flourish. The absent path is always preferable to the confident-but-wrong path.
 
-**Mechanical guardrail:** No internal proper noun in public copy unless it is re-introduced from scratch for someone who has never heard it. When re-introducing feels absurd ("...and the storage seam is—"), that's Gate 1 firing late: the thing shouldn't be there at all.
+This generalizes beyond time: any datum you're injecting into a prompt as "the user's X" should come from the user's own personalization context. If you don't have it for this user, omit the feature rather than substitute a server-side proxy. The subtle failure mode is that the wrong-confident version often looks fine during single-user development (developer's machine timezone matches) and only breaks on multi-user deployment.
 
-**The structural fix:** Give public and internal voice separate homes — separate files with separate jobs. If your internal reasoning and public copy share a document, register leaks are a matter of when, not if. The separation has to exist in the artifacts, not just your intentions.
-
-**Suggested action:** Before any agent publishes something — a release announcement, a philosophy page, an external how-to — run through the two gates explicitly rather than editing-in-place from the internal doc. One specific check: scan for any noun that requires project context to understand; if re-introducing it from scratch feels forced, Gate 1 should have dropped it.
+**Suggested action:** Audit any LLM system-prompt or context-injection that includes a user-contextual datum (current time, location, timezone, preferences). For each: verify the data path leads to user-specific data, not server state. If the path can fall to server state, add a skip/omit branch rather than a server-state fallback.
 
 ---
 
-### 2. Claude Code auto-memory files can silently end up in the repo tree via a CWD-relative write path
+### 2. A watchdog's coverage list is itself a monitoring gap — audit what the watchdog is actually watching
 
-**From:** Piper Morgan, coding-agent session (`dev/2026/07/08/2026-07-08-1309-prog-code-log.md`; commit `6763f72`, July 8)
+**From:** Piper Morgan, Exec role (memo to Janus, `docs/mail/memo-exec-piper-to-janus-week-update-2026-07-09.md`, July 9)
 
-**Relevant to:** Any project where Claude Code agents write to Claude's memory store — i.e., any project with multiple agents using `~/.claude/projects/.../memory/` for persistent context. Klatch (Daedalus, Argus, Calliope, Iris and others have memory stores); DinP (Janus layer-3 memory).
+**Relevant to:** Any project running duty-cycle agents or cron-driven processes where a monitoring or stall-detection system exists. Klatch (Calliope, Argus duty cycles); DinP (Janus + Themis pulse cycles); One Job (Relay + Coral sessions).
 
-Claude Code's auto-memory artifacts are documented to live at an *absolute* path: `~/.claude/projects/-Users-xian-Development-...-product/memory/`. But if an agent's Write call resolves to a CWD-relative path — landing the file at `.claude/projects/.../memory/` relative to the repo root — the file ends up inside the working tree, not in the user's home directory. A subsequent `git add` or `git commit -A` can then include it in the repo without anyone noticing.
+PM's stall-detection registry covers 4 of 11 active roles. The other 7 are structurally invisible to it: they look correctly-alive by the watchdog's logic because the watchdog was never asked to look at them. One role went dark for 11 days with no alert firing. The watchdog itself was healthy; it was just watching a subset.
 
-In PM's case, one such file (`project_agent_migration.md`, written to the repo-relative path during a March 31 session on a machine called "faoilean") had been tracked in the repo for 3+ months before being caught. It propagated normally into every worktree via `git checkout`. Content was stale and safe to remove, but the failure mode is silent: there's no error, the push succeeds, and the artifact spreads to every clone.
+The lesson isn't about PM's specific registry — it's about a second-order monitoring assumption that almost every team makes:
 
-**Two companion findings from the same investigation:**
+> **"We have a watchdog" and "the watchdog watches everything that matters" are different claims. The gap between them fails silently.**
 
-- **`.gitignore` fix:** Adding `.claude/projects/` to `.gitignore` prevents recurrence (as a companion to the existing `.claude/worktrees/` ignore pattern that PM already had). This pattern can be added to any project's `.gitignore` as a one-time precaution.
-- **Two-step memory save can be interrupted:** Writing a memory file and then adding an index pointer to `MEMORY.md` are two separate operations. If the session ends or compacts between them, the file exists in the memory store but is unlisted. An unindexed memory file is effectively invisible to the load-at-session-start step. Verify both steps complete.
+A monitoring system is only as good as its coverage list, and the coverage list can become stale just like any other hand-maintained inventory. A role added after the registry was first set up won't automatically be added to the registry. A role that changes scope may no longer be covered by its existing registry entry. The watchdog won't tell you about this; it doesn't know what it doesn't know.
 
-**Suggested action:** Check your project's `.gitignore` for a `.claude/projects/` entry (or equivalent). If it's not there, add it. Then verify no `.claude/projects/` directory exists already in your tracked tree (`git ls-files .claude/projects/` — any output means an artifact has already been committed). If your project uses a MEMORY.md index for the memory store, audit that every file in the store directory has an index entry.
+**Suggested action:** For any monitoring or stall-detection system: enumerate all the things it's supposed to be watching. Cross-reference that list against the full set of agents, crons, or services that currently run. Identify what the watchdog is *not* watching. Then decide whether each uncovered item is intentionally excluded or an oversight. This audit is worth repeating whenever new roles or crons are added — coverage assumptions drift silently in both directions.
 
 ## Sources Read
 
-- **Klatch** — git log (48h): cross-pollination brief delivery commits only. No new methodology; no docs/ changes.
-- **Piper Morgan** — `dev/2026/07/08/2026-07-08-1309-prog-code-log.md` (stray memory artifact investigation; full read); `dev/2026/07/08/2026-07-08-0941-exec-code-log.md` (Fire 7: dark-roles + day arc); commit log for context. Ship #050 published ("The Connector Gets Real"); ADR-073 authoring begun; beta blockers at 7 open. Operational; two transferable findings above.
-- **One Job** — `development/coral-logs/2026-07-08-coral-log.md` (full read); `docs/mail/memo-coral-to-janus-2026-07-08-register-shift-howto.md` (full read); rc.8–rc.9 (sift in chain rooms; sub-card edit-loss fixed); `docs/philosophy.html` (public manifesto). TestFlight promotion near.
-- **atlas, globe, cuneo, optilisten** — no commits in 48h window; skipped.
-- **weather, nyt-crossword** — automated brief-delivery / status commits only; skipped.
+- **Klatch** — git log (48h): `.claude/projects/` added to `.gitignore` (applying July 9 brief suggestion; confirmatory); brief delivery commits. No new methodology.
+- **Piper Morgan** — commit log (48h, full): `#1381` fix (`c4995f5`, Lead Dev); exec-to-Janus weekly update memo (`2fcce12`); ADR-077 routing-integrity contract (Arch, July 9 — two-altitude enforcement for LLM action routing; confirmatory of derive-don't-maintain pattern already covered); `#1312` schema reconciliation CI-guarded (confirmatory of impossible-by-construction pattern from July 8 brief). Two new findings above.
+- **One Job** — git log (48h): brief delivery and prior-window commits (philosophy page, temperament capture — source material for July 9 insight); no new methodology this window.
+- **mediajunkie (Pard)** — git log (48h): Janus-to-Pard memo requesting push of 3 days of local-only work (operational; not insight-worthy).
+- **atlas, globe, cuneo, optilisten, weather** — no commits in 48h window; skipped.
+- **nyt-crossword** — automated status commits (fetch/print/remarkable); skipped.
 
 ## Letters to xian
 
