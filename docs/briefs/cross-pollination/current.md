@@ -1,56 +1,35 @@
+# Cross-Pollination Brief — July 11, 2026
 
-# Cross-Pollination Brief — July 10, 2026
-
-Two findings from Piper Morgan today. First: when injecting contextual data into an LLM prompt, wrong-confident context is worse than absent context — a fix to the time-of-day flourish encodes this as a durable principle. Second: a stall-detection watchdog that only covers 4 of 11 roles is structurally invisible to the other 7 — "we have a watchdog" and "the watchdog watches everything that matters" are different claims that fail silently apart. Klatch applied the July 9 `.gitignore` suggestion; no new methodology of its own this window.
+Heavy execution day in Piper Morgan: Fly.io deployment stack live (#1278), field-encryption plaintext-write risk caught and patched (#1387), ADR-070 amended to store logical connector identity rather than topology, and the full sprint LOW-tier backlog (218 issues) resolved. One transferable methodology finding emerged — a structural gap in how scheduled jobs are cleaned up when migrating between scheduling mechanisms.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. Wrong-confident context is worse than absent context — omit rather than inject the server clock as user time
+### Switching a recurring job to a new scheduling mechanism permanently orphans the old one — cleanup must happen in the same session that creates the replacement
 
-**From:** Piper Morgan, Lead Dev (fix `c4995f5`, `#1381`, July 9)
+**From:** Piper Morgan, CIO (commit `b82b0b8` + `docs(cron-lifecycle)`, July 10; methodology-35 promoted to Proven)
 
-**Relevant to:** Any project that injects ephemeral context — current time, location, device state — into LLM prompts or system prompts. Klatch (channel/entity system prompts); One Job (LLM context in future integration layer); DinP (Janus session context).
+**Relevant to:** Any project running duty-cycle agents or scheduled background jobs, especially where multiple scheduling mechanisms coexist — ephemeral CronCreate vs. persistent scheduled-tasks, different cron shapes, or interval changes across sessions. Klatch (Calliope duty cycle); DinP (Janus + Themis pulse cycles); One Job (Coral / Relay sessions).
 
-Piper's floor had a helper that injected a `current_time` flourish into the conversational context — letting Piper say things like "It's 4:30 AM — you're either an early riser or deep in a late night." On a multi-user deployment, that helper read the server's configured timezone (UTC on the droplet), so every user got the server's clock, not their own. Piper was confidently narrating predawn hours to users sitting at their desks at 9:32 PM Pacific.
+When Piper Morgan's Docs role moved their duty-cycle trigger from an ephemeral `CronCreate` job to a `scheduled-tasks` entry (to satisfy a schedule-change request), the new job was created and verified. The old ephemeral job was never deleted. Both then ran independently for an unknown period — two parallel duty-cycle sessions doing overlapping work daily — until Docs noticed two session logs covering the same day's work.
 
-The fix is not just the bug fix — it's the rule it encodes:
+The reason this is structurally harder than other double-fire cases: `CronList`/`CronDelete` only see jobs the *calling session itself* created. `scheduled-tasks` is a separate disk-persistent subsystem with its own listing. Once the migration session ends, neither mechanism can see the other's jobs — so the orphaned predecessor becomes **permanently unreachable**. No subsequent session, and no other mechanism, can delete it. The window for cleanup closes when the session that performed the migration moves on.
 
-> **Precedence for user-contextual data: user's own data → per-tenant config → omit. Never fall back to server state and present it as user state.**
+**The discipline (the only fix that works):** when migrating a recurring job from one mechanism to another, delete the old mechanism's job as an **explicit, named step of the same migration** — before or immediately after creating the new one, in the same session and turn. Do not defer it to a cleanup pass. Do not assume another session can pick it up later. Verify both surfaces before considering the migration complete.
 
-The floor's renderer already skips absent keys gracefully. An absent `current_time` = no flourish. A server-clock `current_time` = confidently wrong flourish. The absent path is always preferable to the confident-but-wrong path.
+This instance, combined with the same-mechanism STOP re-arm bug fixed the same day (`fix(duty-cycle-tick): STOP re-arm is delete-then-create, not create-only`) — where creating a new STOP cron without first deleting the previous one also produces two parallel jobs — promoted **methodology-35 (Asymmetric Discipline: creation without paired cleanup)** from Emerging to Proven. The pattern name captures the root cause: creation is visible and memorable; deletion of the predecessor is easy to skip because it's not in the "happy path" mental model of "make the new thing."
 
-This generalizes beyond time: any datum you're injecting into a prompt as "the user's X" should come from the user's own personalization context. If you don't have it for this user, omit the feature rather than substitute a server-side proxy. The subtle failure mode is that the wrong-confident version often looks fine during single-user development (developer's machine timezone matches) and only breaks on multi-user deployment.
-
-**Suggested action:** Audit any LLM system-prompt or context-injection that includes a user-contextual datum (current time, location, timezone, preferences). For each: verify the data path leads to user-specific data, not server state. If the path can fall to server state, add a skip/omit branch rather than a server-state fallback.
-
----
-
-### 2. A watchdog's coverage list is itself a monitoring gap — audit what the watchdog is actually watching
-
-**From:** Piper Morgan, Exec role (memo to Janus, `docs/mail/memo-exec-piper-to-janus-week-update-2026-07-09.md`, July 9)
-
-**Relevant to:** Any project running duty-cycle agents or cron-driven processes where a monitoring or stall-detection system exists. Klatch (Calliope, Argus duty cycles); DinP (Janus + Themis pulse cycles); One Job (Relay + Coral sessions).
-
-PM's stall-detection registry covers 4 of 11 active roles. The other 7 are structurally invisible to it: they look correctly-alive by the watchdog's logic because the watchdog was never asked to look at them. One role went dark for 11 days with no alert firing. The watchdog itself was healthy; it was just watching a subset.
-
-The lesson isn't about PM's specific registry — it's about a second-order monitoring assumption that almost every team makes:
-
-> **"We have a watchdog" and "the watchdog watches everything that matters" are different claims. The gap between them fails silently.**
-
-A monitoring system is only as good as its coverage list, and the coverage list can become stale just like any other hand-maintained inventory. A role added after the registry was first set up won't automatically be added to the registry. A role that changes scope may no longer be covered by its existing registry entry. The watchdog won't tell you about this; it doesn't know what it doesn't know.
-
-**Suggested action:** For any monitoring or stall-detection system: enumerate all the things it's supposed to be watching. Cross-reference that list against the full set of agents, crons, or services that currently run. Identify what the watchdog is *not* watching. Then decide whether each uncovered item is intentionally excluded or an oversight. This audit is worth repeating whenever new roles or crons are added — coverage assumptions drift silently in both directions.
+**Suggested action:** Audit any scheduled job or cron-style duty cycle for pending mechanism migrations (or past ones that might have left a predecessor). When planning a migration, add "delete old job" as a literal step in the same procedure that creates the new one — before the procedure is considered complete. If a stale predecessor exists and the window has closed, detection is still possible by scanning for duplicate session logs or double-commits for the same role in the same day; the `mcp__ccd_session_mgmt__list_sessions` surface can identify which session owns a stray job, and `send_message` can ask that session to self-clean.
 
 ## Sources Read
 
-- **Klatch** — git log (48h): `.claude/projects/` added to `.gitignore` (applying July 9 brief suggestion; confirmatory); brief delivery commits. No new methodology.
-- **Piper Morgan** — commit log (48h, full): `#1381` fix (`c4995f5`, Lead Dev); exec-to-Janus weekly update memo (`2fcce12`); ADR-077 routing-integrity contract (Arch, July 9 — two-altitude enforcement for LLM action routing; confirmatory of derive-don't-maintain pattern already covered); `#1312` schema reconciliation CI-guarded (confirmatory of impossible-by-construction pattern from July 8 brief). Two new findings above.
-- **One Job** — git log (48h): brief delivery and prior-window commits (philosophy page, temperament capture — source material for July 9 insight); no new methodology this window.
-- **mediajunkie (Pard)** — git log (48h): Janus-to-Pard memo requesting push of 3 days of local-only work (operational; not insight-worthy).
-- **atlas, globe, cuneo, optilisten, weather** — no commits in 48h window; skipped.
-- **nyt-crossword** — automated status commits (fetch/print/remarkable); skipped.
+- **Klatch** — git log (48h): cross-pollination brief delivery commits + one `.gitignore` update (applying July 9 brief suggestion; confirmatory). No new methodology.
+- **Piper Morgan** — commit log (48h, full): Fly.io stack live (`2162b6c`–`8fda0c7`); #1387 field-encryption plaintext-write risk caught and patched (`9921a4a`, same day, Arch boundary-check); ADR-070 Amendment A (`30b1cee`, mcp_server_ref stores logical key not topology); sprint LOW-tier 218/218 complete (`d45fd2a`); duplicate-cron root-caused as methodology-35 instance + promoted (`92ed971`, `b82b0b8`); duty-cycle-tick STOP re-arm fixed (`08b2f6b`); briefing-staleness hook uses git commit date not mtime (`76f6b5d`). One transferable finding above; rest operational.
+- **atlas, globe, cuneo, optilisten** — no commits in 48h window; skipped.
+- **weather, one-job** — cross-pollination brief delivery commits only; skipped.
+- **nyt-crossword** — automated status commits; skipped.
+- **mediajunkie** — no commits in 48h window; skipped.
 
 ## Letters to xian
 
