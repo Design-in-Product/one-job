@@ -1,35 +1,37 @@
-# Cross-Pollination Brief — July 11, 2026
+# Cross-Pollination Brief — July 12, 2026
 
-Heavy execution day in Piper Morgan: Fly.io deployment stack live (#1278), field-encryption plaintext-write risk caught and patched (#1387), ADR-070 amended to store logical connector identity rather than topology, and the full sprint LOW-tier backlog (218 issues) resolved. One transferable methodology finding emerged — a structural gap in how scheduled jobs are cleaned up when migrating between scheduling mechanisms.
+Piper Morgan's Comms role hit the same source-verification failure mode twice in a single session: a real number from the primary source, attached to the wrong story. Standard "verify against primary sources" discipline doesn't catch this — the number is there, just describing something adjacent. The fix is a narrower check. Klatch quiet this window; all secondary sources quiet.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Switching a recurring job to a new scheduling mechanism permanently orphans the old one — cleanup must happen in the same session that creates the replacement
+### "Verify against primary sources" doesn't catch a number that's real in the source but belongs to an adjacent story
 
-**From:** Piper Morgan, CIO (commit `b82b0b8` + `docs(cron-lifecycle)`, July 10; methodology-35 promoted to Proven)
+**From:** Piper Morgan, Comms role (`dev/2026/07/11/2026-07-11-1331-comms-code-log.md`, July 11)
 
-**Relevant to:** Any project running duty-cycle agents or scheduled background jobs, especially where multiple scheduling mechanisms coexist — ephemeral CronCreate vs. persistent scheduled-tasks, different cron shapes, or interval changes across sessions. Klatch (Calliope duty cycle); DinP (Janus + Themis pulse cycles); One Job (Coral / Relay sessions).
+**Relevant to:** Any team that reviews agent-produced content against session logs or internal working documents before publishing — especially when multiple incidents or incidents share quantitative data. Klatch (Calliope blog posts from session logs); DinP (Janus curation from working notes); One Job (Coral blog beat production from internal design docs).
 
-When Piper Morgan's Docs role moved their duty-cycle trigger from an ephemeral `CronCreate` job to a `scheduled-tasks` entry (to satisfy a schedule-change request), the new job was created and verified. The old ephemeral job was never deleted. Both then ran independently for an unknown period — two parallel duty-cycle sessions doing overlapping work daily — until Docs noticed two session logs covering the same day's work.
+During review of two sequential blog posts in one session, the same failure mode appeared twice with identical shape: a specific, plausible-sounding number existed in the primary source but described a different story nearby.
 
-The reason this is structurally harder than other double-fire cases: `CronList`/`CronDelete` only see jobs the *calling session itself* created. `scheduled-tasks` is a separate disk-persistent subsystem with its own listing. Once the migration session ends, neither mechanism can see the other's jobs — so the orphaned predecessor becomes **permanently unreachable**. No subsequent session, and no other mechanism, can delete it. The window for cleanup closes when the session that performed the migration moves on.
+**Instance 1 — Pattern-073 instance count:** A blog post attributed its opening story to "Pattern-073 instance #14." The CIO's own methodology ruling for that same incident explicitly assigned the "#14" label to a different finding within the same incident — and named the blog's actual opening story a *separate* finding, NOT Pattern-073. The number "14" was real; it was in the same ruling document. But it described an adjacent categorization, not the claim being fact-checked.
 
-**The discipline (the only fix that works):** when migrating a recurring job from one mechanism to another, delete the old mechanism's job as an **explicit, named step of the same migration** — before or immediately after creating the new one, in the same session and turn. Do not defer it to a cleanup pass. Do not assume another session can pick it up later. Verify both surfaces before considering the migration complete.
+**Instance 2 — Recovery duration:** A second post claimed "the recovery took me ninety minutes." Ninety minutes does appear in the primary source log — but in an entry describing a May 10 workstream-review incident. The crash recovery the post was actually about (May 23) has no such duration figure anywhere in the same log.
 
-This instance, combined with the same-mechanism STOP re-arm bug fixed the same day (`fix(duty-cycle-tick): STOP re-arm is delete-then-create, not create-only`) — where creating a new STOP cron without first deleting the previous one also produces two parallel jobs — promoted **methodology-35 (Asymmetric Discipline: creation without paired cleanup)** from Emerging to Proven. The pattern name captures the root cause: creation is visible and memorable; deletion of the predecessor is easy to skip because it's not in the "happy path" mental model of "make the new thing."
+Both cases passed a "does this number appear in the primary source?" check. Both failed a "does this number specifically describe *this* event?" check.
 
-**Suggested action:** Audit any scheduled job or cron-style duty cycle for pending mechanism migrations (or past ones that might have left a predecessor). When planning a migration, add "delete old job" as a literal step in the same procedure that creates the new one — before the procedure is considered complete. If a stale predecessor exists and the window has closed, detection is still possible by scanning for duplicate session logs or double-commits for the same role in the same day; the `mcp__ccd_session_mgmt__list_sessions` surface can identify which session owns a stray job, and `send_message` can ask that session to self-clean.
+**Why this happens:** Rich session logs and omnibus documents accumulate many incidents with overlapping shapes — multiple crashes, multiple multi-hour investigations, multiple numbered methodology instances. Proximity bias and pattern-matching make an adjacent figure feel like confirmation when it isn't. The more your source documents are narrative records of similar recurring events, the higher the risk.
+
+**The more exacting standard:** When verifying a specific factual claim — especially a number, count, or duration — the check is not "is this figure somewhere in the source?" It's: *"Does this specific figure, in this specific sentence of the source, describe this specific event?"* That narrowing is often the difference between a correct attribution and a plausible-but-wrong one.
+
+**Suggested action:** In any content-review checklist that includes "verify against primary sources," add the narrower version as a sub-step for quantitative claims: trace the specific number to the specific sentence in the source that describes the specific event being asserted. If the number appears nearby but describes something else, treat it as not-found.
 
 ## Sources Read
 
-- **Klatch** — git log (48h): cross-pollination brief delivery commits + one `.gitignore` update (applying July 9 brief suggestion; confirmatory). No new methodology.
-- **Piper Morgan** — commit log (48h, full): Fly.io stack live (`2162b6c`–`8fda0c7`); #1387 field-encryption plaintext-write risk caught and patched (`9921a4a`, same day, Arch boundary-check); ADR-070 Amendment A (`30b1cee`, mcp_server_ref stores logical key not topology); sprint LOW-tier 218/218 complete (`d45fd2a`); duplicate-cron root-caused as methodology-35 instance + promoted (`92ed971`, `b82b0b8`); duty-cycle-tick STOP re-arm fixed (`08b2f6b`); briefing-staleness hook uses git commit date not mtime (`76f6b5d`). One transferable finding above; rest operational.
-- **atlas, globe, cuneo, optilisten** — no commits in 48h window; skipped.
-- **weather, one-job** — cross-pollination brief delivery commits only; skipped.
-- **nyt-crossword** — automated status commits; skipped.
-- **mediajunkie** — no commits in 48h window; skipped.
+- **Klatch** — git log (48h): brief delivery commits only. No new methodology; one `.gitignore` commit from Jul 9 already covered.
+- **Piper Morgan** — git log (48h): Comms blog-production pipeline (three editorial rounds on "When the Documentation Drifts," published live; preliminary review of Jul 12 post), HOST alpha-invite operational close, Docs duty-cycle deconfliction memo filed to CIO. One transferable finding above; rest operational or continuation of July 10–11 findings.
+- **atlas, globe, cuneo, optilisten, mediajunkie** — no commits in 48h window; skipped.
+- **weather, one-job, nyt-crossword** — brief delivery or automated status commits only; skipped.
 
 ## Letters to xian
 
