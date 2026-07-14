@@ -1,51 +1,51 @@
+# Cross-Pollination Brief — July 14, 2026
 
-# Cross-Pollination Brief — July 13, 2026
-
-Two findings from Piper Morgan. First: transition prose in agent behavioral documents ("the old approach is retired — here's what replaced it") doesn't suppress the old pattern for LLM readers — both activate simultaneously. The fix is to state only current truth and move historical narrative to git log. Second: a pair of cross-turn continuity failures revealed a structural principle: keep the LLM routing classifier stateless, and resolve cross-turn referents explicitly at a dedicated pre-classifier step rather than injecting conversation history into the routing prompt. Klatch and all secondary sources quiet this window.
+The July 13 brief covered the diagnosis: deprecated prose in agent behavioral documents activates both old and new patterns in LLM readers — the fix is deletion, not compression. Today's finding from Piper Morgan's CIO addresses the structural question the diagnosis leaves open: what goes *where* in a behavioral document, and how do you keep the right content at the right altitude without every edit session drifting back? The answer is a three-altitude model with a concrete survival test for rationale lines. Klatch and all secondary sources quiet this window.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. "X is deprecated, use Y" in a system prompt doesn't suppress X — it activates both
+### A three-altitude model for agent behavioral documents — and a concrete test for when rationale belongs
 
-**From:** Piper Morgan, HOST role (memo `mailboxes/cio/inbox/memo-host-to-cio-cc-docs-pm-claudemd-refactor-proposal-2026-07-12.md`, July 12)
+**From:** Piper Morgan, CIO (scoping note `dev/active/claude-md-refactor-scoping-cio-2026-07-13.md`, July 13 — produced after HOST's diagnosis in yesterday's brief was greenlit by PM)
 
-**Relevant to:** Any project maintaining agent behavioral documents — system prompts, CLAUDE.md files, briefings — that accumulate historical migration prose over time. Klatch (CLAUDE.md and COORDINATION.md); DinP (CLAUDE.md and agent layer files); One Job.
+**Relevant to:** Any project that maintains agent behavioral documents over time — CLAUDE.md files, agent briefings, system prompts that accumulate editing history. Directly applicable to Klatch (COORDINATION.md, CLAUDE.md, agent layer files); DinP (CLAUDE.md, layer4/layer5 per-agent files); One Job (CLAUDE.md).
 
-Piper Morgan's CLAUDE.md has accumulated substantial transition prose: "the old bridge pattern is retired — here's the new approach" language added each time a norm changed. HOST's diagnosis, ratified by PM: LLM readers don't bracket deprecated content the way humans do. Where a human reader would read "X is retired" and mentally file X away, an LLM activates both X and its replacement as potentially live heuristics. PM's framing: "stale info propagates loosely because an agent reads 'acidity rule — something about oranges, also apples' and treats both as live, even when the text explicitly deprecated apples."
+The July 13 brief identified the problem (deprecated prose activates both patterns) and the immediate fix (delete historical narrative; the fix is deletion not compression). What it didn't address: what's the structural model for *where content belongs* in the first place — so future editing sessions don't reproduce the same pattern?
 
-**The cut to make:** historical narrative (how the project got here, why a given norm replaced an older one) vs. behavioral rationale (why a *current* rule exists). The first category belongs in git log — it's already durable there. Only the second belongs in the live document. The fix is deletion, not compression: removing "we used to do X" passages rather than shortening them. A sentence that explains *why the current rule exists* stays; a sentence that explains *what the previous rule was* goes.
+**The three-altitude framework:**
 
-**Suggested action:** Scan your CLAUDE.md or agent briefing files for "used to be", "deprecated", "the old", "replaced by", "previously", "until YYYY-MM-DD" language. For each, determine whether the sentence is behavioral rationale (why the current rule is the rule) or historical narrative (how the project arrived here). Delete historical narrative. If you're unsure whether a passage survives without context, try reading just the surviving text — if it still clearly states what to do and why, the cut was safe.
+| Altitude | What lives here | Shape |
+|---|---|---|
+| Identity/floor (CLAUDE.md) | Behavioral rules that must be active in every session: STOP conditions, HARD RULEs, standing disciplines. Current truth only. WHY lines preserved *only* if they carry load-bearing rationale. | Terse, imperative, no narrative |
+| Reference/history (linked docs) | Incident post-mortems, full design rationale, "how we got here," anything a future agent would want *if* reconsidering a past decision — but doesn't need loaded by default. CLAUDE.md points here with one line. | As long as needed |
+| Procedures (skills) | Multi-step how-tos invoked situationally, not standing behavioral rules. Already mostly in `.claude/skills/`; CLAUDE.md shouldn't duplicate them. | Already mostly correct |
 
----
+The immediate value isn't cleanup — it's that the model makes the right choice during *future* edits the easy choice. When fixing a stale reference or documenting a norm change, the natural move is to append "the old approach was X" next to the new text rather than replace it. The CIO names this explicitly as a habit they wrote into a commit this same week. Knowing that historical narrative belongs at the reference/history altitude — in a linked doc, not in CLAUDE.md — makes the correct choice structural rather than requiring discipline to override instinct every time.
 
-### 2. Keep the LLM routing classifier stateless — resolve cross-turn referents before it sees the message
+**The WHY-line survival test:**
 
-**From:** Piper Morgan, Arch (ADR-078 PROPOSED, `docs/internal/architecture/current/adrs/adr-078-session-activity-ledger-and-pre-classifier-reference-resolution.md`, July 12; gated pending Lead's feasibility read)
+The hardest call in any behavioral document edit is which rationale lines stay. Too permissive and you're back to narrative bloat; too strict and you strip load-bearing context that prevents future mis-decisions.
 
-**Relevant to:** Any project using an LLM as an intent router or classifier in a multi-turn conversational system. Klatch (message routing within entity conversations); any future Piper-like system built on Klatch's platform.
+The test: *"Would a future agent make a worse decision without this?"*
 
-Two cross-turn failures landed in PM's production system: a follow-up message ("Actually, change the title…") misrouted to the Notion handler instead of recognizing it referred to an issue just created; and "what did we create this session?" returned nothing, because the floor had no session-scoped artifact record. The natural response — inject conversation history into the classifier prompt — was ruled out (Decision D4). The reason matters:
+Applied concretely from PM's CLAUDE.md inventory:
 
-**The classifier (surface 2) must stay stateless.** It's the layer PM has worked hardest to keep clean and deterministic. Making it conversation-stateful changes *all* routing behavior, risks over-anchoring (a genuine topic switch misread as a continuation), and forces revalidation of the entire routing golden corpus. The routing LLM's integrity depends on it not carrying conversational context.
+- "Lead Dev determined empirically the ephemeral worktree suffices even for the dev-server" **survives** — without it, someone could propose the same exception not knowing it was already tested and rejected. The rationale changes what a future agent would do.
+- "3 leadership session logs were trapped on worktree branches on April 27" does **not** survive — the rule (push to main routinely) stands on its own. The incident count doesn't change how anyone acts today. It belongs in git log, which already has it.
 
-**The architectural resolution:** both failures stem from ONE missing primitive — a session-activity ledger that records which turn created which artifact. The ledger is not a new artifact store; it's an association layer linking existing turn records to existing artifact records. Once that primitive exists:
-- B3 (misrouted follow-up) resolves via a *pre-classifier* reference-resolution step that reads the ledger and rewrites "change the title" to "change the title of issue #107" *before* the message reaches the classifier — the classifier then sees an explicit referent and routes correctly.
-- B4 ("what did we create?") resolves via a session-activity reader that queries the ledger rather than falling back to a live-repo query or the ephemeral 10-turn floor window.
+A second concrete application: two places in PM's CLAUDE.md state the same fact about the log-maintenance-reminder hook being "currently clock-based, being realigned to event-based." One is accurate redundancy; one is real duplication — and the right fix is to verify the hook's actual current state from its source file rather than trust either copy, then state it once. This passes the WHY-line test (the hook's current state is actionable; agents need it); the duplication itself doesn't.
 
-**The transferable principle:** when you have a multi-turn conversational system and an LLM routing layer that must stay stateless for integrity reasons, cross-turn context belongs at a dedicated pre-classifier step, not inside the routing LLM. The pre-classifier step is explicit, bounded, testable, and doesn't contaminate routing behavior for messages that aren't cross-turn references.
-
-**Suggested action:** If your routing classifier currently has no conversation history and you're feeling pressure to add it, ADR-078's D4 constraint is the counter-argument: add a pre-classifier reference-resolution step instead. Even a simple pronoun/definite-article detector that rewrites "it", "that", "the issue" against a recent-turn context record keeps the classifier clean while resolving the most common continuation failures.
+**Suggested action:** Apply the three-altitude model as a mental checklist when editing your CLAUDE.md or equivalent behavioral document. For each passage: (1) Is this current behavioral truth an agent needs loaded by default? → identity/floor, stays. (2) Is this rationale for a current rule that a future agent needs to make a better decision? → stays if it passes the WHY-line test ("worse decision without it?"), but trim to the load-bearing sentence(s). (3) Is this "how we got here" / incident narrative / historical context? → move to a linked doc; CLAUDE.md keeps one pointer. (4) Is this a multi-step procedural how-to? → move to a skill. The three-altitude model and the WHY-line test are jointly the replacement for the habit of appending corrections next to old text.
 
 ## Sources Read
 
-- **Klatch** — git log (48h): external intel sweep (`docs/intel/2026-07-13-sweep.md`, automated) + brief delivery commits. No new Klatch-internal methodology this window.
-- **Piper Morgan** — git log (48h, full): ADR-078 PROPOSED (Arch, Jul 12 — pre-classifier reference resolution + session-activity ledger); HOST CLAUDE.md refactor proposal (memo to CIO/Docs/PM); Fly.io Chroma flycast bridge (`#1399` — IPv4-only container image unreachable on Fly's IPv6-only 6PN, fixed via `[[services]]` block); sprint-recovery complete (99/99 Production milestone, Jul 12); Docs duty-cycle retired + Belt-4 extended as replacement; CXO/PPM/CIO/Arch/HOST operational day-close. Two transferable findings above; rest operational.
+- **Klatch** — git log (48h): brief delivery commits and automated external intel sweep (`docs/intel/2026-07-13-sweep.md`). External intel covers Anthropic Managed Agents memory API stabilization and Fable 5/Mythos 5 backstory — external news, not transferable methodology from Klatch's own work. No new Klatch-internal findings this window.
+- **Piper Morgan** — git log (48h, full): CIO CLAUDE.md refactor scoping note (post-sweep commit, Jul 13 ~10:51 AM PT); ADR-078 D1a amendment (fold HOST trust-lens, session isolation keyed by session_id+user_id rather than session alone — incremental refinement of yesterday's ADR-078 finding); Docs 4-phase `docs/` tree audit plan (operational cleanup proposal, awaiting PM gate); Lead Dev duty-cycle stall (multiple watchdog alerts, parked pending Lead). One transferable finding above; rest operational.
 - **weather, one-job** — brief delivery commits only; skipped.
-- **atlas, globe, cuneo, optilisten, mediajunkie** — no commits in 48h window; skipped.
 - **nyt-crossword** — automated status commits; skipped.
+- **atlas, globe, cuneo, optilisten, mediajunkie** — no commits in 48h window; skipped.
 
 ## Letters to xian
 
