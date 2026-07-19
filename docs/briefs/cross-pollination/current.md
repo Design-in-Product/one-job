@@ -1,37 +1,49 @@
 
-# Cross-Pollination Brief — July 18, 2026
+# Cross-Pollination Brief — July 19, 2026
 
-One finding from Piper Morgan. A race condition in the conversation picker — where a late-firing implicit default could override an explicit user selection — was fixed with two complementary guards: an explicit-selection latch (preserves intent) and a last-call-wins sequence token (discards stale async responses). Together they address the two ways async timing can corrupt UI selection state. Globe quiet on methodology; Klatch quiet.
+Two findings from different corners of the ecosystem this window. Piper Morgan's Tier-3 cleanup sprint named a distinct failure class — code that lies when reached rather than merely being unreachable — and Dispatch documented a subtle MCP task-launch behavior where a client timeout does not mean the server-side session failed to start.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Two guards prevent async timing from corrupting UI selection state: an intent latch and a sequence token
+### "Fabricated" code — reachable but returning plausible-wrong results — is a distinct cleanup class from dead code
 
-**From:** Piper Morgan, Lead Developer (issue #1418, session log `dev/2026/07/17/2026-07-17-0656-lead-code-log.md`, Jul 17)
-**Relevant to:** Klatch (channel/conversation selection), any multi-pane async UI with both explicit and implicit selection paths
+**From:** Piper Morgan, Architect + Lead Developer (Tier-3 cleanup sprint, issue #1436, decisions.log 2026-07-18)
+**Relevant to:** Klatch, One Job, any project doing code-quality cleanup sprints
 
-Piper Morgan's conversation picker had a subtle race: an explicit user selection (via URL parameter or sidebar click) could be stomped by a late-arriving implicit default. The root cause was double initialization — the sidebar component was included through two separate code paths (the app shell and the mobile drawer nav rail), causing the default-selection logic to fire two or more times; the second firing could arrive after the user's explicit selection had already landed and silently overwrite it. Out-of-order turn responses compounded the problem: an earlier request's data could render *after* a later request's data if the earlier one was slower.
+During PM's Tier-3 cleanup sprint, the Architect named a class of code that's worse than unreachable dead code: code that can be reached in production but returns plausible-looking fabricated results rather than honest errors. Dead code is silent; fabricated code is actively misleading. The through-line the Architect called out: "fabrication-removal, not dead-code cleanup — code that LIES when reached."
 
-The fix has two parts that address different dimensions of the problem:
+Concrete examples found in PM's codebase:
+- **The sleeper** — a flag-gated path in the MCP resources layer was live from the production file-repository, and when the flag was on it returned *simulated* file-search results rather than real ones. No crash, no obvious signal — it would have silently served fabricated data in a beta deployment. Fixed by first severing the live-path dependency (honest-degrade), *then* deleting the fabricated machinery.
+- `recovery_strategies` — returned fake "Matched file..." results in its fallback path instead of an honest empty result.
+- `token_blacklist.revoke_user_tokens` — returned a success-shaped silent `0` on every call (stub never raised; callers assumed it worked). Fixed to `raise NotImplementedError` explicitly.
 
-1. **Explicit-selection latch** — once a user explicitly selects a conversation, a flag (`_selectedConversationId`) locks in that intent. Any implicit default or auto-select logic that fires afterward is ignored. Explicit always beats implicit.
+The cleanup discipline that emerged: before deciding to delete a piece of cold code, ask not just "is this reachable?" but "if it IS reached, does it tell the truth?" Fabricated code that's reached silently in production can cause worse failures than code that crashes, because it never triggers an obvious error signal.
 
-2. **Last-call-wins sequence token** — each request chain gets a monotonic counter; when a response arrives, it is compared to the current counter. Stale responses (from an earlier request chain) are discarded before render.
+**Suggested action:** When doing a Klatch or One Job code audit, look for prototype-era code that returns canned or simulated data on any non-error path — demo modes, stub implementations, partial wiring. For each: (1) sever any live-data dependency before deleting; (2) if keeping the stub, make it raise loudly rather than returning a plausible empty result. The distinction between `return []` (plausible, silent) and `raise NotImplementedError("not yet wired")` (loud) matters once the code is reachable from a real user path.
 
-These two guards are complementary: the latch handles the "intent integrity" failure (a later implicit default overriding an explicit choice); the sequence token handles the "ordering" failure (a slower earlier response rendering after a faster later one). Neither alone is sufficient — a latch without the sequence token still lets out-of-order data corrupt the displayed content; a sequence token without the latch lets a late implicit default override the user's intent.
+---
 
-The underlying trigger worth noting: components mounted through multiple code paths are a reliable source of duplicate-initialization races. When a sidebar fires its default-selection logic twice because it's included in both the main layout and the mobile drawer, you get timing sensitivity in any path that depends on initialization ordering. Auditing for double-mount before adding default-selection behavior is cheaper than debugging after.
+### MCP task-launch timeouts can be client-side-only — the server session may already exist
 
-**Suggested action:** In Klatch, if URL-based conversation navigation or auto-selection behavior (default to most recent, auto-select on message arrival) is ever added, introduce the latch pattern from the start — once a user explicitly selects a channel, that intent should be sticky against late-arriving defaults. The sequence token is useful wherever multiple async fetches can race (e.g., switching channels rapidly triggers multiple message-load requests; the older request completing after the newer one would display stale content). Both patterns are small additions in a state hook and pay back quickly in debugging time avoided.
+**From:** Dispatch-DinP (standards/SESSION-RESILIENCE-OPS.md, 2026-07-18)
+**Relevant to:** Any agent team using Cowork's `start_code_task` for unattended or scheduled sessions
+
+When `mcp__dispatch__start_code_task` returns a timeout error ("MCP error: timed out after 180s"), the task may have been created on the server-side even though the client call didn't confirm it. Observed twice in a single session on 2026-07-18. Retrying without checking first spawns a second concurrent session pointed at the same repository — two agents racing on commits.
+
+The safe pattern, now documented in Dispatch's SESSION-RESILIENCE-OPS.md: **list before you launch**. After a timeout, call `list_sessions` (or equivalent) and look for a session with a matching title and working directory that's running or idle. If a match exists, resume it with `send_message` rather than starting a new task. Only launch fresh when there's genuinely no match.
+
+The session that hit this had a safety net — each duplicate session independently verified nothing had changed and declined to take destructive actions — but that's not reliable as a general backstop. The check is cheap; duplicate racing agents are not.
+
+**Suggested action:** Any Klatch, Piper Morgan, or DinP process that uses `start_code_task` for scheduled or unattended work should add a list-then-check step before treating a timeout as a clean failure. The session-existence check costs one tool call and prevents a class of concurrent-session race that's otherwise invisible until you see duplicate commits or conflicting git state.
 
 ## Sources Read
 
+- **Piper Morgan** — git log (48h): 50+ commits. Key read: Architect decisions.log entries 2026-07-18 (Tier-3 Family-1 through Family-3 rulings; `# nie-ok:` mechanism; spatial committed-theory review convened). Lead Dev session activity: fabrication removal executed across Families 1, 2, 4, 6; collection reaches 11,774/0 errors for first time in sprint. Transferable finding (fabrication class) elevated; other activity (family-by-family execution, specific ratchet counts) sprint-internal completions.
 - **Klatch** — git log (48h): brief delivery commits only. No Klatch-internal methodology this window; skipped.
-- **Piper Morgan** — git log (48h, full): 29+ commits. Key read: Lead Dev session log Jul 17. Notable activity: v0.8.11.0 released (pre-flight smoke gate caught a live NameError silently degrading primary LLM classification before it shipped); #1436 substantially drained (8 stdlib-logger sites, dead feedback route file revived, 4 principal-threading sites, GitHub domain-service argument shift, agenda-todos source); Phase-3 acceptance gate met (zero silent-death signals, all ceilings ≤ baselines). One transferable finding above; rest completions of previously-documented sprint work.
-- **Globe** — git log (48h): 2 commits. Janus→Tessera memo confirming Globe added to delivery reader list; 20-day brief backfill. No methodology insight.
-- **Secondary repos quiet (48h window):** atlas, cuneo, optilisten (no commits); weather, one-job (brief delivery only); nyt-crossword (automated status commits); mediajunkie, cookie-monster (no commits).
+- **Dispatch** — git log (48h): 4 commits. Key read: SESSION-RESILIENCE-OPS.md update (start_code_task timeout behavior). Activity-log entry for "Mechanical First, Then Read" Medium/LinkedIn cross-post: publication event only, not reported. Stale-screenshot hazard doc (Medium/LinkedIn specific, not cross-relevant).
+- **Secondary repos quiet (48h window):** atlas, cuneo, optilisten (no commits); globe, one-job, weather (brief delivery only); nyt-crossword (automated status commits); mediajunkie (no commits); cookie-monster (brief delivery only).
 
 ## Letters to xian
 
