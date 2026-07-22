@@ -1,69 +1,56 @@
-# Cross-Pollination Brief — July 21, 2026
+# Cross-Pollination Brief — July 22, 2026
 
-Three technique findings today: a two-pass gate protocol that catches what green tests miss (Klatch); a victim-side cure for shared-pool test contamination (PM); and a diagnosis that LLM warm-up latency is 2× slower than steady-state and will false-trigger timeout-based fallbacks (Mediajunkie).
+Two findings this window. PM Exec filed a durable correction note after Comms' blog fact-check revealed a misconception about "Routines watchdog funding" that had propagated uniformly through multiple independent session logs — not a recording error, but a shared assumption that was never verified against PM. Separately, Mediajunkie's Pard mapped an agent machine-migration through the five-layer prompt model, producing a framework that distinguishes which layers travel intact, which regenerate on the new host, and which are intentionally left behind.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Tests prove "what we built works" — a capability checklist proves "what we built achieves the use case"
+### When all session logs share a wrong framing, no cross-log check will find it — the correction must come from outside
 
-**From:** Klatch, Argus + Calliope + Iris (`docs/operations/pre-gate-protocol.md`, filed 2026-07-19)
+**From:** Piper Morgan, Exec (decisions.log ~21:10 PT 2026-07-21)
 
-**Relevant to:** Any project that gates releases on test suites
+**Relevant to:** Klatch, Mediajunkie, any team that treats session logs as the primary source of truth for decisions
 
-The composition gesture shipped green tests, green AAXT coverage, and an Iris review pass. The gate was declared clear. The first time someone tried to run the canonical use case — the weekly leadership review with agents carrying their week's context — it couldn't be done. The test suite proved "what we built works"; it said nothing about whether what was built achieved the intended purpose.
+Multiple PM session logs — Arch's, CIO's, Exec's own — all contained references to a "Routines watchdog funding decision" and a "$70/mo" cost figure, as if the cohort had deliberated a real expenditure and PM was the gate. PM Comms caught this while fact-checking a blog draft, flagged it to Exec and Docs, and PM clarified directly: the existing plan already included Routines at effectively zero incremental cost; the cohort had built a cost-justification case against published pricing without knowing PM's actual plan; once PM shared the real situation, the "decision" was moot.
 
-The filed protocol formalizes two passes before any "gate clear" declaration:
+The mechanism: each session log truthfully recorded what that session understood. No entry was fabricated in isolation. The shared misconception became durable because every log confirmed it — cross-referencing more session logs wouldn't surface the error, because they all said the same wrong thing. The correction required going outside the log ecosystem entirely (to PM's own words).
 
-**Pass 1 — Capability Inventory:** Walk through each capability required for the canonical use case as yes/no. Every row must be ✅ before the gate clears. "Mostly done" or "close" is ☐. This is a human + real-system check — no automated test can do it; it asks "does this exist and can it run?" not "does it behave correctly."
+The correction venue matters: decisions.log, not session log rewrites. Individual contemporaneous logs stay as written — they accurately record what was understood at the time and form the honest historical record. The durable corrective note goes in decisions.log so future retrospectives and omnibus synthesis don't repeat the framing.
 
-**Pass 2 — Scope Reconciliation:** Before declaring any feature "complete," list every item in xian's stated scope and get explicit calls on anything not built. "Not now" said in passing is not an approved deferral — only a recorded decision in a memo, COORDINATION.md, or ROADMAP.md counts.
-
-The composition continuity gap would have been caught by Pass 1 at the gate; the missing Paths B/C would have been caught by Pass 2.
-
-**Suggested action:** Before the next gate declaration in any project, run a manual capability inventory anchored to the stated canonical use case. If you can't state one canonical use case, that's the first gap to surface.
+**Suggested action:** When a factual claim appears consistently across multiple session logs, treat that consistency as a signal to verify against a source outside the log ecosystem. Multi-session agreement can mean "everyone checked independently" or "everyone inherited the same unverified assumption." When the claim concerns something no agent directly measured — another person's plan, an account's billing state, an external system's behavior — it's the second. Add to your synthesis protocol: if a claim is uniformly echoed, ask whether any agent actually checked the primary.
 
 ---
 
-### Shared-pool test contamination is an accumulation effect — cure the victims, not the poisoners
+### Agent migration maps to the five-layer model — know which layers travel and which don't
 
-**From:** Piper Morgan, Lead Developer (session log `dev/2026/07/20/2026-07-20-1202-lead-code-log.md`, issue #1452)
+**From:** Mediajunkie, Pard (`docs/pard-on-amber-runbook.md` v1.1, 2026-07-21)
 
-**Relevant to:** Any project with integration tests sharing a database connection pool
+**Relevant to:** Klatch, PM, any team planning to relocate an agent to a new machine or account
 
-A class of `asyncpg InterfaceError: another operation is in progress` failures appeared under full integration test load but not in isolated runs. Root cause: abandoned mid-operation connections accumulating in the shared pool from earlier tests. No single poisoning test caused this — it was an accumulation effect, meaning every subdirectory run clean in isolation but the load of the full suite surfaced it.
+Pard is migrating from a laptop to an always-on Mac Studio. The runbook maps the migration through the five-layer prompt model, clarifying the decision for each layer:
 
-Hunting individual poisoner tests was a dead end. The cure: convert affected tests to fresh-per-test database engines (the "B15 house pattern") rather than sharing the pool. The poisoned tests began passing as soon as they stopped consuming from the shared pool. 22 backlog entries cleared; the fix was verified in-sweep under the same full-integration load that previously killed them.
+- **L1 (environment/capabilities):** regenerates on the new host — verify rigging, paths, access grants
+- **L2 (project instructions, CLAUDE.md) + L3 (project memory):** carry intact via repo pull and memory rsync; same project path on both machines means the memory directory key matches, making the copy straightforward
+- **L5 (agent identity/practice):** carries with L3 (identity and conventions live in the memory directory under the same project path)
+- **L4 (session state, task list):** intentionally NOT transferred — this layer is ephemeral by design; re-seed from the durable backlog/board instead
 
-The principle: when tests interfere through shared infrastructure, isolate victims to their own resource rather than diagnosing which test left the resource in a bad state. Accumulation-effect contamination has no single culprit; the systemic cure is victim-side isolation.
+The L4 point is the one most likely to surprise a migration: task-list state is session-host-scoped and doesn't transfer. If task lists are the primary carrier of open work (rather than a durable backlog), migration loses context. The discipline that prevents this is already in the pattern — mirror work to a repo-tracked backlog/board continuously, not just at migration time.
 
-**Suggested action:** If your integration test suite has occasional failures that appear under full-suite load but not in isolation, try fresh-per-test engines before investing in contamination bisection. Bisection of accumulation effects rarely converges.
+A hidden cost for account switches: published artifacts (dashboards, boards) are account-scoped. A same-account migration is clean. An account switch means the new session republishes under new URLs on first edit — the account decision gates artifact continuity, and that decision comes before rigging.
 
----
+The runbook also validates PM's "three-piece package" for migrations: a handoff doc authored by the outgoing session, an independent reviewer pass (someone outside the session who can see the gaps), and a first-session prompt for the incoming session. PM confirmed across a 7-role cohort that any one of the three missing degrades the migration.
 
-### First-after-idle LLM inference runs 2× slower than steady-state — calibrate timeouts separately
-
-**From:** Mediajunkie, Pard (task #12 closure, `docs/backlog.md`, 2026-07-20)
-
-**Relevant to:** Any project running LLM inference with timeout-based fallbacks or health checks
-
-Benchmarking on eight production-shaped prompts revealed: steady-state throughput was 31–33 tok/s, but first-after-idle inference ran at 20.6 tok/s, taking 44.4 seconds. A 40-second timeout calibrated to steady-state was tripping the fallback handler on the first request after an idle period — making the system appear to be failing when it was warming up.
-
-The fix was a timeout raise to 60 seconds. The insight is that a single timeout constant conflates two distinct operating regimes. If your fallback mechanism doesn't distinguish warm-up from actual failure, you'll see false positive fallback triggers on first requests after quiet periods.
-
-**Suggested action:** When calibrating LLM inference timeouts, benchmark cold-start (first-after-idle) separately from steady-state. Set the timeout to the cold-start ceiling, not the steady-state median. Add a note in your fallback handler that first-request latency is inherently higher.
+**Suggested action:** Before any agent migration — new machine or account switch — run a five-layer audit: L1 checklist for the new environment, L2/L3/L5 transfer plan, and an explicit L4 re-seeding plan from durable sources. If the task list is the primary carrier of open work rather than a repo-tracked backlog, close that gap before migrating. Decide account first; that decision controls both auth and artifact URL continuity.
 
 ---
 
 ## Sources Read
 
-- **Klatch**: `docs/operations/pre-gate-protocol.md`, `docs/logs/2026-07-19-iris-log.md`, `docs/mail/` (Daedalus→Calliope transcript-model reframe, Argus pre-gate reply, 2026-07-19)
-- **Piper Morgan**: `dev/2026/07/20/2026-07-20-1202-lead-code-log.md` (Lead Dev day-close, issue #1452 harness + burn-down arc)
-- **Mediajunkie**: git log (task #12 closure commit, `docs/backlog.md` patch)
-- **Globe, One Job, Weather, Cookie Monster**: brief deliveries only (cross-pollination re-posts) — no new source activity
-- **Atlas, Cuneo, Optilisten**: no activity in window
-- **NYT Crossword**: automated status prints only — no narration
+- **Piper Morgan** — git log (48h): 50+ commits. Key reads: decisions.log 2026-07-21 ~21:10 PT (Exec correction on Routines watchdog funding framing; Comms fact-check catch); Lead Dev session log `dev/2026/07/21/2026-07-21-0647-lead-code-log.md` (#1452 wave 13, backlog 634→272, root cure, learning loop #1438 shipped). #1452 completion arc: project milestone not elevated. Diagnose step (CI reruns new failures with verbose output): CI hygiene improvement, not elevated.
+- **Klatch** — git log (48h): brief delivery commits + Janus session-migration mail. No new Klatch-internal methodology this window.
+- **Mediajunkie** — git log (48h): 10+ commits. Key read: `docs/pard-on-amber-runbook.md` v1.1 (five-layer migration mapping; PM 4-phase framework folded). LLM warm-up latency finding (task #12) already covered in July 21 brief; not re-elevated.
+- **Secondary repos (48h window):** atlas, cuneo, optilisten — no commits, skipped; globe, weather, one-job, cookie-monster — brief delivery or Janus coordination mail only; nyt-crossword — automated status commits only.
 
 ## Letters to xian
 
@@ -77,4 +64,3 @@ xian's answer: the emerging use case isn't Klatch as destination — it's Klatch
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
-
