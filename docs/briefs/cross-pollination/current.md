@@ -1,66 +1,39 @@
-# Cross-Pollination Brief — July 22, 2026
+# Cross-Pollination Brief — July 23, 2026
 
-Two findings this window. PM Exec filed a durable correction note after Comms' blog fact-check revealed a misconception about "Routines watchdog funding" that had propagated uniformly through multiple independent session logs — not a recording error, but a shared assumption that was never verified against PM. Separately, Mediajunkie's Pard mapped an agent machine-migration through the five-layer prompt model, producing a framework that distinguishes which layers travel intact, which regenerate on the new host, and which are intentionally left behind.
+One finding this window. Post-cutover iteration on Pard's laptop→Amber migration surfaced a specific failure mode in L1 environment verification: an SSH config alias was silently wired to the wrong key, directly contradicting what both the handoff and runbook stated correctly in prose. The fix produced two cheap refinements to the migration checklist — patch known defects before handoff rather than documenting them as warnings, and verify each invariant by running the actual command rather than just confirming reachability.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### When all session logs share a wrong framing, no cross-log check will find it — the correction must come from outside
+### Prose can document an invariant correctly while the environment silently contradicts it — verify migrations by running commands, not reading docs
 
-**From:** Piper Morgan, Exec (decisions.log ~21:10 PT 2026-07-21)
+**From:** Mediajunkie, Pard (`docs/startup-routine.md` and runbook post-cutover iteration, 2026-07-22); also surfaced via Janus→HOST cross-project memo
 
-**Relevant to:** Klatch, Mediajunkie, any team that treats session logs as the primary source of truth for decisions
+**Relevant to:** Klatch, PM, any team running agent migrations or environment cutovers
 
-Multiple PM session logs — Arch's, CIO's, Exec's own — all contained references to a "Routines watchdog funding decision" and a "$70/mo" cost figure, as if the cohort had deliberated a real expenditure and PM was the gate. PM Comms caught this while fact-checking a blog draft, flagged it to Exec and Docs, and PM clarified directly: the existing plan already included Routines at effectively zero incremental cost; the cohort had built a cost-justification case against published pricing without knowing PM's actual plan; once PM shared the real situation, the "decision" was moot.
+After Pard's laptop→Amber cutover completed with an 8/8 verified checklist, post-migration process iteration uncovered a live defect: the `ssh droplet` alias was silently wired to a restricted, no-shell key rather than the real session key — directly contradicting what both the handoff and runbook stated correctly in prose. The invariant was right on paper; the config had drifted from it without triggering any obvious failure.
 
-The mechanism: each session log truthfully recorded what that session understood. No entry was fabricated in isolation. The shared misconception became durable because every log confirmed it — cross-referencing more session logs wouldn't surface the error, because they all said the same wrong thing. The correction required going outside the log ecosystem entirely (to PM's own words).
+The root issue is that "documented correctly" and "environment reflects it" are not the same check. An invariant can be stated accurately in a handoff and still be wrong in practice, because configs accumulate cruft and drift — especially on machines that have been through prior migrations or been managed by multiple agents.
 
-The correction venue matters: decisions.log, not session log rewrites. Individual contemporaneous logs stay as written — they accurately record what was understood at the time and form the honest historical record. The durable corrective note goes in decisions.log so future retrospectives and omnibus synthesis don't repeat the framing.
+Two cheap refinements the finding produced:
 
-**Suggested action:** When a factual claim appears consistently across multiple session logs, treat that consistency as a signal to verify against a source outside the log ecosystem. Multi-session agreement can mean "everyone checked independently" or "everyone inherited the same unverified assumption." When the claim concerns something no agent directly measured — another person's plan, an account's billing state, an external system's behavior — it's the second. Add to your synthesis protocol: if a claim is uniformly echoed, ask whether any agent actually checked the primary.
+1. **Outgoing session repairs known defects, doesn't only document them.** A prose warning in a handoff is a reconstruction tax the successor pays; a fix applied before handoff is free to inherit. If you can fix it, fix it — don't describe it.
 
----
+2. **Incoming verification runs each stated invariant as a command, not just a reachability check.** "Can I reach the droplet?" can pass on the wrong key if that key happens to allow basic reachability. The actual test is whether the path works as described: `ssh droplet` should land a real shell, not a "no-shell" rejection. If the command succeeds but returns something subtly wrong, that's the defect. Bare reachability masks it.
 
-### Agent migration maps to the five-layer model — know which layers travel and which don't
+This is a different layer from the five-layer migration framework covered in the July 22 brief (which layers transfer, which regenerate). That framework tells you *what* to move. This finding tells you *how* to verify that L1 (environment/capabilities) actually landed right.
 
-**From:** Mediajunkie, Pard (`docs/pard-on-amber-runbook.md` v1.1, 2026-07-21)
-
-**Relevant to:** Klatch, PM, any team planning to relocate an agent to a new machine or account
-
-Pard is migrating from a laptop to an always-on Mac Studio. The runbook maps the migration through the five-layer prompt model, clarifying the decision for each layer:
-
-- **L1 (environment/capabilities):** regenerates on the new host — verify rigging, paths, access grants
-- **L2 (project instructions, CLAUDE.md) + L3 (project memory):** carry intact via repo pull and memory rsync; same project path on both machines means the memory directory key matches, making the copy straightforward
-- **L5 (agent identity/practice):** carries with L3 (identity and conventions live in the memory directory under the same project path)
-- **L4 (session state, task list):** intentionally NOT transferred — this layer is ephemeral by design; re-seed from the durable backlog/board instead
-
-The L4 point is the one most likely to surprise a migration: task-list state is session-host-scoped and doesn't transfer. If task lists are the primary carrier of open work (rather than a durable backlog), migration loses context. The discipline that prevents this is already in the pattern — mirror work to a repo-tracked backlog/board continuously, not just at migration time.
-
-A hidden cost for account switches: published artifacts (dashboards, boards) are account-scoped. A same-account migration is clean. An account switch means the new session republishes under new URLs on first edit — the account decision gates artifact continuity, and that decision comes before rigging.
-
-The runbook also validates PM's "three-piece package" for migrations: a handoff doc authored by the outgoing session, an independent reviewer pass (someone outside the session who can see the gaps), and a first-session prompt for the incoming session. PM confirmed across a 7-role cohort that any one of the three missing degrades the migration.
-
-**Suggested action:** Before any agent migration — new machine or account switch — run a five-layer audit: L1 checklist for the new environment, L2/L3/L5 transfer plan, and an explicit L4 re-seeding plan from durable sources. If the task list is the primary carrier of open work rather than a repo-tracked backlog, close that gap before migrating. Decide account first; that decision controls both auth and artifact URL continuity.
+**Suggested action:** For any L1 verification checklist after a migration, ensure every item has an "expected output" alongside the command — not just confirmation that the command ran. `ssh droplet "hostname; systemctl is-active mediajunkie"` returns something specific; confirm it matches. A command that runs is not the same as a command that does what you think it does.
 
 ---
 
 ## Sources Read
 
-- **Piper Morgan** — git log (48h): 50+ commits. Key reads: decisions.log 2026-07-21 ~21:10 PT (Exec correction on Routines watchdog funding framing; Comms fact-check catch); Lead Dev session log `dev/2026/07/21/2026-07-21-0647-lead-code-log.md` (#1452 wave 13, backlog 634→272, root cure, learning loop #1438 shipped). #1452 completion arc: project milestone not elevated. Diagnose step (CI reruns new failures with verbose output): CI hygiene improvement, not elevated.
-- **Klatch** — git log (48h): brief delivery commits + Janus session-migration mail. No new Klatch-internal methodology this window.
-- **Mediajunkie** — git log (48h): 10+ commits. Key read: `docs/pard-on-amber-runbook.md` v1.1 (five-layer migration mapping; PM 4-phase framework folded). LLM warm-up latency finding (task #12) already covered in July 21 brief; not re-elevated.
-- **Secondary repos (48h window):** atlas, cuneo, optilisten — no commits, skipped; globe, weather, one-job, cookie-monster — brief delivery or Janus coordination mail only; nyt-crossword — automated status commits only.
-
-## Letters to xian
-
-**From Calliope (Klatch) · filed 2026-06-19 · answered 2026-06-30**
-
-> What's the smallest concrete UX or doc artifact that would make Klatch demoable to a consulting client as a transporter-device candidate?
-
-xian's answer: the emerging use case isn't Klatch as destination — it's Klatch as migration tool. Clients already committed to their own platforms may need to move agents they've built, with full context, to a new toolset. The Klatch MCP could do that even for clients who don't end up using Klatch as their workspace. Still speculative, still to be proven outside xian's own needs — but that's the job to be done taking shape.
-
-[Read the full exchange →](https://designinproduct.com/internal/letters/#letter-2026-06-19) · AI prompts human. One letter per brief.
+- **Klatch** — git log (48h): brief delivery + Janus coordination mail only. No new Klatch-internal methodology this window.
+- **Piper Morgan** — git log (48h): 30+ commits. Key reads: Lead Dev session log (2026-07-22: session froze 15h; no new waves; migration to a fresh session recommended); Exec stop log (CIO/Arch 3-day stall escalated; stale-branches deletion claim corrected); Janus→HOST cross-project memo (migration-checklist v1.2 field-test finding — the prose-vs-config gap, routed to HOST for v1.3 consideration).
+- **Mediajunkie** — git log (48h): 8+ commits. Key reads: `docs/startup-routine.md` (new doc, Amber-specific per-session checklist and L1 re-verification commands); runbook post-migration fold (SSH alias fix and prose-vs-config note); `be74677` Amber migration log (cutover verified).
+- **Secondary repos (48h window):** atlas, cuneo, optilisten — no commits, skipped; globe, weather, one-job, cookie-monster — brief delivery and Janus coordination mail only; nyt-crossword — automated status commits only.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
