@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,12 +52,19 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, defaultOpen = false, onC
   return (
     <div className="w-full max-w-md mx-auto mt-6">
       {!isFormOpen ? (
-        <Button 
-          onClick={() => setIsFormOpen(true)}
-          className="w-full bg-gradient-to-r from-taskGradient-start to-taskGradient-end hover:opacity-90 text-white"
-        >
-          {t('form.addNew')}
-        </Button>
+        // The add affordance is a small centered "+", never a wide button
+        // (Xian, 2026-07-25) — the deck's express lane for its commonest
+        // action, mirroring swipe-as-express-lane on a card.
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => setIsFormOpen(true)}
+            aria-label={t('form.addNew')}
+            className="w-14 h-14 rounded-full bg-gradient-to-br from-taskGradient-start to-taskGradient-end text-white shadow-lg flex items-center justify-center opacity-90 hover:opacity-100 active:scale-95 transition border-2 border-white/70"
+          >
+            <Plus className="w-7 h-7" />
+          </button>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-4 animate-slide-up">
           <h3 className="text-lg font-medium mb-3">{t('form.heading')}</h3>
