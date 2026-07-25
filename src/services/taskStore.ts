@@ -52,6 +52,10 @@ export interface TaskStore {
   restoreFromTrash?(id: string): Promise<Task>;
   /** Permanent removal; only from trash; UI confirms first. */
   purgeTask?(id: string): Promise<void>;
+  /** Move a sub-card up to be a peer of its parent (MVP blocker 1). */
+  promoteCard?(id: string): Promise<Task>;
+  /** Move a card into another card's interior deck (MVP blocker 1). */
+  moveCardInto?(id: string, targetId: string): Promise<Task>;
 }
 
 let store: TaskStore | null = null;

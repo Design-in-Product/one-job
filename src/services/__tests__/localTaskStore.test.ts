@@ -520,3 +520,76 @@ describe('Chain at depth: completed sub-cards live in the rooms too (2026-07-07)
     expect(restored.completedAt).toBeUndefined();
   });
 });
+
+describe('Promote / move-into (MVP blocker 1, 2026-07-25)', () => {
+  const nest = async (store: LocalTaskStore) => {
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    const child = await store.addSubstackTask(deck.id, 'child');
+    return { parent, deck, child };
+  };
+
+  it('promotes a sub-card to be a peer of its parent, newest-on-top', async () => {
+    const store = freshStore();
+    await store.createTask('older top card');
+    const { parent, child } = await nest(store);
+    await store.promoteCard(child.id);
+    const all = await store.getAllTasks();
+    // now top-level AND on top (newest-on-top)
+    expect(all[0].title).toBe('child');
+    // removed from parent's deck
+    expect(all.find(t => t.id === parent.id)!.decks![0].cards).toHaveLength(0);
+    // survives reload as a top-level card
+    const reloaded = await freshStore().getAllTasks();
+    expect(reloaded.some(t => t.id === child.id)).toBe(true);
+  });
+
+  it('promotes a depth-2 card to be a peer of its sub-card parent', async () => {
+    const store = freshStore();
+    const { parent, child } = await nest(store);
+    const childDeck = await store.createSubstack(child.id, null);
+    const grand = await store.addSubstackTask(childDeck.id, 'grand');
+    await store.promoteCard(grand.id);
+    const all = await store.getAllTasks();
+    const parentDeck = all.find(t => t.id === parent.id)!.decks![0];
+    // grand now sits beside child in the parent's deck, on top
+    expect(parentDeck.cards.map(c => c.title)).toEqual(['grand', 'child']);
+  });
+
+  it('refuses to promote a top-level card', async () => {
+    const store = freshStore();
+    const t = await store.createTask('top');
+    await expect(store.promoteCard(t.id)).rejects.toThrow(/top level/i);
+  });
+
+  it('moves a card into another card, creating a sub-deck, newest-on-top', async () => {
+    const store = freshStore();
+    const a = await store.createTask('A');
+    const b = await store.createTask('B');
+    await store.moveCardInto(a.id, b.id);
+    const all = await store.getAllTasks();
+    expect(all.map(t => t.title)).not.toContain('A');
+    expect(all.find(t => t.id === b.id)!.decks![0].cards.map(c => c.title)).toEqual(['A']);
+  });
+
+  it('moves into an existing sub-deck at newest-on-top', async () => {
+    const store = freshStore();
+    const { parent } = await nest(store); // parent deck holds [child]
+    const loose = await store.createTask('loose');
+    await store.moveCardInto(loose.id, parent.id);
+    const parentDeck = (await store.getAllTasks()).find(t => t.id === parent.id)!.decks![0];
+    expect(parentDeck.cards.map(c => c.title)).toEqual(['loose', 'child']);
+  });
+
+  it('refuses to move a card into itself', async () => {
+    const store = freshStore();
+    const a = await store.createTask('A');
+    await expect(store.moveCardInto(a.id, a.id)).rejects.toThrow(/itself/i);
+  });
+
+  it('refuses to move a card into its own descendant (no cycles)', async () => {
+    const store = freshStore();
+    const { parent, child } = await nest(store);
+    await expect(store.moveCardInto(parent.id, child.id)).rejects.toThrow(/descendant/i);
+  });
+});

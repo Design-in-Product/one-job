@@ -178,3 +178,33 @@ export const findDeckOfCard = (cards: Task[], cardId: string): InteriorDeck | un
   }
   return undefined;
 };
+
+/** The card that owns the deck containing cardId, or undefined if the card
+    is top-level (no parent card owns it). Mirror of findDeckOfCard. */
+export const findParentOfCard = (cards: Task[], cardId: string): Task | undefined => {
+  for (const c of cards) {
+    for (const d of c.decks ?? []) {
+      if (d.cards.some(x => x.id === cardId)) return c;
+      const hit = findParentOfCard(d.cards, cardId);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
+};
+
+/** Every id nested anywhere inside a card's interior (its whole subtree),
+    used to reject moves that would create a cycle (a card into its own
+    descendant). Excludes the card's own id. */
+export const collectDescendantIds = (card: Task): Set<string> => {
+  const ids = new Set<string>();
+  const walk = (c: Task) => {
+    for (const d of c.decks ?? []) {
+      for (const x of d.cards) {
+        ids.add(x.id);
+        walk(x);
+      }
+    }
+  };
+  walk(card);
+  return ids;
+};
