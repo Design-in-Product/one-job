@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, collectDescendantIds } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -197,6 +197,58 @@ export class LocalTaskStore implements TaskStore {
     }
     this.saveTasks();
     return task;
+  }
+
+  /** Splice a card out of whichever collection holds it (root or any
+      sub-deck) and return it. Shared by promote/move. */
+  private removeCard(id: string): Task {
+    const rootIndex = this.tasks.findIndex(t => t.id === id);
+    if (rootIndex !== -1) return this.tasks.splice(rootIndex, 1)[0];
+    const deck = findDeckOfCard(this.tasks, id);
+    const index = deck?.cards.findIndex(c => c.id === id) ?? -1;
+    if (!deck || index === -1) throw new Error('Task not found');
+    return deck.cards.splice(index, 1)[0];
+  }
+
+  /** Promote a sub-card to be a peer of its parent (MVP blocker 1).
+      A top-level card has no parent to rise past — that's an error. The
+      promoted card lands newest-on-top of its new home. */
+  async promoteCard(id: string): Promise<Task> {
+    const parentCard = findParentOfCard(this.tasks, id);
+    if (!parentCard) throw new Error('Card is already at the top level');
+    const card = this.removeCard(id);
+    if (this.tasks.some(t => t.id === parentCard.id)) {
+      // Parent is top-level → the card joins the main deck, on top.
+      card.sortOrder = topSortOrder(this.tasks);
+      this.tasks.push(card);
+    } else {
+      // Parent is itself a sub-card → the card joins the parent's deck.
+      findDeckOfCard(this.tasks, parentCard.id)!.cards.unshift(card);
+    }
+    this.saveTasks();
+    return card;
+  }
+
+  /** Move a card into another card's interior deck (MVP blocker 1),
+      creating the deck if the target has none. Newest-on-top. Rejects
+      moving a card into itself or into its own descendant (no cycles). */
+  async moveCardInto(id: string, targetId: string): Promise<Task> {
+    if (id === targetId) throw new Error('Cannot move a card into itself');
+    const card = findCardById(this.tasks, id);
+    if (!card) throw new Error('Task not found');
+    const target = findCardById(this.tasks, targetId);
+    if (!target) throw new Error('Target card not found');
+    if (collectDescendantIds(card).has(targetId)) {
+      throw new Error('Cannot move a card into its own descendant');
+    }
+    const moved = this.removeCard(id);
+    target.decks = target.decks ?? [];
+    if (target.decks.length === 0) {
+      target.decks.push({ id: uuidv4(), name: null, cards: [], createdAt: new Date() });
+    }
+    target.decks[0].cards.unshift(moved);
+    this.saveTasks();
+    return moved;
   }
 
   async createSubstack(taskId: string, name: string | null): Promise<InteriorDeck> {
