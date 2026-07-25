@@ -109,23 +109,32 @@ express lane, exactly parallel to swipe-vs-hold on a card.)
    non-destructive path and the safer default. Receiving card = the
    active/top card for now; a picker is a 2.0 concern.
 
-## Open questions for Xian
+## Resolved with Xian (2026-07-25)
 
-1. **App menu trigger** — comfortable with "hold the deck / empty space
-   → app menu (Add · Completed · Integrations · Settings)"? Or would you
-   rather app-nav sit behind one visible button and reserve *all* holds
-   for card actions? (I lean hold-the-deck; it keeps the screen clean
-   and is true to the principle — the deck is an object with actions.)
-2. **Chain-room cards** — give them the same card-hold menu (restore /
-   move / delete-forever) for consistency, or leave the rooms with just
-   their swipe grammar + the purge button they already have?
-3. **Default tap on a face-up card** — keep it as "open to read," or is
-   there a different default you'd expect from a single tap now?
-4. **The "+" vs hold-deck redundancy** — keep both (express lane + full
-   menu), as proposed? Or does the always-visible plus make the
-   "Add a card" row in the deck menu redundant enough to drop?
+The design principle, in his words:
 
-Once you react to these, blocker 1 is fully specified and I build it
-test-first. The add-affordance change (small centered plus everywhere)
-is already decided and unambiguous — I can ship that immediately as the
-first concrete step while the menu design settles, if you'd like.
+> Objects reveal their affordances on **introspection** (long tap); the
+> interface provides **custom-designed elements** for the happy-path /
+> flywheel experiences.
+
+That's the whole grammar in one line: hold to introspect anything;
+hand-built shortcuts (swipe, the +) for the moves you make constantly.
+
+1. **App menu = hold the deck / empty space.** Confirmed. Holding a
+   card never opens Settings.
+2. **Lifecycle-room cards** (Done/Archive/Trash — Xian didn't know my
+   "chain-room" jargon, fair): **still open** pending his call, but
+   Coral's lean and the consistency principle both point to *yes, give
+   them the same hold-menu* (Restore / Move / Delete-forever). Awaiting
+   his confirm.
+3. **Single tap unchanged** — face-down → reveal, face-up → open/read.
+4. **Keep BOTH the + and the hold-menu.** Confirmed, on the principle
+   above — the + is a custom flywheel element, the menu is introspection.
+
+### Shipped 2026-07-25
+- **Add affordance = one small centered "+"** — retired the wide
+  "Add New Task" button (TaskForm now shows a centered circular plus)
+  and moved the deck FAB from bottom-right to bottom-center; removed the
+  redundant second add button from the empty state. Verified on the web
+  surface (populated + empty). This is the first concrete step; the
+  per-card hold-menu (blocker 1 proper) follows once #2 is confirmed.
