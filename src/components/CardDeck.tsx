@@ -137,7 +137,8 @@ const CardDeck: React.FC<CardDeckProps> = ({
         onClick={() => setShowAddForm(true)}
         aria-label={t('deck.addAria')}
         className={cn(
-          'fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full',
+          // Centered, not right-cornered (Xian, 2026-07-25)
+          'fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-14 h-14 rounded-full',
           'bg-gradient-to-br from-taskGradient-start to-taskGradient-end',
           'text-white shadow-lg flex items-center justify-center',
           'opacity-90 hover:opacity-100 active:scale-95 transition',
@@ -229,8 +230,9 @@ const CardDeck: React.FC<CardDeckProps> = ({
           <p className="text-muted-foreground mb-4 text-sm">
             {t('deck.emptyBody')}
           </p>
-          <TaskForm onAddTask={onAddTask} />
-          <p className="mt-4 text-xs text-gray-400">
+          {/* Add uses the single centered "+" (in {menu} below) — no
+              second in-card button (Xian, 2026-07-25: one small plus). */}
+          <p className="mt-2 text-xs text-gray-400">
             {t('deck.emptyHint')}
           </p>
         </div>
