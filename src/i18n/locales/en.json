@@ -173,7 +173,10 @@
       "completeFailed": "Failed to complete task: {{message}}",
       "deferFailed": "Failed to defer task: {{message}}",
       "substackCreateFailed": "Failed to create substack: {{message}}",
-      "subdeckReady": "Sub-deck ready — deal in your first sub-task"
+      "subdeckReady": "Sub-deck ready — deal in your first sub-task",
+      "promoted": "Promoted to the parent's level",
+      "movedInto": "Moved into “{{title}}”",
+      "moveFailed": "Couldn't move: {{message}}"
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -216,6 +219,17 @@
         "Substack ready! 📋 Divide and conquer approach activated.",
         "Perfect! 🎯 Breaking it down makes it less overwhelming."
       ]
+    },
+    "cardMenu": {
+      "complete": "Complete",
+      "defer": "Later (to the bottom)",
+      "openSubdeck": "Open sub-tasks",
+      "promote": "Promote (out to parent's level)",
+      "moveInto": "Move into another card…",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "moveIntoTitle": "Move “{{title}}” into…",
+      "moveIntoEmpty": "No other card to move this into yet."
     }
   }
 }

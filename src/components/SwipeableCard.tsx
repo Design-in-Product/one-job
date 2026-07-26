@@ -33,11 +33,16 @@ interface SwipeableCardProps {
       both optional, absent = vertical drag disabled. */
   onSwipeDown?: () => void;
   onSwipeUp?: () => void;
+  /** Tap-and-hold reveals the card's action menu (blocker 1). Introspect
+      the object to see what it can do — works at every depth. */
+  onLongPress?: () => void;
   /** Hint labels; default to Done/Later (the main-deck meanings) */
   rightHint?: string;
   leftHint?: string;
   className?: string;
 }
+
+const LONG_PRESS_MS = 450;
 
 const SwipeableCard: React.FC<SwipeableCardProps> = ({
   children,
@@ -46,6 +51,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   onSwipeLeft,
   onSwipeDown,
   onSwipeUp,
+  onLongPress,
   rightHint,
   leftHint,
   className,
@@ -54,6 +60,41 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
   const y = useMotionValue(0);
   const { t } = useTranslation();
   const hasVertical = !!(onSwipeDown || onSwipeUp);
+
+  // Long-press: arm a timer on pointer-down, cancel it the moment a drag
+  // (swipe) begins or the pointer lifts/moves. Fires the card's action
+  // menu. Coexists with Framer drag because a real swipe cancels it.
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pressStart = useRef<{ x: number; y: number } | null>(null);
+  const cancelLongPress = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    pressStart.current = null;
+  };
+  const armLongPress = (e: React.PointerEvent) => {
+    if (!onLongPress || disabled) return;
+    // Claim the press: holding a CARD is the card's action, so it must not
+    // also bubble to the deck/background long-press (which opens the app
+    // menu). Stops the React ancestor handler only — Framer's same-node
+    // drag is unaffected. (2026-07-25 double-menu fix.)
+    e.stopPropagation();
+    cancelLongPress();
+    pressStart.current = { x: e.clientX, y: e.clientY };
+    longPressTimer.current = setTimeout(() => {
+      longPressTimer.current = null;
+      hapticImpact();
+      onLongPress();
+    }, LONG_PRESS_MS);
+  };
+  // Cancel only past a small movement threshold — finger jitter during a
+  // hold shouldn't abort it (matches the old deck long-press).
+  const maybeCancelOnMove = (e: React.PointerEvent) => {
+    const s = pressStart.current;
+    if (!s) return;
+    if (Math.abs(e.clientX - s.x) > 8 || Math.abs(e.clientY - s.y) > 8) cancelLongPress();
+  };
   const rotate = useTransform(x, [-200, 200], [-12, 12]);
   const completeOpacity = useTransform(x, [40, SWIPE_DISTANCE], [0, 1]);
   const deferOpacity = useTransform(x, [-SWIPE_DISTANCE, -40], [1, 0]);
@@ -117,8 +158,13 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       dragDirectionLock={hasVertical}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={1}
+      onPointerDown={armLongPress}
+      onPointerUp={cancelLongPress}
+      onPointerCancel={cancelLongPress}
+      onPointerMove={maybeCancelOnMove}
       onDragStart={() => {
         draggedRef.current = true;
+        cancelLongPress();
       }}
       onDragEnd={handleDragEnd}
       onClickCapture={(e) => {
