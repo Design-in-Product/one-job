@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, collectDescendantIds } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -238,6 +238,11 @@ export class LocalTaskStore implements TaskStore {
     if (!card) throw new Error('Task not found');
     const target = findCardById(this.tasks, targetId);
     if (!target) throw new Error('Target card not found');
+    // A completed card is hidden from the deck — dropping active work into
+    // it would bury the work where navigation can't reach it (2026-07-26).
+    if (target.completed) {
+      throw new Error('Cannot move a card into a completed card');
+    }
     if (collectDescendantIds(card).has(targetId)) {
       throw new Error('Cannot move a card into its own descendant');
     }
@@ -253,6 +258,9 @@ export class LocalTaskStore implements TaskStore {
 
   async createSubstack(taskId: string, name: string | null): Promise<InteriorDeck> {
     const task = this.findTask(taskId);
+    // A completed card is sealed — no new decks, no new cards (Xian,
+    // 2026-07-26: "we can't allow cards to be added to finished cards").
+    if (task.completed) throw new Error('Cannot add a deck to a completed card');
     const newDeck: InteriorDeck = {
       id: uuidv4(),
       name,
@@ -268,6 +276,10 @@ export class LocalTaskStore implements TaskStore {
   async addSubstackTask(substackId: string, title: string, description?: string): Promise<Task> {
     const deck = findDeckById(this.tasks, substackId);
     if (!deck) throw new Error('Substack not found');
+    // Don't add work into a deck owned by a completed card — it would be
+    // sealed away out of sight (Xian, 2026-07-26).
+    const owner = findCardOwningDeck(this.tasks, substackId);
+    if (owner?.completed) throw new Error('Cannot add a card to a completed card');
     const newCard: Task = {
       id: uuidv4(),
       title,

@@ -208,3 +208,73 @@ export const collectDescendantIds = (card: Task): Set<string> => {
   walk(card);
   return ids;
 };
+
+/** The card that owns a given interior deck, at any depth (undefined if no
+    card in the tree owns a deck with that id). */
+export const findCardOwningDeck = (cards: Task[], deckId: string): Task | undefined => {
+  for (const c of cards) {
+    for (const d of c.decks ?? []) {
+      if (d.id === deckId) return c;
+      const hit = findCardOwningDeck(d.cards, deckId);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
+};
+
+/** Every UNFINISHED card anywhere inside a card's interior (its whole
+    subtree, at any depth — including unfinished work stranded beneath an
+    already-completed intermediate card). A card may not be completed while
+    this is non-empty: "done" must mean the whole job is done (Item 15),
+    and unfinished work must never be sealed inside a done card. */
+export const unfinishedDescendants = (card: Task): Task[] => {
+  const out: Task[] = [];
+  const walk = (c: Task) => {
+    for (const d of c.decks ?? []) {
+      for (const x of d.cards) {
+        if (!x.completed) out.push(x);
+        walk(x);
+      }
+    }
+  };
+  walk(card);
+  return out;
+};
+
+/** A candidate destination for a move, with the indent depth the picker
+    draws it at. */
+export interface MoveTarget {
+  card: Task;
+  depth: number;
+}
+
+/**
+ * The cards a moving card may be dropped into: exactly the places you can
+ * reach by navigating the deck. That means ACTIVE cards only, descending
+ * ONLY through active cards — because a completed card is hidden from the
+ * deck (SubstackView filters `!completed`, the sub-deck badge counts only
+ * unfinished). Its own subtree is excluded too, so you can't create a
+ * cycle.
+ *
+ * HARD LESSON (2026-07-26, Xian's real deck): the old picker walked the
+ * WHOLE tree with no completion filter, so it offered a *done* card as a
+ * target. A card moved into it (e.g. "Layers of Meta" into "crumlish .me")
+ * then vanished from every navigable surface — buried inside a completed
+ * card the deck refuses to show. The invariant now: you can only move a
+ * card somewhere you could have navigated to.
+ */
+export const reachableMoveTargets = (cards: Task[], movingCard: Task): MoveTarget[] => {
+  const excluded = new Set<string>([movingCard.id, ...collectDescendantIds(movingCard)]);
+  const out: MoveTarget[] = [];
+  const walk = (list: Task[], depth: number) => {
+    for (const c of list) {
+      // A completed card is hidden from the deck — skip it AND its whole
+      // subtree; nothing under it is reachable by navigation either.
+      if (c.completed) continue;
+      if (!excluded.has(c.id)) out.push({ card: c, depth });
+      for (const d of c.decks ?? []) walk(d.cards, depth + 1);
+    }
+  };
+  walk(cards, 0);
+  return out;
+};

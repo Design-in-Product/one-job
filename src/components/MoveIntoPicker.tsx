@@ -1,12 +1,14 @@
 // src/components/MoveIntoPicker.tsx
 // Target picker for "Move into…" (MVP blocker 1). A hierarchical outline of
-// every card the moving card could land inside — its own subtree is
-// excluded so you can't create a cycle (Xian: drag to any level, not just
-// peers; "whatever functions for now is okay").
+// every card the moving card could land inside — reachableMoveTargets keeps
+// it to exactly the places you can navigate to (active cards only), so a
+// moved card can never be buried inside a completed, hidden card (the
+// 2026-07-26 "Layers of Meta vanished" bug). Its own subtree is excluded so
+// you can't create a cycle.
 
 import React from 'react';
 import { Task } from '@/types/task';
-import { collectDescendantIds } from '@/domain/tasks';
+import { reachableMoveTargets } from '@/domain/tasks';
 import { useTranslation } from 'react-i18next';
 
 interface MoveIntoPickerProps {
@@ -25,28 +27,17 @@ const MoveIntoPicker: React.FC<MoveIntoPickerProps> = ({
   const { t } = useTranslation();
   if (!movingCard) return null;
 
-  const excluded = new Set<string>([movingCard.id, ...collectDescendantIds(movingCard)]);
-
-  const rows: React.ReactNode[] = [];
-  const walk = (cards: Task[], depth: number) => {
-    for (const c of cards) {
-      if (!excluded.has(c.id)) {
-        rows.push(
-          <button
-            key={c.id}
-            onClick={() => onPick(c.id)}
-            style={{ paddingLeft: `${depth * 1.25 + 1}rem` }}
-            className="w-full text-left py-3.5 pr-4 text-base leading-snug hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors border-b border-gray-100 last:border-0"
-          >
-            {depth > 0 && <span className="text-gray-300 mr-1.5">↳</span>}
-            {c.title}
-          </button>
-        );
-      }
-      for (const d of c.decks ?? []) walk(d.cards, depth + 1);
-    }
-  };
-  walk(allCards, 0);
+  const rows = reachableMoveTargets(allCards, movingCard).map(({ card, depth }) => (
+    <button
+      key={card.id}
+      onClick={() => onPick(card.id)}
+      style={{ paddingLeft: `${depth * 1.25 + 1}rem` }}
+      className="w-full text-left py-3.5 pr-4 text-base leading-snug hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors border-b border-gray-100 last:border-0"
+    >
+      {depth > 0 && <span className="text-gray-300 mr-1.5">↳</span>}
+      {card.title}
+    </button>
+  ));
 
   return (
     <div
