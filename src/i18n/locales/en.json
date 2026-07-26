@@ -15,7 +15,8 @@
     },
     "card": {
       "hints": "Swipe right to complete, left to defer, or tap to view details",
-      "openSubdeckBadge": "Open {{count}} sub-tasks"
+      "openSubdeckBadge": "Open {{count}} sub-tasks",
+      "flipBack": "Turn card face-down"
     },
     "swipe": {
       "done": "Done",
