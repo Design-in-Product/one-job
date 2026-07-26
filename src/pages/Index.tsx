@@ -316,6 +316,12 @@ const Index = () => {
   // --- Blocker 1: per-card action menu (tap-and-hold, any depth) ---
   const handleCardLongPress = (task: Task) => setMenuCard(task);
 
+  // Blocker 3: tapping a card's sub-deck badge opens the interior directly.
+  const handleOpenSubdeckFromCard = (task: Task) => {
+    const deck = (task.decks ?? []).find(d => d.cards.length > 0) ?? task.decks?.[0];
+    if (deck) handleOpenSubstack(task, deck);
+  };
+
   const handlePromote = async (taskId: string) => {
     setMenuCard(null);
     try {
@@ -457,6 +463,7 @@ const Index = () => {
               onOpenSubstack={handleOpenSubstack}
               onUpdateTask={handleUpdateTask}
               onCardLongPress={handleCardLongPress}
+              onOpenSubdeck={handleOpenSubdeckFromCard}
             />
           </motion.div>
         </div>
@@ -488,6 +495,7 @@ const Index = () => {
                 onDefer={handleDeferTask}
                 onCardClick={handleCardClick}
                 onCardLongPress={handleCardLongPress}
+                onOpenSubdeck={handleOpenSubdeckFromCard}
                 onAddTask={handleAddTask}
                 onViewCompleted={() => setCurrentView('completed')}
                 onViewIntegrations={() => setCurrentView('integrate')}

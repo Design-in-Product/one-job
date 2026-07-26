@@ -14,6 +14,9 @@ import { useFitText } from '@/hooks/use-fit-text';
 interface TaskCardProps {
   task: Task;
   onClick?: (task: Task) => void;
+  /** Tapping the sub-deck badge opens the interior directly — no edit
+      step (MVP blocker 3). Absent → badge is a plain indicator. */
+  onOpenSubdeck?: (task: Task) => void;
   /** Show the swipe/tap instruction footer (only on the interactive top card) */
   showHints?: boolean;
   className?: string;
@@ -24,7 +27,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength) + '...';
 };
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, className }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, showHints = false, className }) => {
   const { t } = useTranslation();
   // Honest badge (Item 15 corollary): show the count of UNFINISHED interior
   // cards; a card whose inside is done reads as childless.
@@ -49,12 +52,24 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, showHints = false, c
     >
       {unfinishedInside > 0 && (
         <div className="flex justify-end mb-2">
-          <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded-full">
-            <Layers className="w-4 h-4 text-blue-600" />
-            <span className="text-xs text-blue-600 font-medium">
-              {unfinishedInside}
-            </span>
-          </div>
+          {onOpenSubdeck ? (
+            // Tappable badge → open the sub-deck directly (blocker 3).
+            // Stops propagation so it doesn't also trigger the card's tap.
+            <button
+              onClick={(e) => { e.stopPropagation(); onOpenSubdeck(task); }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={t('card.openSubdeckBadge', { count: unfinishedInside })}
+              className="flex items-center gap-1 pl-2.5 pr-2 py-1.5 bg-blue-50 rounded-full active:bg-blue-100 transition-colors"
+            >
+              <Layers className="w-4 h-4 text-blue-600" />
+              <span className="text-sm text-blue-600 font-semibold">{unfinishedInside}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded-full">
+              <Layers className="w-4 h-4 text-blue-600" />
+              <span className="text-xs text-blue-600 font-medium">{unfinishedInside}</span>
+            </div>
+          )}
         </div>
       )}
 

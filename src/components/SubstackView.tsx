@@ -23,6 +23,7 @@ interface SubstackViewProps {
   onOpenSubstack: (task: Task, substack: Substack) => void;
   onUpdateTask?: (taskId: string, updates: { title?: string; description?: string }) => void;
   onCardLongPress?: (task: Task) => void;
+  onOpenSubdeck?: (task: Task) => void;
 }
 
 const SubstackView: React.FC<SubstackViewProps> = ({
@@ -39,7 +40,8 @@ const SubstackView: React.FC<SubstackViewProps> = ({
   onAddSubtasks,
   onOpenSubstack,
   onUpdateTask,
-  onCardLongPress
+  onCardLongPress,
+  onOpenSubdeck
 }) => {
   const { t } = useTranslation();
   const activeTasks = substack.cards.filter(task => !task.completed);
@@ -72,6 +74,7 @@ const SubstackView: React.FC<SubstackViewProps> = ({
         onComplete={onCompleteTask}
         onDefer={onDeferTask}
         onCardLongPress={onCardLongPress}
+        onOpenSubdeck={onOpenSubdeck}
         onCardClick={onCardClick}
       />
       

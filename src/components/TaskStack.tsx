@@ -17,9 +17,10 @@ interface TaskStackProps {
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
   onCardLongPress?: (task: Task) => void;
+  onOpenSubdeck?: (task: Task) => void;
 }
 
-const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick, onCardLongPress }) => {
+const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick, onCardLongPress, onOpenSubdeck }) => {
   const { t } = useTranslation();
   // Remount the top card on every swipe, even when the same task returns to
   // the top (deferring the only remaining task).
@@ -89,7 +90,7 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
               onLongPress={onCardLongPress ? () => onCardLongPress(topTask) : undefined}
               className="w-full h-full"
             >
-              <TaskCard task={topTask} onClick={onCardClick} showHints />
+              <TaskCard task={topTask} onClick={onCardClick} onOpenSubdeck={onOpenSubdeck} showHints />
             </SwipeableCard>
           </motion.div>
         </AnimatePresence>
