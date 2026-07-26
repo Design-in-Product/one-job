@@ -47,6 +47,8 @@ const Index = () => {
   // Blocker 1: the card whose action menu is open, and the card being moved.
   const [menuCard, setMenuCard] = useState<Task | null>(null);
   const [movingCardId, setMovingCardId] = useState<string | null>(null);
+  // Blocker 2: when returning to the main deck from a sub-deck, land face-up.
+  const [deckStartRevealed, setDeckStartRevealed] = useState(false);
   // Sub-deck navigation is a STACK (sub-sub-decks, Item 8): push to go
   // deeper, pop to come back one level. currentSubstack = the top.
   const [substackStack, setSubstackStack] = useState<{
@@ -399,11 +401,17 @@ const Index = () => {
   };
 
   const handleOpenSubstack = (parentTask: Task, substack: Substack) => {
+    setDeckStartRevealed(false); // going deeper — reset the return-face-up flag
     setSubstackStack(prev => [...prev, { parentTask, substack }]);
   };
 
   const handleBackToParent = () => {
-    setSubstackStack(prev => prev.slice(0, -1)); // pop one level
+    setSubstackStack(prev => {
+      // Blocker 2: landing back on the MAIN deck should arrive face-up
+      // (sub-decks are already face-up; only the main deck flips).
+      if (prev.length === 1) setDeckStartRevealed(true);
+      return prev.slice(0, -1); // pop one level
+    });
   };
 
   const currentTasks = currentSubstack ? currentSubstack.substack.cards : tasks;
@@ -496,6 +504,7 @@ const Index = () => {
                 onCardClick={handleCardClick}
                 onCardLongPress={handleCardLongPress}
                 onOpenSubdeck={handleOpenSubdeckFromCard}
+                startRevealed={deckStartRevealed}
                 onAddTask={handleAddTask}
                 onViewCompleted={() => setCurrentView('completed')}
                 onViewIntegrations={() => setCurrentView('integrate')}

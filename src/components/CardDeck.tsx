@@ -30,6 +30,9 @@ interface CardDeckProps {
   onCardClick: (task: Task) => void;
   onCardLongPress?: (task: Task) => void;
   onOpenSubdeck?: (task: Task) => void;
+  /** Blocker 2: mount with the top card already face-up (e.g. returning
+      from a sub-deck) instead of the default face-down tap-to-reveal. */
+  startRevealed?: boolean;
   onAddTask: (task: Task) => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
@@ -45,13 +48,14 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onCardClick,
   onCardLongPress,
   onOpenSubdeck,
+  startRevealed = false,
   onAddTask,
   onViewCompleted,
   onViewIntegrations,
   onViewSettings
 }) => {
   const { t } = useTranslation();
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(startRevealed);
   const [flipPreset, setFlipPreset] = useState<FlipPreset>('classic');
   const [showMenu, setShowMenu] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
