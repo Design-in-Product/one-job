@@ -14,7 +14,8 @@
       "tapHint": "Tap to reveal your task"
     },
     "card": {
-      "hints": "Swipe right to complete, left to defer, or tap to view details"
+      "hints": "Swipe right to complete, left to defer, or tap to view details",
+      "openSubdeckBadge": "Open {{count}} sub-tasks"
     },
     "swipe": {
       "done": "Done",

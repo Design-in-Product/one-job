@@ -29,6 +29,7 @@ interface CardDeckProps {
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
   onCardLongPress?: (task: Task) => void;
+  onOpenSubdeck?: (task: Task) => void;
   onAddTask: (task: Task) => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
@@ -43,6 +44,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onDefer,
   onCardClick,
   onCardLongPress,
+  onOpenSubdeck,
   onAddTask,
   onViewCompleted,
   onViewIntegrations,
@@ -292,6 +294,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
                     <TaskCard
                       task={currentTask}
                       onClick={onCardClick}
+                      onOpenSubdeck={onOpenSubdeck}
                       showHints
                     />
                   }
