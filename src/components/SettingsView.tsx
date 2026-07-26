@@ -181,6 +181,20 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     }
   };
 
+  // Non-destructive path (blocker 4): the imported deck becomes a sub-deck
+  // of the top card, leaving the current deck untouched.
+  const importAsSubdeck = async () => {
+    if (!pendingImport) return;
+    try {
+      await getTaskStore().importAsSubdeck!(pendingImport);
+      toast.success(t('settings.importedAsSubdeck', { count: pendingImport.length }));
+      setPendingImport(null);
+      onDataImported();
+    } catch (err) {
+      toast.error(t('settings.importFailed', { message: (err as Error).message }));
+    }
+  };
+
   return (
     <div className="px-4 pb-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800">{t('settings.title')}</h2>
@@ -241,13 +255,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
               onChange={handleFileChosen}
             />
             {pendingImport && (
-              <div className="border border-amber-300 bg-amber-50 rounded-lg p-3 text-sm space-y-2">
-                <p className="text-amber-800">
-                  {t('settings.importConfirm', { count: pendingImport.length })}
+              <div className="border border-gray-200 bg-gray-50 rounded-lg p-3 text-sm space-y-3">
+                <p className="text-gray-700">
+                  {t('settings.importChoose', { count: pendingImport.length })}
                 </p>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={confirmImport}>{t('settings.replace')}</Button>
-                  <Button size="sm" variant="outline" onClick={() => setPendingImport(null)}>
+                <div className="flex flex-col gap-2">
+                  {/* Non-destructive default (safe) */}
+                  {getTaskStore().importAsSubdeck && (
+                    <Button size="sm" className="justify-start" onClick={importAsSubdeck}>
+                      {t('settings.importAsSubdeck')}
+                    </Button>
+                  )}
+                  {/* Destructive, clearly marked */}
+                  <Button size="sm" variant="destructive" className="justify-start" onClick={confirmImport}>
+                    {t('settings.replaceEverything')}
+                  </Button>
+                  <Button size="sm" variant="ghost" className="justify-start" onClick={() => setPendingImport(null)}>
                     {t('settings.cancel')}
                   </Button>
                 </div>

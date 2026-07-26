@@ -56,6 +56,9 @@ export interface TaskStore {
   promoteCard?(id: string): Promise<Task>;
   /** Move a card into another card's interior deck (MVP blocker 1). */
   moveCardInto?(id: string, targetId: string): Promise<Task>;
+  /** Import an exported deck as a sub-deck of the top card (MVP blocker 4)
+      — the non-destructive alternative to importTasks' full replace. */
+  importAsSubdeck?(tasks: Task[]): Promise<void>;
 }
 
 let store: TaskStore | null = null;
