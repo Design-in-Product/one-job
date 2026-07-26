@@ -7,7 +7,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/task';
-import { Layers } from 'lucide-react';
+import { Layers, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFitText } from '@/hooks/use-fit-text';
 
@@ -17,6 +17,9 @@ interface TaskCardProps {
   /** Tapping the sub-deck badge opens the interior directly — no edit
       step (MVP blocker 3). Absent → badge is a plain indicator. */
   onOpenSubdeck?: (task: Task) => void;
+  /** Turn the card face-down again (Item 19). Only the interactive top
+      card gets this; sub-deck/room cards have no back. */
+  onFlipBack?: () => void;
   /** Show the swipe/tap instruction footer (only on the interactive top card) */
   showHints?: boolean;
   className?: string;
@@ -27,7 +30,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength) + '...';
 };
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, showHints = false, className }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFlipBack, showHints = false, className }) => {
   const { t } = useTranslation();
   // Honest badge (Item 15 corollary): show the count of UNFINISHED interior
   // cards; a card whose inside is done reads as childless.
@@ -50,9 +53,22 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, showH
       )}
       onClick={onClick ? () => onClick(task) : undefined}
     >
-      {unfinishedInside > 0 && (
-        <div className="flex justify-end mb-2">
-          {onOpenSubdeck ? (
+      {(onFlipBack || unfinishedInside > 0) && (
+        <div className="flex items-center justify-between mb-2">
+          {/* Left: turn the card face-down again (Item 19) */}
+          {onFlipBack ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); onFlipBack(); }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={t('card.flipBack')}
+              className="p-1.5 -ml-1 rounded-full text-gray-300 hover:text-gray-500 active:bg-gray-100 transition-colors"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+          ) : <span />}
+          {/* Right: sub-deck badge */}
+          {unfinishedInside > 0 ? (
+          onOpenSubdeck ? (
             // Tappable badge → open the sub-deck directly (blocker 3).
             // Stops propagation so it doesn't also trigger the card's tap.
             <button
@@ -69,7 +85,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, showH
               <Layers className="w-4 h-4 text-blue-600" />
               <span className="text-xs text-blue-600 font-medium">{unfinishedInside}</span>
             </div>
-          )}
+          )
+          ) : <span />}
         </div>
       )}
 

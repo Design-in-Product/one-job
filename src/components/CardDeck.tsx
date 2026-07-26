@@ -299,6 +299,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
                       task={currentTask}
                       onClick={onCardClick}
                       onOpenSubdeck={onOpenSubdeck}
+                      onFlipBack={() => setIsFlipped(false)}
                       showHints
                     />
                   }
