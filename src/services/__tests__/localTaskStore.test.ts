@@ -592,6 +592,16 @@ describe('Promote / move-into (MVP blocker 1, 2026-07-25)', () => {
     const { parent, child } = await nest(store);
     await expect(store.moveCardInto(parent.id, child.id)).rejects.toThrow(/descendant/i);
   });
+
+  it('refuses to move a card into a completed card (would bury it, 2026-07-26)', async () => {
+    const store = freshStore();
+    const a = await store.createTask('A');
+    const done = await store.createTask('done');
+    await store.completeTask(done.id);
+    await expect(store.moveCardInto(a.id, done.id)).rejects.toThrow(/completed/i);
+    // A stays put — nothing buried
+    expect((await store.getAllTasks()).map(t => t.title)).toContain('A');
+  });
 });
 
 describe('importAsSubdeck (MVP blocker 4, 2026-07-25)', () => {
@@ -614,5 +624,27 @@ describe('importAsSubdeck (MVP blocker 4, 2026-07-25)', () => {
     const backup = [{ id: 'x', title: 'solo', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 }];
     await store.importAsSubdeck!(backup as any);
     expect((await store.getAllTasks()).map(t => t.title)).toEqual(['solo']);
+  });
+});
+
+describe('completed cards are sealed (Xian, 2026-07-26)', () => {
+  const KEY2 = 'sealtest';
+  const store2 = () => new LocalTaskStore(KEY2);
+
+  it('refuses to add a card to a deck owned by a completed card', async () => {
+    localStorage.clear();
+    const store = store2();
+    const owner = await store.createTask('owner');
+    const deck = await store.createSubstack(owner.id, null);
+    await store.completeTask(owner.id);
+    await expect(store.addSubstackTask(deck.id, 'buried')).rejects.toThrow(/completed/i);
+  });
+
+  it('refuses to add a new deck to a completed card', async () => {
+    localStorage.clear();
+    const store = store2();
+    const owner = await store.createTask('owner');
+    await store.completeTask(owner.id);
+    await expect(store.createSubstack(owner.id, null)).rejects.toThrow(/completed/i);
   });
 });

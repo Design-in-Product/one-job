@@ -32,7 +32,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
-import { findCardById, findParentOfCard } from '@/domain/tasks';
+import { findCardById, findParentOfCard, unfinishedDescendants } from '@/domain/tasks';
 import { useTranslation } from 'react-i18next';
 
 
@@ -241,12 +241,15 @@ const Index = () => {
       // Item 15 applies at every depth: a sub-card with an unfinished
       // interior refuses to complete, and its sub-deck comes into focus.
       const card = currentSubstack.substack.cards.find(c => c.id === taskId);
-      const unfinishedInside = card?.decks?.flatMap(d => d.cards).filter(c => !c.completed) ?? [];
+      // Item 15 at any depth: unfinished work ANYWHERE in the subtree
+      // refuses the completion (not just direct children — grandchildren
+      // buried under a done child count too).
+      const unfinishedInside = card ? unfinishedDescendants(card) : [];
       if (card && unfinishedInside.length > 0) {
         toast.info(t('toasts.parentBlocked', { count: unfinishedInside.length }), { duration: 6000 });
         await refreshAll(); // re-deal the refused card
-        const blockingDeck = card.decks!.find(d => d.cards.some(c => !c.completed))!;
-        setSubstackStack(prev => [...prev, { parentTask: card, substack: blockingDeck }]);
+        const blockingDeck = card.decks?.find(d => d.cards.some(c => !c.completed));
+        if (blockingDeck) setSubstackStack(prev => [...prev, { parentTask: card, substack: blockingDeck }]);
         return;
       }
       try {
@@ -262,12 +265,14 @@ const Index = () => {
       // cards cannot complete. The block is the reveal — the card returns
       // and the blocking sub-deck comes into focus.
       const parent = tasks.find(tk => tk.id === taskId);
-      const unfinished = parent?.decks?.flatMap(d => d.cards).filter(c => !c.completed) ?? [];
+      // Whole-subtree check (see sub-deck branch): a card can't be done
+      // while any descendant, at any depth, is unfinished.
+      const unfinished = parent ? unfinishedDescendants(parent) : [];
       if (parent && unfinished.length > 0) {
         toast.info(t('toasts.parentBlocked', { count: unfinished.length }), { duration: 6000 });
         refreshTasks(); // re-deal the refused card
-        const blockingDeck = parent.decks!.find(d => d.cards.some(c => !c.completed))!;
-        setSubstackStack(prev => [...prev, { parentTask: parent, substack: blockingDeck }]);
+        const blockingDeck = parent.decks?.find(d => d.cards.some(c => !c.completed));
+        if (blockingDeck) setSubstackStack(prev => [...prev, { parentTask: parent, substack: blockingDeck }]);
         return;
       }
       const snapshot = snapshotTask(taskId);
