@@ -604,26 +604,51 @@ describe('Promote / move-into (MVP blocker 1, 2026-07-25)', () => {
   });
 });
 
-describe('importAsSubdeck (MVP blocker 4, 2026-07-25)', () => {
-  it('adds imported cards as a NEW sub-deck of the top card, leaving the deck intact', async () => {
+describe('importAsSubdeck (MVP blocker 4; import-N container, 2026-07-26)', () => {
+  it('lands the import in a NEW top-level "import-1" card, existing deck intact', async () => {
     const store = freshStore();
-    await store.createTask('existing top');   // sortOrder via topSortOrder
+    await store.createTask('existing top');
     const backup = [
       { id: 'x', title: 'imported A', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 },
       { id: 'y', title: 'imported B', completed: false, createdAt: new Date().toISOString(), sortOrder: 2 },
     ];
     await store.importAsSubdeck!(backup as any);
     const all = await store.getAllTasks();
-    expect(all.map(t => t.title)).toEqual(['existing top']); // deck untouched
-    const deck = all[0].decks![0];
-    expect(deck.cards.map(c => c.title).sort()).toEqual(['imported A', 'imported B']);
+    expect(all.map(t => t.title).sort()).toEqual(['existing top', 'import-1']);
+    const container = all.find(t => t.title === 'import-1')!;
+    expect(container.decks![0].cards.map(c => c.title).sort()).toEqual(['imported A', 'imported B']);
   });
 
-  it('imports as the deck itself when there is no card to attach to', async () => {
+  it('regenerates every id so an imported copy never collides with existing cards', async () => {
+    const store = freshStore();
+    const backup = [{
+      id: 'dup', title: 'orig', completed: false, createdAt: new Date().toISOString(), sortOrder: 1,
+      decks: [{ id: 'd', name: null, createdAt: new Date().toISOString(), cards: [
+        { id: 'kid', title: 'child', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 },
+      ]}],
+    }];
+    await store.importAsSubdeck!(backup as any);
+    const container = (await store.getAllTasks()).find(t => t.title === 'import-1')!;
+    const parent = container.decks![0].cards[0];
+    expect(parent.id).not.toBe('dup');
+    expect(parent.decks![0].id).not.toBe('d');
+    expect(parent.decks![0].cards[0].id).not.toBe('kid');
+  });
+
+  it('increments the label: a second import becomes import-2', async () => {
     const store = freshStore();
     const backup = [{ id: 'x', title: 'solo', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 }];
     await store.importAsSubdeck!(backup as any);
-    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['solo']);
+    await store.importAsSubdeck!(backup as any);
+    const titles = (await store.getAllTasks()).map(t => t.title).sort();
+    expect(titles).toEqual(['import-1', 'import-2']);
+  });
+
+  it('honors an explicit container name', async () => {
+    const store = freshStore();
+    const backup = [{ id: 'x', title: 'solo', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 }];
+    await store.importAsSubdeck!(backup as any, 'Todoist archive');
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['Todoist archive']);
   });
 });
 

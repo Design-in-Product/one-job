@@ -388,20 +388,51 @@ export class LocalTaskStore implements TaskStore {
     this.saveTasks();
   }
 
-  /** Import an exported deck as a NEW sub-deck of the current top card
-      (MVP blocker 4) — the non-destructive alternative to a full replace.
-      Falls back to a top-level import when the deck is empty. */
-  async importAsSubdeck(tasks: Task[]): Promise<void> {
-    const incoming = migrateDocument(tasks).cards.map(reviveTask);
-    if (incoming.length === 0) return;
-    const top = sortTasks([...this.tasks])[0];
-    if (!top) {
-      this.tasks = incoming; // nothing to attach to — import as the deck
-    } else {
-      top.decks = top.decks ?? [];
-      top.decks.push({ id: uuidv4(), name: null, cards: incoming, createdAt: new Date() });
-    }
+  /** Import an exported deck as a NEW top-level card (MVP blocker 4) — the
+      non-destructive alternative to a full replace. The import lands in its
+      own card ("import-1", "import-2", ... unless a name is given), so it's
+      immediately visible and never collides with existing data.
+
+      HARD LESSON (2026-07-26): the previous version attached the import as
+      a SECOND deck on the existing top card — unreachable (the badge only
+      opens a card's first deck) — AND kept the original card IDs, so every
+      imported card was a shadow of an existing one. A copy must be its own
+      cards: regenerate every id (Xian's call — "import-N", editable). */
+  async importAsSubdeck(tasks: Task[], name?: string): Promise<void> {
+    const migrated = migrateDocument(tasks).cards.map(reviveTask);
+    if (migrated.length === 0) return;
+    const incoming = this.regenerateIds(migrated);
+    const container: Task = {
+      id: uuidv4(),
+      title: name?.trim() || this.nextImportName(),
+      completed: false,
+      status: 'todo',
+      createdAt: new Date(),
+      sortOrder: topSortOrder(this.tasks),
+      decks: [{ id: uuidv4(), name: null, cards: incoming, createdAt: new Date() }],
+    };
+    this.tasks.push(container);
     this.saveTasks();
+  }
+
+  /** Deep-copy a card forest with brand-new ids at every level, so an
+      imported copy can never shadow or collide with existing cards. */
+  private regenerateIds(cards: Task[]): Task[] {
+    return cards.map(c => ({
+      ...c,
+      id: uuidv4(),
+      decks: c.decks?.map(d => ({ ...d, id: uuidv4(), cards: this.regenerateIds(d.cards) })),
+    }));
+  }
+
+  /** The next unused "import-N" label among top-level cards. */
+  private nextImportName(): string {
+    let max = 0;
+    for (const t of this.tasks) {
+      const m = /^import-(\d+)$/.exec(t.title);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+    return `import-${max + 1}`;
   }
 
   /** Wipe this store's data (used by the demo reset) */

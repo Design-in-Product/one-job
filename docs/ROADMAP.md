@@ -92,6 +92,7 @@ read-only before any source earns write access.
 | R3.3 | **Mapping store** — bidirectional id/field mapping as a first-class, inspectable artifact | Item 11.3 |
 | R3.4 | **Two-way sync (one service)** — complete-in-One-Job closes the source task; the One Job overlay (deck order, interior structure, history, lifecycle placement) never flattens into the source | Item 11.2 |
 | R3.5 | **Multi-source federation** — Asana + Trello + Todoist side by side, normalized into the one paradigm | Item 11.4 |
+| R3.6 | **Import as merge, with conflict resolution** — the OS file-move model: on import, detect cards already present (by id/provenance) and ask per-conflict *keep both / replace / skip*, instead of always landing a fresh copy. Supersedes the rc-era "import-N container" once we have real identity/provenance to compare on (Xian, 2026-07-26) | testing |
 
 Gate: Xian (or his employer's tool) runs a real project where One Job is
 the *only* surface he touches daily, and nothing in the source system is
