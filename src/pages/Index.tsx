@@ -24,13 +24,15 @@ import TaskIntegration from '@/components/TaskIntegration';
 import TaskDetails from '@/components/TaskDetails';
 import SettingsView from '@/components/SettingsView';
 import SubstackView from '@/components/SubstackView';
+import CardActionMenu, { CardAction } from '@/components/CardActionMenu';
+import MoveIntoPicker from '@/components/MoveIntoPicker';
 import { Task, Substack } from '@/types/task';
 import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
-import { findCardById } from '@/domain/tasks';
+import { findCardById, findParentOfCard } from '@/domain/tasks';
 import { useTranslation } from 'react-i18next';
 
 
@@ -42,6 +44,9 @@ const Index = () => {
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState(false);
+  // Blocker 1: the card whose action menu is open, and the card being moved.
+  const [menuCard, setMenuCard] = useState<Task | null>(null);
+  const [movingCardId, setMovingCardId] = useState<string | null>(null);
   // Sub-deck navigation is a STACK (sub-sub-decks, Item 8): push to go
   // deeper, pop to come back one level. currentSubstack = the top.
   const [substackStack, setSubstackStack] = useState<{
@@ -308,6 +313,61 @@ const Index = () => {
     setIsTaskDetailsOpen(true);
   };
 
+  // --- Blocker 1: per-card action menu (tap-and-hold, any depth) ---
+  const handleCardLongPress = (task: Task) => setMenuCard(task);
+
+  const handlePromote = async (taskId: string) => {
+    setMenuCard(null);
+    try {
+      await getTaskStore().promoteCard!(taskId);
+      toast.success(t('toasts.promoted'));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+
+  const handleStartMove = (taskId: string) => {
+    setMenuCard(null);
+    setMovingCardId(taskId);
+  };
+
+  const handleMoveInto = async (targetId: string) => {
+    const id = movingCardId;
+    setMovingCardId(null);
+    if (!id) return;
+    try {
+      const target = findCardById(tasks, targetId);
+      await getTaskStore().moveCardInto!(id, targetId);
+      toast.success(t('toasts.movedInto', { title: target?.title ?? '' }));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Which actions a card reveals depends on where it sits (introspection).
+  const buildCardActions = (card: Task): CardAction[] => {
+    const store = getTaskStore();
+    const canPromote = !!findParentOfCard(tasks, card.id);
+    const subdeck = (card.decks ?? []).find(d => d.cards.length > 0);
+    const actions: CardAction[] = [
+      { key: 'complete', label: t('cardMenu.complete'),
+        onClick: () => { setMenuCard(null); handleCompleteTask(card.id); } },
+      { key: 'defer', label: t('cardMenu.defer'),
+        onClick: () => { setMenuCard(null); handleDeferTask(card.id); } },
+    ];
+    if (subdeck) actions.push({ key: 'open', label: t('cardMenu.openSubdeck'),
+      onClick: () => { setMenuCard(null); handleOpenSubstack(card, subdeck); } });
+    if (canPromote && store.promoteCard) actions.push({ key: 'promote', label: t('cardMenu.promote'),
+      onClick: () => handlePromote(card.id) });
+    if (store.moveCardInto) actions.push({ key: 'move', label: t('cardMenu.moveInto'),
+      onClick: () => handleStartMove(card.id) });
+    actions.push({ key: 'edit', label: t('cardMenu.edit'),
+      onClick: () => { setMenuCard(null); handleCardClick(card); } });
+    return actions;
+  };
+
   // Item 23: "Add sub-tasks" creates the default (unnamed) deck and the
   // card's back expands straight into it — no naming ritual.
   const handleAddSubtasks = async (taskId: string) => {
@@ -354,6 +414,24 @@ const Index = () => {
     return findCardById(tasks, selectedTask.id) || selectedTask;
   };
 
+  // Card action menu + move-into picker — rendered in both views (they're
+  // fixed overlays); tap-and-hold any card at any depth surfaces them.
+  const overlays = (
+    <>
+      <CardActionMenu
+        card={menuCard}
+        actions={menuCard ? buildCardActions(menuCard) : []}
+        onClose={() => setMenuCard(null)}
+      />
+      <MoveIntoPicker
+        movingCard={movingCardId ? findCardById(tasks, movingCardId) ?? null : null}
+        allCards={tasks}
+        onPick={handleMoveInto}
+        onClose={() => setMovingCardId(null)}
+      />
+    </>
+  );
+
   if (currentSubstack) {
     return (
       <div className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
@@ -378,9 +456,11 @@ const Index = () => {
               onAddSubtasks={handleAddSubtasks}
               onOpenSubstack={handleOpenSubstack}
               onUpdateTask={handleUpdateTask}
+              onCardLongPress={handleCardLongPress}
             />
           </motion.div>
         </div>
+        {overlays}
       </div>
     );
   }
@@ -407,6 +487,7 @@ const Index = () => {
                 onComplete={handleCompleteTask}
                 onDefer={handleDeferTask}
                 onCardClick={handleCardClick}
+                onCardLongPress={handleCardLongPress}
                 onAddTask={handleAddTask}
                 onViewCompleted={() => setCurrentView('completed')}
                 onViewIntegrations={() => setCurrentView('integrate')}
@@ -478,8 +559,9 @@ const Index = () => {
             onClose={() => setIsTaskDetailsOpen(false)}
             onAddSubtasks={handleAddSubtasks}
             onOpenSubstack={handleOpenSubstack}
-            onUpdateTask={handleUpdateTask} 
+            onUpdateTask={handleUpdateTask}
           />
+          {overlays}
         </div>
       </motion.div>
     </AnimatePresence>

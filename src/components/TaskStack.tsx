@@ -16,9 +16,10 @@ interface TaskStackProps {
   onComplete: (taskId: string) => void;
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
+  onCardLongPress?: (task: Task) => void;
 }
 
-const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick }) => {
+const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCardClick, onCardLongPress }) => {
   const { t } = useTranslation();
   // Remount the top card on every swipe, even when the same task returns to
   // the top (deferring the only remaining task).
@@ -85,6 +86,7 @@ const TaskStack: React.FC<TaskStackProps> = ({ tasks, onComplete, onDefer, onCar
                 onDefer(topTask.id);
                 setDeal(d => d + 1);
               }}
+              onLongPress={onCardLongPress ? () => onCardLongPress(topTask) : undefined}
               className="w-full h-full"
             >
               <TaskCard task={topTask} onClick={onCardClick} showHints />

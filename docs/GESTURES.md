@@ -131,6 +131,11 @@ hand-built shortcuts (swipe, the +) for the moves you make constantly.
 4. **Keep BOTH the + and the hold-menu.** Confirmed, on the principle
    above — the + is a custom flywheel element, the menu is introspection.
 
+### Litmus test (Xian, 2026-07-25)
+> "Would a person expect this gesture to do something?" If yes, it should.
+Applied to every card at every depth — the reason the hold-menu now works
+in sub-decks, not just the top level.
+
 ### Shipped 2026-07-25
 - **Add affordance = one small centered "+"** — retired the wide
   "Add New Task" button (TaskForm now shows a centered circular plus)
