@@ -10,6 +10,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      // Top-center so toasts never cover the centered "+" (2026-07-25)
+      position="top-center"
       toastOptions={{
         classNames: {
           toast:
