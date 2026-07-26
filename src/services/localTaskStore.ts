@@ -376,6 +376,22 @@ export class LocalTaskStore implements TaskStore {
     this.saveTasks();
   }
 
+  /** Import an exported deck as a NEW sub-deck of the current top card
+      (MVP blocker 4) — the non-destructive alternative to a full replace.
+      Falls back to a top-level import when the deck is empty. */
+  async importAsSubdeck(tasks: Task[]): Promise<void> {
+    const incoming = migrateDocument(tasks).cards.map(reviveTask);
+    if (incoming.length === 0) return;
+    const top = sortTasks([...this.tasks])[0];
+    if (!top) {
+      this.tasks = incoming; // nothing to attach to — import as the deck
+    } else {
+      top.decks = top.decks ?? [];
+      top.decks.push({ id: uuidv4(), name: null, cards: incoming, createdAt: new Date() });
+    }
+    this.saveTasks();
+  }
+
   /** Wipe this store's data (used by the demo reset) */
   protected reset(seedTasks: Task[]) {
     localStorage.removeItem(this.storageKey);
