@@ -152,8 +152,10 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
 
   return (
     <motion.div
-      className={cn('relative touch-none', !disabled && 'cursor-grab active:cursor-grabbing', className)}
-      style={{ x, y, rotate }}
+      className={cn('relative touch-none select-none', !disabled && 'cursor-grab active:cursor-grabbing', className)}
+      // Suppress iOS's long-press text-selection/callout so tap-and-hold
+      // reliably opens the card menu on touch (2026-07-25).
+      style={{ x, y, rotate, WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
       drag={disabled || exitX !== null || exitY !== null ? false : hasVertical ? true : 'x'}
       dragDirectionLock={hasVertical}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
