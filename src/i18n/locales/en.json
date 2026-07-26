@@ -150,9 +150,9 @@
       "notABackup": "Not a One Job backup file",
       "readFailed": "Could not read backup: {{message}}",
       "importChoose": "Found {{count}} cards in this backup. How should they come in?",
-      "importAsSubdeck": "Add as a sub-deck of your top card",
+      "importAsSubdeck": "Bring in as a new deck (keeps my current deck)",
       "replaceEverything": "Replace my whole deck (can't undo)",
-      "importedAsSubdeck": "Added {{count}} cards as a sub-deck"
+      "importedAsSubdeck": "Added {{count}} cards as a new deck"
     },
     "toasts": {
       "undo": "Undo",
