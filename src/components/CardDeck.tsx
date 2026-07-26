@@ -28,6 +28,7 @@ interface CardDeckProps {
   onComplete: (taskId: string) => void;
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
+  onCardLongPress?: (task: Task) => void;
   onAddTask: (task: Task) => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
@@ -41,6 +42,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onComplete,
   onDefer,
   onCardClick,
+  onCardLongPress,
   onAddTask,
   onViewCompleted,
   onViewIntegrations,
@@ -244,10 +246,11 @@ const CardDeck: React.FC<CardDeckProps> = ({
   const underlayCount = Math.min(tasks.length - 1, 2);
 
   return (
-    <div className="flex-1 relative">
+    // Deck/background long-press → app menu. A press on the card claims the
+    // event (stopPropagation) so only the card's action menu opens there.
+    <div className="flex-1 relative" onPointerDown={handlePointerDown}>
       <div
         className="absolute inset-4 flex items-center justify-center"
-        onPointerDown={handlePointerDown}
       >
         <div className={cn(CARD_GEOMETRY, 'relative')}>
           {/* Deck underlay: the rest of the pile, always face-down */}
@@ -276,6 +279,7 @@ const CardDeck: React.FC<CardDeckProps> = ({
                 disabled={!isFlipped}
                 onSwipeRight={handleSwipeComplete}
                 onSwipeLeft={handleSwipeDefer}
+                onLongPress={onCardLongPress ? () => onCardLongPress(currentTask) : undefined}
                 className="w-full h-full"
               >
                 <FlipCard
