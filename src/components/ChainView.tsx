@@ -10,6 +10,7 @@ import { Task } from '@/types/task';
 import { cardRoom, flattenWithParent, Room } from '@/domain/tasks';
 import TaskCard from './TaskCard';
 import SwipeableCard from './SwipeableCard';
+import ActionSheet, { SheetAction } from './ActionSheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Trash2 } from 'lucide-react';
@@ -47,6 +48,9 @@ const ChainView: React.FC<ChainViewProps> = ({
   const { t } = useTranslation();
   const [room, setRoom] = useState<ChainRoom>('done');
   const [confirmingPurge, setConfirmingPurge] = useState<Task | null>(null);
+  // Same hold-menu principle as the deck (Xian, 2026-07-25): a card in a
+  // lifecycle room reveals its room-appropriate actions on tap-and-hold.
+  const [menuCard, setMenuCard] = useState<Task | null>(null);
   // Sifting (Item 28): swipe down digs deeper into the pile, up comes
   // back. Pure view state — browsing never rewrites the pile's order.
   const [sift, setSift] = useState(0);
@@ -83,6 +87,25 @@ const ChainView: React.FC<ChainViewProps> = ({
     },
   };
   const g = gestures[room];
+
+  // Room hold-menu actions (the same moves as the swipes, made explicit;
+  // Delete forever routes through the existing confirm, never one-tap).
+  const buildRoomActions = (card: Task): SheetAction[] => {
+    const close = (fn: () => void) => () => { setMenuCard(null); fn(); };
+    if (room === 'done') return [
+      { key: 'undone', label: t('chain.unDone'), onClick: close(() => onUncomplete(card.id)) },
+      { key: 'archive', label: t('chain.toArchive'), onClick: close(() => onArchive(card.id)) },
+    ];
+    if (room === 'archive') return [
+      { key: 'todone', label: t('chain.toDone'), onClick: close(() => onUnarchive(card.id)) },
+      { key: 'trash', label: t('chain.toTrash'), onClick: close(() => onTrash(card.id)) },
+    ];
+    return [
+      { key: 'restore', label: t('chain.restore'), onClick: close(() => onRestoreFromTrash(card.id)) },
+      { key: 'purge', label: t('chain.purge'), destructive: true,
+        onClick: () => { setMenuCard(null); setConfirmingPurge(card); } },
+    ];
+  };
 
   return (
     <div className="px-4 pb-6 space-y-4">
@@ -122,6 +145,7 @@ const ChainView: React.FC<ChainViewProps> = ({
             onSwipeLeft={() => g.onLeft(top.id)}
             onSwipeDown={entries.length > 1 ? () => { setSift(s => s + 1); setConfirmingPurge(null); } : undefined}
             onSwipeUp={entries.length > 1 ? () => { setSift(s => s - 1); setConfirmingPurge(null); } : undefined}
+            onLongPress={() => setMenuCard(top)}
             rightHint={g.rightHint}
             leftHint={g.leftHint}
             className="w-[min(85vw,20rem)] aspect-[5/7]"
@@ -174,6 +198,14 @@ const ChainView: React.FC<ChainViewProps> = ({
           )}
         </div>
       )}
+
+      {/* Room hold-menu: the room's actions, revealed on introspection */}
+      <ActionSheet
+        open={!!menuCard}
+        title={menuCard?.title}
+        actions={menuCard ? buildRoomActions(menuCard) : []}
+        onClose={() => setMenuCard(null)}
+      />
     </div>
   );
 };
