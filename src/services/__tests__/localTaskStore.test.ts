@@ -593,3 +593,26 @@ describe('Promote / move-into (MVP blocker 1, 2026-07-25)', () => {
     await expect(store.moveCardInto(parent.id, child.id)).rejects.toThrow(/descendant/i);
   });
 });
+
+describe('importAsSubdeck (MVP blocker 4, 2026-07-25)', () => {
+  it('adds imported cards as a NEW sub-deck of the top card, leaving the deck intact', async () => {
+    const store = freshStore();
+    await store.createTask('existing top');   // sortOrder via topSortOrder
+    const backup = [
+      { id: 'x', title: 'imported A', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 },
+      { id: 'y', title: 'imported B', completed: false, createdAt: new Date().toISOString(), sortOrder: 2 },
+    ];
+    await store.importAsSubdeck!(backup as any);
+    const all = await store.getAllTasks();
+    expect(all.map(t => t.title)).toEqual(['existing top']); // deck untouched
+    const deck = all[0].decks![0];
+    expect(deck.cards.map(c => c.title).sort()).toEqual(['imported A', 'imported B']);
+  });
+
+  it('imports as the deck itself when there is no card to attach to', async () => {
+    const store = freshStore();
+    const backup = [{ id: 'x', title: 'solo', completed: false, createdAt: new Date().toISOString(), sortOrder: 1 }];
+    await store.importAsSubdeck!(backup as any);
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['solo']);
+  });
+});
