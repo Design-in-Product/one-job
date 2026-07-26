@@ -36,9 +36,9 @@ const MoveIntoPicker: React.FC<MoveIntoPickerProps> = ({
             key={c.id}
             onClick={() => onPick(c.id)}
             style={{ paddingLeft: `${depth * 1.25 + 1}rem` }}
-            className="w-full text-left py-2.5 pr-4 hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors"
+            className="w-full text-left py-3.5 pr-4 text-base leading-snug hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors border-b border-gray-100 last:border-0"
           >
-            {depth > 0 && <span className="text-gray-300 mr-1">↳</span>}
+            {depth > 0 && <span className="text-gray-300 mr-1.5">↳</span>}
             {c.title}
           </button>
         );
@@ -61,7 +61,7 @@ const MoveIntoPicker: React.FC<MoveIntoPickerProps> = ({
         <p className="px-4 py-3 text-sm font-semibold text-gray-500">
           {t('cardMenu.moveIntoTitle', { title: movingCard.title })}
         </p>
-        <div className="flex flex-col overflow-y-auto">
+        <div className="flex flex-col overflow-y-auto min-h-0 flex-1">
           {rows.length > 0 ? (
             rows
           ) : (
