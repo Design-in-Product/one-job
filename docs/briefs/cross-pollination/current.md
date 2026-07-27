@@ -1,51 +1,46 @@
-# Cross-Pollination Brief — July 25, 2026
+# Cross-Pollination Brief — July 27, 2026
 
-A dense infrastructure day at Piper Morgan and Mediajunkie, centered on CIO's upcoming cross-account migration. Two transferable findings emerged: the difference between git's concurrent-safe object store and its single-actor working tree — a distinction that breaks shared checkouts under autonomous multi-agent operation — and a confirmed portability boundary where switching Anthropic accounts empties Claude Code memory completely, regardless of what path the repo lives at.
+Two concrete bash gotchas surfaced across the ecosystem today — both from working automation that silently failed in ways that looked like success. One affects anyone scheduling headless Claude operations on macOS; the other affects any script that scans sibling repos and assumes a fetch was enough.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A git object store is concurrent-safe; the working tree is not — shared checkouts fail structurally at 3+ concurrent autonomous agents
+### `claude -p` on macOS needs Keychain — cron can't provide it; use a LaunchAgent
 
-**From:** Piper Morgan, CIO session log (`dev/2026/07/24/2026-07-24-1039-cio-code-log.md`, §1:15 PM and §Evening); Pard (`logs/2026-07-24-pard-log.md`, §Evening section)
+**From:** Mediajunkie (Pard)
+**Relevant to:** Piper Morgan (duty cycle), Klatch (scheduled intel triggers), any project running scheduled headless Claude operations on macOS
 
-**Relevant to:** Klatch, any project running ≥3 autonomous agents concurrently
+The first truly-scheduled run of Pard's `verify-hooks-drumbeat.sh` probe returned INCONCLUSIVE despite a clean manual run seconds before. Root cause: `claude -p` (non-interactive Claude) authenticates via macOS Keychain credentials, and cron runs in a stripped context that has no Keychain access. LaunchAgents run in the user GUI session and carry full Keychain context. Fix: move any job that calls `claude -p` from crontab to a LaunchAgent plist. Pure git/filesystem jobs remain cron-safe.
 
-Multiple agents sharing one git checkout is a structural failure mode, not a discipline gap — and PM hit it at scale this week. Three working-tree collision incidents in ~96 hours, with only 2 agents accidentally overlapping at any given time. The mechanism: git's *object store* (the `.git/objects/` content-addressable layer) is genuinely concurrent-safe — multiple actors reading, writing, and pushing don't corrupt each other there. But the *working tree* (the checked-out files, the index, HEAD, and any in-progress rebase or merge state) is single-actor-at-a-time. `push-to-ref` and `git push origin HEAD:main` protect the final commit step from this constraint, but NOT the working state accumulated between fires. One agent landing a merge in the shared checkout while another is mid-rebase is a collision with no guard.
+A second bug was found in the same diagnostic: `probe 2>&1 | head -1` captures `head`'s exit code (`$?`), not the probe's — so the script logged `rc=0 INCONCLUSIVE` even though the real failure was a non-zero probe exit. Fix: capture the full output into a variable first, then extract the first line separately. Both bugs produce false INCONCLUSIVE signals that look like scheduling failures but are instrumentation failures.
 
-At 2x accidental concurrency, PM got 3 incidents. At 10-14x intentional concurrency (a full autonomous cohort), the structural failure mode is live by design.
+**Generalization:** `claude -p` = LaunchAgent; pure git/fs = cron.
 
-**The fix:** `git worktree add` for each agent on a shared object store — not separate clones. Disk math: separate clones for 10 agents ≈ 14GB; worktrees on one shared `.git` ≈ 5GB (~1/3 the cost); marginal cost per added agent ~400MB not ~1.4GB. The working tree is isolated; the object store is shared. Commits, pushes, and history are all common; in-progress file and index state are not.
-
-**One trap:** worktrees accumulate. PM currently has 30 stale worktrees from incremental provisioning without a cleanup discipline (methodology-35). Pair any worktree provisioner with a teardown reaper from day one — don't design cleanup in later.
-
-**Suggested action:** For any project running ≥3 concurrent autonomous agents, replace the shared-checkout model with per-agent worktrees (`git worktree add <path> <branch>`). On a shared host (like PM's Amber Mac Studio), the launch script (`amber-agent.sh` or equivalent) can provision the worktree on first invocation and reuse the same path on subsequent launches — keeping path-keyed Claude Code memory stable across fires. Add a reaper job (weekly or at session end) to clean up stale worktrees.
+**Suggested action:** Any team running `claude -p` on a macOS schedule — verify those jobs are LaunchAgents (not crontab). Confirm in `launchctl list` that the plist loads in the GUI context. If a probe returns INCONCLUSIVE on its first scheduled fire, check Keychain context before assuming a scheduling or network issue.
 
 ---
 
-### Switching Anthropic accounts empties Claude Code memory completely — git export is the only safe carrier
+### `git fetch` updates the remote ref but doesn't move local HEAD — bare `git log` silently reads stale history
 
-**From:** Piper Morgan, CIO session log (`dev/2026/07/24/2026-07-24-1039-cio-code-log.md`, §Memory lessons 3–4); Pard (`logs/2026-07-24-pard-log.md`, §Memory portability verified)
+**From:** DinP (Janus)
+**Relevant to:** Klatch (sweep trigger), Piper Morgan (any agent reading sibling repos), any automated scan script
 
-**Relevant to:** Klatch, PM, any project migrating agents across Anthropic accounts
+Janus's duty-cycle rollup was fetching sibling repos (`git fetch origin -q`) and then scanning with bare `git log --since=X`. The fetch succeeded — but bare `git log` reads local HEAD's history, which stays frozen at whatever was last *pulled*. PM's "dark five" migration day was invisible to two consecutive rollup fires: 389 commits, 179 of them from that day, all silently excluded.
 
-Pard verified the portability boundary directly: Claude Code memory lives under the config directory (`~/.claude/projects/<path-key>/memory/`). A fresh config dir — created when you start a new account partition — has no `projects/` tree at all. This means an account switch delivers completely empty memory to the incoming session, regardless of whether the repo is at the same filesystem path on the new machine.
+Fix: every sibling-repo log check must explicitly name the remote ref — `git log origin/main --since=X`, `git show origin/main:path/to/file` — never bare `git log` or `git show` on a repo that was fetched-but-not-pulled. The "Fetch before diagnosing" rule (DinP CLAUDE.md) is necessary but not sufficient: you also have to read the remote ref explicitly, or the fetch does nothing for your reads.
 
-This extends but sharpens the July 22 brief's five-layer migration finding. That finding described same-account cross-device migration as clean via rsync (same config dir, same path key, copy works). A different Anthropic account is a harder boundary: copying the memory directory might or might not work (the underlying mechanism may be account-ID-scoped, not just path-scoped — CIO declined to assume and didn't verify the internal mechanism). The safe default for account-crossing migrations: commit the memory content to git before the migration, and give the incoming session an explicit first-orientation step to read the export. This is account-agnostic by construction and carries no assumption about Claude Code internals.
-
-Operational note from CIO's memory export: the `MEMORY.md` index file (a curated pointer list) undercounted by 16 files vs. the actual directory listing (146 indexed vs. 162 actual files on disk). Export from the filesystem listing directly, not from the index, when the actual file count matters.
-
-**Suggested action:** For any planned cross-account agent migration: (1) treat account-crossing as a memory-wipe event, not a rsync event; (2) commit a full memory export to the project repo ahead of the migration (`git commit` the contents of `~/.claude/projects/<key>/memory/`) so the new session can re-ingest it; (3) give the new session an explicit first-turn instruction to read the export — it won't surface through ambient retrieval the way native memory would; (4) count actual files on disk when building the export, not lines in the index file. For same-account cross-device migration, the July 22 approach (rsync) remains valid.
-
----
+**Suggested action:** Audit any repo-scanning script — the sweep trigger itself, rollup scripts, mail-drain loops — and replace bare `git log` calls on sibling repos with `git log origin/main ...`. The pattern `git fetch origin -q && git log --since=X` silently reads stale data until this change is made.
 
 ## Sources Read
 
-- **Piper Morgan** — git log (48h): 25+ commits. Key reads: CIO session log `dev/2026/07/24/2026-07-24-1039-cio-code-log.md` (full: migration prep, memory export, handoff drafted, reviewed by Pard, shared-checkout rethink); Lead Dev session log `dev/2026/07/24/2026-07-24-0647-lead-code-log.md` (lesson banked: oscillator tag retires on sustained green run, not one observation — not elevated; housekeeping activity); Comms session log `dev/2026/07/24/2026-07-24-0618-comms-code-log.md` (case-sensitive filename bug catch — operational, not elevated).
-- **Mediajunkie (Pard)** — `logs/2026-07-24-pard-log.md` (full: Vergil SSH fixed, pm partition cloned, CIO handoff reviewed both ways, shared-checkout rethink endorsed, git-identity fix adopted cross-repo).
-- **Klatch** — git log (48h): Janus coordination mail (uncommitted local state heads-up to Calliope) + brief delivery. No new Klatch-internal methodology.
-- **Secondary repos (48h window):** globe, one-job, cookie-monster — Janus mail (git-identity hygiene) + brief delivery only; nyt-crossword — automated status commits; atlas, cuneo, optilisten — no commits. None elevated.
+- **Klatch** — 2 commits: automated external scan (Opus 5 released, not yet in model picker; Claude Code v2.1.216 fixed a quadratic slowdown in 50+-turn sessions; MCP 2026-07-28 spec ships tomorrow); cross-pollination brief delivery. No agent session logs.
+- **Piper Morgan** — High activity (30+ commits in 48h): Amber migration day; freeze-check v0.5 PARKED state; memory-index line/byte guard fixes; Comms editorial calendar; watchdog cutover. New finding extracted (LaunchAgent/Keychain, above).
+- **DinP (hub)** — Janus rollup correction after stale-checkout bug; Themis quiet Sunday. New finding extracted (git log origin/main discipline, above).
+- **One Job** — 5 commits: Coral feature work (Blocker 4 import-as-subdeck, done-container sealing, flip-back control, lifecycle-room hold-menu, rc.10 import landing). Pure-code commits; no methodology narration.
+- **Mediajunkie** — 3 commits: drumbeat cron→LaunchAgent migration, Pard day-close. Finding extracted.
+- **Globe, Weather, Cookie Monster** — 1 commit each: cross-pollination brief delivery only.
+- **Atlas, Cuneo, Optilisten, NYT-Crossword** — quiet (no commits in 48h window for non-status repos).
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
