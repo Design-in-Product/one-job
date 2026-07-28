@@ -103,46 +103,42 @@ describe('flattenWithParent (chain rooms gather cards from every depth)', () => 
   });
 });
 
-describe('reachableMoveTargets (you can only move where you could navigate)', () => {
+describe('activeSiblingTargets (move-into = push to a sibling; promote = pop)', () => {
   const deck = (id: string, cards: Task[]) =>
     ({ id, name: null, createdAt: new Date('2026-01-01'), cards });
 
-  it('excludes the moving card and its whole subtree (no cycles)', async () => {
-    const { reachableMoveTargets } = await import('../tasks');
-    const moving = mk({ id: 'move', decks: [deck('d', [mk({ id: 'child' })])] });
-    const tree: Task[] = [moving, mk({ id: 'other' })];
-    expect(reachableMoveTargets(tree, moving).map(t => t.card.id)).toEqual(['other']);
-  });
-
-  it('excludes completed cards AND everything nested inside them', async () => {
-    const { reachableMoveTargets } = await import('../tasks');
-    // "crumlish .me" (done) holds "Layers of Meta" (active) — the real
-    // 2026-07-26 shape. Neither may be offered as a move target: the done
-    // card is hidden from the deck, so nothing under it is reachable.
-    const done = mk({ id: 'crumlish', completed: true, decks: [
-      deck('bd', [mk({ id: 'layers' })]),
-    ]});
+  it('offers only the active peers of the same deck, excluding self', async () => {
+    const { activeSiblingTargets } = await import('../tasks');
     const moving = mk({ id: 'move' });
     const tree: Task[] = [
-      mk({ id: 'parent', decks: [deck('pd', [done, mk({ id: 'active-sib' })])] }),
+      mk({ id: 'parent', decks: [deck('pd', [
+        moving,
+        mk({ id: 'active-sib' }),
+        mk({ id: 'done-sib', completed: true }), // sealed — never a target
+      ])] }),
+      mk({ id: 'elsewhere' }), // not a sibling — not offered
+    ];
+    expect(activeSiblingTargets(tree, moving).map(c => c.id)).toEqual(['active-sib']);
+  });
+
+  it("treats top-level cards as each other's siblings", async () => {
+    const { activeSiblingTargets } = await import('../tasks');
+    const moving = mk({ id: 'move' });
+    const tree: Task[] = [
       moving,
+      mk({ id: 'peer' }),
+      mk({ id: 'done-peer', completed: true }),
     ];
-    const ids = reachableMoveTargets(tree, moving).map(t => t.card.id);
-    expect(ids).toContain('parent');
-    expect(ids).toContain('active-sib');
-    expect(ids).not.toContain('crumlish'); // done → hidden
-    expect(ids).not.toContain('layers');   // buried under a done card
+    expect(activeSiblingTargets(tree, moving).map(c => c.id)).toEqual(['peer']);
   });
 
-  it('reports indent depth, descending only through active cards', async () => {
-    const { reachableMoveTargets } = await import('../tasks');
-    const tree: Task[] = [
-      mk({ id: 'top', decks: [deck('d', [mk({ id: 'sub' })])] }),
-    ];
+  it('returns empty when the moving card is the only active card in its deck', async () => {
+    const { activeSiblingTargets } = await import('../tasks');
     const moving = mk({ id: 'move' });
-    const targets = reachableMoveTargets([...tree, moving], moving);
-    expect(targets.find(t => t.card.id === 'top')?.depth).toBe(0);
-    expect(targets.find(t => t.card.id === 'sub')?.depth).toBe(1);
+    const tree: Task[] = [
+      mk({ id: 'parent', decks: [deck('pd', [moving, mk({ id: 'done', completed: true })])] }),
+    ];
+    expect(activeSiblingTargets(tree, moving)).toEqual([]);
   });
 });
 
