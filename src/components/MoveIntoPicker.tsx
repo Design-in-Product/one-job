@@ -1,14 +1,14 @@
 // src/components/MoveIntoPicker.tsx
-// Target picker for "Move into…" (MVP blocker 1). A hierarchical outline of
-// every card the moving card could land inside — reachableMoveTargets keeps
-// it to exactly the places you can navigate to (active cards only), so a
-// moved card can never be buried inside a completed, hidden card (the
-// 2026-07-26 "Layers of Meta vanished" bug). Its own subtree is excluded so
-// you can't create a cycle.
+// Target picker for "Move into…" (MVP blocker 1). Targets are the moving
+// card's ACTIVE SIBLINGS only (Xian, 2026-07-28): move-into pushes one
+// level down, promote pops one level up — push vs. pop. This keeps the
+// list short and legible (the whole-tree outline both overwhelmed the
+// sheet and once offered a completed card, burying active work); deeper
+// nesting still works by repeating the move from inside the new home.
 
 import React from 'react';
 import { Task } from '@/types/task';
-import { reachableMoveTargets } from '@/domain/tasks';
+import { activeSiblingTargets } from '@/domain/tasks';
 import { useTranslation } from 'react-i18next';
 
 interface MoveIntoPickerProps {
@@ -27,17 +27,7 @@ const MoveIntoPicker: React.FC<MoveIntoPickerProps> = ({
   const { t } = useTranslation();
   if (!movingCard) return null;
 
-  const rows = reachableMoveTargets(allCards, movingCard).map(({ card, depth }) => (
-    <button
-      key={card.id}
-      onClick={() => onPick(card.id)}
-      style={{ paddingLeft: `${depth * 1.25 + 1}rem` }}
-      className="w-full text-left py-3.5 pr-4 text-base leading-snug hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors border-b border-gray-100 last:border-0"
-    >
-      {depth > 0 && <span className="text-gray-300 mr-1.5">↳</span>}
-      {card.title}
-    </button>
-  ));
+  const targets = activeSiblingTargets(allCards, movingCard);
 
   return (
     <div
@@ -49,12 +39,20 @@ const MoveIntoPicker: React.FC<MoveIntoPickerProps> = ({
         style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="px-4 py-3 text-sm font-semibold text-gray-500">
+        <p className="px-4 py-3 text-sm font-semibold text-gray-500 border-b border-gray-100">
           {t('cardMenu.moveIntoTitle', { title: movingCard.title })}
         </p>
-        <div className="flex flex-col overflow-y-auto min-h-0 flex-1">
-          {rows.length > 0 ? (
-            rows
+        <div className="overflow-y-auto min-h-0 flex-1">
+          {targets.length > 0 ? (
+            targets.map(card => (
+              <button
+                key={card.id}
+                onClick={() => onPick(card.id)}
+                className="block w-full text-left px-4 py-3.5 text-base leading-snug hover:bg-gray-50 active:bg-gray-100 text-gray-800 truncate transition-colors border-b border-gray-100 last:border-0"
+              >
+                {card.title}
+              </button>
+            ))
           ) : (
             <p className="px-4 py-6 text-center text-sm text-gray-400">
               {t('cardMenu.moveIntoEmpty')}
