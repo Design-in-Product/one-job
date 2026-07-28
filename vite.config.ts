@@ -59,5 +59,9 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     environment: "jsdom",
+    // jsdom defers localStorage to the platform, and Node 26's built-in is
+    // inert without --localstorage-file. setup.ts installs a deterministic
+    // in-memory Storage so the suite is Node-version independent.
+    setupFiles: ["./src/test/setup.ts"],
   },
 }));
