@@ -618,6 +618,38 @@ all **undeclared dependencies**. Full write-up:
 **both 22 and 26**, so host-dependence gets caught by machines rather
 than discovered on arrival. Amber runs 26 (Homebrew, no nvm).
 
+**Ports:** **8081 is One Job's**, recorded in Amber's port registry
+(Pard, 2026-07-28). 8000 is ours too, for FastAPI if `?remote` is ever
+needed. 8080 belongs to mediajunkie's `local_chat.py`.
+
+### GIT IDENTITY ON AMBER (convention, 2026-07-28)
+
+The rule, in one line (Pard, constellation-wide after Janus's
+git-identity hygiene closure):
+
+> **Repo-local identity names the resident; visitors override
+> per-commit; global stays unset forever.**
+
+- This repo's commits are authored **`Coral (One Job)
+  <coral@onejob.local>`**, set repo-local.
+- **Global `user.*` is deliberately unset** volume-wide. That is a
+  feature: an unconfigured repo cannot silently inherit somebody else's
+  name. It also means a newly provisioned repo will attribute its first
+  commits to whoever provisioned it until the local identity is set —
+  which is exactly what happened here (three commits carry Pard's name),
+  and is now a step in Amber's provisioning checklist.
+- **Working in another agent's repo?** Never touch their config.
+  Override per commit:
+  ```bash
+  git -c user.name="Coral (One Job)" -c user.email=coral@onejob.local commit …
+  ```
+
+**Authorship seam:** commits before **2026-07-28** are
+`Claude <noreply@anthropic.com>`; from that date they are
+`Coral (One Job)`. The boundary is the Amber migration and is meant to
+be visible — Xian's ask was simply that the switch date be noted in the
+repo, which this paragraph is.
+
 **Known Working State:**
 - ✅ Contract verification: 100% fidelity between frontend-backend APIs
 - ✅ Build system: Production builds working (`npm run build`)

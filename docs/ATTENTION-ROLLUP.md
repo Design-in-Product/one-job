@@ -115,30 +115,28 @@ CI pins Node 22. Amber runs Node 26. That gap is exactly what produced
 today's 63 red tests, and it will produce another one eventually.
 
 **Recommendation:** declare **Node 22 the floor, 26 the development
-reality** — I've added an `engines` field and a `.nvmrc`, and a CI test
-job that runs **both** so host-dependence gets caught by machines
-instead of by me on a Tuesday. No action needed from you unless you
-want a single pinned version instead.
+reality** — I've added an `engines` field and a CI test job that runs
+**both**, so host-dependence gets caught by machines instead of by me
+on a Tuesday. (Verified: run 30412029053, `test (22)` and `test (26)`
+both green.) No action needed unless you want a single pinned version.
+
+**No `.nvmrc`, deliberately** — an earlier draft of this doc said I'd
+added one; I hadn't, and shouldn't. Amber has no nvm, and a file
+pinning 22 would misstate the dev reality, which is the exact trap this
+item exists to close.
 
 ### 🟡 3. Dev server port — 8080 is taken on Amber
 `mediajunkie/local_chat.py` holds 8080. Vite auto-falls-back to 8081,
 so nothing is broken, but **your phone bookmarks and the docs both say
 8080**.
 
-**Recommendation:** leave `vite.config.ts` alone (auto-fallback works,
-and hard-coding 8081 breaks your muscle memory the day mediajunkie's
-8080 retires — Pard says that's pending your call). I've documented the
-situation instead. Tell me if you'd rather I pin 8081.
+**Update (Pard, this evening):** **8081 is formally ours** in Amber's
+port registry, so the fallback is now a claim rather than an accident.
 
-### 🟡 4. Git identity for my commits on Amber (with Pard)
-one-job had no git identity, so Pard's provisioning commits carry
-*their* name. The volume's convention is repo-local identity naming the
-resident agent (`Pard (Mediajunkie)`, `Themis (DinP)`).
-
-**Working default:** I set repo-local `Claude <noreply@anthropic.com>`
-— continuity with 17 of the last 20 one-job commits, rather than a
-visible authorship seam mid-project. Memo is with Pard; if the cohort
-convention is `Coral (One Job)`, it is one command to switch.
+**Recommendation:** still leave `vite.config.ts` alone — auto-fallback
+works, and hard-coding 8081 breaks your muscle memory on the day
+mediajunkie's 8080 retires (pending your call, per Pard). Documented
+instead. Tell me if you'd rather I pin it.
 
 ### 🟡 5. Relay's future (carried forward — still yours)
 Once I am on a Mac, is Relay still needed as a separate build agent, or
@@ -168,6 +166,19 @@ is filed and authoritative. Nothing needed from me.
 ---
 
 ## Settled
+
+*(2026-07-28) Git identity* — Pard: switch to the resident-agent form,
+**`Coral (One Job) <coral@onejob.local>`**, repo-local; the network
+standardized on named-agent attribution. Visitors to another agent's
+repo override per-commit (`git -c user.name=… commit`); global stays
+unset forever. Done, and the authorship seam at 2026-07-28 is noted in
+CLAUDE.md — which was your condition. Pard also accepted the
+provisioning-checklist suggestion and is turning it into an
+`amber-agent --identity` flag, so it becomes mechanism rather than
+memory.
+
+*(2026-07-28) Port claim* — **8081 is One Job's**, in Amber's registry.
+8000 also ours. No need for 5173.
 
 *(2026-07-28) Session shape on Amber* — Pard: one long-lived session,
 repo direct, no worktrees; ff-to-main + no-PRs flow unchanged.
