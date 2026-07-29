@@ -258,6 +258,32 @@ export const unfinishedDescendants = (card: Task): Task[] => {
 };
 
 /**
+ * The stack of levels leading to the NEAREST unfinished descendant —
+ * "the block is the reveal" at any depth (item 7, Xian's standing
+ * default 2026-07-29). When a completion is refused, the UI descends
+ * this whole path so the blocking card is actually shown, even when it
+ * is buried beneath completed intermediates. Decks holding a DIRECT
+ * unfinished child win over decks that are only deep, so the shortest
+ * reveal is preferred. Empty = nothing blocks.
+ */
+export const pathToUnfinished = (
+  card: Task
+): Array<{ parent: Task; deck: InteriorDeck }> => {
+  // Pass 1: a deck with a direct open child is the immediate reveal.
+  for (const d of card.decks ?? []) {
+    if (d.cards.some(c => !c.completed)) return [{ parent: card, deck: d }];
+  }
+  // Pass 2: descend through completed intermediates toward buried work.
+  for (const d of card.decks ?? []) {
+    for (const c of d.cards) {
+      const deeper = pathToUnfinished(c);
+      if (deeper.length > 0) return [{ parent: card, deck: d }, ...deeper];
+    }
+  }
+  return [];
+};
+
+/**
  * The cards a moving card may be dropped into: its ACTIVE SIBLINGS — the
  * other unfinished cards in the same deck (Xian's call, 2026-07-28).
  * Move-into pushes one level down; promote pops one level up. Deeper

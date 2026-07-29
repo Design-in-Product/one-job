@@ -1135,3 +1135,48 @@ describe('root deck CRUD + active deck (R2.1 stage 2, 2026-07-29)', () => {
     expect((await store.getDecks())[0].cards[0].completed).toBe(true);
   });
 });
+
+describe('moveCardToDeck (R2.1 stage 3: promote-at-top gains a meaning)', () => {
+  const KEY9 = 'movedeck';
+  const store9 = () => new LocalTaskStore(KEY9);
+
+  it('moves a top-level card to the TOP of another deck (newest-on-top rule)', async () => {
+    localStorage.clear();
+    const store = store9();
+    const mover = await store.createTask('mover');
+    const d2 = await store.createDeck('work');
+    await store.switchDeck(d2.id);
+    await store.createTask('already here');
+    await store.moveCardToDeck(mover.id, d2.id);
+    const decks = await store.getDecks();
+    expect(decks[0].cards).toHaveLength(0);
+    // top of target: active order puts the mover first
+    await store.switchDeck(d2.id);
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['mover', 'already here']);
+  });
+
+  it('the whole interior rides along', async () => {
+    localStorage.clear();
+    const store = store9();
+    const mover = await store.createTask('mover');
+    const deck = await store.createSubstack(mover.id, 'steps');
+    await store.addSubstackTask(deck.id, 'inside');
+    const d2 = await store.createDeck('work');
+    await store.moveCardToDeck(mover.id, d2.id);
+    const decks = await store.getDecks();
+    expect(decks[1].cards[0].decks![0].cards[0].title).toBe('inside');
+  });
+
+  it('refuses unknown cards, unknown decks, no-op same-deck moves, and nested cards', async () => {
+    localStorage.clear();
+    const store = store9();
+    const top = await store.createTask('top');
+    const inner = await store.createSubstack(top.id, null);
+    const nested = await store.addSubstackTask(inner.id, 'nested');
+    const d2 = await store.createDeck('work');
+    await expect(store.moveCardToDeck('ghost', d2.id)).rejects.toThrow(/not found/i);
+    await expect(store.moveCardToDeck(top.id, 'ghost-deck')).rejects.toThrow(/deck/i);
+    await expect(store.moveCardToDeck(top.id, (await store.getDecks())[0].id)).rejects.toThrow(/already/i);
+    await expect(store.moveCardToDeck(nested.id, d2.id)).rejects.toThrow(/top-level|promote/i);
+  });
+});

@@ -64,6 +64,8 @@ export interface TaskStore {
   renameDeck?(id: string, name: string): Promise<import('@/types/task').InteriorDeck>;
   deleteDeck?(id: string): Promise<void>;
   activeDeckId?(): string;
+  /** Move a top-level card to another root deck (stage 3). */
+  moveCardToDeck?(cardId: string, deckId: string): Promise<import('@/types/task').Task>;
   /** Session-deep undo: restore the state before the last mutation. */
   undoLast?(): Promise<boolean>;
   canUndo?(): boolean;

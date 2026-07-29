@@ -163,3 +163,45 @@ describe('unfinishedDescendants (a card is not done until its whole subtree is)'
     expect(unfinishedDescendants(card)).toEqual([]);
   });
 });
+
+describe('pathToUnfinished (the block is the reveal, at ANY depth — item 7)', () => {
+  const mk = (over: Partial<Task>): Task => ({
+    id: 'x', title: 't', completed: false, createdAt: new Date('2026-07-01'), ...over,
+  } as Task);
+
+  it('one level: returns the deck holding a direct unfinished child', async () => {
+    const { pathToUnfinished } = await import('../tasks');
+    const deck = { id: 'd1', name: null, createdAt: new Date(), cards: [mk({ id: 'open', title: 'open child' })] };
+    const parent = mk({ id: 'p', decks: [deck] });
+    const path = pathToUnfinished(parent);
+    expect(path.map(l => l.deck.id)).toEqual(['d1']);
+    expect(path[0].parent.id).toBe('p');
+  });
+
+  it('deep: walks THROUGH a completed child to the deck holding the buried card', async () => {
+    const { pathToUnfinished } = await import('../tasks');
+    const inner = { id: 'd2', name: null, createdAt: new Date(), cards: [mk({ id: 'buried', title: 'buried open' })] };
+    const doneChild = mk({ id: 'c', completed: true, completedAt: new Date(), decks: [inner] });
+    const outer = { id: 'd1', name: null, createdAt: new Date(), cards: [doneChild] };
+    const parent = mk({ id: 'p', decks: [outer] });
+    const path = pathToUnfinished(parent);
+    expect(path.map(l => `${l.parent.id}>${l.deck.id}`)).toEqual(['p>d1', 'c>d2']);
+  });
+
+  it('prefers a deck with a DIRECT open child over one that is only deep', async () => {
+    const { pathToUnfinished } = await import('../tasks');
+    const deepInner = { id: 'dd', name: null, createdAt: new Date(), cards: [mk({ id: 'deep' })] };
+    const deepChild = mk({ id: 'dc', completed: true, completedAt: new Date(), decks: [deepInner] });
+    const deckDeep = { id: 'd1', name: null, createdAt: new Date(), cards: [deepChild] };
+    const deckDirect = { id: 'd2', name: null, createdAt: new Date(), cards: [mk({ id: 'direct' })] };
+    const parent = mk({ id: 'p', decks: [deckDeep, deckDirect] });
+    expect(pathToUnfinished(parent).map(l => l.deck.id)).toEqual(['d2']);
+  });
+
+  it('empty when the whole subtree is done', async () => {
+    const { pathToUnfinished } = await import('../tasks');
+    const deck = { id: 'd', name: null, createdAt: new Date(),
+      cards: [mk({ id: 'done', completed: true, completedAt: new Date() })] };
+    expect(pathToUnfinished(mk({ id: 'p', decks: [deck] }))).toEqual([]);
+  });
+});

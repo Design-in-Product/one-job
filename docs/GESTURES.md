@@ -169,3 +169,16 @@ Xian's calls (message of 2026-07-29):
   both: every mutation is undoable back to session start, including a
   whole-deck import. Cross-session recovery stays with the dated
   snapshots.
+
+### Shipped 2026-07-29 (evening) — R2.1 stages 1–3
+
+- **The root is a deck** (schema v3, invisible migration, rc.16).
+- **Decks…** in the hold-menu (rc.17) — only when a device has >1 deck
+  or a pro grant; names, no counts. Creation is the sole pro-walled act.
+- **"Move to another deck…"** on a TOP-LEVEL card's hold-menu (rc.18)
+  when another deck exists — promote-at-top gaining its meaning: pop at
+  the top of the tree moves sideways. Lands on TOP of the target
+  (newest-on-top). Nested cards still promote one altitude at a time.
+- **The block is the reveal at any depth** (rc.18, item 7): a refused
+  completion descends the whole path to the nearest open card, through
+  completed intermediates — you are shown the blocker, not told about it.

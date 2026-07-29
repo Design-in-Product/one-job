@@ -32,7 +32,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
-import { findCardById, findParentOfCard, unfinishedDescendants } from '@/domain/tasks';
+import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished } from '@/domain/tasks';
 import { useShake } from '@/hooks/use-shake';
 import { hasPro } from '@/services/entitlements';
 import { InteriorDeck } from '@/types/task';
@@ -49,6 +49,8 @@ const Index = () => {
   const [chainTasks, setChainTasks] = useState<Task[]>([]);
   const [deckCount, setDeckCount] = useState(1);
   const [deckSheet, setDeckSheet] = useState<InteriorDeck[] | null>(null);
+  // Stage 3: picking a destination deck for a top-level card
+  const [deckMove, setDeckMove] = useState<{ cardId: string; decks: InteriorDeck[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -262,6 +264,28 @@ const Index = () => {
     }
   };
 
+  const handleStartDeckMove = async (cardId: string) => {
+    setMenuCard(null);
+    const store = getTaskStore();
+    if (!store.getDecks) return;
+    const others = (await store.getDecks()).filter(d => d.id !== store.activeDeckId?.());
+    setDeckMove({ cardId, decks: others });
+  };
+  const handleMoveToDeck = async (deckId: string) => {
+    const move = deckMove;
+    setDeckMove(null);
+    const store = getTaskStore();
+    if (!move || !store.moveCardToDeck) return;
+    try {
+      const card = await store.moveCardToDeck(move.cardId, deckId);
+      const deckName = (await store.getDecks!()).find(d => d.id === deckId)?.name ?? '';
+      toast.success(t('toasts.movedToDeck', { title: card.title, deck: deckName }));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+
   // Session-deep undo (Xian, 2026-07-29): the store replays its state from
   // before the last mutation — any mutation, including a whole-deck import.
   // Reached from the long-press menu and (on devices with motion) a shake,
@@ -341,8 +365,12 @@ const Index = () => {
       if (card && unfinishedInside.length > 0) {
         toast.info(t('toasts.parentBlocked', { count: unfinishedInside.length }), { duration: 6000 });
         await refreshAll(); // re-deal the refused card
-        const blockingDeck = card.decks?.find(d => d.cards.some(c => !c.completed));
-        if (blockingDeck) setSubstackStack(prev => [...prev, { parentTask: card, substack: blockingDeck }]);
+        // The block is the reveal at ANY depth (item 7): descend the whole
+        // path to the nearest open card, through completed intermediates.
+        const path = pathToUnfinished(card);
+        if (path.length > 0) {
+          setSubstackStack(prev => [...prev, ...path.map(l => ({ parentTask: l.parent, substack: l.deck }))]);
+        }
         return;
       }
       try {
@@ -364,8 +392,12 @@ const Index = () => {
       if (parent && unfinished.length > 0) {
         toast.info(t('toasts.parentBlocked', { count: unfinished.length }), { duration: 6000 });
         refreshTasks(); // re-deal the refused card
-        const blockingDeck = parent.decks?.find(d => d.cards.some(c => !c.completed));
-        if (blockingDeck) setSubstackStack(prev => [...prev, { parentTask: parent, substack: blockingDeck }]);
+        // Item 7: the reveal follows the same whole-subtree walk as the
+        // block, so buried work is shown, not just alluded to.
+        const path = pathToUnfinished(parent);
+        if (path.length > 0) {
+          setSubstackStack(prev => [...prev, ...path.map(l => ({ parentTask: l.parent, substack: l.deck }))]);
+        }
         return;
       }
       const snapshot = snapshotTask(taskId);
@@ -469,6 +501,11 @@ const Index = () => {
       onClick: () => handlePromote(card.id) });
     if (store.moveCardInto) actions.push({ key: 'move', label: t('cardMenu.moveInto'),
       onClick: () => handleStartMove(card.id) });
+    // Stage 3: at the top level, "promote" becomes "move to another deck" —
+    // shown only when there is another deck to move to (no cruft otherwise).
+    if (!canPromote && deckCount > 1 && store.moveCardToDeck)
+      actions.push({ key: 'movedeck', label: t('cardMenu.moveToDeck'),
+        onClick: () => handleStartDeckMove(card.id) });
     actions.push({ key: 'edit', label: t('cardMenu.edit'),
       onClick: () => { setMenuCard(null); handleCardClick(card); } });
     return actions;
@@ -551,6 +588,18 @@ const Index = () => {
             : []),
         ]}
         onClose={() => setDeckSheet(null)}
+      />
+
+      {/* Stage 3: destination picker for a top-level card's deck move */}
+      <ActionSheet
+        open={deckMove !== null}
+        title={t('decks.moveTitle')}
+        actions={(deckMove?.decks ?? []).map(d => ({
+          key: d.id,
+          label: d.name ?? t('decks.unnamed'),
+          onClick: () => handleMoveToDeck(d.id),
+        }))}
+        onClose={() => setDeckMove(null)}
       />
 
       {/* Shake-to-undo asks before acting (a shake can be an accident) */}

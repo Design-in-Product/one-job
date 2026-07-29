@@ -198,7 +198,8 @@
       "undoneLast": "Undone.",
       "housekeeping_one": "Tidied up: {{count}} done card over 30 days old moved to the Archive.",
       "housekeeping_other": "Tidied up: {{count}} done cards over 30 days old moved to the Archive.",
-      "deckCreated": "Deck \"{{name}}\" created — you’re in it now"
+      "deckCreated": "Deck \"{{name}}\" created — you’re in it now",
+      "movedToDeck": "\"{{title}}\" moved to {{deck}} — top of that deck"
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -251,7 +252,8 @@
       "edit": "Edit",
       "cancel": "Cancel",
       "moveIntoTitle": "Move “{{title}}” into…",
-      "moveIntoEmpty": "No other card to move this into yet."
+      "moveIntoEmpty": "No other card to move this into yet.",
+      "moveToDeck": "Move to another deck…"
     },
     "undoDialog": {
       "title": "Undo last action?",
@@ -261,7 +263,8 @@
     "decks": {
       "title": "Decks",
       "new": "+ New deck",
-      "unnamed": "Unnamed deck"
+      "unnamed": "Unnamed deck",
+      "moveTitle": "Move to which deck?"
     }
   }
 }
