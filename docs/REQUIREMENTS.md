@@ -45,6 +45,33 @@ One Job is a mobile-first task management application built with domain-driven d
 > advance / left to regress, provenance-aware return). FR1.2.1's binary
 > truth is preserved at leaf level; the flags above become derived.
 
+#### FR1.2b Completion is whole-subtree (Vision Item 15)
+
+- **FR1.2b.1** A card SHALL NOT complete while any card in its interior
+  subtree, **at any depth**, is unfinished — including work buried
+  beneath an already-completed intermediate card. "Done" means the whole
+  job is done, and unfinished work must never be sealed inside a done
+  card.
+- **FR1.2b.2** This rule SHALL be enforced in the **persistence layer**,
+  not only in the UI (added 2026-07-28). Until then it lived solely in
+  `Index.tsx`, meaning any other path to completion could silently bury
+  active work. The UI keeps its own check because it must explain *why*
+  and bring the blocking deck into focus — behaviour a thrown error
+  cannot provide — but the store is the backstop.
+- **FR1.2b.3** A refused completion SHALL NOT animate as though it
+  succeeded. The card returns to rest face-up; it must not fly out, and
+  it must not flip face-down and re-deal (fixed 2026-07-28).
+- **FR1.2b.4** *Known gap, pending Xian's call:* when the blocking work
+  is deeper than the card's direct children, the block fires correctly
+  but the app has no deck to descend into, so "the block is the reveal"
+  does not hold at depth. See `docs/ATTENTION-ROLLUP.md` item 7.
+
+> **Corollary — completed cards are sealed** (2026-07-26): a done card
+> accepts no new cards, no new decks, and no move-into. Together with
+> FR1.2b this makes new strandings impossible; stranded work can still
+> *arrive* via legacy data and imports, which is why the guards are
+> checked on the way out as well as the way in.
+
 #### FR1.3 Task Deferral System
 - **FR1.3.1** Users SHALL be able to defer todo tasks through swipe-left gesture
 - **FR1.3.2** Deferred tasks SHALL move to bottom of task stack
