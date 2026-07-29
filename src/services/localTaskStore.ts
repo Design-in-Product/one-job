@@ -13,7 +13,44 @@ import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 const SNAPSHOT_RETENTION = 7;
 
 export class LocalTaskStore implements TaskStore {
-  protected tasks: Task[] = [];
+  // v3 (R2.1 stage 1): ROOT DECKS are the source of truth — the root is
+  // "the interior of no card," same InteriorDeck shape as every card's
+  // interior. The model carries N decks from day one; today's UI (and
+  // the pro wall, when the business work lands) uses deck[0].
+  protected decks: InteriorDeck[] = [];
+
+  /** deck[0]'s cards — the deck today's UI shows. All the single-deck-era
+      code reads and writes through this accessor unchanged; cross-deck
+      operations (find, housekeeping, trash, undo) walk this.decks. */
+  protected get tasks(): Task[] {
+    return this.decks[0].cards;
+  }
+  protected set tasks(cards: Task[]) {
+    this.decks[0].cards = cards;
+  }
+
+  /** The invariant every load path maintains: at least one root deck
+      exists. "deck-1" per Xian's naming call (2026-07-29). */
+  private ensureRootDeck() {
+    if (this.decks.length === 0) {
+      this.decks.push({
+        id: `root-${uuidv4()}`,
+        name: 'deck-1',
+        createdAt: new Date(),
+        cards: [],
+      });
+    }
+  }
+
+  /** Adopt a migrated document: revive dates, guarantee a root deck. */
+  private loadDocument(doc: { decks: InteriorDeck[] }) {
+    this.decks = doc.decks.map(d => ({
+      ...d,
+      createdAt: new Date(d.createdAt),
+      cards: d.cards.map(reviveTask),
+    }));
+    this.ensureRootDeck();
+  }
 
   constructor(
     private storageKey: string,
@@ -50,7 +87,7 @@ export class LocalTaskStore implements TaskStore {
         for (const d of c.decks ?? []) walk(d.cards);
       }
     };
-    walk(this.tasks);
+    for (const deck of this.decks) walk(deck.cards);
     if (moved > 0) this.saveTasks();
     this.lastHousekeeping = moved;
   }
@@ -78,15 +115,21 @@ export class LocalTaskStore implements TaskStore {
       try {
         const raw = JSON.parse(saved);
         const wasV1 = Array.isArray(raw);
+        const wasV2 = !wasV1 && raw !== null && typeof raw === 'object'
+          && (raw as { schemaVersion?: number }).schemaVersion === 2;
+        // Migration paranoia: preserve the untouched prior-version
+        // document once, BEFORE anything writes the new shape
+        // (irreversibility umbrella)
         if (wasV1 && !localStorage.getItem(`${this.storageKey}.v1backup`)) {
-          // Migration paranoia: preserve the untouched v1 document once,
-          // BEFORE anything writes the new shape (irreversibility umbrella)
           localStorage.setItem(`${this.storageKey}.v1backup`, saved);
         }
-        this.tasks = migrateDocument(raw).cards.map(reviveTask);
-        if (wasV1) {
-          console.warn(`Migrated "${this.storageKey}" v1 → v${CURRENT_SCHEMA_VERSION}; v1 copy kept at ${this.storageKey}.v1backup`);
-          this.saveTasks(); // persist the v2 envelope immediately
+        if (wasV2 && !localStorage.getItem(`${this.storageKey}.v2backup`)) {
+          localStorage.setItem(`${this.storageKey}.v2backup`, saved);
+        }
+        this.loadDocument(migrateDocument(raw));
+        if (wasV1 || wasV2) {
+          console.warn(`Migrated "${this.storageKey}" v${wasV1 ? 1 : 2} → v${CURRENT_SCHEMA_VERSION}; prior copy kept at ${this.storageKey}.v${wasV1 ? 1 : 2}backup`);
+          this.saveTasks(); // persist the v3 envelope immediately
         } else {
           this.writeSnapshot(this.serialize());
         }
@@ -100,13 +143,14 @@ export class LocalTaskStore implements TaskStore {
     } else if (this.restoreFromSnapshot()) {
       return;
     }
+    this.ensureRootDeck();
     this.tasks = [...seedTasks];
     this.saveTasks();
   }
 
-  /** Current storage document as a string (v2 envelope). */
+  /** Current storage document as a string (v3 envelope). */
   private serialize(): string {
-    return JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, cards: this.tasks });
+    return JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, decks: this.decks });
   }
 
   /**
@@ -125,11 +169,13 @@ export class LocalTaskStore implements TaskStore {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
       try {
-        // Snapshots may predate v2 (bare arrays) — migrate on the way in
-        const tasks = migrateDocument(JSON.parse(raw)).cards.map(reviveTask);
-        if (tasks.length === 0) continue;
-        this.tasks = tasks;
-        console.warn(`"${this.storageKey}" was missing; restored ${tasks.length} tasks from ${key}`);
+        // Snapshots may predate v3 (v2 envelopes, even bare v1 arrays)
+        // — migrate on the way in
+        const doc = migrateDocument(JSON.parse(raw));
+        const count = doc.decks.reduce((n, d) => n + d.cards.length, 0);
+        if (count === 0) continue;
+        this.loadDocument(doc);
+        console.warn(`"${this.storageKey}" was missing; restored ${count} tasks from ${key}`);
         this.saveTasks();
         return true;
       } catch {
@@ -146,7 +192,8 @@ export class LocalTaskStore implements TaskStore {
       const existing = localStorage.getItem(key);
       if (existing) {
         try {
-          if (migrateDocument(JSON.parse(existing)).cards.length > 0) return;
+          const prior = migrateDocument(JSON.parse(existing));
+          if (prior.decks.some(d => d.cards.length > 0)) return;
         } catch {
           /* unreadable existing snapshot — overwriting is an improvement */
         }
@@ -180,7 +227,7 @@ export class LocalTaskStore implements TaskStore {
   async undoLast(): Promise<boolean> {
     const prev = this.undoStack.pop();
     if (prev === undefined) return false;
-    this.tasks = migrateDocument(JSON.parse(prev)).cards.map(reviveTask);
+    this.loadDocument(migrateDocument(JSON.parse(prev)));
     this.capturingUndo = false;
     try {
       this.saveTasks();
@@ -209,10 +256,13 @@ export class LocalTaskStore implements TaskStore {
   }
 
   private findTask(id: string): Task {
-    // Recursive: a card is a card at any depth (sub-sub-tasks, Item 8)
-    const task = findCardById(this.tasks, id);
-    if (!task) throw new Error('Task not found');
-    return task;
+    // Recursive: a card is a card at any depth (sub-sub-tasks, Item 8),
+    // in any root deck (R2.1).
+    for (const deck of this.decks) {
+      const task = findCardById(deck.cards, id);
+      if (task) return task;
+    }
+    throw new Error('Task not found');
   }
 
   async getAllTasks(): Promise<Task[]> {
@@ -458,7 +508,7 @@ export class LocalTaskStore implements TaskStore {
           for (const d of c.decks ?? []) d.cards = sweep(d.cards);
           return c;
         });
-    this.tasks = sweep(this.tasks);
+    for (const deck of this.decks) deck.cards = sweep(deck.cards);
     if (removed > 0) this.saveTasks();
     return removed;
   }
@@ -508,8 +558,9 @@ export class LocalTaskStore implements TaskStore {
   }
 
   async importTasks(tasks: Task[]): Promise<void> {
-    // Backups may be v1 (substacks) or v2 (decks) — migrate either way in
-    this.tasks = migrateDocument(tasks).cards.map(reviveTask);
+    // Backups may carry v1 (substacks) or v2 (decks) card shapes —
+    // migrate either way in; the cards land in the current root deck.
+    this.tasks = migrateDocument(tasks).decks.flatMap(d => d.cards).map(reviveTask);
     this.saveTasks();
   }
 
@@ -524,7 +575,7 @@ export class LocalTaskStore implements TaskStore {
       imported card was a shadow of an existing one. A copy must be its own
       cards: regenerate every id (Xian's call — "import-N", editable). */
   async importAsSubdeck(tasks: Task[], name?: string): Promise<void> {
-    const migrated = migrateDocument(tasks).cards.map(reviveTask);
+    const migrated = migrateDocument(tasks).decks.flatMap(d => d.cards).map(reviveTask);
     if (migrated.length === 0) return;
     const incoming = this.regenerateIds(migrated);
     const container: Task = {
