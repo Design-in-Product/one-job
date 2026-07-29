@@ -265,6 +265,9 @@
       "new": "+ New deck",
       "unnamed": "Unnamed deck",
       "moveTitle": "Move to which deck?"
+    },
+    "canvas": {
+      "afterlife": "Done, Archive & Trash"
     }
   }
 }

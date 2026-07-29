@@ -35,6 +35,8 @@ import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished } from '@/domain/tasks';
 import { useShake } from '@/hooks/use-shake';
 import { hasPro } from '@/services/entitlements';
+import { canvasPreviewOn } from '@/services/canvasPreview';
+import CanvasPeek from '@/components/CanvasPeek';
 import { InteriorDeck } from '@/types/task';
 import ActionSheet from '@/components/ActionSheet';
 import { useTranslation } from 'react-i18next';
@@ -284,6 +286,29 @@ const Index = () => {
     } catch (err) {
       toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
     }
+  };
+
+  // ---- Canvas strip (R2.1 stage 4, PREVIEW — ?canvas=on) --------------
+  // Paged, my recorded lean: decks left to right in store order, the
+  // afterlife (rooms) at the FAR RIGHT — "the afterlife is to the right"
+  // globally rhymes with swipe-right-completes locally. Neighbors peek
+  // in as slivers of card-back material; tapping pans. Free-drag pan
+  // waits for Xian's verdict on this layout.
+  const canvasOn = canvasPreviewOn();
+  const [deckOrder, setDeckOrder] = useState<{ id: string; name: string | null }[]>([]);
+  useEffect(() => {
+    if (!canvasOn) return;
+    getTaskStore().getDecks?.().then(ds => setDeckOrder(ds.map(d => ({ id: d.id, name: d.name }))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvasOn, deckCount, tasks]);
+  const stripIndex = () => deckOrder.findIndex(d => d.id === getTaskStore().activeDeckId?.());
+  const stripGo = async (delta: number) => {
+    const i = stripIndex();
+    if (i === -1) return;
+    const next = i + delta;
+    if (next >= deckOrder.length) { setCurrentView('completed'); return; } // the afterlife
+    if (next < 0) return;
+    await handleSwitchDeck(deckOrder[next].id);
   };
 
   // Session-deep undo (Xian, 2026-07-29): the store replays its state from
@@ -670,7 +695,45 @@ const Index = () => {
 
           {/* Card Deck Experience - Single View */}
           <div className="flex flex-col flex-1">
-            {currentView === 'main' && (
+            {currentView === 'main' && canvasOn && (
+              <motion.div
+                key={`strip-${getTaskStore().activeDeckId?.() ?? 'deck'}`}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="relative flex flex-col flex-1"
+              >
+                {stripIndex() > 0 && (
+                  <CanvasPeek side="left"
+                    label={deckOrder[stripIndex() - 1]?.name ?? t('decks.unnamed')}
+                    onTap={() => stripGo(-1)} />
+                )}
+                <CanvasPeek side="right"
+                  label={stripIndex() < deckOrder.length - 1
+                    ? (deckOrder[stripIndex() + 1]?.name ?? t('decks.unnamed'))
+                    : t('canvas.afterlife')}
+                  variant={stripIndex() < deckOrder.length - 1 ? 'deck' : 'afterlife'}
+                  onTap={() => stripGo(1)} />
+                <CardDeck
+                  tasks={activeTasks}
+                  loading={loading}
+                  error={error}
+                  onComplete={handleCompleteTask}
+                  onDefer={handleDeferTask}
+                  onCardClick={handleCardClick}
+                  onCardLongPress={handleCardLongPress}
+                  onOpenSubdeck={handleOpenSubdeckFromCard}
+                  startRevealed={deckStartRevealed}
+                  onAddTask={handleAddTask}
+                  onViewCompleted={() => setCurrentView('completed')}
+                  onViewIntegrations={() => setCurrentView('integrate')}
+                  onViewSettings={() => setCurrentView('settings')}
+                  onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
+                  onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
+                />
+              </motion.div>
+            )}
+            {currentView === 'main' && !canvasOn && (
               <CardDeck
                 tasks={activeTasks}
                 loading={loading}
@@ -691,7 +754,12 @@ const Index = () => {
             )}
             
             {currentView === 'completed' && (
-              <div className="flex flex-col flex-1">
+              <div className="relative flex flex-col flex-1">
+                {canvasOn && (
+                  <CanvasPeek side="left"
+                    label={deckOrder[deckOrder.length - 1]?.name ?? t('decks.unnamed')}
+                    onTap={() => setCurrentView('main')} />
+                )}
                 <div className="p-4">
                   <button 
                     onClick={() => setCurrentView('main')}
