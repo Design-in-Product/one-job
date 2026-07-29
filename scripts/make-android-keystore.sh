@@ -38,7 +38,21 @@ keytool -genkeypair \
   -dname "CN=One Job, O=Design in Product, C=US"
 
 echo
-echo "Created $KEYSTORE (DO NOT COMMIT — it is gitignored)."
+
+# m-44, 2026-07-28: this used to assert "it is gitignored" without looking.
+# For a file that is the only way to update the app on Play, a reassurance
+# nobody verified is worse than no reassurance. Check, then say what was seen.
+if [ ! -f "$KEYSTORE" ]; then
+  echo "keytool reported success but $KEYSTORE is not on disk — stop and investigate." >&2
+  exit 1
+fi
+
+if git check-ignore -q "$KEYSTORE" 2>/dev/null; then
+  echo "Created $KEYSTORE — verified gitignored by $(git check-ignore -v "$KEYSTORE" | cut -f1)."
+else
+  echo "⚠️  Created $KEYSTORE but it is NOT gitignored (checked, it is not)." >&2
+  echo "⚠️  Do not commit. Add it to .gitignore before your next git add." >&2
+fi
 echo
 echo "Now add these GitHub repository secrets"
 echo "(Settings → Secrets and variables → Actions → New repository secret):"

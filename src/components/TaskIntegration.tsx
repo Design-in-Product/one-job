@@ -60,7 +60,20 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
       } else if (selectedService === "zapier" && webhookUrl) {
         // For Zapier integration, we would actually send our tasks to the webhook
         // This is just a demo implementation
-        const response = await fetch(webhookUrl, {
+        // m-44 audit, 2026-07-28: `mode: "no-cors"` yields an OPAQUE response
+        // — status is always 0 and this promise resolves even if the endpoint
+        // 500s or does not exist. Only a network-level failure rejects. The
+        // old code assigned `response`, never looked at it, and toasted
+        // "Tasks exported to Zapier webhook" — asserting a delivery it could
+        // not observe. Same family as the export toast that cost a real deck
+        // on 2026-07-05 (FR4.0b.8: success signals report OBSERVED outcomes).
+        //
+        // What is genuinely observable here is that the request left the
+        // browser without erroring, so that is what we claim. Confirming
+        // delivery would mean dropping no-cors and reading response.ok, which
+        // depends on the webhook sending CORS headers — a behavior change to
+        // make deliberately, not as a side effect of fixing a message.
+        await fetch(webhookUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +85,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
             source: window.location.origin,
           }),
         });
-        
+
         toast.success(t('integration.exportedToZapier'));
         importedTasks = []; // No tasks to import in this case
       }
