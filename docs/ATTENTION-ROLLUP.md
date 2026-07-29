@@ -14,6 +14,20 @@ answer recorded.
 
 ## Open
 
+### 🟡 15. The canvas strip awaits your eyes: ?canvas=on
+R2.1 stage 4 v1 is live BEHIND A PREVIEW FLAG — your daily driver is
+unchanged until you approve. On a device (ideally after ?pro=comp and
+making a second deck): open `https://onejob.co/app/?canvas=on`.
+You'll get: neighbor decks peeking in as card-back slivers at the
+edges, the afterlife (rooms) as a gray shade-edge at the far right,
+tap-to-pan with slide transitions. `?canvas=off` reverts.
+
+**What I want your verdict on:** the layout and the feel of
+neighbors-as-peeks. **Deliberately not built yet:** the free
+background-drag pan (gesture-collision risk — it follows your yes) and
+final rooms placement. If the layout is wrong, nothing is wasted; if
+right, deleting the flag makes it the app.
+
 ### 🟢 14. Your comp grant: visit ?pro=comp once per device
 R2.1 stage 2 shipped (rc.17): multi-deck exists behind the pro wall,
 per-device entitlement per your doctrine. **To comp a device of yours:
