@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Task } from '@/types/task';
+import { unfinishedDescendants } from '@/domain/tasks';
 import TaskCard from './TaskCard';
 import TaskForm from './TaskForm';
 import CardBack from './CardBack';
@@ -100,8 +101,18 @@ const CardDeck: React.FC<CardDeckProps> = ({
     }
   };
 
+  // Returns false to tell SwipeableCard to spring the card back instead of
+  // flying it off-screen.
+  //
+  // The deck predicts the refusal with the SAME domain predicate the store
+  // enforces (`unfinishedDescendants`), rather than waiting for the parent's
+  // async handler — by the time a promise resolved, the card would already
+  // be gone. The parent still owns the actual state change and the toast
+  // explaining WHY; this only decides the animation.
   const handleSwipeComplete = () => {
+    const blocked = unfinishedDescendants(currentTask).length > 0;
     onComplete(currentTask.id);
+    if (blocked) return false;
     swipeAndRedeal(tasks.length - 1);
   };
 
