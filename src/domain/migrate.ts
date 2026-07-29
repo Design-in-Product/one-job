@@ -8,18 +8,42 @@
 //     InteriorDeck { id, name, cards } and children are FULL cards —
 //     recursion-capable, names preserved (Vision Item 17: old substack
 //     names become interior deck names).
+// v3: { schemaVersion: 3, decks: [...] } — the ROOT becomes a deck
+//     (R2.1 stage 1, 2026-07-29). The root was the one place shaped
+//     differently ("the interior of no card"); v3 removes the
+//     exception. A v2 document's cards become root deck "deck-1"
+//     (Xian's naming call), cards byte-identical. Multiple root decks
+//     are carried by the model from day one; the UI and the pro wall
+//     decide how many are usable.
 //
 // Rules: never throw, never invent data, pass unknown future versions
 // through untouched (a downgrade must not eat an upgrade's data).
 
 import { Task, InteriorDeck } from '@/types/task';
 
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 export interface StorageDocument {
   schemaVersion: number;
+  decks: InteriorDeck[];
+}
+
+/** The v2 envelope shape, accepted on the way in forever. */
+interface V2Document {
+  schemaVersion: number;
   cards: Task[];
 }
+
+/** Wrap a flat card list as the sole root deck ("deck-1"). */
+const wrapAsRoot = (cards: Task[]): StorageDocument => ({
+  schemaVersion: CURRENT_SCHEMA_VERSION,
+  decks: [{
+    id: `root-${Math.random().toString(36).slice(2)}`,
+    name: 'deck-1',
+    createdAt: new Date().toISOString() as unknown as InteriorDeck['createdAt'],
+    cards,
+  }],
+});
 
 interface V1Substack {
   id?: string;
@@ -63,24 +87,28 @@ const migrateV1Card = (raw: Record<string, unknown>): Task => {
  * and garbage (yields an empty document rather than throwing).
  */
 export function migrateDocument(raw: unknown): StorageDocument {
-  // v2+ envelope
   if (raw !== null && typeof raw === 'object' && !Array.isArray(raw)) {
-    const doc = raw as Partial<StorageDocument>;
-    if (typeof doc.schemaVersion === 'number' && Array.isArray(doc.cards)) {
-      return doc as StorageDocument; // current or future — pass through
+    // v3+ envelope — current or future, pass through untouched
+    const v3 = raw as Partial<StorageDocument>;
+    if (typeof v3.schemaVersion === 'number' && v3.schemaVersion >= 3 && Array.isArray(v3.decks)) {
+      return v3 as StorageDocument;
     }
-    return { schemaVersion: CURRENT_SCHEMA_VERSION, cards: [] };
+    // v2 envelope — its cards become root deck "deck-1"
+    const v2 = raw as Partial<V2Document>;
+    if (typeof v2.schemaVersion === 'number' && Array.isArray(v2.cards)) {
+      return wrapAsRoot(v2.cards);
+    }
+    return wrapAsRoot([]);
   }
 
-  // v1 bare array
+  // v1 bare array — through the v2 card shape, then wrapped
   if (Array.isArray(raw)) {
-    return {
-      schemaVersion: CURRENT_SCHEMA_VERSION,
-      cards: raw
+    return wrapAsRoot(
+      raw
         .filter((t): t is Record<string, unknown> => t !== null && typeof t === 'object')
-        .map(migrateV1Card),
-    };
+        .map(migrateV1Card)
+    );
   }
 
-  return { schemaVersion: CURRENT_SCHEMA_VERSION, cards: [] };
+  return wrapAsRoot([]);
 }

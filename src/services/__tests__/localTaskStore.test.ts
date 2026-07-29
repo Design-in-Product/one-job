@@ -350,7 +350,7 @@ describe('data safety net (wipe protection)', () => {
     expect(meta.updatedAt).toBeTruthy();
     const snaps = snapshotKeys();
     expect(snaps).toHaveLength(1);
-    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).decks[0].cards).toHaveLength(1);
   });
 
   it('restores from the newest snapshot when the main key disappears', async () => {
@@ -359,8 +359,8 @@ describe('data safety net (wipe protection)', () => {
     const tasks = await freshStore().getAllTasks();
     expect(tasks.map(t => t.title)).toEqual(['Survivor']);
     expect(tasks[0].createdAt).toBeInstanceOf(Date);
-    // main key is re-established (v2 envelope)
-    expect(JSON.parse(localStorage.getItem(KEY)!).cards).toHaveLength(1);
+    // main key is re-established (v3 envelope)
+    expect(JSON.parse(localStorage.getItem(KEY)!).decks[0].cards).toHaveLength(1);
   });
 
   it('does not restore for a genuinely fresh install (no meta)', async () => {
@@ -390,7 +390,7 @@ describe('data safety net (wipe protection)', () => {
     await store.importTasks([]); // legitimate empty save
     const snaps = snapshotKeys();
     expect(snaps).toHaveLength(1);
-    expect(JSON.parse(localStorage.getItem(snaps[0])!).cards).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(snaps[0])!).decks[0].cards).toHaveLength(1);
   });
 
   it('prunes snapshots beyond the retention window', async () => {
@@ -954,5 +954,79 @@ describe('Done→Archive housekeeping (Xian, 2026-07-29: 30 days)', () => {
     // the trashed card kept its trashedAt; the undated one was not guessed at
     expect(all.find(t => t.id === 'tr')!.trashedAt).toBeInstanceOf(Date);
     expect(all.find(t => t.id === 'undated')!.archivedAt).toBeUndefined();
+  });
+});
+
+describe('v3 root-deck migration at the store (R2.1 stage 1, 2026-07-29)', () => {
+  const KEY7 = 'v3migrate';
+  const V2_DOC = {
+    schemaVersion: 2,
+    cards: [
+      { id: 'a', title: 'live one', completed: false, createdAt: '2026-07-01T10:00:00.000Z', sortOrder: 0,
+        decks: [{ id: 'd1', name: 'Steps', createdAt: '2026-07-01T10:00:00.000Z',
+          cards: [{ id: 'a1', title: 'sub', completed: false, createdAt: '2026-07-01T10:00:00.000Z' }] }] },
+      { id: 'b', title: 'done one', completed: true, createdAt: '2026-07-01T09:00:00.000Z',
+        completedAt: '2026-07-28T10:00:00.000Z' },
+    ],
+  };
+
+  it('cold-starts a v2 deck into v3 with a .v2backup paranoia copy', async () => {
+    localStorage.clear();
+    localStorage.setItem(KEY7, JSON.stringify(V2_DOC));
+    const store = new LocalTaskStore(KEY7);
+
+    // the untouched v2 document is preserved BEFORE the first v3 write
+    expect(JSON.parse(localStorage.getItem(`${KEY7}.v2backup`)!)).toEqual(V2_DOC);
+
+    // storage is now a v3 envelope, root deck named deck-1, cards intact
+    const stored = JSON.parse(localStorage.getItem(KEY7)!);
+    expect(stored.schemaVersion).toBe(3);
+    expect(stored.decks).toHaveLength(1);
+    expect(stored.decks[0].name).toBe('deck-1');
+    expect(stored.decks[0].cards.map((c: { id: string }) => c.id)).toEqual(['a', 'b']);
+
+    // the API contract is unchanged: same cards, dates revived
+    const tasks = await store.getAllTasks();
+    expect(tasks.map(t => t.id)).toEqual(['a', 'b']);
+    expect(tasks[0].decks![0].cards[0].title).toBe('sub');
+    expect(tasks[0].createdAt).toBeInstanceOf(Date);
+  });
+
+  it('migrates once: the second cold start is a plain v3 load', async () => {
+    localStorage.clear();
+    localStorage.setItem(KEY7, JSON.stringify(V2_DOC));
+    new LocalTaskStore(KEY7);
+    const afterFirst = localStorage.getItem(KEY7);
+    const second = new LocalTaskStore(KEY7);
+    expect((await second.getAllTasks()).map(t => t.id)).toEqual(['a', 'b']);
+    // idempotent: the document did not churn on the second load
+    expect(localStorage.getItem(KEY7)).toBe(afterFirst);
+  });
+
+  it('mutations and undo work across the migration boundary', async () => {
+    localStorage.clear();
+    localStorage.setItem(KEY7, JSON.stringify(V2_DOC));
+    const store = new LocalTaskStore(KEY7);
+    // ('a' holds an unfinished sub-card, so Item 15 rightly refuses its
+    // completion — the invariant caught this test's first draft too.
+    // Finish the interior first, then the parent.)
+    await store.completeSubstackTask('a1');
+    await store.completeTask('a');
+    expect((await store.getAllTasks()).find(t => t.id === 'a')!.completed).toBe(true);
+    await store.undoLast(); // un-does the parent completion
+    expect((await store.getAllTasks()).find(t => t.id === 'a')!.completed).toBe(false);
+  });
+
+  it('a v1 deck reaches v3 in one cold start, both paranoia copies present', async () => {
+    localStorage.clear();
+    const v1 = [{ id: 'x', title: 'ancient', completed: false, createdAt: '2025-08-01T10:00:00.000Z',
+                  substacks: [{ id: 's', name: 'Old sub', tasks: [] }] }];
+    localStorage.setItem(KEY7, JSON.stringify(v1));
+    const store = new LocalTaskStore(KEY7);
+    expect(localStorage.getItem(`${KEY7}.v1backup`)).not.toBeNull();
+    const stored = JSON.parse(localStorage.getItem(KEY7)!);
+    expect(stored.schemaVersion).toBe(3);
+    expect(stored.decks[0].cards[0].decks[0].name).toBe('Old sub');
+    expect((await store.getAllTasks())[0].title).toBe('ancient');
   });
 });
