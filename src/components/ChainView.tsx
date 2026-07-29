@@ -52,6 +52,23 @@ const SEARCH_FROM = 6;
 // deep the pile really is — the asymptote is the point (covenant 7).
 const PILE_BARS_MAX = 6;
 
+// Shades (Xian, 2026-07-29): cards in the afterlife look the part —
+// progressively washed out the further they are from the living deck.
+// Done keeps most of its color (a trophy, recently alive); Archive is
+// paler; Trash is nearly grayscale. This is the STATE strand of the one
+// material language (volume = felt pile thickness, time = card aging /
+// patina — Item 22, still unbuilt — state = saturation). Placeholder
+// values until the aging design pass tunes all three together.
+// The card face is white-on-near-black, so saturation alone is invisible
+// (first attempt proved it: no color to remove). A shade loses VITALITY:
+// opacity lets the table's gray breathe through, contrast pulls the ink
+// toward gray. Values deepen room by room.
+const roomShade: Record<ChainRoom, string> = {
+  done: 'saturate(0.6) opacity(0.93) contrast(0.94)',
+  archive: 'saturate(0.3) opacity(0.82) contrast(0.88)',
+  trash: 'grayscale(1) opacity(0.65) contrast(0.85)',
+};
+
 const roomSortKey: Record<ChainRoom, (t: Task) => number> = {
   done: t => t.completedAt?.getTime() ?? 0,
   archive: t => t.archivedAt?.getTime() ?? 0,
@@ -202,7 +219,9 @@ const ChainView: React.FC<ChainViewProps> = ({
             leftHint={g.leftHint}
             className="w-[min(85vw,20rem)] aspect-[5/7]"
           >
-            <TaskCard task={top} />
+            <div style={{ filter: roomShade[room] }}>
+              <TaskCard task={top} />
+            </div>
           </SwipeableCard>
 
           {/* The felt pile: edge bars under the card, thinning as a search
