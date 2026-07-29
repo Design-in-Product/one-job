@@ -139,3 +139,41 @@ story and launch inside Pro.
 - License: comfortable moving to open-core MIT when App Store ships, or
   do you want the source-available middle path?
 - Founding-member offer for current beta testers: yes/no?
+
+---
+
+## Addendum 2026-07-29 — release flow + standing earmark discipline (Xian)
+
+Xian's direction, verbatim in substance:
+
+- **The rc-1.0 MVP feature set is entirely free** — at least for now.
+- **From now on, every roadmap step gets a tier evaluation** as part of
+  its planning — "start earmarking some features for pro tier, when
+  appropriate." This is product-development discipline; the business
+  strategy work comes later.
+- **Release flow model** (used on his past projects): newest features
+  ship to **paid users first** (or beta users first, case by case), and
+  some later **trickle down to enrich the free product** — generally
+  when newer valuable features have arrived behind the wall. So the
+  wall is a *moving front*, not a fixed feature list.
+- **One wall / few tiers over per-feature unlocks** — his lean, flagged
+  by him as bias rather than proven for this model.
+
+### First earmark pass over the current map (Coral, same day)
+
+| Feature | Lean | Why |
+|---|---|---|
+| Housekeeping threshold (30d default) | **Pro setting** | Already flagged by Xian; config over defaults is classic pro |
+| Multiple root decks (R2.1) | **OPEN QUESTION** | The strongest paid candidate on the map (free = one deck, pro = many) — but it may also be the soul of the R2 canvas, which the 07-07 proposal keeps free. Needs Xian's call before R2.1 stage 2 |
+| R2.2 zoom, R2.7 inchworm, spatial layer generally | Free | The soul of the product (07-07 principle stands unless revised) |
+| R3 sync + integrations (all of it) | **Pro** | The plumbing; verifiably costs ongoing work; the Obsidian move |
+| R4 agentic (MCP inbox, dispatch) | **Pro+** / later tier | Highest-value plumbing; possibly its own tier above sync |
+| Multiple named sub-decks per card | **Pro** | Already on the premium shelf (Item 17) |
+| Custom card backs, themes, flip presets | **Pro** (delight tier) | Cosmetic delight; zero trust-story risk |
+| Dark mode | Free | Store-listing expectation; accessibility-adjacent |
+| Quiet mode, undo, search, trash mgmt | Free | Shipped into the free story already; trust/relief features |
+| Card aging + deck thickness (R0.2/22) | Free | Part of the material language, not a power feature |
+
+**Working rule going forward:** every plan doc for a roadmap step
+carries a "Tier" line. Where the lean is Pro, the step's design must
+keep the feature *cleanly severable* (a flag, not a fork).

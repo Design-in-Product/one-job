@@ -764,6 +764,14 @@ npm audit  # Check for security vulnerabilities
 - **Update documentation** with implementation changes
 - **Create GitHub issues** for bugs and feature requests
 
+## PRODUCT TIER DISCIPLINE (standing rule, 2026-07-29 — from Xian)
+
+Every roadmap step's plan must carry a **tier evaluation** (free / pro /
+open question). The rc-1.0 MVP set is entirely free; new features may
+ship paid-first and trickle down later, so pro-leaning features must be
+built *cleanly severable* (a flag, not a fork). Leans and the release-
+flow model live in docs/PRICING.md (2026-07-29 addendum).
+
 ## CURRENT DEVELOPMENT FOCUS
 
 Based on recent commits and project status:

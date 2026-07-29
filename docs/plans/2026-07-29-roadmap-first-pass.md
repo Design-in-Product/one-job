@@ -5,6 +5,13 @@
 what is in each step"). Companion: the R2.1 deep dive, same folder.
 ROADMAP.md itself is untouched pending our discussion.
 
+## Standing discipline added 2026-07-29: tier evaluation per step
+
+Every step below now gets a tier lean when planned in depth; the full
+first-pass earmark table is in **PRICING.md (2026-07-29 addendum)**,
+with one open question flagged loudly: whether multiple root decks are
+themselves the pro wall. Quiet mode shipped free the same day.
+
 ## Status corrections first (the week moved things)
 
 - **R0.1 undo toast** — shipped long ago, now *superseded upward*: the
