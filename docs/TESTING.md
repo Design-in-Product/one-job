@@ -923,7 +923,51 @@ describe('TaskStack Integration', () => {
 
 ## 🎭 End-to-End Testing
 
-### Playwright Setup
+> ### ⚠️ How this ACTUALLY works today (2026-07-28, on Amber)
+>
+> The Playwright section below is the aspirational setup. It has never
+> been adopted, and **following it verbatim on Amber is actively wrong**:
+> `npx playwright install` downloads a browser into a cache *shared with
+> the other agents on this machine*.
+>
+> What we really do — screenshots remain the standard of proof for
+> gesture work, per CLAUDE.md:
+>
+> 1. **Playwright is deliberately not a project dependency.** Install it
+>    in the session scratchpad, not the repo.
+> 2. **Match the browser already in the cache.** Amber has
+>    `chromium-1228`, which is **playwright@1.61.0**. 1.62 wants 1234 and
+>    would fetch a second ~150MB browser. To find the right version for
+>    any cache revision, read
+>    `node_modules/playwright-core/browsers.json`.
+> 3. **Drive the real dev server** at `http://localhost:8081` (8080 is
+>    occupied on Amber), viewport **390×844**, `hasTouch: true`.
+> 4. **Seed state through `localStorage`** with `page.addInitScript`,
+>    using the v2 envelope so no migration runs:
+>    `{"schemaVersion": 2, "cards": [...]}` under key `oneJobTasks`.
+> 5. **The top card mounts face-down and drag is disabled while flipped**
+>    (`CardDeck: disabled={!isFlipped}`). Tap the card's center first, or
+>    your swipe silently does nothing. Both card faces are in the DOM
+>    (backface-visibility), so *text presence is not a reveal signal*.
+> 6. **Don't sample with `boundingBox()` in a loop.** Once the card
+>    unmounts, every call blocks for the full locator timeout. Tag the
+>    element and read rects via `page.evaluate` instead.
+>
+> #### Three verification lessons that cost real time
+>
+> - **A metric that can't distinguish your two hypotheses isn't
+>   evidence.** "Did the card fly off-screen?" was useless for the
+>   blocked-swipe fix, because a block navigates into the sub-deck and
+>   the card unmounts *either way*.
+> - **A control that only half-reverts is worse than no control** — it
+>   yields a confident *null result*. Revert to the real prior commit
+>   (`git checkout <fix>^ -- <files>`), never a hand-written
+>   approximation of the old code.
+> - **Always run the positive control.** Prove the harness can drive a
+>   *successful* swipe before concluding a refused one behaved
+>   correctly, and re-run the happy path after adding any guard.
+
+### Playwright Setup (aspirational — see the note above before using)
 
 #### Install Playwright
 ```bash
