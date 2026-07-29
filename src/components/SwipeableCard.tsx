@@ -17,6 +17,14 @@ const hapticImpact = () => {
   void Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
 };
 
+// A lighter tap when a swipe is REFUSED. Deliberately not the commit thunk:
+// the gesture registered, but nothing happened, and the hand should be able
+// to tell those apart without looking.
+const hapticRefused = () => {
+  if (!Capacitor.isNativePlatform()) return;
+  void Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+};
+
 const SWIPE_DISTANCE = 100; // px of drag that commits a swipe
 const SWIPE_VELOCITY = 500; // px/s of release velocity that commits a swipe
 
@@ -25,8 +33,12 @@ interface SwipeableCardProps {
   /** Disable dragging (e.g. while the card is face-down) */
   disabled?: boolean;
   /** Absent = right swipe doesn't commit (springs back) — e.g. the Trash
-      room, where the only way forward is the confirmed purge button */
-  onSwipeRight?: () => void;
+      room, where the only way forward is the confirmed purge button.
+      Return `false` to REFUSE the swipe: the card springs back instead of
+      flying out. Used when a completion is blocked by unfinished work —
+      previously the card flew away and re-dealt, which read as "completed,
+      then undone" for a beat (2026-07-26 defect). */
+  onSwipeRight?: () => boolean | void;
   onSwipeLeft: () => void;
   /** Vertical sifting (Item 28, chain rooms): swipe down digs deeper
       into the pile, up comes back toward the top. View-only browsing —
@@ -132,9 +144,18 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
       (offset.y < -SWIPE_DISTANCE || (offset.y < -30 && velocity.y < -SWIPE_VELOCITY));
 
     if (commitRight) {
-      hapticImpact();
-      setExitX(window.innerWidth * 1.2);
-      onSwipeRight!();
+      // Ask BEFORE animating. The handler may refuse (returns false), in
+      // which case we never set exitX and Framer's dragConstraints spring
+      // the card back to center — the honest picture of "nothing happened".
+      // Ordering matters: the old code set exitX first and called the
+      // handler after, so a refused completion still flew off-screen.
+      const refused = onSwipeRight!() === false;
+      if (refused) {
+        hapticRefused();
+      } else {
+        hapticImpact();
+        setExitX(window.innerWidth * 1.2);
+      }
     } else if (commitLeft) {
       hapticImpact();
       setExitX(-window.innerWidth * 1.2);
