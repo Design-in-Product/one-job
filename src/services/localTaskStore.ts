@@ -21,6 +21,38 @@ export class LocalTaskStore implements TaskStore {
     private sourceLabel?: string
   ) {
     this.initializeTasks(seedTasks);
+    this.housekeep();
+  }
+
+  // ---- Done→Archive housekeeping (Xian, 2026-07-29) ---------------------
+  // "The Done stack isn't infinitely huge": done cards over 30 days old
+  // are filed to the Archive at launch, at every depth, so skimming
+  // recent Done stays humanly possible. The threshold is a candidate for
+  // a paid-tier setting later (his note) — until then it is one constant.
+  // The UI reads lastHousekeeping to witness the move with a quiet toast:
+  // cards changing rooms unwatched would breach "state is place."
+  private static readonly ARCHIVE_AFTER_DAYS = 30;
+
+  /** How many cards the launch sweep just filed (0 when none). */
+  lastHousekeeping = 0;
+
+  private housekeep() {
+    const cutoff = Date.now() - LocalTaskStore.ARCHIVE_AFTER_DAYS * 86_400_000;
+    let moved = 0;
+    const walk = (cards: Task[]) => {
+      for (const c of cards) {
+        // Only cards sitting in Done age out; archived/trashed are already
+        // past it, and a done card with no completedAt is never guessed at.
+        if (cardRoom(c) === 'done' && c.completedAt && c.completedAt.getTime() < cutoff) {
+          c.archivedAt = new Date();
+          moved++;
+        }
+        for (const d of c.decks ?? []) walk(d.cards);
+      }
+    };
+    walk(this.tasks);
+    if (moved > 0) this.saveTasks();
+    this.lastHousekeeping = moved;
   }
 
   private metaKey() {

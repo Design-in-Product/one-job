@@ -192,7 +192,9 @@
       "trashEmptied_one": "Trash emptied — {{count}} card gone.",
       "trashEmptied_other": "Trash emptied — {{count}} cards gone.",
       "nothingToUndo": "Nothing to undo in this session.",
-      "undoneLast": "Undone."
+      "undoneLast": "Undone.",
+      "housekeeping_one": "Tidied up: {{count}} done card over 30 days old moved to the Archive.",
+      "housekeeping_other": "Tidied up: {{count}} done cards over 30 days old moved to the Archive."
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",

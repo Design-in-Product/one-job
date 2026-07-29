@@ -256,8 +256,9 @@ whether the chain feels safe.
    playing with the taxonomy of past tasks.
 5. **Don't over-perfect Done/Archive/Trash** before integrations and
    real users teach us what they need.
-6. **Funnel goals** (directional, not yet built): Done stays skimmable
-   via housekeeping to Archive after N days; Archive may become
+6. **Funnel goals**: Done stays skimmable via housekeeping to Archive
+   after **30 days** (set 2026-07-29; shipped same day — threshold is a
+   paid-tier-setting candidate, his note); Archive may become
    export/agent-fodder rather than UI; Done→Trash may become a first-
    class path; **trash is not protected** — one-tap swipe delete, bulk
    empty, excluded from backups. (The last group shipped 2026-07-29.)
