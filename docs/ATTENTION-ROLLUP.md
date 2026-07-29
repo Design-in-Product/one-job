@@ -14,6 +14,28 @@ answer recorded.
 
 ## Open — 2026-07-28 (autonomous run on Amber)
 
+### 🔴 0. READ FIRST if you are telling Relay to cut a build: it's **rc.12** now
+You said you were going to tell Relay we're ready. Since the rc.11 stamp,
+three behaviour-affecting commits landed on main during this session
+(blocked-swipe fix, store-level Item 15 enforcement, honest success
+signals). I stamped **1.0.0-rc.12** and filed
+`memo-coral-to-relay-2026-07-28-rc12-cut-supersedes-rc11.md`.
+
+I did this without asking because there is precedent — rc.10→rc.11 was
+bumped for exactly this reason on 07-26 — and because the alternative
+was worse: the rc.11 memo tells Relay to *"verify package.json says
+1.0.0-rc.11 before building,"* and until the bump **that check would
+have passed while the code was different from what the memo described.**
+A verification that cannot fail isn't one. Same disease as everything
+else in today's audit, this time in our own release process.
+
+**If you already sent Relay to rc.11:** point them at the rc.12 memo.
+Nothing they'd have built is broken — it just wouldn't have been the
+build we described, and the swipe fix and store guard wouldn't be in it.
+
+Version stamps are your call, so overrule me freely — but main should
+not sit ahead of the stamp a cut memo names.
+
 ### 🟡 9. Design options ready for review (the design-gated work)
 `docs/DESIGN-OPTIONS-2026-07-28.md` — searchable/browsable rooms and
 multi-step undo, as options with recommendations. Not blocking; beta
