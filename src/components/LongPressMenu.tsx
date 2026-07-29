@@ -13,6 +13,9 @@ interface LongPressMenuProps {
   onAddTask: () => void;
   /** Session undo (2026-07-29) — absent when the store can't undo. */
   onUndo?: () => void;
+  /** Root decks (R2.1 stage 2) — absent until the device has (or can
+      create) more than one deck: no cruft till it's needed. */
+  onDecks?: () => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
   onSettings?: () => void;
@@ -23,6 +26,7 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onClose,
   onAddTask,
   onUndo,
+  onDecks,
   onViewCompleted,
   onViewIntegrations,
   onSettings,
@@ -32,6 +36,7 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
     // Undo leads: reaching for it means something just went wrong
     ...(onUndo ? [{ key: 'undo', label: t('menu.undo'), onClick: onUndo }] : []),
     { key: 'add', label: t('menu.addTask'), onClick: onAddTask },
+    ...(onDecks ? [{ key: 'decks', label: t('menu.decks'), onClick: onDecks }] : []),
     { key: 'completed', label: t('menu.completed'), onClick: onViewCompleted },
     { key: 'integrations', label: t('menu.integrations'), onClick: onViewIntegrations },
     ...(onSettings ? [{ key: 'settings', label: t('menu.settings'), onClick: onSettings }] : []),

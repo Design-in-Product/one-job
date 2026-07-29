@@ -56,6 +56,14 @@ export interface TaskStore {
   emptyTrash?(): Promise<number>;
   /** Done→Archive housekeeping: cards filed at load (0/undefined = none). */
   lastHousekeeping?: number;
+  // ---- Root decks (R2.1 stage 2) — all optional; remote mode is
+  // single-deck until the backend learns decks.
+  getDecks?(): Promise<import('@/types/task').InteriorDeck[]>;
+  createDeck?(name?: string): Promise<import('@/types/task').InteriorDeck>;
+  switchDeck?(id: string): Promise<void>;
+  renameDeck?(id: string, name: string): Promise<import('@/types/task').InteriorDeck>;
+  deleteDeck?(id: string): Promise<void>;
+  activeDeckId?(): string;
   /** Session-deep undo: restore the state before the last mutation. */
   undoLast?(): Promise<boolean>;
   canUndo?(): boolean;

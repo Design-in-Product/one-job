@@ -39,6 +39,7 @@ interface CardDeckProps {
   onViewIntegrations: () => void;
   onViewSettings: () => void;
   onUndo?: () => void;
+  onDecks?: () => void;
 }
 
 const CardDeck: React.FC<CardDeckProps> = ({
@@ -55,7 +56,8 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onViewCompleted,
   onViewIntegrations,
   onViewSettings,
-  onUndo
+  onUndo,
+  onDecks
 }) => {
   const { t } = useTranslation();
   const [isFlipped, setIsFlipped] = useState(startRevealed);
@@ -180,6 +182,10 @@ const CardDeck: React.FC<CardDeckProps> = ({
         onUndo={onUndo ? () => {
           setShowMenu(false);
           onUndo();
+        } : undefined}
+        onDecks={onDecks ? () => {
+          setShowMenu(false);
+          onDecks();
         } : undefined}
         onViewCompleted={() => {
           setShowMenu(false);
