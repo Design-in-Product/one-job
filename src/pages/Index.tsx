@@ -34,6 +34,8 @@ import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants } from '@/domain/tasks';
 import { useShake } from '@/hooks/use-shake';
+import { hasPro } from '@/services/entitlements';
+import { InteriorDeck } from '@/types/task';
 import ActionSheet from '@/components/ActionSheet';
 import { useTranslation } from 'react-i18next';
 
@@ -41,6 +43,12 @@ import { useTranslation } from 'react-i18next';
 const Index = () => {
   const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
+  // Every root deck's cards — the rooms gather from ALL decks, so a card
+  // completed in deck-2 never vanishes from Done while deck-1 is active
+  // (the 2026-07-07 "nothing shows up in Done" trust bug, new shape).
+  const [chainTasks, setChainTasks] = useState<Task[]>([]);
+  const [deckCount, setDeckCount] = useState(1);
+  const [deckSheet, setDeckSheet] = useState<InteriorDeck[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -83,7 +91,11 @@ const Index = () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      setTasks(await getTaskStore().getAllTasks());
+      const store = getTaskStore();
+      setTasks(await store.getAllTasks());
+      const decks = store.getDecks ? await store.getDecks() : null;
+      setChainTasks(decks ? decks.flatMap(d => d.cards) : await store.getAllTasks());
+      setDeckCount(decks?.length ?? 1);
     } catch (err) {
       console.error("Could not fetch tasks:", err);
       setError((err as Error).message);
@@ -211,6 +223,41 @@ const Index = () => {
       refreshTasks();
     } catch (err) {
       console.error('Empty trash failed:', err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Root decks (R2.1 stage 2). The menu entry appears only when this
+  // device HAS more than one deck or MAY create one (pro) — no cruft
+  // till it's needed (Xian, confirmed 2026-07-29). Creation is the only
+  // pro-walled act: data is never hostage to the wall, so switching
+  // among existing decks works on any device.
+  const decksEntryVisible = deckCount > 1 || hasPro();
+  const openDecksSheet = async () => {
+    const store = getTaskStore();
+    if (store.getDecks) setDeckSheet(await store.getDecks());
+  };
+  const handleSwitchDeck = async (id: string) => {
+    setDeckSheet(null);
+    const store = getTaskStore();
+    if (!store.switchDeck || id === store.activeDeckId?.()) return;
+    await store.switchDeck(id);
+    setSubstackStack([]); // the old deck's interior is out of view now
+    setCurrentView('main');
+    await refreshAll();
+  };
+  const handleCreateDeck = async () => {
+    setDeckSheet(null);
+    const store = getTaskStore();
+    if (!store.createDeck) return;
+    try {
+      const deck = await store.createDeck();
+      await store.switchDeck?.(deck.id);
+      setSubstackStack([]);
+      setCurrentView('main');
+      toast.success(t('toasts.deckCreated', { name: deck.name }));
+      await refreshAll();
+    } catch (err) {
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
@@ -488,6 +535,24 @@ const Index = () => {
         actions={menuCard ? buildCardActions(menuCard) : []}
         onClose={() => setMenuCard(null)}
       />
+      {/* Decks sheet (R2.1 stage 2): switch decks; create is pro-walled.
+          Names only, no counts — covenant 7 applies to decks too. */}
+      <ActionSheet
+        open={deckSheet !== null}
+        title={t('decks.title')}
+        actions={[
+          ...(deckSheet ?? []).map(d => ({
+            key: d.id,
+            label: (getTaskStore().activeDeckId?.() === d.id ? '✓ ' : '') + (d.name ?? t('decks.unnamed')),
+            onClick: () => handleSwitchDeck(d.id),
+          })),
+          ...(hasPro() && getTaskStore().createDeck
+            ? [{ key: 'new', label: t('decks.new'), onClick: handleCreateDeck }]
+            : []),
+        ]}
+        onClose={() => setDeckSheet(null)}
+      />
+
       {/* Shake-to-undo asks before acting (a shake can be an accident) */}
       <ActionSheet
         open={shakeUndoPrompt}
@@ -572,6 +637,7 @@ const Index = () => {
                 onViewIntegrations={() => setCurrentView('integrate')}
                 onViewSettings={() => setCurrentView('settings')}
                 onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
+                onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
               />
             )}
             
@@ -587,7 +653,7 @@ const Index = () => {
                 </div>
                 {getTaskStore().archiveTask ? (
                   <ChainView
-                    tasks={tasks}
+                    tasks={chainTasks}
                     onUncomplete={handleUncompleteTask}
                     onArchive={(id) => chainMove(id, 'archiveTask', 'toasts.archived')}
                     onUnarchive={(id) => chainMove(id, 'unarchiveTask', 'toasts.unarchived')}

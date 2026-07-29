@@ -19,14 +19,103 @@ export class LocalTaskStore implements TaskStore {
   // the pro wall, when the business work lands) uses deck[0].
   protected decks: InteriorDeck[] = [];
 
-  /** deck[0]'s cards — the deck today's UI shows. All the single-deck-era
-      code reads and writes through this accessor unchanged; cross-deck
-      operations (find, housekeeping, trash, undo) walk this.decks. */
+  /** The ACTIVE deck's cards — the deck the UI is showing. All the
+      single-deck-era code reads and writes through this accessor
+      unchanged; cross-deck operations (find, housekeeping, trash, undo)
+      walk this.decks. */
   protected get tasks(): Task[] {
-    return this.decks[0].cards;
+    return this.activeDeck().cards;
   }
   protected set tasks(cards: Task[]) {
-    this.decks[0].cards = cards;
+    this.activeDeck().cards = cards;
+  }
+
+  // ---- Active deck (R2.1 stage 2) --------------------------------------
+  // A DEVICE preference, not deck data: which root deck this device is
+  // looking at. Lives beside the document, never inside it, so backups
+  // and sync never carry one device's viewpoint to another.
+  private activeId: string | null = null;
+
+  private activeDeckPrefKey() {
+    return `${this.storageKey}.activeDeck`;
+  }
+
+  /** Self-healing resolve: a stale/undone/deleted pointer falls back to
+      deck[0] rather than stranding the UI on a ghost. */
+  private activeDeck(): InteriorDeck {
+    const found = this.activeId && this.decks.find(d => d.id === this.activeId);
+    if (found) return found;
+    this.activeId = this.decks[0].id;
+    return this.decks[0];
+  }
+
+  activeDeckId(): string {
+    return this.activeDeck().id;
+  }
+
+  async getDecks(): Promise<InteriorDeck[]> {
+    return this.decks;
+  }
+
+  /** New empty root deck. Unnamed decks get the next free "deck-N" slug
+      (import-N's sibling). The PRO WALL gates calls to this in the UI —
+      the store is mechanism, entitlement is policy (data from a pro
+      backup must load anywhere). */
+  async createDeck(name?: string): Promise<InteriorDeck> {
+    let finalName = name?.trim();
+    if (!finalName) {
+      let n = 1;
+      while (this.decks.some(d => d.name === `deck-${n}`)) n++;
+      finalName = `deck-${n}`;
+    }
+    const deck: InteriorDeck = {
+      id: `root-${uuidv4()}`,
+      name: finalName,
+      createdAt: new Date(),
+      cards: [],
+    };
+    this.decks.push(deck);
+    this.saveTasks();
+    return deck;
+  }
+
+  async switchDeck(id: string): Promise<void> {
+    if (!this.decks.some(d => d.id === id)) throw new Error('Unknown deck');
+    this.activeId = id;
+    try {
+      localStorage.setItem(this.activeDeckPrefKey(), id);
+    } catch { /* preference only — losing it costs a tap, never data */ }
+  }
+
+  async renameDeck(id: string, name: string): Promise<InteriorDeck> {
+    const deck = this.decks.find(d => d.id === id);
+    if (!deck) throw new Error('Unknown deck');
+    const trimmed = name.trim();
+    if (!trimmed) throw new Error('A deck needs a name');
+    deck.name = trimmed;
+    this.saveTasks();
+    return deck;
+  }
+
+  /** Empty decks only — a deck holding cards can't be deleted (the
+      sealed-card lesson generalized: no operation may bury or discard
+      cards as a side effect). Never the last deck. */
+  async deleteDeck(id: string): Promise<void> {
+    const index = this.decks.findIndex(d => d.id === id);
+    if (index === -1) throw new Error('Unknown deck');
+    if (this.decks[index].cards.length > 0) {
+      throw new Error('This deck still holds cards — move them out first');
+    }
+    if (this.decks.length === 1) {
+      throw new Error('The last deck cannot be deleted');
+    }
+    const wasActive = this.activeDeckId() === id;
+    this.decks.splice(index, 1);
+    if (wasActive) {
+      this.activeId = this.decks[0].id;
+      try { localStorage.setItem(this.activeDeckPrefKey(), this.activeId); } catch { /* pref only */ }
+    }
+    this.saveTasks();
   }
 
   /** The invariant every load path maintains: at least one root deck
@@ -58,6 +147,10 @@ export class LocalTaskStore implements TaskStore {
     private sourceLabel?: string
   ) {
     this.initializeTasks(seedTasks);
+    try {
+      this.activeId = localStorage.getItem(this.activeDeckPrefKey());
+    } catch { /* preference only */ }
+    this.activeDeck(); // resolve now so a stale pointer heals immediately
     this.housekeep();
   }
 
