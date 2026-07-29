@@ -66,6 +66,7 @@ On your phone: Share → **Add to Home Screen** to install it as an app.
 git clone https://github.com/Design-in-Product/one-job.git
 cd one-job
 npm install && npm run dev      # http://localhost:8080 — that's it
+                               # (Vite steps to 8081 if 8080 is busy)
 ```
 
 One Job is **local-first**: no backend needed. (The optional FastAPI

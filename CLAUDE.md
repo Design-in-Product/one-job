@@ -254,7 +254,7 @@ Main API (backend, port 8000):
 - `POST /substacks/{id}/tasks` - Create substack task
 - `PUT /substack-tasks/{id}` - Update substack task
 
-Frontend (src, port 8080 via Vite):
+Frontend (src, Vite — asks for 8080, lands on 8081 on Amber):
 
 - Mobile-optimized React application
 - Swipe gesture handling with Framer Motion
@@ -465,7 +465,7 @@ Since One Job is mobile-first, testing must include actual mobile devices:
 
 ```bash
 # Start development server for mobile testing:
-npm run dev  # Frontend on localhost:8080
+npm run dev  # Frontend on localhost:8081 (8080 occupied on Amber)
 cd backend && uvicorn main:app --reload --port 8000  # Backend
 
 # Verify mobile-critical components:
@@ -512,7 +512,7 @@ grep -r "mobile\|responsive" src/ --include="*"
 ```bash
 # MANDATORY session initialization steps:
 1. Review CLAUDE.md for methodology and patterns
-2. Create/update session log at development/session-logs/YYYY-MM-DD-claude-code-log.md
+2. Create/update session log at development/coral-logs/YYYY-MM-DD-coral-log.md
 3. Run git status and review recent commits
 4. Create TodoWrite list for session tasks
 5. Verify development environment if implementing
@@ -552,23 +552,71 @@ grep -r "mobile\|responsive" src/ --include="*"
 - Next Session: [recommendations]
 ```
 
-### Development Environment Status (Updated 2025-07-31)
+### Development Environment Status (Updated 2026-07-28 — now on Amber)
+
+**Host:** Amber.local (Mac Studio), shared with the other constellation
+residents. Repo lives at `~/Development/one-job`, direct on `main`, no
+worktree. Sibling agents' repos are siblings on the same volume — which
+is how mail reaches them (see the mail rules at the top of this file).
 
 **Current Service Configuration:**
-- **Backend**: FastAPI running on `http://127.0.0.1:8000`
-- **Frontend**: Vite dev server running on `http://localhost:8081`
-- **Database**: SQLite at `/Users/xian/Development/one-job/backend/onejob.db`
+- **Frontend**: Vite — `npm run dev`. Config asks for **8080**, but
+  **8080 is taken on Amber** by mediajunkie's `local_chat.py`, so Vite
+  auto-falls-back to **8081**. Both are expected; don't "fix" it.
+- **Backend**: FastAPI on `http://127.0.0.1:8000` (8000 is free and ours).
+  Optional — the app is local-first and needs no backend unless `?remote`.
+- **Database**: SQLite at `backend/onejob.db` (only in remote mode).
 
 **Environment Setup Commands:**
 ```bash
-# Backend (from /Users/xian/Development/one-job/backend)
-source venv/bin/activate
-python -m uvicorn main:app --reload --port 8000
-
 # Frontend (from /Users/xian/Development/one-job)
-npm run dev  # Port 8080; binds IPv4+IPv6 (vite.config.ts host: true —
-             # the old "::" was IPv6-only, making the server unreachable)
+npm run dev  # → http://localhost:8081/ on Amber (8080 is occupied).
+             # host: true binds IPv4+IPv6 — the old "::" was IPv6-only,
+             # which read as "server unreachable" for a whole session.
+
+# Backend, only if you need ?remote (from backend/)
+source venv/bin/activate   # venv is NOT provisioned on Amber; create if needed
+python -m uvicorn main:app --reload --port 8000
 ```
+
+### TOOLCHAIN TRAPS ON A NEW MACHINE (learned 2026-07-28, the hard way)
+
+Three failures on first contact with Amber, none of them One Job bugs —
+all **undeclared dependencies**. Full write-up:
+`docs/ENVIRONMENT-CLEANUP-2026-07-28.md`. The short version:
+
+1. **npm ≥ 11.17 blocks dependency install scripts.** A fresh
+   `npm install` reports success while producing a tree with **no
+   esbuild binary and no @swc native binding** — vite then cannot
+   build. Approvals are recorded in `package.json` (`allowScripts`), so
+   this should not recur; if it does,
+   `npm approve-scripts esbuild @swc/core fsevents`.
+
+2. **Don't trust a green/red test suite across Node versions.** jsdom
+   no longer ships its own `localStorage`; it defers to the platform's.
+   **Node 26 has a built-in one that is inert without
+   `--localstorage-file`** → `window.localStorage` is `undefined` and
+   63 storage tests fail. Node 22 has no built-in, so jsdom's shone
+   through and the same commit was green. `src/test/setup.ts` now owns
+   an in-memory Storage so the suite is host-independent. **Do not
+   delete it** to "use the real localStorage."
+
+3. **Playwright: match the browser already in the cache.** Screenshots
+   remain the standard of proof for gesture work, but Playwright is
+   deliberately **not** a project dependency. Amber's cache has
+   **chromium-1228**, which is **playwright@1.61.0** — 1.62 wants 1234
+   and would download a second ~150MB browser into a *shared* cache.
+   Install into the scratchpad, not the repo:
+   ```bash
+   cd "$SCRATCHPAD" && npm install playwright@1.61.0
+   # then drive http://localhost:8081 at 390x844, hasTouch: true
+   ```
+   If the cache revision ever changes, find the matching Playwright by
+   reading `node_modules/playwright-core/browsers.json`.
+
+**Node policy:** `engines` declares **>=22** and CI runs the suite on
+**both 22 and 26**, so host-dependence gets caught by machines rather
+than discovered on arrival. Amber runs 26 (Homebrew, no nvm).
 
 **Known Working State:**
 - ✅ Contract verification: 100% fidelity between frontend-backend APIs
@@ -612,7 +660,7 @@ Always check these files when starting work:
 ### Environment Setup
 
 ```bash
-# Frontend (Port 8080)
+# Frontend (asks for 8080; 8081 on Amber)
 npm install
 npm run dev
 
@@ -640,7 +688,7 @@ npm run build  # Verify build succeeds
 npm run preview  # Test production build
 
 # Verify Mobile Experience
-# Open localhost:8080 in mobile browser
+# Open localhost:8081 in mobile browser (check the URL Vite prints)
 # Test swipe gestures on actual device
 ```
 
