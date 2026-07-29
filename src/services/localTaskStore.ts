@@ -97,6 +97,17 @@ export class LocalTaskStore implements TaskStore {
     return deck;
   }
 
+  /** Append fully-formed cards to a root deck's bottom and persist —
+      the SourceAdapter seam's write path (R3.1). Cards arrive with
+      LOCAL ids and provenance already stamped; this method is dumb on
+      purpose (mechanism, not policy). */
+  async addCardsToDeck(deckId: string, cards: Task[]): Promise<void> {
+    const deck = this.decks.find(d => d.id === deckId);
+    if (!deck) throw new Error('Unknown deck');
+    deck.cards.push(...cards);
+    this.saveTasks();
+  }
+
   /** Move a TOP-LEVEL card to another root deck, landing on TOP of the
       target (newest-on-top rule) — R2.1 stage 3, where promote-at-top
       stops refusing and gains its meaning. Nested cards must promote
