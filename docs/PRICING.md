@@ -164,7 +164,7 @@ Xian's direction, verbatim in substance:
 | Feature | Lean | Why |
 |---|---|---|
 | Housekeeping threshold (30d default) | **Pro setting** | Already flagged by Xian; config over defaults is classic pro |
-| Multiple root decks (R2.1) | **OPEN QUESTION** | The strongest paid candidate on the map (free = one deck, pro = many) — but it may also be the soul of the R2 canvas, which the 07-07 proposal keeps free. Needs Xian's call before R2.1 stage 2 |
+| Multiple root decks (R2.1) | **Pro — DECIDED (Xian, 2026-07-29)** | "A natural paid feature: ordinary users lose little without it; only a power user maxing the product wants it." Free = one root deck; canvas/pan/rooms stay free — the wall gates deck count |
 | R2.2 zoom, R2.7 inchworm, spatial layer generally | Free | The soul of the product (07-07 principle stands unless revised) |
 | R3 sync + integrations (all of it) | **Pro** | The plumbing; verifiably costs ongoing work; the Obsidian move |
 | R4 agentic (MCP inbox, dispatch) | **Pro+** / later tier | Highest-value plumbing; possibly its own tier above sync |
