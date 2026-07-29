@@ -1,7 +1,8 @@
 # Design options — searchable/browsable rooms, and multi-step undo
 
-**Author:** Coral · 2026-07-28 · **Status:** OPTIONS FOR REVIEW — nothing
-built. These are the two design-gated items in the agreed order after
+**Author:** Coral · 2026-07-28 · **Status:** DECIDED 2026-07-29 (Xian) —
+see the decision record at the end; shipped the same morning.
+Original options kept below for the reasoning trail. These are the two design-gated items in the agreed order after
 beta week. Xian's instruction: recommend where the gestural grammar
 points one way, lay out alternatives where the tradeoffs genuinely
 differ. I've done both, and said which is which.
@@ -231,3 +232,34 @@ Everything else I can take from here. None of this is blocking — the
 beta week and the R1 trust gate come first, and I'd rather not have a
 half-built search competing for your attention while you're reading
 whether the chain feels safe.
+
+
+---
+
+# DECISION RECORD — Xian, 2026-07-29 (shipped same morning)
+
+1. **Search matches title + description** ("cheap and good"). Built as
+   Option A — a filter on the pile, no results list, shown from a pile
+   of 6 up so small piles stay pure sift.
+2. **Covenant 7:** *felt* in the Trash — no tab count, no "n of m",
+   depth as capped edge bars under the card. Done keeps its count
+   (trophy, not dread).
+3. **No action-cards.** The Recent-room idea is retired; his sharper
+   frame replaced it:
+   - Undo's main use is *immediately after a mistake* → **shake to get
+     an undo prompt** (iOS at least) + **Undo leads the hold-menu**.
+   - History is worth keeping if cheap → **session-deep undo stack**
+     captured at the store's save choke point (undoes anything,
+     including a whole-deck import). No big undo UI.
+4. **Fussiness principle** (new, governing): retrieval/management is
+   real but *secondary* — never lead people into procrastinating by
+   playing with the taxonomy of past tasks.
+5. **Don't over-perfect Done/Archive/Trash** before integrations and
+   real users teach us what they need.
+6. **Funnel goals** (directional, not yet built): Done stays skimmable
+   via housekeeping to Archive after N days; Archive may become
+   export/agent-fodder rather than UI; Done→Trash may become a first-
+   class path; **trash is not protected** — one-tap swipe delete, bulk
+   empty, excluded from backups. (The last group shipped 2026-07-29.)
+7. **Aesthetic:** age/size as subtle hints; capture totals in data,
+   never render them as dread (deferralCount stays data-only).

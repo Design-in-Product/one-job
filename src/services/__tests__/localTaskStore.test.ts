@@ -756,3 +756,146 @@ describe('completing over unfinished work is refused by the STORE (2026-07-28)',
     expect(done.completed).toBe(true);
   });
 });
+
+describe("Trash decisions (Xian, 2026-07-29): trash is not protected", () => {
+  const KEY4 = 'trashtest';
+  const store4 = () => new LocalTaskStore(KEY4);
+
+  // Walk a fresh card into the trash through the legal chain.
+  const trashCard = async (store: LocalTaskStore, title: string) => {
+    const card = await store.createTask(title);
+    await store.completeTask(card.id);
+    await store.archiveTask(card.id);
+    await store.trashTask(card.id);
+    return card;
+  };
+
+  it('emptyTrash purges every trashed card in one move and reports the count', async () => {
+    localStorage.clear();
+    const store = store4();
+    await trashCard(store, 'junk one');
+    await trashCard(store, 'junk two');
+    const keep = await store.createTask('keeper');
+    const removed = await store.emptyTrash();
+    expect(removed).toBe(2);
+    const all = await store.getAllTasks();
+    expect(all.map(t => t.title)).toEqual(['keeper']);
+    expect(keep.id).toBeDefined();
+  });
+
+  it('emptyTrash reaches trashed cards at depth, leaving their siblings alone', async () => {
+    localStorage.clear();
+    const store = store4();
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    const junk = await store.addSubstackTask(deck.id, 'buried junk');
+    await store.addSubstackTask(deck.id, 'buried keeper');
+    await store.completeSubstackTask(junk.id);
+    await store.archiveTask(junk.id);
+    await store.trashTask(junk.id);
+    const removed = await store.emptyTrash();
+    expect(removed).toBe(1);
+    const freshParent = (await store.getAllTasks()).find(t => t.id === parent.id)!;
+    expect(freshParent.decks![0].cards.map(c => c.title)).toEqual(['buried keeper']);
+  });
+
+  it('emptyTrash on an empty trash is a harmless zero', async () => {
+    localStorage.clear();
+    const store = store4();
+    await store.createTask('untouched');
+    expect(await store.emptyTrash()).toBe(0);
+    expect((await store.getAllTasks()).length).toBe(1);
+  });
+});
+
+describe('withoutTrashed (backups exclude the trash — Xian, 2026-07-29)', () => {
+  it('drops trashed cards at every depth without touching the rest', async () => {
+    const { withoutTrashed } = await import('../../domain/tasks');
+    const mk = (over: Partial<Task>): Task => ({
+      id: over.id ?? 'x', title: over.title ?? 't', completed: false,
+      createdAt: new Date('2026-07-01'), ...over,
+    } as Task);
+    const cards: Task[] = [
+      mk({ id: 'live', title: 'live' }),
+      mk({ id: 'gone', title: 'gone', completed: true,
+           completedAt: new Date('2026-07-02'),
+           archivedAt: new Date('2026-07-03'),
+           trashedAt: new Date('2026-07-04') }),
+      mk({ id: 'holder', title: 'holder', decks: [{
+        id: 'd', name: null, createdAt: new Date('2026-07-01'),
+        cards: [
+          mk({ id: 'deep-live', title: 'deep live' }),
+          mk({ id: 'deep-gone', title: 'deep gone', completed: true,
+               completedAt: new Date('2026-07-02'),
+               archivedAt: new Date('2026-07-03'),
+               trashedAt: new Date('2026-07-04') }),
+        ],
+      }] }),
+    ];
+    const kept = withoutTrashed(cards);
+    expect(kept.map(c => c.id)).toEqual(['live', 'holder']);
+    expect(kept[1].decks![0].cards.map(c => c.id)).toEqual(['deep-live']);
+    // and the original tree is untouched (pure function)
+    expect(cards.length).toBe(3);
+    expect(cards[2].decks![0].cards.length).toBe(2);
+  });
+});
+
+describe('undo history (Xian, 2026-07-29: shake/menu undo, session-deep)', () => {
+  const KEY5 = 'undotest';
+  const store5 = () => new LocalTaskStore(KEY5);
+
+  it('walks back through multiple mutations in order', async () => {
+    localStorage.clear();
+    const store = store5();
+    const a = await store.createTask('first');
+    await store.createTask('second');
+    await store.completeTask(a.id);
+    expect(store.canUndo()).toBe(true);
+
+    await store.undoLast();   // un-does the completion
+    let all = await store.getAllTasks();
+    expect(all.find(t => t.id === a.id)!.completed).toBe(false);
+    expect(all.length).toBe(2);
+
+    await store.undoLast();   // un-does creating "second"
+    all = await store.getAllTasks();
+    expect(all.map(t => t.title)).toEqual(['first']);
+  });
+
+  it('undo walks history, not a two-state toggle', async () => {
+    // Regression guard for the classic bug: if undo's own save is captured,
+    // repeated undo bounces A<->B instead of walking A<-B<-C.
+    localStorage.clear();
+    const store = store5();
+    await store.createTask('one');
+    await store.createTask('two');
+    await store.createTask('three');
+    await store.undoLast();
+    await store.undoLast();
+    const all = await store.getAllTasks();
+    expect(all.map(t => t.title)).toEqual(['one']);
+  });
+
+  it('undoing past the session start returns false and changes nothing', async () => {
+    localStorage.clear();
+    const store = store5();
+    await store.createTask('only');
+    while (await store.undoLast()) { /* drain */ }
+    expect(store.canUndo()).toBe(false);
+    expect(await store.undoLast()).toBe(false);
+    expect((await store.getAllTasks()).length).toBeGreaterThanOrEqual(0); // no throw is the point
+  });
+
+  it('undo can reverse an import that replaced the whole deck', async () => {
+    localStorage.clear();
+    const store = store5();
+    await store.createTask('precious');
+    await store.importTasks([
+      { id: 'imp', title: 'imported', completed: false, createdAt: new Date() } as Task,
+    ]);
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['imported']);
+    await store.undoLast();
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['precious']);
+  });
+});

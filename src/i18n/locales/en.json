@@ -26,7 +26,8 @@
       "addTask": "Add Task",
       "completed": "Completed",
       "integrations": "Integrations",
-      "settings": "Settings"
+      "settings": "Settings",
+      "undo": "Undo"
     },
     "form": {
       "addNew": "Add New Task",
@@ -58,7 +59,6 @@
       "restore": "Restore",
       "purge": "Delete forever",
       "purgeCancel": "Cancel",
-      "purgeConfirm": "Permanently delete \"{{title}}\"? There is no undo for this.",
       "hintsBoth": "← {{left}} · swipe · {{right}} →",
       "hintsLeft": "← {{left}}",
       "moreBelow_one": "{{count}} more below",
@@ -69,7 +69,13 @@
         "trash": "The trash is empty."
       },
       "fromParent": "from “{{parent}}”",
-      "siftHint": "{{n}} of {{count}} · swipe ↓ to sift deeper, ↑ to come back"
+      "siftHint": "{{n}} of {{count}} · swipe ↓ to sift deeper, ↑ to come back",
+      "searchPlaceholder": "Find a card…",
+      "noMatches": "Nothing here matches “{{query}}”.",
+      "siftHintFelt": "swipe ↓ to sift deeper, ↑ to come back",
+      "emptyTrash": "Empty trash",
+      "emptyTrashConfirm_one": "Empty the trash? {{count}} card will be gone for good — it is already left out of backups.",
+      "emptyTrashConfirm_other": "Empty the trash? {{count}} cards will be gone for good — they are already left out of backups."
     },
     "completed": {
       "empty": "No completed tasks yet.",
@@ -182,7 +188,11 @@
       "subdeckReady": "Sub-deck ready — deal in your first sub-task",
       "promoted": "Promoted to the parent's level",
       "movedInto": "Moved into “{{title}}”",
-      "moveFailed": "Couldn't move: {{message}}"
+      "moveFailed": "Couldn't move: {{message}}",
+      "trashEmptied_one": "Trash emptied — {{count}} card gone.",
+      "trashEmptied_other": "Trash emptied — {{count}} cards gone.",
+      "nothingToUndo": "Nothing to undo in this session.",
+      "undoneLast": "Undone."
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -236,6 +246,11 @@
       "cancel": "Cancel",
       "moveIntoTitle": "Move “{{title}}” into…",
       "moveIntoEmpty": "No other card to move this into yet."
+    },
+    "undoDialog": {
+      "title": "Undo last action?",
+      "confirm": "Undo",
+      "cancel": "Cancel"
     }
   }
 }

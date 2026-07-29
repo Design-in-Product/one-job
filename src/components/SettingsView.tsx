@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Task } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
+import { withoutTrashed } from '@/domain/tasks';
 import { toast } from '@/components/ui/sonner';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -48,7 +49,10 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         : t('settings.lastBackupDays', { count: backupAgeDays });
 
   const buildBackup = async () => {
-    const tasks = await getTaskStore().getAllTasks();
+    // Backups exclude the trash (Xian, 2026-07-29): cards there are not
+    // protected, and a restore should never resurrect what was already
+    // thrown away. The toast count reflects what the file actually holds.
+    const tasks = withoutTrashed(await getTaskStore().getAllTasks());
     const json = JSON.stringify(
       { app: 'one-job', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), tasks },
       null,

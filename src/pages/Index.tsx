@@ -33,6 +33,8 @@ import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants } from '@/domain/tasks';
+import { useShake } from '@/hooks/use-shake';
+import ActionSheet from '@/components/ActionSheet';
 import { useTranslation } from 'react-i18next';
 
 
@@ -195,6 +197,46 @@ const Index = () => {
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
+
+  const handleEmptyTrash = async () => {
+    const store = getTaskStore();
+    if (!store.emptyTrash) return;
+    try {
+      const removed = await store.emptyTrash();
+      toast.success(t('toasts.trashEmptied', { count: removed }));
+      refreshTasks();
+    } catch (err) {
+      console.error('Empty trash failed:', err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // Session-deep undo (Xian, 2026-07-29): the store replays its state from
+  // before the last mutation — any mutation, including a whole-deck import.
+  // Reached from the long-press menu and (on devices with motion) a shake,
+  // which asks first rather than acting: a shake can be an accident.
+  const [shakeUndoPrompt, setShakeUndoPrompt] = useState(false);
+  const handleUndoLast = async () => {
+    const store = getTaskStore();
+    if (!store.undoLast) return;
+    try {
+      const undone = await store.undoLast();
+      if (undone) {
+        toast.success(t('toasts.undoneLast'));
+        await refreshAll();
+      } else {
+        toast.info(t('toasts.nothingToUndo'));
+      }
+    } catch (err) {
+      console.error('Undo failed:', err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+  useShake(() => {
+    // Only prompt when there is history — a shake with nothing to undo
+    // should not interrupt anyone.
+    if (getTaskStore().canUndo?.()) setShakeUndoPrompt(true);
+  });
 
   // Undo support: restore a pre-action snapshot of a task (5s toast window).
   // Only offered when the active store implements restoreTask (local/demo).
@@ -442,6 +484,17 @@ const Index = () => {
         actions={menuCard ? buildCardActions(menuCard) : []}
         onClose={() => setMenuCard(null)}
       />
+      {/* Shake-to-undo asks before acting (a shake can be an accident) */}
+      <ActionSheet
+        open={shakeUndoPrompt}
+        title={t('undoDialog.title')}
+        actions={[
+          { key: 'undo', label: t('undoDialog.confirm'),
+            onClick: () => { setShakeUndoPrompt(false); handleUndoLast(); } },
+        ]}
+        onClose={() => setShakeUndoPrompt(false)}
+      />
+
       <MoveIntoPicker
         movingCard={movingCardId ? findCardById(tasks, movingCardId) ?? null : null}
         allCards={tasks}
@@ -514,6 +567,7 @@ const Index = () => {
                 onViewCompleted={() => setCurrentView('completed')}
                 onViewIntegrations={() => setCurrentView('integrate')}
                 onViewSettings={() => setCurrentView('settings')}
+                onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
               />
             )}
             
@@ -536,6 +590,7 @@ const Index = () => {
                     onTrash={(id) => chainMove(id, 'trashTask', 'toasts.trashed')}
                     onRestoreFromTrash={(id) => chainMove(id, 'restoreFromTrash', 'toasts.restoredFromTrash')}
                     onPurge={handlePurgeTask}
+                    onEmptyTrash={getTaskStore().emptyTrash ? handleEmptyTrash : undefined}
                   />
                 ) : (
                   <CompletedTasks
