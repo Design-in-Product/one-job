@@ -158,7 +158,9 @@
       "importChoose": "Found {{count}} cards in this backup. How should they come in?",
       "importAsSubdeck": "Bring in as a new deck (keeps my current deck)",
       "replaceEverything": "Replace my whole deck (can't undo)",
-      "importedAsSubdeck": "Added {{count}} cards as a new deck"
+      "importedAsSubdeck": "Added {{count}} cards as a new deck",
+      "quietTitle": "Quiet mode",
+      "quietDescription": "Mute the little confirmation messages. Problems still show, and Undo stays in the hold-menu (or shake)."
     },
     "toasts": {
       "undo": "Undo",
