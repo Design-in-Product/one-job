@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -171,8 +171,35 @@ export class LocalTaskStore implements TaskStore {
     return task;
   }
 
+  /**
+   * Item 15, enforced where the data actually changes: "done" means the
+   * whole job is done, so a card with unfinished work ANYWHERE in its
+   * subtree cannot complete.
+   *
+   * This lived only in Index.tsx until 2026-07-28 — the UI. Every other
+   * half of the sealed-card invariant (no move-into, no add-card, no
+   * add-deck on a completed card) was already enforced here, and a
+   * UI-only guard means any other path to completion can silently bury
+   * active work inside a done card. That is the exact stranding the
+   * invariant exists to prevent.
+   *
+   * The UI keeps its own check: it explains WHY and descends into the
+   * blocking deck, which a thrown error cannot do. This is the backstop,
+   * not the user experience.
+   */
+  private refuseIfUnfinishedInside(card: Task): void {
+    const open = unfinishedDescendants(card);
+    if (open.length > 0) {
+      throw new Error(
+        `Cannot complete "${card.title}": ${open.length} unfinished card${open.length === 1 ? '' : 's'} inside`
+      );
+    }
+  }
+
   async completeTask(id: string): Promise<Task> {
-    const task = applyCompletion(this.findTask(id));
+    const found = this.findTask(id);
+    this.refuseIfUnfinishedInside(found);
+    const task = applyCompletion(found);
     this.saveTasks();
     return task;
   }
@@ -298,6 +325,7 @@ export class LocalTaskStore implements TaskStore {
     const deck = findDeckOfCard(this.tasks, id);
     const card = deck?.cards.find(c => c.id === id);
     if (!card) throw new Error('Substack task not found');
+    this.refuseIfUnfinishedInside(card);
     card.completed = true;
     card.completedAt = new Date();
     this.saveTasks();
