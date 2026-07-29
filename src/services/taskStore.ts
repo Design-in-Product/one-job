@@ -52,6 +52,11 @@ export interface TaskStore {
   restoreFromTrash?(id: string): Promise<Task>;
   /** Permanent removal; only from trash; UI confirms first. */
   purgeTask?(id: string): Promise<void>;
+  /** Empty the whole trash at once; returns removed count (2026-07-29). */
+  emptyTrash?(): Promise<number>;
+  /** Session-deep undo: restore the state before the last mutation. */
+  undoLast?(): Promise<boolean>;
+  canUndo?(): boolean;
   /** Move a sub-card up to be a peer of its parent (MVP blocker 1). */
   promoteCard?(id: string): Promise<Task>;
   /** Move a card into another card's interior deck (MVP blocker 1). */

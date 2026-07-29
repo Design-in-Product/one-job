@@ -143,3 +143,29 @@ in sub-decks, not just the top level.
   redundant second add button from the empty state. Verified on the web
   surface (populated + empty). This is the first concrete step; the
   per-card hold-menu (blocker 1 proper) follows once #2 is confirmed.
+
+### Shipped 2026-07-29 — trash is not protected; undo joins the grammar
+
+Xian's calls (message of 2026-07-29):
+
+- **Right-swipe in the Trash = delete forever, one tap, no confirm.**
+  The chain grammar already means "right advances the afterlife"; for a
+  trashed card, advancing is out of existence. The two deliberate moves
+  that put a card in the trash ARE the confirmation. The only confirm
+  left in the room is **Empty trash**, because it is bulk.
+- **Backups exclude the trash** — a restore never resurrects what was
+  already thrown away.
+- **The trash never counts itself.** No count on the tab, no "n of m"
+  in the sift hint — depth is a felt pile (edge bars under the card,
+  capped at 6: the asymptote is the point). Done keeps its count; a
+  Done number is a trophy, a Trash number is dread (covenant 7).
+- **Search is a filter on the pile, not a results view** (rooms, from a
+  pile of 6 up): typing narrows what the existing sift walks, matching
+  title AND description; one-card-at-a-time survives untouched.
+- **Undo enters the grammar twice:** an **Undo** entry leads the
+  hold-menu (mistake recovery is time-sensitive; the rest of that menu
+  is navigation), and **shaking the phone** asks "Undo last action?" —
+  asks, because a shake can be an accident. Session-deep history behind
+  both: every mutation is undoable back to session start, including a
+  whole-deck import. Cross-session recovery stays with the dated
+  snapshots.
