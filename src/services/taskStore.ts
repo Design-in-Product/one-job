@@ -54,6 +54,8 @@ export interface TaskStore {
   purgeTask?(id: string): Promise<void>;
   /** Empty the whole trash at once; returns removed count (2026-07-29). */
   emptyTrash?(): Promise<number>;
+  /** Done→Archive housekeeping: cards filed at load (0/undefined = none). */
+  lastHousekeeping?: number;
   /** Session-deep undo: restore the state before the last mutation. */
   undoLast?(): Promise<boolean>;
   canUndo?(): boolean;

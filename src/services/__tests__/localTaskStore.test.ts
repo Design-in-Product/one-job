@@ -899,3 +899,60 @@ describe('undo history (Xian, 2026-07-29: shake/menu undo, session-deep)', () =>
     expect((await store.getAllTasks()).map(t => t.title)).toEqual(['precious']);
   });
 });
+
+describe('Done→Archive housekeeping (Xian, 2026-07-29: 30 days)', () => {
+  const KEY6 = 'housekeeptest';
+  const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
+  const seed = (cards: unknown[]) =>
+    localStorage.setItem(KEY6, JSON.stringify({ schemaVersion: 2, cards }));
+
+  it('files done cards older than 30 days to the archive on load', async () => {
+    localStorage.clear();
+    seed([
+      { id: 'old', title: 'old done', completed: true,
+        createdAt: daysAgo(60), completedAt: daysAgo(40) },
+      { id: 'fresh', title: 'fresh done', completed: true,
+        createdAt: daysAgo(10), completedAt: daysAgo(5) },
+      { id: 'active', title: 'still todo', completed: false, createdAt: daysAgo(60) },
+    ]);
+    const store = new LocalTaskStore(KEY6);
+    expect(store.lastHousekeeping).toBe(1);
+    const all = await store.getAllTasks();
+    expect(all.find(t => t.id === 'old')!.archivedAt).toBeInstanceOf(Date);
+    expect(all.find(t => t.id === 'fresh')!.archivedAt).toBeUndefined();
+    expect(all.find(t => t.id === 'active')!.completed).toBe(false);
+  });
+
+  it('reaches old done cards at depth and survives a cold start', async () => {
+    localStorage.clear();
+    seed([
+      { id: 'p', title: 'parent', completed: false, createdAt: daysAgo(60),
+        decks: [{ id: 'd', name: null, createdAt: daysAgo(60), cards: [
+          { id: 'deep-old', title: 'deep old done', completed: true,
+            createdAt: daysAgo(60), completedAt: daysAgo(45) },
+        ] }] },
+    ]);
+    new LocalTaskStore(KEY6); // housekeeping runs at load
+    const cold = new LocalTaskStore(KEY6);
+    expect(cold.lastHousekeeping).toBe(0); // already filed — no rework
+    const p = (await cold.getAllTasks())[0];
+    expect(p.decks![0].cards[0].archivedAt).toBeInstanceOf(Date);
+  });
+
+  it('leaves already-archived, trashed, and undated-done cards alone', async () => {
+    localStorage.clear();
+    seed([
+      { id: 'arch', title: 'already archived', completed: true,
+        createdAt: daysAgo(90), completedAt: daysAgo(80), archivedAt: daysAgo(50) },
+      { id: 'tr', title: 'trashed', completed: true, createdAt: daysAgo(90),
+        completedAt: daysAgo(80), archivedAt: daysAgo(70), trashedAt: daysAgo(60) },
+      { id: 'undated', title: 'done but no date', completed: true, createdAt: daysAgo(90) },
+    ]);
+    const store = new LocalTaskStore(KEY6);
+    expect(store.lastHousekeeping).toBe(0);
+    const all = await store.getAllTasks();
+    // the trashed card kept its trashedAt; the undated one was not guessed at
+    expect(all.find(t => t.id === 'tr')!.trashedAt).toBeInstanceOf(Date);
+    expect(all.find(t => t.id === 'undated')!.archivedAt).toBeUndefined();
+  });
+});
