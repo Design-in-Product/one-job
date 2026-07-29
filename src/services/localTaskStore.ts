@@ -97,6 +97,30 @@ export class LocalTaskStore implements TaskStore {
     return deck;
   }
 
+  /** Move a TOP-LEVEL card to another root deck, landing on TOP of the
+      target (newest-on-top rule) — R2.1 stage 3, where promote-at-top
+      stops refusing and gains its meaning. Nested cards must promote
+      first: the move grammar stays one altitude at a time. */
+  async moveCardToDeck(cardId: string, deckId: string): Promise<Task> {
+    const target = this.decks.find(d => d.id === deckId);
+    if (!target) throw new Error('Unknown deck');
+    const source = this.decks.find(d => d.cards.some(c => c.id === cardId));
+    if (!source) {
+      // Distinguish "doesn't exist" from "exists but nested"
+      if (findCardById(this.decks.flatMap(d => d.cards), cardId)) {
+        throw new Error('Only top-level cards move between decks — promote it first');
+      }
+      throw new Error('Task not found');
+    }
+    if (source.id === target.id) throw new Error('The card is already in that deck');
+    const index = source.cards.findIndex(c => c.id === cardId);
+    const [card] = source.cards.splice(index, 1);
+    card.sortOrder = topSortOrder(target.cards);
+    target.cards.push(card);
+    this.saveTasks();
+    return card;
+  }
+
   /** Empty decks only — a deck holding cards can't be deleted (the
       sealed-card lesson generalized: no operation may bury or discard
       cards as a side effect). Never the last deck. */

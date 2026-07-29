@@ -39,30 +39,6 @@ copy — overstating danger beats understating it — but flag it in case
 you'd rather the trash confirm mention the shake-out: "gone for good"
 remains true across sessions and in backups.
 
-### 🟡 7. A blocked completion can be a dead end (design question)
-Found while proving the swipe fix. When you try to complete a card whose
-unfinished work is a **grandchild buried under a completed child**, the
-block fires correctly and the toast says *"1 sub-task still open inside
-— finish or clear it first"* — but nothing happens next. Index's
-"descend into the blocking deck" step only scans **direct** children
-(`decks.find(d => d.cards.some(c => !c.completed))`), so when the open
-card is deeper there is nothing for it to open. You are told there is
-work in there and not shown where.
-
-Your own deck had exactly this shape before the rescues, so it is not
-hypothetical.
-
-**Recommendation:** make the descent follow the same whole-subtree walk
-the *block* uses — descend toward the first deck on the path to the
-nearest unfinished descendant, so "the block is the reveal" holds at any
-depth. That is a small change and I think it is just right, but it
-changes what the app does when you swipe, so it is yours to call.
-
-**Meanwhile:** unchanged. The block itself is correct and safe at every
-depth — this is about where you land afterward, not about work being
-lost. Nothing can be buried: as of today the store refuses the
-completion too, not just the UI.
-
 ### 🟢 8. Zapier export toast now claims less
 It said "Tasks exported to Zapier webhook" while using `mode: "no-cors"`,
 which cannot observe whether the endpoint accepted, 500'd, or exists.
@@ -142,6 +118,13 @@ draft it and have you correct me, if you'd rather not start from blank.
 ---
 
 ## Settled
+
+*(2026-07-29) Item 7, blocked-completion dead end* — fixed under the
+standing default Xian didn't object to: the reveal now follows the same
+whole-subtree walk as the block. A refused completion descends the full
+path to the nearest open card, through completed intermediates, at any
+depth. E2E: the buried "grandchild under a done child" case now lands
+you looking at the blocking card itself.
 
 *(2026-07-29) Housekeeping* — Xian: 30 days. Built same day: done cards
 over 30 days old are filed to Archive at launch, every depth, witnessed
