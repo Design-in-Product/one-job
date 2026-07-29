@@ -673,3 +673,86 @@ describe('completed cards are sealed (Xian, 2026-07-26)', () => {
     await expect(store.createSubstack(owner.id, null)).rejects.toThrow(/completed/i);
   });
 });
+
+describe('completing over unfinished work is refused by the STORE (2026-07-28)', () => {
+  // Item 15 ("done means the whole job is done") was enforced only in
+  // Index.tsx — the UI. Every other half of the sealed-card invariant lives
+  // in the store, and CLAUDE.md is explicit that task state logic belongs in
+  // the domain, not in frontend state management. A UI-only guard means any
+  // other path to completeTask can silently bury unfinished work, which is
+  // the precise failure the invariant exists to prevent. The UI still owns
+  // explaining WHY and descending into the blocking deck; this is the backstop.
+  const KEY3 = 'blockcomplete';
+  const store3 = () => new LocalTaskStore(KEY3);
+
+  it('refuses to complete a card with an unfinished direct child', async () => {
+    localStorage.clear();
+    const store = store3();
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    await store.addSubstackTask(deck.id, 'still open');
+    await expect(store.completeTask(parent.id)).rejects.toThrow(/unfinished/i);
+  });
+
+  it('refuses when the unfinished work is a GRANDchild under a completed child', async () => {
+    // The deep case: Index's blockingDeck lookup only scans DIRECT children,
+    // so this shape reaches the store looking innocent — nothing visible to
+    // descend into, but active work is buried down there.
+    //
+    // Note this state can no longer be BUILT through the API: completing the
+    // middle card is itself refused now, which is the invariant doing its job
+    // (no new strandings). It can still ARRIVE — legacy decks and imports —
+    // which is exactly why the guard has to be checked on the way out too.
+    // So we seed the buried shape directly, the way a real old deck would.
+    localStorage.clear();
+    localStorage.setItem(KEY3, JSON.stringify({
+      schemaVersion: 2,
+      cards: [{
+        id: 'p', title: 'parent', completed: false, createdAt: '2026-07-01T00:00:00.000Z', sortOrder: 1,
+        decks: [{
+          id: 'd', name: null, createdAt: '2026-07-01T00:00:00.000Z',
+          cards: [{
+            id: 'c', title: 'child', completed: true,
+            createdAt: '2026-07-01T00:00:00.000Z', completedAt: '2026-07-02T00:00:00.000Z',
+            decks: [{
+              id: 'd2', name: null, createdAt: '2026-07-01T00:00:00.000Z',
+              cards: [{ id: 'g', title: 'buried but open', completed: false, createdAt: '2026-07-01T00:00:00.000Z' }],
+            }],
+          }],
+        }],
+      }],
+    }));
+    const store = store3();
+    await expect(store.completeTask('p')).rejects.toThrow(/unfinished/i);
+  });
+
+  it('allows completion once the whole subtree is done', async () => {
+    localStorage.clear();
+    const store = store3();
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    const child = await store.addSubstackTask(deck.id, 'child');
+    await store.completeSubstackTask(child.id);
+    const done = await store.completeTask(parent.id);
+    expect(done.completed).toBe(true);
+  });
+
+  it('applies at depth too: a sub-card cannot complete over its own unfinished interior', async () => {
+    localStorage.clear();
+    const store = store3();
+    const parent = await store.createTask('parent');
+    const deck = await store.createSubstack(parent.id, null);
+    const child = await store.addSubstackTask(deck.id, 'child');
+    const inner = await store.createSubstack(child.id, null);
+    await store.addSubstackTask(inner.id, 'still open');
+    await expect(store.completeSubstackTask(child.id)).rejects.toThrow(/unfinished/i);
+  });
+
+  it('leaves a childless card completable (no false positives)', async () => {
+    localStorage.clear();
+    const store = store3();
+    const solo = await store.createTask('solo');
+    const done = await store.completeTask(solo.id);
+    expect(done.completed).toBe(true);
+  });
+});
