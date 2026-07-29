@@ -27,7 +27,7 @@ had but never wrote down.* The cleanup is to declare them.
 
 | # | Assumption | Fix | Status |
 |---|---|---|---|
-| B1 | "Some Node" is fine | `.nvmrc` + `engines` (>=22); CI matrix on 22 **and** 26 so host-dependence is caught by machines | ✅ |
+| B1 | "Some Node" is fine | `engines: >=22` + CI matrix on 22 **and** 26, so host-dependence is caught by machines. **No `.nvmrc`** — deliberately: Amber has no nvm (Homebrew Node 26), and a file pinning 22 would misstate the dev reality, which is the very trap being fixed. Two versions are supported, so the artifact that says so is the matrix | ✅ |
 | B2 | Tests run somewhere | No workflow ran `npm test` — add a real test job | ✅ |
 | B3 | Playwright is just there | Not a project dep; **1.61.0 is the version matching Amber's chromium-1228** (1.62 wants 1234 and would download a second browser into a shared cache). Documented, kept out of `node_modules` | ✅ |
 | B4 | Dev server owns 8080 | Taken by `mediajunkie/local_chat.py`; Vite auto-falls-back to 8081. Documented rather than hard-coded — see rollup #3 | ✅ |
