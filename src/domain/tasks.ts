@@ -107,6 +107,22 @@ export const cardRoom = (t: Task): Room => {
   return 'deck';
 };
 
+/**
+ * A copy of the tree with every trashed card removed, at any depth.
+ * Trash is not protected (Xian, 2026-07-29): backups exclude it, so a
+ * restore never resurrects what the user already threw away. Pure — the
+ * input tree is untouched; kept cards are shallow-copied only where a
+ * deck needed filtering.
+ */
+export const withoutTrashed = (cards: Task[]): Task[] =>
+  cards
+    .filter(c => cardRoom(c) !== 'trash')
+    .map(c =>
+      c.decks && c.decks.length > 0
+        ? { ...c, decks: c.decks.map(d => ({ ...d, cards: withoutTrashed(d.cards) })) }
+        : c
+    );
+
 export const applyArchive = (task: Task): Task => {
   task.archivedAt = new Date();
   return task;

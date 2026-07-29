@@ -12,52 +12,32 @@ answer recorded.
 
 ---
 
-## Open — 2026-07-28 (autonomous run on Amber)
+## Open
 
-### 🔴 0. READ FIRST if you are telling Relay to cut a build: it's **rc.12** now
-You said you were going to tell Relay we're ready. Since the rc.11 stamp,
-three behaviour-affecting commits landed on main during this session
-(blocked-swipe fix, store-level Item 15 enforcement, honest success
-signals). I stamped **1.0.0-rc.12** and filed
-`memo-coral-to-relay-2026-07-28-rc12-cut-supersedes-rc11.md`.
+### 🟡 11. Done→Archive housekeeping: what is N, and may it move cards silently?
+Your funnel goal: "occasionally housekeeping moved Done cards to Archive
+after they are x days old." Two things only you can set before I build
+it: **the number of days**, and **whether cards may move rooms without
+you watching** (it collides gently with "state is place" — a card
+teleporting between rooms overnight is new behavior). My suggestion:
+30 days, moved on app launch, with a quiet one-line toast the first time
+it happens so the move is witnessed. Say a number (or "later") and I'll
+build it.
 
-I did this without asking because there is precedent — rc.10→rc.11 was
-bumped for exactly this reason on 07-26 — and because the alternative
-was worse: the rc.11 memo tells Relay to *"verify package.json says
-1.0.0-rc.11 before building,"* and until the bump **that check would
-have passed while the code was different from what the memo described.**
-A verification that cannot fail isn't one. Same disease as everything
-else in today's audit, this time in our own release process.
+### 🟡 12. Shake-to-undo ships blind until a device confirms it
+Shake + menu undo + session-deep history shipped this morning (see log).
+The shake path uses devicemotion, which iOS gates behind a permission
+that can only be requested from a user gesture — I wired the request to
+the first tap, but **only a real iPhone can prove it**. Added to the
+rc.13 Relay smoke memo. The menu Undo path is device-independent and
+Playwright-verified.
 
-**If you already sent Relay to rc.11:** point them at the rc.12 memo.
-Nothing they'd have built is broken — it just wouldn't have been the
-build we described, and the swipe fix and store guard wouldn't be in it.
-
-Version stamps are your call, so overrule me freely — but main should
-not sit ahead of the stamp a cut memo names.
-
-### 🟡 9. Design options ready for review (the design-gated work)
-`docs/DESIGN-OPTIONS-2026-07-28.md` — searchable/browsable rooms and
-multi-step undo, as options with recommendations. Not blocking; beta
-week comes first. Three questions I can't answer for you:
-
-1. **Search match:** title only, or title + description? (Title+desc
-   finds more but surfaces cards whose visible face lacks the word,
-   which feels like the app lying.)
-2. **Covenant 7 vs. shipped code:** the sift hint renders `3 of 27` — a
-   tallied pile. Trophy in Done, arguably dread in Trash. Keep,
-   trash-only, or make position *felt* instead of numbered? This one
-   matters now because the search design leans on the same signal.
-3. **Undo shape:** should a "Recent" room hold **action cards** ("you
-   moved Foo into Bar") — a new species of card in an app where every
-   card has so far been a thing to do — or **task cards with a
-   put-back**?
-
-Headline of the recommendation, so you can disagree cheaply: **the
-chain already IS undo** for complete/archive/trash, because state is
-place. The actual gaps are defer, move/promote, and edits — a smaller
-and more specific scope than "multi-step undo," and one that a "Recent"
-room covers while also retiring the Item 16 (quiet mode) blocker.
+### 🟢 13. Purge copy now says less than it could
+With session undo, "Delete forever" is technically undoable *within the
+session* (the undo stack captures pre-purge state). I left the strong
+copy — overstating danger beats understating it — but flag it in case
+you'd rather the trash confirm mention the shake-out: "gone for good"
+remains true across sessions and in backups.
 
 ### 🟡 7. A blocked completion can be a dead end (design question)
 Found while proving the swipe fix. When you try to complete a card whose
@@ -159,13 +139,19 @@ product call with a lot of your judgment in it, not a mechanical edit.
 gate has actually told us whether the chain is trustworthy. Happy to
 draft it and have you correct me, if you'd rather not start from blank.
 
-### 🟢 6. rc.11 is cut and waiting on Relay
-You said you'd tell them. `memo-coral-to-relay-2026-07-28-rc11-cut-supersedes-rc10.md`
-is filed and authoritative. Nothing needed from me.
-
 ---
 
 ## Settled
+
+*(2026-07-29) rc.12 heads-up* — Relay was already on rc.12; Xian
+confirmed the stamp call was right.
+
+*(2026-07-29) Design questions, all three* — search matches title +
+description; covenant 7 = felt in Trash (Done keeps its trophy count);
+no action-cards — instead shake-to-undo + Undo in the hold-menu over a
+session-deep history stack. Shipped same morning with the rest of the
+trash decisions (one-tap swipe delete, Empty trash, backups exclude
+trash). Full record: DESIGN-OPTIONS-2026-07-28.md § Decision Record.
 
 *(2026-07-28) Git identity* — Pard: switch to the resident-agent form,
 **`Coral (One Job) <coral@onejob.local>`**, repo-local; the network

@@ -125,7 +125,47 @@ export class LocalTaskStore implements TaskStore {
     stale.forEach(k => localStorage.removeItem(k));
   }
 
+  // ---- Undo history (Xian, 2026-07-29) ----------------------------------
+  // Every mutation funnels through saveTasks(), so capturing the PREVIOUS
+  // stored document there gives whole-session undo with zero per-method
+  // wiring — including reversal of a whole-deck import. Session-scoped by
+  // design ("infinite undo or a reasonable approximation"): the in-memory
+  // stack dies with the tab, and the dated on-disk snapshots remain the
+  // coarse cross-session fallback. Capped so a marathon session can't grow
+  // without bound.
+  private undoStack: string[] = [];
+  private capturingUndo = true;
+  private static readonly UNDO_DEPTH = 500;
+
+  canUndo(): boolean {
+    return this.undoStack.length > 0;
+  }
+
+  /** Restore the deck to the state before the last mutation. False when
+      there is nothing left to undo. The restore itself is NOT captured —
+      otherwise repeated undo would bounce between two states instead of
+      walking history (regression-tested). */
+  async undoLast(): Promise<boolean> {
+    const prev = this.undoStack.pop();
+    if (prev === undefined) return false;
+    this.tasks = migrateDocument(JSON.parse(prev)).cards.map(reviveTask);
+    this.capturingUndo = false;
+    try {
+      this.saveTasks();
+    } finally {
+      this.capturingUndo = true;
+    }
+    return true;
+  }
+
   protected saveTasks() {
+    if (this.capturingUndo) {
+      const prev = localStorage.getItem(this.storageKey);
+      if (prev !== null) {
+        this.undoStack.push(prev);
+        if (this.undoStack.length > LocalTaskStore.UNDO_DEPTH) this.undoStack.shift();
+      }
+    }
     const serialized = this.serialize();
     localStorage.setItem(this.storageKey, serialized);
     localStorage.setItem(
@@ -367,10 +407,35 @@ export class LocalTaskStore implements TaskStore {
     return task;
   }
 
-  /** The only destructive operation in the app: permanent removal,
-      allowed ONLY from the trash, confirmed by the UI beforehand.
-      Works at any depth — the card is spliced out of whichever
-      collection actually holds it. */
+  /** Empty the whole trash in one move, at every depth. Returns how many
+      cards were removed. Cards in the trash are NOT protected (Xian,
+      2026-07-29) — the user already threw them away; the trash room is
+      the confirmation. Still session-undoable like any other mutation. */
+  async emptyTrash(): Promise<number> {
+    let removed = 0;
+    const sweep = (cards: Task[]): Task[] =>
+      cards
+        .filter(c => {
+          if (cardRoom(c) === 'trash') {
+            removed++;
+            return false;
+          }
+          return true;
+        })
+        .map(c => {
+          for (const d of c.decks ?? []) d.cards = sweep(d.cards);
+          return c;
+        });
+    this.tasks = sweep(this.tasks);
+    if (removed > 0) this.saveTasks();
+    return removed;
+  }
+
+  /** Permanent removal, allowed ONLY from the trash. Works at any depth —
+      the card is spliced out of whichever collection actually holds it.
+      Since 2026-07-29 the trash room itself is the confirmation: swiping
+      right on a trashed card purges it one-tap (Xian's call — "cards in
+      the trash are not protected"). */
   async purgeTask(id: string): Promise<void> {
     const holder = this.tasks.some(t => t.id === id)
       ? this.tasks

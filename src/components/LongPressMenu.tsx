@@ -11,6 +11,8 @@ interface LongPressMenuProps {
   isOpen: boolean;
   onClose: () => void;
   onAddTask: () => void;
+  /** Session undo (2026-07-29) — absent when the store can't undo. */
+  onUndo?: () => void;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
   onSettings?: () => void;
@@ -20,12 +22,15 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   isOpen,
   onClose,
   onAddTask,
+  onUndo,
   onViewCompleted,
   onViewIntegrations,
   onSettings,
 }) => {
   const { t } = useTranslation();
   const actions: SheetAction[] = [
+    // Undo leads: reaching for it means something just went wrong
+    ...(onUndo ? [{ key: 'undo', label: t('menu.undo'), onClick: onUndo }] : []),
     { key: 'add', label: t('menu.addTask'), onClick: onAddTask },
     { key: 'completed', label: t('menu.completed'), onClick: onViewCompleted },
     { key: 'integrations', label: t('menu.integrations'), onClick: onViewIntegrations },
