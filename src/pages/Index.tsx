@@ -96,6 +96,10 @@ const Index = () => {
   // --- MODIFIED: useEffect for initial fetching tasks from backend ---
   useEffect(() => {
     refreshTasks();
+    // Witness launch housekeeping (Done→Archive after 30 days): cards must
+    // never change rooms unwatched — the quiet toast is the witnessing.
+    const filed = getTaskStore().lastHousekeeping ?? 0;
+    if (filed > 0) toast.info(t('toasts.housekeeping', { count: filed }));
   }, [refreshTasks]);
 
   // --- NEW: handleUpdateTask function to send PUT request for title/description ---

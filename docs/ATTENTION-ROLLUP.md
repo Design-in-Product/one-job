@@ -14,16 +14,6 @@ answer recorded.
 
 ## Open
 
-### 🟡 11. Done→Archive housekeeping: what is N, and may it move cards silently?
-Your funnel goal: "occasionally housekeeping moved Done cards to Archive
-after they are x days old." Two things only you can set before I build
-it: **the number of days**, and **whether cards may move rooms without
-you watching** (it collides gently with "state is place" — a card
-teleporting between rooms overnight is new behavior). My suggestion:
-30 days, moved on app launch, with a quiet one-line toast the first time
-it happens so the move is witnessed. Say a number (or "later") and I'll
-build it.
-
 ### 🟡 12. Shake-to-undo ships blind until a device confirms it
 Shake + menu undo + session-deep history shipped this morning (see log).
 The shake path uses devicemotion, which iOS gates behind a permission
@@ -142,6 +132,12 @@ draft it and have you correct me, if you'd rather not start from blank.
 ---
 
 ## Settled
+
+*(2026-07-29) Housekeeping* — Xian: 30 days. Built same day: done cards
+over 30 days old are filed to Archive at launch, every depth, witnessed
+by a quiet toast ("state is place" — no unwatched room changes). His
+note that the threshold could be a paid-tier setting is recorded in the
+decision record and PRICING notes — constant until then.
 
 *(2026-07-29) rc.12 heads-up* — Relay was already on rc.12; Xian
 confirmed the stamp call was right.
