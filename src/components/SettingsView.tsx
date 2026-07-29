@@ -8,7 +8,8 @@ import { Task } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
-import { toast } from '@/components/ui/sonner';
+import { toast, isQuietMode, setQuietMode } from '@/components/ui/sonner';
+import { Switch } from '@/components/ui/switch';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -47,6 +48,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
       : backupAgeDays === 0
         ? t('settings.lastBackupToday')
         : t('settings.lastBackupDays', { count: backupAgeDays });
+
+  const [quiet, setQuiet] = useState(isQuietMode());
+  const toggleQuiet = (on: boolean) => {
+    setQuietMode(on);
+    setQuiet(on);
+  };
 
   const buildBackup = async () => {
     // Backups exclude the trash (Xian, 2026-07-29): cards there are not
@@ -216,6 +223,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
           </div>
         </div>
         <p className="text-sm text-gray-600">{t(`settings.mode.${storageMode}.description`)}</p>
+      </section>
+
+      {/* Quiet mode (Xian, 2026-07-29): mute the confirmation toasts.
+          Errors always surface; undo stays in the hold-menu and shake. */}
+      <section className="bg-white rounded-xl shadow p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-semibold text-gray-800">{t('settings.quietTitle')}</h3>
+            <p className="text-sm text-gray-600">{t('settings.quietDescription')}</p>
+          </div>
+          <Switch
+            checked={quiet}
+            onCheckedChange={toggleQuiet}
+            aria-label={t('settings.quietTitle')}
+          />
+        </div>
       </section>
 
       {/* Backup */}
