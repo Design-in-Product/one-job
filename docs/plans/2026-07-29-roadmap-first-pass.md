@@ -41,6 +41,15 @@ hands, not simulatable) and an export-location hint in Settings copy.
 week. Nothing to build until his report.
 
 ### R0.2 Deck-depth signal + Item 22 card aging (one material language)
+**Third strand added 2026-07-29 (Xian's "shades" whim, shipped as
+placeholder):** cards in the rooms are *shades* — progressively washed
+out the further from the living deck (Done barely, Archive paler, Trash
+near-gray). So the language is now: **volume** = thickness (felt pile),
+**time** = patina (aging, unbuilt), **state** = vitality/saturation
+(shades, placeholder values shipped rc.15). The aging design pass tunes
+all three together. Note from building it: the card face is
+white-on-near-black, so saturation alone is invisible — a shade loses
+VITALITY (opacity + contrast), not color.
 **Refined:** the deck visibly thickens as it grows (asymptote, no
 number); cards age visually when long-untended. Design the two together
 — time and volume in one tactile vocabulary. The trash pile's edge bars
