@@ -27,7 +27,8 @@
       "completed": "Completed",
       "integrations": "Integrations",
       "settings": "Settings",
-      "undo": "Undo"
+      "undo": "Undo",
+      "decks": "Decks…"
     },
     "form": {
       "addNew": "Add New Task",
@@ -196,7 +197,8 @@
       "nothingToUndo": "Nothing to undo in this session.",
       "undoneLast": "Undone.",
       "housekeeping_one": "Tidied up: {{count}} done card over 30 days old moved to the Archive.",
-      "housekeeping_other": "Tidied up: {{count}} done cards over 30 days old moved to the Archive."
+      "housekeeping_other": "Tidied up: {{count}} done cards over 30 days old moved to the Archive.",
+      "deckCreated": "Deck \"{{name}}\" created — you’re in it now"
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -255,6 +257,11 @@
       "title": "Undo last action?",
       "confirm": "Undo",
       "cancel": "Cancel"
+    },
+    "decks": {
+      "title": "Decks",
+      "new": "+ New deck",
+      "unnamed": "Unnamed deck"
     }
   }
 }

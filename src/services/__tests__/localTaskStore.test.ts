@@ -1030,3 +1030,108 @@ describe('v3 root-deck migration at the store (R2.1 stage 1, 2026-07-29)', () =>
     expect((await store.getAllTasks())[0].title).toBe('ancient');
   });
 });
+
+describe('root deck CRUD + active deck (R2.1 stage 2, 2026-07-29)', () => {
+  const KEY8 = 'deckcrud';
+  const store8 = () => new LocalTaskStore(KEY8);
+
+  it('a fresh store has exactly deck-1, which is active', async () => {
+    localStorage.clear();
+    const store = store8();
+    const decks = await store.getDecks();
+    expect(decks).toHaveLength(1);
+    expect(decks[0].name).toBe('deck-1');
+    expect(store.activeDeckId()).toBe(decks[0].id);
+  });
+
+  it('createDeck adds an empty root deck with the next free slug name', async () => {
+    localStorage.clear();
+    const store = store8();
+    const d2 = await store.createDeck();
+    expect(d2.name).toBe('deck-2');
+    expect(d2.cards).toEqual([]);
+    const d3 = await store.createDeck('work');
+    expect(d3.name).toBe('work');
+    expect((await store.getDecks()).map(d => d.name)).toEqual(['deck-1', 'deck-2', 'work']);
+  });
+
+  it('switchDeck changes where new cards land; decks stay isolated', async () => {
+    localStorage.clear();
+    const store = store8();
+    await store.createTask('in one');
+    const d2 = await store.createDeck('work');
+    await store.switchDeck(d2.id);
+    expect(store.activeDeckId()).toBe(d2.id);
+    await store.createTask('in work');
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['in work']);
+    const decks = await store.getDecks();
+    expect(decks[0].cards.map(c => c.title)).toEqual(['in one']);
+    expect(decks[1].cards.map(c => c.title)).toEqual(['in work']);
+  });
+
+  it('the active deck survives a cold start (device preference, not deck data)', async () => {
+    localStorage.clear();
+    const store = store8();
+    const d2 = await store.createDeck('work');
+    await store.switchDeck(d2.id);
+    await store.createTask('landed in work');
+    const cold = store8();
+    expect(cold.activeDeckId()).toBe(d2.id);
+    expect((await cold.getAllTasks()).map(t => t.title)).toEqual(['landed in work']);
+    // and the preference key is NOT inside the document
+    expect(localStorage.getItem(KEY8)!.includes('activeDeck')).toBe(false);
+  });
+
+  it('switching to an unknown deck throws; a stale preference falls back to deck-1', async () => {
+    localStorage.clear();
+    const store = store8();
+    await expect(store.switchDeck('nope')).rejects.toThrow(/deck/i);
+    localStorage.setItem(`${KEY8}.activeDeck`, 'ghost-deck');
+    const next = store8();
+    expect((await next.getDecks())[0].id).toBe(next.activeDeckId());
+  });
+
+  it('renameDeck renames; deleteDeck refuses a non-empty deck and the last deck', async () => {
+    localStorage.clear();
+    const store = store8();
+    const [d1] = await store.getDecks();
+    await store.renameDeck(d1.id, 'life');
+    expect((await store.getDecks())[0].name).toBe('life');
+
+    await store.createTask('occupant');
+    await expect(store.deleteDeck(d1.id)).rejects.toThrow(/cards/i);
+
+    const d2 = await store.createDeck('empty one');
+    await store.deleteDeck(d2.id);
+    expect((await store.getDecks())).toHaveLength(1);
+    await expect(store.deleteDeck(d1.id)).rejects.toThrow(/cards|last/i);
+  });
+
+  it('deleting the ACTIVE deck moves the active pointer home to deck[0]', async () => {
+    localStorage.clear();
+    const store = store8();
+    const d2 = await store.createDeck('temp');
+    await store.switchDeck(d2.id);
+    await store.deleteDeck(d2.id);
+    expect(store.activeDeckId()).toBe((await store.getDecks())[0].id);
+  });
+
+  it('cross-deck invariants hold: rooms, undo, and find reach every deck', async () => {
+    localStorage.clear();
+    const store = store8();
+    const done1 = await store.createTask('done in one');
+    await store.completeTask(done1.id);
+    const d2 = await store.createDeck('work');
+    await store.switchDeck(d2.id);
+    const done2 = await store.createTask('done in work');
+    await store.completeTask(done2.id);
+    // find + mutate a card that lives in the NON-active deck
+    await store.uncompleteTask(done1.id);
+    const decks = await store.getDecks();
+    expect(decks[0].cards[0].completed).toBe(false);
+    expect(decks[1].cards[0].completed).toBe(true);
+    // undo (a cross-deck document restore) un-does that un-completion
+    await store.undoLast();
+    expect((await store.getDecks())[0].cards[0].completed).toBe(true);
+  });
+});

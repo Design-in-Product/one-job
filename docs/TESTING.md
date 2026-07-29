@@ -966,6 +966,11 @@ describe('TaskStack Integration', () => {
 > - **Always run the positive control.** Prove the harness can drive a
 >   *successful* swipe before concluding a refused one behaved
 >   correctly, and re-run the happy path after adding any guard.
+> - **`addInitScript` re-runs on EVERY navigation** — a "reload" step
+>   silently re-seeds storage and can manufacture data-loss bugs that
+>   exist only in the harness (cost a real hunt, 2026-07-29). To test
+>   reload/persistence, open a SECOND page in the same context (shared
+>   localStorage, no init script) and navigate there.
 
 ### Playwright Setup (aspirational — see the note above before using)
 

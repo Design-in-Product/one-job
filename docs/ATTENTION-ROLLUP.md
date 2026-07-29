@@ -14,6 +14,16 @@ answer recorded.
 
 ## Open
 
+### 🟢 14. Your comp grant: visit ?pro=comp once per device
+R2.1 stage 2 shipped (rc.17): multi-deck exists behind the pro wall,
+per-device entitlement per your doctrine. **To comp a device of yours:
+open `https://onejob.co/app/?pro=comp` once** (revoke: `?pro=off`).
+Then hold the deck background → **Decks…** appears. Free devices with
+existing multi-deck data keep switching — the wall gates creation only,
+so data is never hostage. The pre-business grant mechanism is just this
+URL param; real unlock infrastructure replaces the write path later,
+the `hasPro()` read seam stays.
+
 ### 🟡 12. Shake-to-undo ships blind until a device confirms it
 Shake + menu undo + session-deep history shipped this morning (see log).
 The shake path uses devicemotion, which iOS gates behind a permission
