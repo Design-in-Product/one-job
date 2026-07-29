@@ -16,7 +16,37 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Added 2026-07-28. Nothing ran the suite before this, which is how a
+  # host-dependent failure (jsdom's localStorage differing between Node
+  # 22 and 26) could sit undetected until the project moved machines.
+  # The matrix is the point: one version proves nothing about the other.
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false   # report both versions; "22 passed" alone is not news
+      matrix:
+        node-version: ['22', '26']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.app.json
+
+      - name: Unit tests
+        run: npm test
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     outputs:
       bundle: ${{ steps.hash.outputs.bundle }}
