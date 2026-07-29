@@ -186,7 +186,7 @@
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
-      "exportedToZapier": "Tasks exported to Zapier webhook",
+      "exportedToZapier": "Sent to Zapier — the browser can't confirm delivery",
       "selectService": "Select Service",
       "asanaLabel": "Asana Personal Access Token",
       "asanaPlaceholder": "Enter your Asana PAT",
