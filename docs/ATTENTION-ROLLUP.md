@@ -145,6 +145,22 @@ Once I am on a Mac, is Relay still needed as a separate build agent, or
 does the TestFlight pipeline eventually become mine? I have written
 this week's Relay memos assuming **no change**. Not absorbing it unasked.
 
+### 🟢 10. REQUIREMENTS.md has drifted (doc debt, not urgent)
+It's dated 2026-07-04 and its status line still reads *"concept-model
+rebuild (R1) is next"* — but most of R1 shipped (recursive cards,
+lifecycle chain, schema v2), and FR2 is still described as the live
+substack mechanism it explicitly says is sunset.
+
+I patched the part today's work touched (new **FR1.2b**: whole-subtree
+completion, store-level enforcement, the no-false-completion animation
+rule, and the known depth gap). I did **not** re-baseline the whole
+434-line spec — deciding what is now true across the document is a
+product call with a lot of your judgment in it, not a mechanical edit.
+
+**Recommendation:** worth a dedicated pass after beta week, when the R1
+gate has actually told us whether the chain is trustworthy. Happy to
+draft it and have you correct me, if you'd rather not start from blank.
+
 ### 🟢 6. rc.11 is cut and waiting on Relay
 You said you'd tell them. `memo-coral-to-relay-2026-07-28-rc11-cut-supersedes-rc10.md`
 is filed and authoritative. Nothing needed from me.
