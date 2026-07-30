@@ -14,22 +14,18 @@ answer recorded.
 
 ## Open
 
-### 🟡 16. R3.2 first import: I recommend GitHub — one word settles it
-Your candidates minus Asana: **Trello or GitHub**. My recommendation is
-**GitHub issues** (assigned-to-you, read-only) because R3's gate is
-"a real project where One Job is the only surface you touch daily" —
-and GitHub is where most of your tech work actually lives *now*, while
-Trello is "sometimes." Issue→card maps clean, a PAT is the whole auth
-story, and the API is CORS-friendly from a local-first client. Trello
-second: its board/list model is charmingly card-shaped but adds a
-mapping question (board→deck? list→?) we don't need on the first
-source. Say "GitHub," "Trello," or a third name and R3.2 planning
-starts; the seam (R3.1) is built and waiting.
+### 🟡 17. Morning item: paste a real PAT and watch your issues become cards
+R3.2 shipped tonight (rc.21) — read-only GitHub import, proven against
+a MOCKED API end to end (import, PR filtering, provenance dedupe,
+idempotent re-import, the github deck on the strip). The one thing a
+mock cannot prove is GitHub itself accepting a real token.
 
-**Also filed on the fun shelf** from your note: AI-interpreted ad hoc
-backends — Notes files, stickies, email — read as One Job cards.
-That's the R4 "agent is just another source" thesis wearing pajamas,
-and the SourceAdapter seam is already the right shape for it.
+**Your two minutes:** make a fine-grained PAT with read-only Issues
+access → open the app (a ?pro=comp device) → hold background →
+Integrations → paste → "Import my open issues." Your open assigned
+issues land in a `github` deck on the strip; re-import any time, dupes
+skip by provenance. The token stays on the device. Nothing writes
+upstream — closing issues from One Job is R3.4 and must be earned.
 
 ### 🟡 12. Shake-to-undo ships blind until a device confirms it
 Shake + menu undo + session-deep history shipped this morning (see log).
@@ -125,6 +121,9 @@ draft it and have you correct me, if you'd rather not start from blank.
 ---
 
 ## Settled
+
+*(2026-07-29) R3.2 source = GitHub* — his call ("agreed re github");
+shipped same night. Trello noted as the natural second source.
 
 *(2026-07-29) Canvas strip* — approved from screenshots ("the strip is
 good"), so the deferred background-drag pan shipped same evening and
