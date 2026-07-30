@@ -177,3 +177,12 @@ Xian's direction, verbatim in substance:
 **Working rule going forward:** every plan doc for a roadmap step
 carries a "Tier" line. Where the lean is Pro, the step's design must
 keep the feature *cleanly severable* (a flag, not a fork).
+
+### Clarifications (Xian, 2026-07-29 evening)
+
+- **Not all new work is pro.** The wall is an earmark applied per
+  feature; free users keep receiving improvements. (Same day's proof:
+  quiet mode, shades, the whole canvas strip — all free.)
+- **Comp mechanism** (`?pro=comp`) is explicitly interim: something
+  secure and in-app arrives when — and only when — the paid tier faces
+  real users.
