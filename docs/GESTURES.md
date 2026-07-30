@@ -192,3 +192,14 @@ pointer-downs outside the card (disambiguation by target, same trick as
 the two hold menus). Peeks remain as tap targets and affordance.
 E2E-pinned collision rule: a drag starting ON the card completes/defers
 the card and never pans the strip.
+
+### Shipped 2026-07-30 — inchworm walk (R2.7)
+
+Deck hold-menu → **Inchworm walk**: the active deck's whole tree as one
+stack, **leaves first** (post-order). The order is the insight: Item 15
+already forbids completing a parent over open children, so the inchworm
+eats the tree bottom-up — by the time a parent surfaces, its interior
+is done, and the walk almost never hits a block. Each deep card wears
+its ancestor trail ("in Ship it › sub"). Scoped to the active deck:
+decks are places; inchworm flattens depth, not place. Toggle off any
+time; a device preference, never data.

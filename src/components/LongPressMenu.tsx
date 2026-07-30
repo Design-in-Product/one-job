@@ -16,6 +16,9 @@ interface LongPressMenuProps {
   /** Root decks (R2.1 stage 2) — absent until the device has (or can
       create) more than one deck: no cruft till it's needed. */
   onDecks?: () => void;
+  /** Inchworm walk (R2.7) — label carries the on/off state. */
+  onInchworm?: () => void;
+  inchwormOn?: boolean;
   onViewCompleted: () => void;
   onViewIntegrations: () => void;
   onSettings?: () => void;
@@ -27,6 +30,8 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onAddTask,
   onUndo,
   onDecks,
+  onInchworm,
+  inchwormOn,
   onViewCompleted,
   onViewIntegrations,
   onSettings,
@@ -37,6 +42,8 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
     ...(onUndo ? [{ key: 'undo', label: t('menu.undo'), onClick: onUndo }] : []),
     { key: 'add', label: t('menu.addTask'), onClick: onAddTask },
     ...(onDecks ? [{ key: 'decks', label: t('menu.decks'), onClick: onDecks }] : []),
+    ...(onInchworm ? [{ key: 'inchworm',
+      label: (inchwormOn ? '✓ ' : '') + t('menu.inchworm'), onClick: onInchworm }] : []),
     { key: 'completed', label: t('menu.completed'), onClick: onViewCompleted },
     { key: 'integrations', label: t('menu.integrations'), onClick: onViewIntegrations },
     ...(onSettings ? [{ key: 'settings', label: t('menu.settings'), onClick: onSettings }] : []),

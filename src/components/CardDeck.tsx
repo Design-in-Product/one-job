@@ -40,6 +40,8 @@ interface CardDeckProps {
   onViewSettings: () => void;
   onUndo?: () => void;
   onDecks?: () => void;
+  onInchworm?: () => void;
+  inchwormOn?: boolean;
 }
 
 const CardDeck: React.FC<CardDeckProps> = ({
@@ -57,7 +59,9 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onViewIntegrations,
   onViewSettings,
   onUndo,
-  onDecks
+  onDecks,
+  onInchworm,
+  inchwormOn
 }) => {
   const { t } = useTranslation();
   const [isFlipped, setIsFlipped] = useState(startRevealed);
@@ -187,6 +191,11 @@ const CardDeck: React.FC<CardDeckProps> = ({
           setShowMenu(false);
           onDecks();
         } : undefined}
+        onInchworm={onInchworm ? () => {
+          setShowMenu(false);
+          onInchworm();
+        } : undefined}
+        inchwormOn={inchwormOn}
         onViewCompleted={() => {
           setShowMenu(false);
           onViewCompleted();

@@ -205,3 +205,62 @@ describe('pathToUnfinished (the block is the reveal, at ANY depth — item 7)', 
     expect(pathToUnfinished(mk({ id: 'p', decks: [deck] }))).toEqual([]);
   });
 });
+
+describe('inchwormWalk (R2.7: one walkable stack, leaves first)', () => {
+  const mk = (over: Partial<Task>): Task => ({
+    id: 'x', title: 't', completed: false, createdAt: new Date('2026-07-01'), ...over,
+  } as Task);
+
+  it('walks post-order: interior cards surface BEFORE their parents', async () => {
+    const { inchwormWalk } = await import('../tasks');
+    const tree = [
+      mk({ id: 'p', title: 'parent', sortOrder: 0, decks: [{
+        id: 'd', name: null, createdAt: new Date(),
+        cards: [
+          mk({ id: 'c1', title: 'child one' }),
+          mk({ id: 'c2', title: 'child two', decks: [{
+            id: 'd2', name: null, createdAt: new Date(),
+            cards: [mk({ id: 'g', title: 'grandchild' })],
+          }] }),
+        ],
+      }] }),
+      mk({ id: 'q', title: 'plain', sortOrder: 1 }),
+    ];
+    const walk = inchwormWalk(tree);
+    // Item 15 harmony: by the time a parent surfaces, its interior is done
+    expect(walk.map(w => w.card.id)).toEqual(['c1', 'g', 'c2', 'p', 'q']);
+  });
+
+  it('excludes completed/archived/trashed cards — only the living walk', async () => {
+    const { inchwormWalk } = await import('../tasks');
+    const tree = [
+      mk({ id: 'p', title: 'parent', decks: [{
+        id: 'd', name: null, createdAt: new Date(),
+        cards: [
+          mk({ id: 'done', completed: true, completedAt: new Date() }),
+          mk({ id: 'open' }),
+        ],
+      }] }),
+      mk({ id: 'tr', completed: true, completedAt: new Date(),
+           archivedAt: new Date(), trashedAt: new Date() }),
+    ];
+    expect(inchwormWalk(tree).map(w => w.card.id)).toEqual(['open', 'p']);
+  });
+
+  it('carries the parent chain as a breadcrumb trail', async () => {
+    const { inchwormWalk } = await import('../tasks');
+    const tree = [
+      mk({ id: 'p', title: 'Ship it', decks: [{
+        id: 'd', name: null, createdAt: new Date(),
+        cards: [mk({ id: 'c', title: 'sub', decks: [{
+          id: 'd2', name: null, createdAt: new Date(),
+          cards: [mk({ id: 'g', title: 'deep' })],
+        }] })],
+      }] }),
+    ];
+    const walk = inchwormWalk(tree);
+    const deep = walk.find(w => w.card.id === 'g')!;
+    expect(deep.trail.map(a => a.title)).toEqual(['Ship it', 'sub']);
+    expect(walk.find(w => w.card.id === 'p')!.trail).toEqual([]);
+  });
+});
