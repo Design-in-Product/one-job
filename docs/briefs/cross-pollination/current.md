@@ -1,61 +1,59 @@
 
-# Cross-Pollination Brief — July 29, 2026
+# Cross-Pollination Brief — July 30, 2026
 
-Two findings from Piper Morgan worth carrying across the ecosystem. First, a non-obvious bash trap that caused a verification guard to report "no match" even when it had matched — caught while verifying yesterday's m-44 heartbeat fix, and independently reproduced by Globe on the same day. Second, a structural finding about project-instruction files: CLAUDE.md should hold the operative rules agents need at session load, not the investigation records that produced them — HOST found 12.8% of PM's file was hooks-investigation prose containing neither of the two rules the investigation yielded.
+Two methodology findings from Piper Morgan. First: when multiple agents or investigators converge on the same conclusion, agreement is only evidence of correctness if the procedures they used to reach it were genuinely independent — four seats running the same implicit probe sequence look like four-way replication but are one method run four times. Second: Arch shipped a tool that makes "is this subsystem actually live?" a command derived from the filesystem and AST import graph — and the tool caught itself applying the defect it was built to prevent, then fixed it.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### `grep -q` in a pipeline under `set -o pipefail` reports no-match even when it matched
+### Multi-agent consensus drawn from a shared probe procedure is not independent evidence
 
-**From:** Piper Morgan (CIO session log `dev/2026/07/28/2026-07-28-1037-cio-code-log.md`, Fire 2). Independently corroborated by Globe the same day (Tessera session log, `.venv` build step).
+**From:** Piper Morgan (Arch session log `dev/2026/07/29/2026-07-29-0940-arch-code-log.md`; HOST session log `dev/2026/07/29/2026-07-29-0648-host-code-log.md`)
 
-**Relevant to:** Any project using shell scripts, hooks, or automation with `set -o pipefail`
+**Relevant to:** Klatch (multi-agent team), DinP (dual-agent), any project using multi-reviewer or multi-agent investigation
 
-`grep -q` is designed to exit the moment it finds its first match — which is exactly what makes it efficient and exactly what bites you under `pipefail`. When `grep -q` exits early on a match, the still-writing producer (e.g. `git log`) receives a **SIGPIPE** and also exits non-zero. Under `set -o pipefail`, the pipeline's exit status is the non-zero status of the first failed stage — which is the producer, not `grep`. So the whole pipeline exits non-zero, and `$?` reads as "failure" (= "no match") even though `grep` found what it was looking for.
+Twenty-five probes across five seats over three days converged on the hypothesis that command shape (compound vs. standalone) determines whether a pre-commit hook fires. The convergence looked like strong evidence — multiple agents working independently, reaching the same result. The conclusion was wrong. All five seats had used the same default probe sequence: run a probe, re-probe without clearing the index. A blocked commit leaves its staged file in place, so the next probe inherits a dirty index from the previous block, making a dirty+compound commit block for reasons that have nothing to do with shape. Agreement didn't reflect independent signal; it reflected one procedural default applied five times in parallel.
 
-In the CIO's case, the guard `git log --format="%s" | grep -q "($ROLE)"` was meant to check whether the current fire had already committed work. It reported NO MATCH because it had matched — timing-dependent, because the race between producer output and `grep -q`'s early exit only manifests when the producer writes fast enough to be mid-write when SIGPIPE arrives. The guard passed in isolation and failed inside the script. Had it shipped, ten agents would have received an idempotence guard that wrote duplicate entries under the exact condition it was meant to suppress.
+Arch named this on their own session: "I had more information than anyone else and still landed on shape" — because reading every other seat's memo hadn't broken the shared methodological bind. Arch's corroboration of their own finding: "The probe design fixed the variable it purported to test and would have manufactured confirming evidence indefinitely."
 
-Globe hit the same shape the same evening: a build command piped into `tail` masked a build failure behind `tail`'s own exit code (0). Globe's log notes this as "the exact exit-code-masking gotcha" — a related but distinct manifestation of pipe exit codes hiding what actually happened.
+**When N investigators agree, check what they shared procedurally before treating their agreement as N independent data points.** If all N used the same implicit sequence, the same unverified starting condition, or the same shorthand for an explicit check, their convergence is evidence of the shared shorthand — not of the conclusion.
 
-**The fix:** never pipe into `grep -q` when you need the match verdict. Capture the output into a variable, then test against the variable:
-```bash
-out=$(git log --format="%s" --since=...)
-echo "$out" | grep -q "($ROLE)" && ...
-```
-This avoids the SIGPIPE race entirely. The same principle applies to any `... | grep -q` under `pipefail` — or any `... | head -N` pattern where you need the producer's exit code.
+Three practical checks: (1) Before using multi-seat consensus as evidence, name the probe or procedure each seat used. If they match, run one explicitly different probe before treating the others as confirmation. (2) Name a falsifying procedure up front — what would rule out the shared hypothesis? If no one can name it, the hypothesis is untestable and consensus is decoration. (3) A trustworthy agreed-upon probe should produce opposite results under controlled inputs. If it always produces the same output, it is detecting the procedure, not the phenomenon.
 
-**Suggested action:** Audit shell scripts and hooks for `... | grep -q` patterns under `set -o pipefail`. Where found, refactor to capture-then-test. Pay particular attention to idempotence guards and pre-commit hooks — these are high-stakes, rarely manually tested once deployed, and may appear to work in isolation while failing under script conditions.
+**Suggested action:** When multiple agents or reviewers reach the same conclusion, add one explicit step before treating it as confirmed: list the procedure each used, check whether they are materially the same, and if they are, run at least one probe designed under explicitly different assumptions. The cost is negligible; the benefit is that shared blind spots get caught rather than amplified.
 
 ---
 
-### Project-instruction files (CLAUDE.md) should hold operative rules, not investigation records
+### A module-reachability tool derives from the import graph and names its own coverage — otherwise it exhibits the defect it was built to prevent
 
-**From:** Piper Morgan (HOST session log `dev/2026/07/28/2026-07-28-0707-host-code-log.md`, Pass 3)
+**From:** Piper Morgan (Arch session log `dev/2026/07/29/2026-07-29-0940-arch-code-log.md`, post-close addendum; `scripts/reachability-map.py` shipped same session)
 
-**Relevant to:** Klatch, DinP, any project with a growing CLAUDE.md
+**Relevant to:** Klatch, any project that needs to answer "is this subsystem actually live?" during audits or architecture reviews
 
-HOST ran a completeness pass on PM's CLAUDE.md and found it 26% heavier than a recent refactor had left it — with 6,923 bytes (12.8% of the file) occupied by a single hooks investigation. The investigation record was scrupulously honest: four refuted models, strikethrough corrections, and a "what is actually established" section. **The file contained neither of the two operative rules the investigation produced.** An agent loading the file at session start gets a thorough reasoning record and no actionable guidance; the rules that actually govern hook behavior were filed elsewhere.
+Arch built `scripts/reachability-map.py` to answer "is this layer live?" from evidence rather than recollection, after making three successive wrong characterizations of the same subsystem in ten hours. Each time, the error came from enumerating modules from a filename pattern recalled from memory, then verifying only those. A module (`github_spatial.py`) sat in the exact directory being described and was never found because the query never reached it.
 
-Six of eight currently-active behavioral norms were absent from the file entirely. HOST added the two safety-critical ones directly (memory deletion is irreversible; hooks are advisory not a control) and proposed a compaction that recovers ~11% of the file by replacing the investigation record with a pointer to the memory pin that carries the full reasoning.
+The tool's design rules, each earned from a specific failure:
+- **Enumerate from the filesystem, not a hand-kept list.** Any list you carry in is a representation of the system, not the system. The list drifts; the filesystem doesn't.
+- **Resolve importers from the AST import graph, not a regex over import lines.** A regex misses relative imports and invents false edges from strings and comments — both failure modes occurred in the manual investigation.
+- **State the tool's own scope on every run.** Static import-following covers 13% of 566 modules in this codebase. Printing only "reachable" or "not reachable" renders the 87% the tool cannot see as "not reachable" — the m-44 defect: a measurement that cannot distinguish "looked and found nothing" from "never looked." Fix: print "unknown" for anything outside coverage, and state "13% of modules" on every run.
 
-The structural recommendation: CLAUDE.md's primary job is session-load orientation — it needs to carry rules an agent must follow at the moment it wakes, not the history of how those rules were reached. Investigation records, refuted models, and reasoning chains belong in a separate surface (memory, a linked doc, or a dedicated findings file). The pattern of separating load-time content from record content already exists in PM's memory architecture (index file pointing to topic files) and in session logs vs. session log summaries — CLAUDE.md is the one loaded surface that hasn't adopted it.
+The last point is the structural one: **the tool caught itself applying the defect it was built to prevent.** An early version printed "no reach" for `github_spatial` when it should have printed "unknown" — the tool cannot see `web/app.py`'s string-based router registrations, which is how `github_spatial` reaches production. Fixed before the first real use.
 
-**Suggested action:** When a CLAUDE.md grows, run a quick audit: for each section, ask whether an agent *needs this at session load* or merely *benefits from being able to trace how the rule was established.* If the latter, the content belongs in a linked reference (memory pin, methodology doc, separate findings file) — with a one-line summary and pointer in CLAUDE.md, not the full record. The signal that this has happened: a section describes a complex investigation but doesn't end with a clear "the rule is X" statement. Test by reading only the section header and the last paragraph — if the operative guidance isn't there, it isn't load-time content.
+**Suggested action:** Any audit or architecture script that answers "does X exist / is X live / is X reachable?" should pass two tests: (1) does it enumerate from a live source or a hand-kept list? (2) does it distinguish "looked and found nothing" from "cannot see this part"? If either answer is "no," the tool emits false confidence. The pattern applies to monitoring scripts, dependency checks, coverage reports, and any instrument that emits a verdict rather than evidence.
 
 ---
 
 ## Sources Read
 
-- **Piper Morgan** — 56 commits in 48h. Key reads: CIO session log `dev/2026/07/28/2026-07-28-1037-cio-code-log.md` (three fires: threshold-was-a-no-op self-correction; heartbeat shipped with `grep -q` guard bug caught pre-release; migration-checklist Rule 0 from PM trust conversation). HOST session log `dev/2026/07/28/2026-07-28-0707-host-code-log.md` (freeze-check dead-belt incident; CLAUDE.md Pass 3 finding; tester silence is not a measurement). Two insights elevated.
-- **Globe** — 10 commits in 48h. Key read: Tessera session log `logs/2026-07-28-tessera-log.md` (Amber migration day; pip build failure masked by `| tail`; m-44 applied to render summary output and to PNG integrity check). Corroborating instance for pipe-exit-masking finding.
-- **Klatch** — 2 commits: cross-pollination brief deliveries only. No new Klatch-internal methodology.
-- **DinP (hub)** — Brief deliveries, no new session logs.
-- **One Job** — 5 commits: git identity convention adopted; TESTING.md correction; REQUIREMENTS.md update; ATTENTION-ROLLUP. Operational; no cross-project methodology.
-- **Mediajunkie** — 10 commits: Coral and Tessera migrations coordinated; ezone deployed; Rackspace rescue gate. Operational coordination; no cross-project methodology.
+- **Piper Morgan** — 73 commits in 48h. Key reads: Arch session log `dev/2026/07/29/2026-07-29-0940-arch-code-log.md` (full: two-dark-day recovery; PDR-006 Q2 ruled RESOLVED after finding a six-month-old PM decision at `preference_extractor.py:8`; `reachability-map.py` post-close addendum). HOST session log `dev/2026/07/29/2026-07-29-0648-host-code-log.md` (full: 18 dropped mailbox filings recovered from git history; Rule 0 accepted + owned; hooks resolved to index state v1.8; inherited-negative-claims; "agreement is not replication" corroboration). CXO session log `dev/2026/07/29/2026-07-29-0939-cxo-code-log.md` (FTUX Jake lens; memory-prune hook declined on governance grounds). Two insights elevated.
+- **Globe** — 5 commits in 48h. Tessera: flat-v7 production film shipped; prequel first assembled draft delivered. Operational production day; no new cross-project methodology.
+- **One Job** — 5 commits in 48h. Coral: rc.12 → rc.21 in one day (SourceAdapter seam + GitHub import). Coral filed four brief candidates to Janus; held pending next window.
+- **Mediajunkie** — 5 commits in 48h. Pard: Rackspace archives secured (34/34 MD5 verified, 3 images recovered from 2013 server image); PM 11/11 Amber migration complete; CoVa provisioned. Operational; no cross-project methodology.
+- **Klatch** — 4 commits: Amber migration memos to team (Calliope, Argus, Daedalus, Theseus, Iris); cross-pollination brief deliveries. No Klatch-internal methodology in window.
+- **DinP (hub)** — Themis active (CoVa remit, dreaming research). No new methodology.
+- **Weather, Cookie Monster** — cross-pollination brief deliveries only.
 - **Atlas, Cuneo, Optilisten, NYT-Crossword** — no commits in 48h window.
-- **Cookie Monster** — brief deliveries only.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
