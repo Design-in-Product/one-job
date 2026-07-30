@@ -1,0 +1,382 @@
+<title>One Job — Attention Briefing</title>
+<style>
+  :root {
+    --ground: #f8f7f6; --card: #ffffff; --ink: #23272f; --muted: #6d7280;
+    --line: #e6e4e1; --accent-a: #f35343; --accent-b: #E73C7E;
+    --chip-test: #fff1ee; --chip-test-ink: #c2402f;
+    --chip-decide: #f4f0ff; --chip-decide-ink: #6d4fc2;
+    --chip-ref: #eef3f0; --chip-ref-ink: #3e6b52;
+    --done: #3e6b52; --input: #fbfaf9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #16181d; --card: #1e2128; --ink: #e8e6e3; --muted: #9aa0ab;
+      --line: #2e323b; --chip-test: #3a2320; --chip-test-ink: #ff9a8a;
+      --chip-decide: #292344; --chip-decide-ink: #b7a3f5;
+      --chip-ref: #21302a; --chip-ref-ink: #8fc2a6;
+      --done: #8fc2a6; --input: #23262e;
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f8f7f6; --card: #ffffff; --ink: #23272f; --muted: #6d7280;
+    --line: #e6e4e1; --chip-test: #fff1ee; --chip-test-ink: #c2402f;
+    --chip-decide: #f4f0ff; --chip-decide-ink: #6d4fc2;
+    --chip-ref: #eef3f0; --chip-ref-ink: #3e6b52;
+    --done: #3e6b52; --input: #fbfaf9;
+  }
+  :root[data-theme="dark"] {
+    --ground: #16181d; --card: #1e2128; --ink: #e8e6e3; --muted: #9aa0ab;
+    --line: #2e323b; --chip-test: #3a2320; --chip-test-ink: #ff9a8a;
+    --chip-decide: #292344; --chip-decide-ink: #b7a3f5;
+    --chip-ref: #21302a; --chip-ref-ink: #8fc2a6;
+    --done: #8fc2a6; --input: #23262e;
+  }
+  body { background: var(--ground); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding-bottom: 5.5rem; }
+  main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem; }
+  header.hero { margin-bottom: 2rem; }
+  .hero h1 { font-size: 1.55rem; margin: 0 0 .35rem; letter-spacing: -.015em; text-wrap: balance; }
+  .hero .stamp { font-size: .8rem; color: var(--muted); }
+  .hero .rule { height: 3px; width: 3.5rem; margin-top: 1rem; border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-a), var(--accent-b)); }
+  h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--muted); margin: 2.4rem 0 .9rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem 1.1rem; margin-bottom: .8rem; }
+  .chip { display: inline-block; font-size: .68rem; font-weight: 600; letter-spacing: .05em;
+    text-transform: uppercase; border-radius: 99px; padding: .14rem .6rem; margin-bottom: .5rem; }
+  .chip.test { background: var(--chip-test); color: var(--chip-test-ink); }
+  .chip.decide { background: var(--chip-decide); color: var(--chip-decide-ink); }
+  .chip.ref { background: var(--chip-ref); color: var(--chip-ref-ink); }
+  .card h3 { margin: 0 0 .4rem; font-size: 1.02rem; }
+  .card p, .card li { color: var(--ink); font-size: .92rem; }
+  .card .why { color: var(--muted); font-size: .85rem; margin-top: .5rem; }
+  ol.steps { margin: .5rem 0 0; padding-left: 1.3rem; }
+  ol.steps li { margin-bottom: .3rem; }
+  code { background: var(--input); border: 1px solid var(--line); border-radius: 5px;
+    padding: .06rem .35rem; font-size: .84em;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; word-break: break-all; }
+  a { color: var(--accent-b); text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, label:focus-within {
+    outline: 2px solid var(--accent-b); outline-offset: 2px; border-radius: 4px; }
+  label.check { display: flex; gap: .6rem; align-items: baseline; cursor: pointer;
+    padding: .2rem 0; font-size: .92rem; }
+  label.check input { accent-color: var(--accent-b); transform: translateY(2px); }
+  .card.ticked h3 { color: var(--done); }
+  .card.ticked h3::after { content: " ✓"; }
+  .opts { display: flex; flex-direction: column; gap: .15rem; margin-top: .55rem; }
+  .opts label { display: flex; gap: .55rem; align-items: baseline; font-size: .9rem;
+    cursor: pointer; padding: .18rem 0; }
+  .opts input { accent-color: var(--accent-b); }
+  .rec { font-size: .78rem; color: var(--chip-decide-ink); font-weight: 600; }
+  textarea.note { width: 100%; box-sizing: border-box; margin-top: .55rem; min-height: 2.4rem;
+    background: var(--input); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: .5rem .6rem; font: inherit; font-size: .88rem; resize: vertical; }
+  .seq { counter-reset: seq; }
+  .seq .card { position: relative; padding-left: 3.1rem; }
+  .seq .card::before { counter-increment: seq; content: counter(seq);
+    position: absolute; left: 1rem; top: 1.05rem; width: 1.5rem; height: 1.5rem;
+    border-radius: 50%; display: grid; place-items: center; font-size: .8rem; font-weight: 700;
+    color: #fff; background: linear-gradient(135deg, var(--accent-a), var(--accent-b)); }
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+  .scroll { overflow-x: auto; }
+  th, td { text-align: left; padding: .35rem .6rem .35rem 0; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; }
+  td:first-child { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .8rem; white-space: nowrap; }
+  footer.bar { position: fixed; inset: auto 0 0 0; background: var(--card);
+    border-top: 1px solid var(--line); padding: .7rem 1.25rem;
+    display: flex; gap: .8rem; align-items: center; justify-content: center; }
+  footer.bar button { font: inherit; font-weight: 600; font-size: .95rem; color: #fff;
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    border: 0; border-radius: 99px; padding: .55rem 1.4rem; cursor: pointer; }
+  footer.bar .hint { font-size: .78rem; color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) {
+    .card { transition: border-color .15s ease; }
+    .card:hover { border-color: var(--muted); }
+  }
+</style>
+
+<main>
+  <header class="hero">
+    <h1>One Job — what's waiting on you</h1>
+    <div class="stamp">Coral · 2026-07-30 · main at <strong>rc.22</strong>, live on the web · beta TestFlight on rc.12 · 144/144 tests</div>
+    <div class="rule"></div>
+  </header>
+
+  <h2>Today's sequence — your read, confirmed</h2>
+  <div class="seq">
+    <div class="card"><span class="chip decide">decide</span>
+      <h3>Send Relay to cut rc.22</h3>
+      <p>The memo is <strong>already written and filed</strong>:
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/mail/memo-coral-to-relay-2026-07-30-rc22-cut.md">memo-coral-to-relay-2026-07-30-rc22-cut.md</a>
+      — cut target is the git tag <code>v1.0.0-rc.22</code>, smoke priorities included
+      (migration-over-rc.12 first). All you do is tell Relay to go.</p>
+      <p class="why">This ends the "beta stays on rc.12" discipline — which is right: your real
+      daily signal has been the PWA at head all along, so aligning TestFlight is honesty, not contamination.</p>
+    </div>
+    <div class="card"><span class="chip test">test</span>
+      <h3>Web-test the new features (checklist below)</h3>
+      <p>Runs in parallel with Relay's build — you'll finish long before they do.
+      If you find a blocker, a superseding memo costs five minutes; we've proven that twice.</p>
+    </div>
+    <div class="card"><span class="chip decide">decide</span>
+      <h3>Planning &amp; design with me</h3>
+      <p>The open questions are below with my leans — answer inline and tap
+      <strong>Copy my answers</strong>, or just read and reply in chat.</p>
+    </div>
+  </div>
+
+  <h2>Test now — on your phone's PWA (it updates on open)</h2>
+
+  <div class="card" data-test="t-pat"><span class="chip test">test</span>
+    <h3>GitHub import — the one only you can verify</h3>
+    <ol class="steps">
+      <li>Make a fine-grained PAT, read-only <em>Issues</em> access</li>
+      <li>On a comp'd device (<code>onejob.co/app/?pro=comp</code> once), hold background → <strong>Integrations</strong></li>
+      <li>Paste token → <strong>Import my open issues</strong></li>
+    </ol>
+    <p class="why">Expected: your open assigned issues land in a <code>github</code> deck on the strip;
+    the toast reports observed counts; re-import skips dupes. Everything is proven against a mocked API —
+    a real token accepting is the one unprovable step. Nothing writes to GitHub.</p>
+    <label class="check"><input type="checkbox"> Done — it worked</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Something went wrong (note it below)</label>
+  </div>
+
+  <div class="card" data-test="t-shake"><span class="chip test">test</span>
+    <h3>Shake to undo — needs real hardware</h3>
+    <ol class="steps">
+      <li>Complete or defer any card</li>
+      <li>Shake the phone → an <em>"Undo last action?"</em> sheet should appear</li>
+    </ol>
+    <p class="why">iOS gates motion behind a permission requested on your first tap.
+    If nothing appears, note your iOS version — menu Undo (hold background) is the verified fallback.</p>
+    <label class="check"><input type="checkbox"> Done — sheet appeared</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> No sheet (note iOS version below)</label>
+  </div>
+
+  <div class="card" data-test="t-strip"><span class="chip test">test</span>
+    <h3>Canvas strip — now with the real pan</h3>
+    <ol class="steps">
+      <li>Drag the <em>background</em> (not the card) sideways — decks, then the afterlife at far right</li>
+      <li>Drag the card itself — must still complete/defer, never pan</li>
+      <li>Peeks at the edges remain tap targets</li>
+    </ol>
+    <label class="check"><input type="checkbox"> Done — pan feels right</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Gesture trouble (describe below)</label>
+  </div>
+
+  <div class="card" data-test="t-inchworm"><span class="chip test">test</span>
+    <h3>Inchworm walk — new this morning</h3>
+    <ol class="steps">
+      <li>Hold background → <strong>Inchworm walk</strong></li>
+      <li>The deck becomes your whole tree, <em>leaves first</em> — deep cards wear a breadcrumb ("in Ship it › sub")</li>
+      <li>By the time a parent surfaces, its interior is done — Item 15 and the walk agree</li>
+    </ol>
+    <label class="check"><input type="checkbox"> Done — the walk makes sense</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Something's off (note below)</label>
+  </div>
+
+  <div class="card" data-test="t-sweep"><span class="chip test">test</span>
+    <h3>Quick sweep — thirty seconds each</h3>
+    <ol class="steps">
+      <li><strong>Quiet mode</strong>: Settings toggle — confirmations mute, errors still show</li>
+      <li><strong>Trash</strong>: swipe right on a trashed card = gone instantly; Empty trash asks once; backups exclude trash</li>
+      <li><strong>Rooms search</strong> (from 6 cards): typing thins the pile, title + description</li>
+      <li><strong>Shades</strong>: Done barely faded, Archive paler, Trash near-gray</li>
+    </ol>
+    <label class="check"><input type="checkbox"> All good</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Issues (note below)</label>
+  </div>
+
+  <div class="card"><span class="chip test">test</span>
+    <h3>Notes from testing</h3>
+    <textarea class="note" id="test-notes" placeholder="Anything broken, odd, or delightful…"></textarea>
+  </div>
+
+  <h2>Open decisions — answer inline or in chat</h2>
+
+  <div class="card" data-q="q-relay"><span class="chip decide">decide</span>
+    <h3>Relay: cut rc.22 now?</h3>
+    <p class="rec">My lean: go now, parallel with your testing.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-relay" value="Go — telling Relay now"> Go — I'll tell Relay now</label>
+      <label><input type="radio" name="q-relay" value="Hold until my web pass is done"> Hold until my web pass is done</label>
+      <label><input type="radio" name="q-relay" value="Other (see note)"> Other</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-beta"><span class="chip decide">decide</span>
+    <h3>The R1 gate: how is the week reading?</h3>
+    <p>"No card lost, stranded, or unrecoverable" across real daily use. Your verdict—whenever
+    the week feels read—unlocks the queue behind it: dependency upgrades (react-router is the real one),
+    the REQUIREMENTS re-baseline, and release cadence.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-beta" value="Gate passed — trust holds"> Gate passed — trust holds</label>
+      <label><input type="radio" name="q-beta" value="Still reading — need more days"> Still reading — more days</label>
+      <label><input type="radio" name="q-beta" value="Something shook trust (see note)"> Something shook trust (note below)</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-sift"><span class="chip decide">decide</span>
+    <h3>Sifting verdict → unlocks R2.8, the kinetic pass</h3>
+    <p>The vertical sift (↓ deeper, ↑ back) has been in your hands since rc.8, now with search.
+    The roadmap gates all further vertical/riffle gesture design on your real play with it.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-sift" value="Sift feels right — proceed to kinetic design"> Feels right — open the kinetic design pass</label>
+      <label><input type="radio" name="q-sift" value="Sift needs work first (see note)"> Needs work first (note below)</label>
+      <label><input type="radio" name="q-sift" value="Haven't used it enough yet"> Haven't used it enough yet</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-table"><span class="chip decide">decide</span>
+    <h3>Table surface (R2.3): mock it now or after zoom?</h3>
+    <p>The material the canvas sits on — felt, void, paper, abstract. Pure design exploration,
+    3–4 mocked directions for your review. Cheap now that the strip exists to mock against.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-table" value="Mock directions now"> Mock directions now</label>
+      <label><input type="radio" name="q-table" value="Wait for the zoom prototype"> Wait for the zoom prototype (R2.2)</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-trello"><span class="chip decide">decide</span>
+    <h3>Trello as second source — when?</h3>
+    <p class="rec">My lean: after GitHub proves out in your real use — one source read honestly beats two read shallowly.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-trello" value="After GitHub proves out"> After GitHub proves out</label>
+      <label><input type="radio" name="q-trello" value="Soon — build it next"> Soon — build it next</label>
+      <label><input type="radio" name="q-trello" value="Skip Trello; different source (see note)"> Different source (note below)</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-micro"><span class="chip decide">decide</span>
+    <h3>Micro-copy, batched (fine to skip)</h3>
+    <p>① Zapier export toast now reads <em>"Sent to Zapier — the browser can't confirm delivery"</em> (honest but wordy).
+    ② Trash's <em>"Delete forever"</em> is technically shake-undoable within a session; copy stays strong on purpose.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-micro" value="Both fine as-is"> Both fine as-is</label>
+      <label><input type="radio" name="q-micro" value="Rewording wanted (see note)"> I'll suggest wording (note below)</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q-relayfuture"><span class="chip decide">decide</span>
+    <h3>Carried: Relay's long-term role</h3>
+    <p>Now that I'm on a Mac — does the TestFlight pipeline eventually become mine, or does Relay stay?
+    No urgency; I keep writing memos assuming no change.</p>
+    <div class="opts">
+      <label><input type="radio" name="q-relayfuture" value="Keep Relay as-is"> Keep Relay as-is</label>
+      <label><input type="radio" name="q-relayfuture" value="Coral absorbs the pipeline eventually"> You absorb it eventually — let's plan</label>
+      <label><input type="radio" name="q-relayfuture" value="Still thinking"> Still thinking</label>
+    </div>
+  </div>
+
+  <div class="card"><span class="chip decide">decide</span>
+    <h3>Notes on decisions</h3>
+    <textarea class="note" id="decide-notes" placeholder="Answers, wording, caveats, new questions…"></textarea>
+  </div>
+
+  <h2>Reference</h2>
+
+  <div class="card"><span class="chip ref">reference</span>
+    <h3>The release ledger (this week)</h3>
+    <div class="scroll"><table>
+      <tr><th>rc</th><th>What</th></tr>
+      <tr><td>rc.12</td><td>Beta TestFlight baseline (move picker fix)</td></tr>
+      <tr><td>rc.13</td><td>Rooms search · session undo · trash unprotected · felt trash</td></tr>
+      <tr><td>rc.14–15</td><td>Housekeeping (30d) · quiet mode · shades</td></tr>
+      <tr><td>rc.16–18</td><td>Root decks (v3) · pro wall · deck moves · block-reveals-at-depth</td></tr>
+      <tr><td>rc.19–20</td><td>Canvas strip (preview → approved → default, with pan)</td></tr>
+      <tr><td>rc.21</td><td>GitHub import (read-only, first real source)</td></tr>
+      <tr><td>rc.22</td><td>Inchworm walk — <strong>current, live on web</strong></td></tr>
+    </table></div>
+  </div>
+
+  <div class="card"><span class="chip ref">reference</span>
+    <h3>Documents</h3>
+    <p style="font-size:.9rem">
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md">Attention rollup</a> (the ledger Janus sweeps) ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/GESTURES.md">GESTURES.md</a> (grammar + dated decisions) ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ROADMAP.md">ROADMAP.md</a> ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/plans/2026-07-29-R2.1-root-canvas-deep-dive.md">R2.1 deep dive</a> (all four stages shipped) ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/plans/2026-07-29-roadmap-first-pass.md">Roadmap first pass</a> ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/PRICING.md">PRICING.md</a> (tier discipline + earmarks)
+    </p>
+    <p class="why">Device grants: <code>?pro=comp</code> comps a device · <code>?canvas=off</code> hides the strip ·
+    <code>?pro=off</code> revokes. All device-local; the build special-cases no one.</p>
+  </div>
+</main>
+
+<footer class="bar">
+  <button id="compose">Copy my answers</button>
+  <span class="hint" id="compose-hint">Builds a paste-back block from your ticks &amp; notes</span>
+</footer>
+
+<script>
+  // Ticks + notes persist locally (this device only) so a half-done pass survives reloads.
+  const KEY = 'oj-briefing-2026-07-30';
+  const state = JSON.parse(localStorage.getItem(KEY) || '{}');
+  const save = () => localStorage.setItem(KEY, JSON.stringify(state));
+
+  document.querySelectorAll('.card[data-test]').forEach(card => {
+    const id = card.dataset.test;
+    card.querySelectorAll('input[type=checkbox]').forEach((box, i) => {
+      box.checked = !!(state[id] && state[id][i]);
+      box.addEventListener('change', () => {
+        state[id] = state[id] || {};
+        state[id][i] = box.checked; save(); paint(card);
+      });
+    });
+    paint(card);
+  });
+  function paint(card) {
+    const boxes = [...card.querySelectorAll('input[type=checkbox]')];
+    card.classList.toggle('ticked', boxes.some(b => b.checked && !b.dataset.flag));
+  }
+  document.querySelectorAll('.card[data-q]').forEach(card => {
+    const id = card.dataset.q;
+    card.querySelectorAll('input[type=radio]').forEach(r => {
+      r.checked = state[id] === r.value;
+      r.addEventListener('change', () => { state[id] = r.value; save(); });
+    });
+  });
+  ['test-notes', 'decide-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = state[id] || '';
+    el.addEventListener('input', () => { state[id] = el.value; save(); });
+  });
+
+  document.getElementById('compose').addEventListener('click', async () => {
+    const lines = ['## Briefing answers — ' + new Date().toISOString().slice(0, 10), ''];
+    lines.push('**Tests:**');
+    document.querySelectorAll('.card[data-test]').forEach(card => {
+      const name = card.querySelector('h3').textContent.replace(' ✓', '');
+      const boxes = [...card.querySelectorAll('input[type=checkbox]')];
+      const ticked = boxes.filter(b => b.checked)
+        .map(b => b.closest('label').textContent.trim());
+      if (ticked.length) lines.push('- ' + name + ': ' + ticked.join('; '));
+    });
+    const tn = document.getElementById('test-notes').value.trim();
+    if (tn) lines.push('- Test notes: ' + tn);
+    lines.push('', '**Decisions:**');
+    document.querySelectorAll('.card[data-q]').forEach(card => {
+      const name = card.querySelector('h3').textContent;
+      const picked = card.querySelector('input[type=radio]:checked');
+      if (picked) lines.push('- ' + name + ': **' + picked.value + '**');
+    });
+    const dn = document.getElementById('decide-notes').value.trim();
+    if (dn) lines.push('- Decision notes: ' + dn);
+    const text = lines.join('\n');
+    const hint = document.getElementById('compose-hint');
+    try {
+      await navigator.clipboard.writeText(text);
+      hint.textContent = 'Copied — paste it to Coral in chat';
+    } catch {
+      // Clipboard can be denied; show the text for manual copy instead.
+      const pre = document.createElement('textarea');
+      pre.value = text; pre.className = 'note'; pre.style.minHeight = '10rem';
+      document.querySelector('main').appendChild(pre); pre.focus(); pre.select();
+      hint.textContent = 'Clipboard blocked — select & copy the box below';
+    }
+  });
+</script>

@@ -10,6 +10,13 @@ answer recorded.
 **Status key:** 🔴 blocking (I cannot proceed) · 🟡 wants an answer
 (I have a working default) · 🟢 FYI (no action needed)
 
+**Xian's working surface (2026-07-30):** this ledger now has an
+interactive companion — the **attention briefing artifact**
+(`docs/attention-briefing.html`, published private to Xian) with test
+checklists, inline decision answers, and a copy-back composer. This
+file remains the terse source of truth for the sweep; the briefing is
+re-published whenever items open or settle.
+
 ---
 
 ## Open
