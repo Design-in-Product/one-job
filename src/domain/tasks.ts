@@ -183,6 +183,28 @@ export const flattenWithParent = (cards: Task[], parent: Task | null = null): Ca
     ...(c.decks ?? []).flatMap(d => flattenWithParent(d.cards, c)),
   ]);
 
+/**
+ * Inchworm mode (R2.7): the whole tree as ONE walkable stack. The walk
+ * is POST-ORDER — interior cards surface before their parents — because
+ * Item 15 forbids completing a parent over open children anyway: the
+ * inchworm eats the tree bottom-up, and by the time a parent comes up
+ * its interior is already done. Grammar and invariant agree.
+ * Only living cards walk (deck room); each carries its ancestor trail
+ * for the breadcrumb.
+ */
+export const inchwormWalk = (
+  cards: Task[],
+  trail: Task[] = []
+): Array<{ card: Task; trail: Task[] }> =>
+  cards.flatMap(c => {
+    const interior = (c.decks ?? []).flatMap(d =>
+      inchwormWalk(d.cards, [...trail, c])
+    );
+    return cardRoom(c) === 'deck'
+      ? [...interior, { card: c, trail }]
+      : interior;
+  });
+
 /** Find the deck that contains a given card, at any depth. */
 export const findDeckOfCard = (cards: Task[], cardId: string): InteriorDeck | undefined => {
   for (const c of cards) {

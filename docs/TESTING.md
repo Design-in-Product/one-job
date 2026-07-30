@@ -966,6 +966,12 @@ describe('TaskStack Integration', () => {
 > - **Always run the positive control.** Prove the harness can drive a
 >   *successful* swipe before concluding a refused one behaved
 >   correctly, and re-run the happy path after adding any guard.
+> - **Tap-to-reveal is only valid on a fresh mount.** Mode toggles don't
+>   remount the deck (card stays face-up) and every swipe AUTO-reveals
+>   the next card after 650ms — in both cases a "reveal tap" actually
+>   taps the face-up card and opens the details modal, producing
+>   phantom failures (cost two probe runs, 2026-07-30). After toggles
+>   and swipes: wait, don't tap.
 > - **`addInitScript` re-runs on EVERY navigation** — a "reload" step
 >   silently re-seeds storage and can manufacture data-loss bugs that
 >   exist only in the harness (cost a real hunt, 2026-07-29). To test

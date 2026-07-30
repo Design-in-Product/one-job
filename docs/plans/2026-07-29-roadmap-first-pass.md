@@ -117,13 +117,15 @@ the deck, complementing the flattened rooms.
 **Open design q:** where does it live spatially — under the deck? A
 flip-side? This is a zoom-grammar question; design with R2.2.
 
-### R2.7 Inchworm mode
-**Refined:** toggle that flattens the whole tree into one walkable
-stack. `flattenWithParent` is the ready seam — the rooms already use it,
-so this is mostly UI: a mode flag on CardDeck rendering the flattened
-walk with breadcrumbs.
-**Effort:** small (1 day). Independent of R2.1 — a candidate quick win
-whenever a gap opens.
+### R2.7 Inchworm mode — ✅ SHIPPED rc.22, 2026-07-30
+Built on its own walk, not flattenWithParent: **post-order, leaves
+first** — Item 15 forbids completing a parent over open children, so
+the inchworm eats the tree bottom-up and by the time a parent surfaces
+its interior is done. Grammar and invariant agree; blocked completions
+become nearly impossible in the walk instead of needing a reveal.
+Toggle in the deck hold-menu (device preference); breadcrumb trail
+("in Ship it › sub") above the card; scoped to the ACTIVE deck's tree
+(decks are places — inchworm flattens depth, not place). Tier: free.
 
 ### R2.8 Kinetic conversation
 **Refined:** one design pass over riffle-to-jump, exploded-view reorder,
