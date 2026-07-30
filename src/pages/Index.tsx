@@ -844,7 +844,7 @@ const Index = () => {
                     {t('nav.backToTasks')}
                   </button>
                 </div>
-                <TaskIntegration onImportTasks={handleImportTasks} />
+                <TaskIntegration onImportTasks={handleImportTasks} onSourceImported={refreshAll} />
               </div>
             )}
           </div>

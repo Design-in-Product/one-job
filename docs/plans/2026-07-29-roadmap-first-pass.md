@@ -141,11 +141,15 @@ carries `source`/`externalId` — the seam is half-latent.
 **Plan:** define the interface + a `DemoAdapter` proving it, before any
 real service. Small, pure-code, autonomous-friendly.
 
-### R3.2 First import (read-only)
-**Open q for Xian (blocks planning detail):** *which service do you
-actually live in?* The roadmap says "the one Xian actually uses" —
-naming it changes the auth story (Asana PAT vs Todoist token) and the
-mapping shape. Everything else is mechanical once named.
+### R3.2 First import (read-only) — ✅ SHIPPED rc.21, 2026-07-29
+**Answered same day: GitHub** (his real work's home; Asana deliberately
+avoided; Trello the natural second). Shipped that night: read-only
+import of open assigned issues into a `github` root deck on the strip,
+provenance `owner/repo#number`, idempotent re-import, PAT device-local,
+pro-walled panel in Integrations. Proven against a mocked API;
+real-token verification is Xian's morning item. Also filed (fun shelf):
+AI-read ad hoc backends — Notes/stickies/email as cards — the R4
+agent-as-source thesis in pajamas; the seam already fits it.
 
 ### R3.3 Mapping store → **R3.4 two-way sync → R3.5 federation → R3.6 import-as-merge**
 **Refined sequence stands.** One note: R3.6 (merge with per-conflict

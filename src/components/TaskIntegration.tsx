@@ -8,17 +8,48 @@ import { toast } from '@/components/ui/sonner';
 import { Task } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
+import { hasPro } from '@/services/entitlements';
+import { getTaskStore } from '@/services/taskStore';
+import { importFromSource } from '@/services/sourceAdapter';
+import { GitHubSourceAdapter, getGitHubToken, setGitHubToken } from '@/services/githubAdapter';
 
 interface TaskIntegrationProps {
   onImportTasks: (tasks: Task[]) => void;
+  /** Seam imports write to the store directly — the parent just refreshes. */
+  onSourceImported?: () => void;
 }
 
-const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
+const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSourceImported }) => {
   const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [webhookUrl, setWebhookUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [ghToken, setGhToken] = useState<string>(getGitHubToken());
+  const [ghBusy, setGhBusy] = useState(false);
+
+  // R3.2 (2026-07-29): the first REAL source, riding the R3.1 seam.
+  // Read-only: open issues assigned to the token's user land in the
+  // 'github' root deck on the strip; re-import dedupes by provenance.
+  // Pro-walled per PRICING (R3 is the plumbing tier).
+  const handleGitHubImport = async () => {
+    if (!ghToken.trim()) {
+      toast.error(t('github.tokenMissing'));
+      return;
+    }
+    setGhBusy(true);
+    try {
+      setGitHubToken(ghToken);
+      const result = await importFromSource(getTaskStore(), new GitHubSourceAdapter(ghToken.trim()));
+      // The toast reports what was OBSERVED: counts from the store, not hope.
+      toast.success(t('github.imported', { imported: result.imported, skipped: result.skipped }));
+      if (result.imported > 0) onSourceImported?.();
+    } catch (err) {
+      toast.error(t('github.importFailed', { message: (err as Error).message }));
+    } finally {
+      setGhBusy(false);
+    }
+  };
 
   const handleImport = async () => {
     if (!selectedService) {
@@ -170,6 +201,23 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks }) => {
   return (
     <div className="space-y-4 bg-white rounded-lg shadow-md p-4">
       <h3 className="text-lg font-medium">Integrate with Task Services</h3>
+
+      {hasPro() && (
+        <div className="space-y-2 border rounded-md p-3">
+          <Label htmlFor="ghtoken">{t('github.title')}</Label>
+          <p className="text-xs text-muted-foreground">{t('github.hint')}</p>
+          <Input
+            id="ghtoken"
+            type="password"
+            value={ghToken}
+            onChange={e => setGhToken(e.target.value)}
+            placeholder={t('github.tokenPlaceholder')}
+          />
+          <Button onClick={handleGitHubImport} disabled={ghBusy} className="w-full">
+            {ghBusy ? t('github.importing') : t('github.import')}
+          </Button>
+        </div>
+      )}
       
       <div className="space-y-2">
         <Label htmlFor="service">{t('integration.selectService')}</Label>
