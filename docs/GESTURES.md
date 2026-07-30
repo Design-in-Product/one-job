@@ -182,3 +182,13 @@ Xian's calls (message of 2026-07-29):
 - **The block is the reveal at any depth** (rc.18, item 7): a refused
   completion descends the whole path to the nearest open card, through
   completed intermediates — you are shown the blocker, not told about it.
+
+### Shipped 2026-07-29 (night) — the pan (R2.1 complete)
+
+Grab any non-card space and pull sideways: the strip pans — decks in
+order, the afterlife past the last one, home again rightward. The card
+keeps its own horizontal grammar untouched: the pan arms only from
+pointer-downs outside the card (disambiguation by target, same trick as
+the two hold menus). Peeks remain as tap targets and affordance.
+E2E-pinned collision rule: a drag starting ON the card completes/defers
+the card and never pans the strip.

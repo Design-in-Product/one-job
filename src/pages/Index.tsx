@@ -28,7 +28,7 @@ import CardActionMenu, { CardAction } from '@/components/CardActionMenu';
 import MoveIntoPicker from '@/components/MoveIntoPicker';
 import { Task, Substack } from '@/types/task';
 import { toast } from '@/components/ui/sonner';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useDragControls, PanInfo } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
@@ -309,6 +309,19 @@ const Index = () => {
     if (next >= deckOrder.length) { setCurrentView('completed'); return; } // the afterlife
     if (next < 0) return;
     await handleSwitchDeck(deckOrder[next].id);
+  };
+  // The free pan (approved 2026-07-29: "the strip is good"): grab the
+  // BACKGROUND and pull — the card keeps its own horizontal drag, so the
+  // pan only arms from pointer-downs outside [data-oj-card]. Same
+  // disambiguation-by-target trick as the two hold menus.
+  const stripDrag = useDragControls();
+  const armStripPan = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('[data-oj-card]')) return;
+    stripDrag.start(e);
+  };
+  const settleStripPan = (_: unknown, info: PanInfo) => {
+    if (info.offset.x < -60 || (info.offset.x < -24 && info.velocity.x < -400)) stripGo(1);
+    else if (info.offset.x > 60 || (info.offset.x > 24 && info.velocity.x > 400)) stripGo(-1);
   };
 
   // Session-deep undo (Xian, 2026-07-29): the store replays its state from
@@ -702,6 +715,13 @@ const Index = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="relative flex flex-col flex-1"
+                drag="x"
+                dragControls={stripDrag}
+                dragListener={false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.18}
+                onPointerDown={armStripPan}
+                onDragEnd={settleStripPan}
               >
                 {stripIndex() > 0 && (
                   <CanvasPeek side="left"
@@ -754,7 +774,19 @@ const Index = () => {
             )}
             
             {currentView === 'completed' && (
-              <div className="relative flex flex-col flex-1">
+              <motion.div
+                className="relative flex flex-col flex-1"
+                drag={canvasOn ? 'x' : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.18}
+                onPointerDownCapture={(e) => {
+                  // room cards keep their own swipe grammar
+                  if ((e.target as HTMLElement).closest('[data-oj-card]')) e.stopPropagation();
+                }}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x > 60 || (info.offset.x > 24 && info.velocity.x > 400)) setCurrentView('main');
+                }}
+              >
                 {canvasOn && (
                   <CanvasPeek side="left"
                     label={deckOrder[deckOrder.length - 1]?.name ?? t('decks.unnamed')}
@@ -785,7 +817,7 @@ const Index = () => {
                     onUncomplete={getTaskStore().uncompleteTask ? handleUncompleteTask : undefined}
                   />
                 )}
-              </div>
+              </motion.div>
             )}
             
             {currentView === 'settings' && (

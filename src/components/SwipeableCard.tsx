@@ -173,6 +173,7 @@ const SwipeableCard: React.FC<SwipeableCardProps> = ({
 
   return (
     <motion.div
+      data-oj-card
       className={cn('relative touch-none select-none', !disabled && 'cursor-grab active:cursor-grabbing', className)}
       // Suppress iOS's long-press text-selection/callout so tap-and-hold
       // reliably opens the card menu on touch (2026-07-25).

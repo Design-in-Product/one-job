@@ -14,29 +14,22 @@ answer recorded.
 
 ## Open
 
-### 🟡 15. The canvas strip awaits your eyes: ?canvas=on
-R2.1 stage 4 v1 is live BEHIND A PREVIEW FLAG — your daily driver is
-unchanged until you approve. On a device (ideally after ?pro=comp and
-making a second deck): open `https://onejob.co/app/?canvas=on`.
-You'll get: neighbor decks peeking in as card-back slivers at the
-edges, the afterlife (rooms) as a gray shade-edge at the far right,
-tap-to-pan with slide transitions. `?canvas=off` reverts.
+### 🟡 16. R3.2 first import: I recommend GitHub — one word settles it
+Your candidates minus Asana: **Trello or GitHub**. My recommendation is
+**GitHub issues** (assigned-to-you, read-only) because R3's gate is
+"a real project where One Job is the only surface you touch daily" —
+and GitHub is where most of your tech work actually lives *now*, while
+Trello is "sometimes." Issue→card maps clean, a PAT is the whole auth
+story, and the API is CORS-friendly from a local-first client. Trello
+second: its board/list model is charmingly card-shaped but adds a
+mapping question (board→deck? list→?) we don't need on the first
+source. Say "GitHub," "Trello," or a third name and R3.2 planning
+starts; the seam (R3.1) is built and waiting.
 
-**What I want your verdict on:** the layout and the feel of
-neighbors-as-peeks. **Deliberately not built yet:** the free
-background-drag pan (gesture-collision risk — it follows your yes) and
-final rooms placement. If the layout is wrong, nothing is wasted; if
-right, deleting the flag makes it the app.
-
-### 🟢 14. Your comp grant: visit ?pro=comp once per device
-R2.1 stage 2 shipped (rc.17): multi-deck exists behind the pro wall,
-per-device entitlement per your doctrine. **To comp a device of yours:
-open `https://onejob.co/app/?pro=comp` once** (revoke: `?pro=off`).
-Then hold the deck background → **Decks…** appears. Free devices with
-existing multi-deck data keep switching — the wall gates creation only,
-so data is never hostage. The pre-business grant mechanism is just this
-URL param; real unlock infrastructure replaces the write path later,
-the `hasPro()` read seam stays.
+**Also filed on the fun shelf** from your note: AI-interpreted ad hoc
+backends — Notes files, stickies, email — read as One Job cards.
+That's the R4 "agent is just another source" thesis wearing pajamas,
+and the SourceAdapter seam is already the right shape for it.
 
 ### 🟡 12. Shake-to-undo ships blind until a device confirms it
 Shake + menu undo + session-deep history shipped this morning (see log).
@@ -132,6 +125,15 @@ draft it and have you correct me, if you'd rather not start from blank.
 ---
 
 ## Settled
+
+*(2026-07-29) Canvas strip* — approved from screenshots ("the strip is
+good"), so the deferred background-drag pan shipped same evening and
+the strip is DEFAULT-ON (rc.20); ?canvas=off stays as escape hatch.
+Confirmed: leftmost deck has no left peek. R2.1 complete.
+
+*(2026-07-29) Comp mechanism* — fine for now; secure + in-app when the
+paid tier faces real users. And recorded: not all new work is pro —
+free users keep getting improvements.
 
 *(2026-07-29) Item 7, blocked-completion dead end* — fixed under the
 standing default Xian didn't object to: the reveal now follows the same
