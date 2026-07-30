@@ -32,7 +32,7 @@ import { AnimatePresence, motion, useDragControls, PanInfo } from 'framer-motion
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
-import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished } from '@/domain/tasks';
+import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished, inchwormWalk } from '@/domain/tasks';
 import { useShake } from '@/hooks/use-shake';
 import { hasPro } from '@/services/entitlements';
 import { canvasPreviewOn } from '@/services/canvasPreview';
@@ -322,6 +322,49 @@ const Index = () => {
   const settleStripPan = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -60 || (info.offset.x < -24 && info.velocity.x < -400)) stripGo(1);
     else if (info.offset.x > 60 || (info.offset.x > 24 && info.velocity.x > 400)) stripGo(-1);
+  };
+
+  // Inchworm mode (R2.7, 2026-07-30): the active deck's whole tree as
+  // one walkable stack, leaves first (post-order — Item 15 harmony: by
+  // the time a parent surfaces its interior is done). A device-local
+  // view preference; the data never changes shape.
+  const [inchworm, setInchworm] = useState<boolean>(() => {
+    try { return localStorage.getItem('oneJobInchworm') === '1'; } catch { return false; }
+  });
+  const toggleInchworm = () => {
+    const next = !inchworm;
+    setInchworm(next);
+    try {
+      if (next) localStorage.setItem('oneJobInchworm', '1');
+      else localStorage.removeItem('oneJobInchworm');
+    } catch { /* preference only */ }
+  };
+  const walk = inchworm ? inchwormWalk(tasks) : null;
+  // Dispatch by altitude: a walked card with a trail lives in an interior
+  // deck — its mutations go through the substack paths; a trail-less card
+  // is top-level and takes the ordinary handlers (block-reveal included).
+  const inchwormComplete = async (taskId: string) => {
+    const entry = walk?.find(w => w.card.id === taskId);
+    if (!entry || entry.trail.length === 0) return handleCompleteTask(taskId);
+    try {
+      await getTaskStore().completeSubstackTask(taskId);
+      toast.success(t('toasts.substackTaskCompleted'));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.completeFailed', { message: (err as Error).message }));
+      await refreshAll(); // re-deal the refused card
+    }
+  };
+  const inchwormDefer = async (taskId: string) => {
+    const entry = walk?.find(w => w.card.id === taskId);
+    if (!entry || entry.trail.length === 0) return handleDeferTask(taskId);
+    try {
+      await getTaskStore().deferSubstackTask(taskId);
+      toast.info(t('toasts.substackTaskDeferred'));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.deferFailed', { message: (err as Error).message }));
+    }
   };
 
   // Session-deep undo (Xian, 2026-07-29): the store replays its state from
@@ -723,6 +766,11 @@ const Index = () => {
                 onPointerDown={armStripPan}
                 onDragEnd={settleStripPan}
               >
+                {inchworm && walk && walk.length > 0 && walk[0].trail.length > 0 && (
+                  <p className="text-center text-xs text-gray-500 pt-3">
+                    {t('inchworm.trail', { trail: walk[0].trail.map(a => a.title).join(' › ') })}
+                  </p>
+                )}
                 {stripIndex() > 0 && (
                   <CanvasPeek side="left"
                     label={deckOrder[stripIndex() - 1]?.name ?? t('decks.unnamed')}
@@ -735,11 +783,11 @@ const Index = () => {
                   variant={stripIndex() < deckOrder.length - 1 ? 'deck' : 'afterlife'}
                   onTap={() => stripGo(1)} />
                 <CardDeck
-                  tasks={activeTasks}
+                  tasks={inchworm && walk ? walk.map(w => w.card) : activeTasks}
                   loading={loading}
                   error={error}
-                  onComplete={handleCompleteTask}
-                  onDefer={handleDeferTask}
+                  onComplete={inchworm ? inchwormComplete : handleCompleteTask}
+                  onDefer={inchworm ? inchwormDefer : handleDeferTask}
                   onCardClick={handleCardClick}
                   onCardLongPress={handleCardLongPress}
                   onOpenSubdeck={handleOpenSubdeckFromCard}
@@ -750,16 +798,18 @@ const Index = () => {
                   onViewSettings={() => setCurrentView('settings')}
                   onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
                   onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
+                  onInchworm={toggleInchworm}
+                  inchwormOn={inchworm}
                 />
               </motion.div>
             )}
             {currentView === 'main' && !canvasOn && (
               <CardDeck
-                tasks={activeTasks}
+                tasks={inchworm && walk ? walk.map(w => w.card) : activeTasks}
                 loading={loading}
                 error={error}
-                onComplete={handleCompleteTask}
-                onDefer={handleDeferTask}
+                onComplete={inchworm ? inchwormComplete : handleCompleteTask}
+                onDefer={inchworm ? inchwormDefer : handleDeferTask}
                 onCardClick={handleCardClick}
                 onCardLongPress={handleCardLongPress}
                 onOpenSubdeck={handleOpenSubdeckFromCard}
@@ -770,6 +820,8 @@ const Index = () => {
                 onViewSettings={() => setCurrentView('settings')}
                 onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
                 onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
+                onInchworm={toggleInchworm}
+                inchwormOn={inchworm}
               />
             )}
             
