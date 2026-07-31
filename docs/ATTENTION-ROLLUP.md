@@ -104,10 +104,14 @@ works, and hard-coding 8081 breaks your muscle memory on the day
 mediajunkie's 8080 retires (pending your call, per Pard). Documented
 instead. Tell me if you'd rather I pin it.
 
-### 🟡 5. Relay's future (carried forward — still yours)
-Once I am on a Mac, is Relay still needed as a separate build agent, or
-does the TestFlight pipeline eventually become mine? I have written
-this week's Relay memos assuming **no change**. Not absorbing it unasked.
+### 🟡 5. Relay's future — DIRECTION SET 07-31; migration plan pending
+Xian: "Amber seems like a natural home. Relay is a cowork agent so as
+to operate the computer more readily. I am open to how to migrate those
+functionalities." Pard's infra read concurs (always-on, one Xcode, the
+wedge as evidence), with the cost named: submission-forced macOS updates
+become fleet reboot events. **Remaining decision is the migration plan's
+shape** — I'll draft one after the rc.12 cut lands (not during: never
+change the pipeline mid-cut). Relay keeps the current cut unchanged.
 
 ### 🟢 10. REQUIREMENTS.md has drifted (doc debt, not urgent)
 It's dated 2026-07-04 and its status line still reads *"concept-model
