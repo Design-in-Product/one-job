@@ -1,10 +1,24 @@
 # Amber as the iOS build host — provisioning runbook
 
-**Author:** Coral · 2026-07-30 · **Status:** tracks laid up to the
-Apple-auth gate. Context: Relay's Xcode wedged on Xian's laptop;
-Xian asked for Amber as a parallel/backup path ("I can do the auth
-steps when needed"). Whether Amber *becomes* the pipeline home is
-rollup item 5 — this doc makes it possible, not decided.
+**Author:** Coral · 2026-07-30, updated 07-31 · **Status:** staged to
+the Apple-auth gate; **direction decided 07-31** — Amber is the
+pipeline's natural home (Xian) / consolidate (Pard's infra read).
+Migration is unhurried: the laptop unwedged and Relay is cutting rc.12
+there now; Amber proceeds as the consolidation target.
+
+**Division of ownership (Pard, harbor manifest):** Xcode
+install/updates/host-integration = **Pard** (daemon-class, courtesy
+windows — I flag any submission error naming a minimum-version bump).
+Build usage & pipeline = **me**. Host facts live in the harbor
+manifest's capability entry; this doc keeps only the One Job pipeline
+steps. Known systemic cost, accepted: App Store minimums periodically
+force Xcode→macOS updates = a fleet-wide reboot event on a 14-resident
+host.
+
+**Secrets (harbor convention, adopted 2026-07-30):** tool-canonical
+path (`~/.appstoreconnect/private_keys/`), dir 700 / file 600, never in
+any repo, registered in the manifest's secrets registry (path · owner ·
+what it unlocks — never content), xian-only.
 
 ## Verified working today (no Xcode needed)
 
