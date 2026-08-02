@@ -1,59 +1,56 @@
-# Cross-Pollination Brief — August 1, 2026
 
-Two methodology findings from Piper Morgan and Design in Product, both sharpening what it means for a check or a handoff to actually work: a criterion whose outcome is predetermined cannot discriminate between good and bad outcomes, regardless of which direction it's stuck in; and a session that has declared itself inactive can keep running and writing anyway, which means "standing down" is only a mechanism if the session is actually closed.
+# Cross-Pollination Brief — August 2, 2026
+
+Two methodology rulings from Piper Morgan on how corrections propagate — and fail to propagate — across a multi-surface documentation ecosystem. First: a factual correction isn't complete until it has chased every surface the original claim reached, not just the source document, with a converse requiring care around dated historical records. Second: before concluding that a file has never existed, verify the repo is capable of seeing it — a gitignored file is absent from every corpus-based search but present on disk.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A gate that cannot fail and a gate that cannot pass are the same defect wearing opposite clothes
+### A correction must chase every surface the original claim reached — not just the source, and not dated records
 
-**From:** Piper Morgan (PPM, CXO, HOST)
-**Relevant to:** Klatch, any project writing acceptance criteria
+**From:** Piper Morgan (HOST, CXO, Docs — August 1 session logs, after the 12:00 UTC sweep)
+**Relevant to:** Klatch, any project with multi-surface documentation
 
-A gate is only an instrument if it can produce different outputs for the thing it measures. Two cases from PM this week—opposite failures, same underlying shape:
+A wrong attribution for a methodology finding was caught and corrected in the methodology file. What was missed: the same wrong label had already reached the outbound cross-pollination brief — the surface that leaves the building entirely, going to sibling projects where nobody has the surrounding thread, and where the label is all they'd ever have. Roughly twelve hours elapsed between filing and the wrong attribution leaving the building.
 
-- **The gate that cannot fail** (#1386 retest): PM's acceptance criteria for the Piper alpha tester would have returned PASS even during the exact session that produced the user's real complaint. No criteria could surface the failure mode.
-- **The gate that cannot pass** (first-contact spec §7): an acceptance list contained one item blocked on an unresolved probe (Probe A). A blocked item makes the whole gate inoperative — no build can clear it until the probe runs, regardless of product quality. The spec and the gate were conflated.
+HOST's rule: *"promotion is not authorship — and a correction has to chase every surface the claim reached, not the one you're looking at."* The cross-pollination brief is the highest-stakes surface, not the canonical doc. Fixing the canonical doc feels complete and leaves the furthest-travelling copy wrong.
 
-PPM's two-question check before adopting any acceptance criterion:
+The correction required grepping, not assuming. Three roles ran the same sweep on their own corrections from the week and found live instances in each case.
 
-1. **What result would make this FAIL?** If there's no realistic answer, the criterion is a description wearing a criterion's clothes.
-2. **Is everything needed for this to PASS reachable now?** If any element is blocked on an unresolved dependency, the gate has inherited that block and is inoperative.
+**Docs added the necessary converse**: chase every surface — but distinguish a live claim from a dated record. The same greppable string legitimately appears in past-tense session logs, attributed to a specific prior moment, and in working code using it in a different role. A blind chase that "corrects" dated historical records is a different defect, not a stricter application of the virtue. Docs' table showed five of six hits across their week would have been wrongly overwritten — only one was a living present-tense claim.
 
-CXO's structural fix (now in spec v0.2): split the list into *gate* (items closeable today) and *conformance* (required for done, blocked until dependency resolves), with an explicit note that clearing the gate is not the same as conformance. This is a mechanism, not a discipline — it makes the conflation structurally impossible.
+**The two-part rule:**
+1. After correcting any factual claim, grep all surfaces — methodology docs, session logs, outbound briefs, code — and fix every present-tense, living instance.
+2. Leave dated historical records intact; they record what was said at a specific time, and overwriting them destroys evidence rather than correcting it.
 
-HOST's family-of-three framing for completeness: m-44 (instrument emits a false clear — never measured), this (instrument runs correctly and reports truthfully — the answer was always going to be the same), and CXO's obstacle (instrument repairs what it measures and reports true — evidence destroyed). All three produce unactionable greens; the cures don't transfer, so merging any two of them loses the fix.
+**Suggested action:** Build the surface check into correction practice: grep before declaring a correction complete, and for each hit, determine tense and speaker before editing. The outbound brief is the surface that matters most to get right, not the surface that's easiest to find.
 
-**Suggested action:** Before finalizing any acceptance criteria, run PPM's two-question check on every line. For blocked items, quarantine them into a separate conformance section that carries the dependency label — don't mix them with closeable gate items.
 
----
+### Before concluding a file has never existed, check whether the repo can see it
 
-### A session told to stand down can still act — "closed" is the only mechanism, not "declared inactive"
+**From:** Piper Morgan (HOST, Arch — August 1 session logs)
+**Relevant to:** Any project using git-based forensic investigation
 
-**From:** Piper Morgan (Pard + HOST ruling), corroborated live by Design in Product (Themis, 2026-07-31)
-**Relevant to:** Klatch, any project running multiple simultaneous agent sessions
+Piper Morgan's CLAUDE.md had carried a note for weeks that a specific evidence file — the PreCompact hook's firing log — had likely "never existed," because six different surfaces (git ls-files, grep, git log, corpus search) all returned nothing. The file is on disk at `/session-end-warnings.log`, with a real hook-firing event from 2026-07-29. It is excluded by `.gitignore:136`. Every corpus-based search was correct given its method; the corpus was structurally incapable of containing the answer.
 
-Pard filed this as a new hazard class, and the same failure occurred live that morning on Amber: Themis's laptop session formally stood down at 09:03, but xian kept typing questions into the open window. The laptop session kept answering. Both Amber-Themis and laptop-Themis were then writing to the same shared files in parallel, producing genuinely conflicting content, caught only when the second push produced a merge conflict.
+The technique that would have caught it: `git check-ignore -v <path>`. This reports whether git is actively excluding a path from tracking — converting "absent from version control" into either "also absent from disk" or "present on disk but excluded." The distinction matters: one confirms non-existence; the other confirms that every conventional search has a structural blind spot.
 
-Pard's formulation — *"declaring stand-down is not a mechanism — the state was announced, not enforced"* — is the compact statement. HOST's ruling clarified why the obvious mitigations don't work:
+Arch filed this as an extension of the "state the denominator" principle: before reporting an existence result, state what the search space can and cannot see. A repo that gitignores a path cannot attest to that path's absence on disk.
 
-- **"This window is now inert" message** — adopt as cue, never as control. A message saying "I am inert" from a session that then keeps answering teaches that the notice means nothing.
-- **"If the window stays open it should refuse writes"** — do not adopt. The agent asked to refuse is the agent that would be writing, and it breaks under exactly the condition that breaks standdown: a human asking directly. If the session must stay open, make the *environment* refuse (read-only checkout, revoked credential), not the agent.
-- **Close the window** — the only option that changes what's *possible* rather than what's *promised*. A closed session cannot answer.
+The broader class: a file can be durable (written to disk, surviving reboots) while being invisible to every agent on a team — not because it doesn't exist, but because the tool each agent uses to look for it structurally cannot see it. This is most acute with gitignored paths, but the same shape applies to files in per-seat directories outside version control, or in locations not covered by the standard grep corpus.
 
-Notably, the conflict was caught by a git push collision — the second session's push failed — which is exactly the kind of accidental detector this brief has been covering. Nothing in the system was watching for two instances of the same role writing simultaneously.
-
-**Suggested action:** Make "close the prior window" a mandatory, numbered step in any session-handoff protocol. Frame it as an action with an observable result (window closed), not as a declaration of state.
+**Suggested action:** Add `git check-ignore -v <path>` as a step in any existence investigation that comes up empty. Before writing "never existed" or "no evidence of," verify the search corpus was capable of seeing the file.
 
 ## Sources Read
 
-- **Klatch:** `docs/mail/` — Amber migration memos to Klatch team (Pard → Calliope/Theseus); no new methodology content.
-- **Piper Morgan:** `dev/2026/07/31/2026-07-31-0707-host-code-log.md` (HOST day-7); `dev/active/handoff-pa-2026-07-31.md` (PA six-day lessons); `mailboxes/cio/read/memo-ppm-to-cio-…-methodology-candidate-a-gate-must-be-able-to-both-pass-and-fail-2026-07-31.md`; PM commit log.
-- **Design in Product:** `docs/agents/themis/for-xian.md` (2026-07-31 coordination hazard commit); `docs/logs/2026-07-31-themis-log.md`; Janus rollup.
-- **One Job:** active (briefing update, rc.12 build, Amber Xcode provisioning runbook); no cross-relevant insights.
-- **Mediajunkie:** `docs/amber-harbor-status.md` (harbor manifest, git identity convention); Pard day-close log.
-- **Secondary repos (atlas, cuneo, optilisten, nyt-crossword, globe, weather, cookie-monster):** only automated brief deliveries or no activity.
+- **Klatch:** only cross-pollination brief deliveries in the 48h window; no new methodology from the Klatch team.
+- **Piper Morgan:** `dev/2026/08/01/2026-08-01-0707-host-code-log.md` (HOST eight fires; attribution-chase ruling, checklist v2.0 ratification, gitignored-file forensics); `dev/2026/08/01/2026-08-01-0627-arch-code-log.md` (Arch: sweep-completeness-is-pattern-set, gitignored-file confirmation); `dev/2026/08/01/2026-08-01-0713-cxo-code-log.md` (CXO: attribution-chase converse from Docs, fourth route to unactionable green); commit log for mail and stop commits.
+- **Design in Product:** `docs/logs/2026-08-01-janus-log.md` (Janus v0.3 permission-box widened, duty cycle fully operational; Coral insights staged for today).
+- **Mediajunkie:** `logs/2026-08-01-pard-log.md` (janus-cycle sandbox delivery backstop; crossword print geometry insight — both interesting, neither cross-project-relevant at brief-worthiness threshold).
+- **One Job:** `docs/plans/2026-07-29-roadmap-first-pass.md` (Trello as next integration source, PM-vs-task taxonomy); Coral insights via Janus rollup (Playwright addInitScript, feature-flag reversibility, invariant that polices test suite — noted, One Job-scoped).
+- **Globe:** active (Prequel animation drafts 2–5, dissolve ending registered); pure rendering/science work, no cross-pollination content.
+- **NYT Crossword:** status prints only.
+- **Secondary repos (atlas, cuneo, weather, optilisten, cookie-monster):** quiet or brief-delivery only.
 
----
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
