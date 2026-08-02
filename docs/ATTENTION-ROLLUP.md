@@ -133,6 +133,13 @@ draft it and have you correct me, if you'd rather not start from blank.
 
 ## Settled
 
+*(2026-08-01) Trello = next source, Gall-gated* — Xian's call, with the
+taxonomy insight recorded in the roadmap first-pass (PM ≠ task
+management; GitHub serves work-tasks, his active Trello boards are the
+personal/project middle). Gate: his real-use GitHub test first. The
+board/list/card ↔ deck/card mapping question is queued for the
+planning doc.
+
 *(2026-07-29) R3.2 source = GitHub* — his call ("agreed re github");
 shipped same night. Trello noted as the natural second source.
 
