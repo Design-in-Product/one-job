@@ -39,13 +39,22 @@ warnings.
 
 ## Phase 3 — Run on device (10 min)
 
-> ⚠️ **BUNDLEID trap (learned 2026-07-03)**: make sure the PAID team is
-> selected in Signing & Capabilities BEFORE the first device run. Running
-> with the free Personal Team auto-registers the bundle id to that team on
-> Apple's backend — bundle ids are globally unique, so the paid team is
-> then blocked from registering it, and free-team App IDs are invisible/
+> ⚠️ **BUNDLEID trap (learned 2026-07-03; RE-ARMS PER CHECKOUT, learned
+> 2026-08-01)**: make sure the PAID team is selected in Signing &
+> Capabilities BEFORE the first device run. Running with the free
+> Personal Team auto-registers the bundle id to that team on Apple's
+> backend — bundle ids are globally unique, so the paid team is then
+> blocked from registering it, and free-team App IDs are invisible/
 > undeletable in the portal. Remedy if hit: Apple Developer Support
 > release request, or wait ~7 days for free-provisioning expiry.
+>
+> **This is NOT a one-time setup step.** The Team selection lives in
+> `project.pbxproj`, which git owns — so **any ref switch (tag checkout,
+> pull, branch change) reverts Team to `None`**, and tag-based cutting
+> makes that every single cut. Rule: **after ANY checkout, re-verify
+> Team is the paid team before building.** Both teams sit one keystroke
+> apart in the dropdown; the free one is the permanent-damage option.
+> (Found live 2026-08-01: the rc.12 tag checkout silently reset Team.)
 
 1. Connect Xian's iPhone via cable (or same-network wireless debugging).
 2. Select the phone as the run destination; press Run (⌘R).
