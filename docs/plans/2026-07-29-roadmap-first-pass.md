@@ -153,6 +153,23 @@ real-token verification is Xian's morning item. Also filed (fun shelf):
 AI-read ad hoc backends — Notes/stickies/email as cards — the R4
 agent-as-source thesis in pajamas; the seam already fits it.
 
+### Trello — DECIDED next source (Xian, 2026-08-01), Gall-gated
+His taxonomy insight, worth keeping verbatim in spirit: **project
+management is not task management** — GitHub/Asana blur the line, but
+almost nobody manages *personal* tasks in GitHub issues. GitHub import
+serves the tech-work slice; his ACTIVE Trello boards are the personal/
+project middle he'd "use more often if they had a One Job front end" —
+the R3 gate's phrasing, arriving unprompted. **Gate: his real-use test
+of the GitHub integration first** ("we can wait… before we extend
+anything, just following our Gall's-law principles").
+
+Design question waiting when the gate opens — the mapping the first
+source didn't need: Trello is board → list → card; One Job alternates
+deck → card → deck. Board→root deck is natural; **lists** are the
+wrinkle (each list as a carrier card with an interior deck? lists as
+named interior decks of a board-card? flatten?). That's the planning
+doc's first page, not a today problem.
+
 ### R3.3 Mapping store → **R3.4 two-way sync → R3.5 federation → R3.6 import-as-merge**
 **Refined sequence stands.** One note: R3.6 (merge with per-conflict
 keep-both/replace/skip) supersedes the import-N container and needs

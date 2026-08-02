@@ -1,58 +1,56 @@
 
-# Cross-Pollination Brief — July 31, 2026
+# Cross-Pollination Brief — August 2, 2026
 
-Two methodology findings from Piper Morgan. First: when a generated summary file breaches a size constraint, the right lever is always the generator, not the source material it summarizes — deleting memories to shrink the memory index is deleting source to fix a build output. Second: five attempts across three roles to write a pattern-matching predicate all failed on real data because each was authored from prose reasoning about what the format should look like; querying the actual 401-item corpus produced the correct predicate on the first try.
+Two methodology rulings from Piper Morgan on how corrections propagate — and fail to propagate — across a multi-surface documentation ecosystem. First: a factual correction isn't complete until it has chased every surface the original claim reached, not just the source document, with a converse requiring care around dated historical records. Second: before concluding that a file has never existed, verify the repo is capable of seeing it — a gitignored file is absent from every corpus-based search but present on disk.
+
+*Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A generated index that exceeds a constraint signals a generator bug, not a deletion target
+### A correction must chase every surface the original claim reached — not just the source, and not dated records
 
-**From:** Piper Morgan (Arch via HOST session log `dev/2026/07/30/2026-07-30-0653-host-code-log.md`, Fire 2; `scripts/rebuild-memory-index.py` updated same session)
+**From:** Piper Morgan (HOST, CXO, Docs — August 1 session logs, after the 12:00 UTC sweep)
+**Relevant to:** Klatch, any project with multi-surface documentation
 
-**Relevant to:** Any project with generated summary or index files — Klatch (session-log index), Globe (render manifests), any project where a human-readable aggregation is rebuilt from source artifacts
+A wrong attribution for a methodology finding was caught and corrected in the methodology file. What was missed: the same wrong label had already reached the outbound cross-pollination brief — the surface that leaves the building entirely, going to sibling projects where nobody has the surrounding thread, and where the label is all they'd ever have. Roughly twelve hours elapsed between filing and the wrong attribution leaving the building.
 
-When Piper Morgan's memory index exceeded its line ceiling, three agents independently proposed the same fix: delete some memories to make the file fit. Arch dissolved the dilemma by naming the architectural relationship: the index is a generated artifact, the memories are source. A generated file is a build output; the source it summarizes is the thing that matters. Deleting source to fix a build output is working at the wrong layer — and unlike most wrong-layer fixes, this one silently destroys the information the file was built to surface.
+HOST's rule: *"promotion is not authorship — and a correction has to chase every surface the claim reached, not the one you're looking at."* The cross-pollination brief is the highest-stakes surface, not the canonical doc. Fixing the canonical doc feels complete and leaves the furthest-travelling copy wrong.
 
-The fix shipped as a flat rule in the generator itself: "never delete a memory to make this file fit; every legitimate lever is a generator change and is reversible." In practice that means: emit a summary line when entries exceed a threshold; render the full list only in the extended view; or paginate. All of these fix the output without touching the source.
+The correction required grepping, not assuming. Three roles ran the same sweep on their own corrections from the week and found live instances in each case.
 
-**The general form:** any time a constraint on a derived artifact — a file that is *built from* other things — seems to require deleting source, that's a signal to look at the builder. The constraint is on the output; the fix belongs in the code that generates it. Source deletion as a response to a derived-artifact problem is the wrong abstraction layer, and the cost of getting it wrong is exactly the data the artifact was supposed to preserve.
+**Docs added the necessary converse**: chase every surface — but distinguish a live claim from a dated record. The same greppable string legitimately appears in past-tense session logs, attributed to a specific prior moment, and in working code using it in a different role. A blind chase that "corrects" dated historical records is a different defect, not a stricter application of the virtue. Docs' table showed five of six hits across their week would have been wrongly overwritten — only one was a living present-tense claim.
 
-**Suggested action:** For any project with generated index or summary files (session-log rolls, render manifests, memory indexes), add a one-line comment in the generator asserting the same invariant: "constraint violations here are a generator problem, not a source-deletion problem." If the file is currently subject to a size or line cap, verify that the cap is enforced in the generator, not by manual culling.
+**The two-part rule:**
+1. After correcting any factual claim, grep all surfaces — methodology docs, session logs, outbound briefs, code — and fix every present-tense, living instance.
+2. Leave dated historical records intact; they record what was said at a specific time, and overwriting them destroys evidence rather than correcting it.
 
----
+**Suggested action:** Build the surface check into correction practice: grep before declaring a correction complete, and for each hit, determine tense and speaker before editing. The outbound brief is the surface that matters most to get right, not the surface that's easiest to find.
 
-### A predicate derived from the corpus beats five attempts reasoned from prose
 
-**From:** Piper Morgan (HOST/CXO/Web via HOST session log `dev/2026/07/30/2026-07-30-0653-host-code-log.md`, Fires 3–5; `docs/internal/operations/day-closed-marker-census.md` created same session)
+### Before concluding a file has never existed, check whether the repo can see it
 
-**Relevant to:** Any project with shell scripts, monitoring tools, or pattern-matching predicates over a corpus of documents — Klatch (session-log parsing), Globe (frame-manifest validation), Mediajunkie (corpus triage tooling), One Job (task import predicates)
+**From:** Piper Morgan (HOST, Arch — August 1 session logs)
+**Relevant to:** Any project using git-based forensic investigation
 
-Piper Morgan needed a shell predicate to detect "day-closed markers" in 401 session-log files. Five attempts across HOST, CXO, and the Web role all failed on real data — producing false negatives on actual markers or false positives on near-misses. Each attempt was written from prose reasoning: "the format looks like X, so the regex should be Y." None were derived from the actual corpus.
+Piper Morgan's CLAUDE.md had carried a note for weeks that a specific evidence file — the PreCompact hook's firing log — had likely "never existed," because six different surfaces (git ls-files, grep, git log, corpus search) all returned nothing. The file is on disk at `/session-end-warnings.log`, with a real hook-firing event from 2026-07-29. It is excluded by `.gitignore:136`. Every corpus-based search was correct given its method; the corpus was structurally incapable of containing the answer.
 
-The fix: query the corpus first. HOST enumerated the real marker distribution — 382 html-comment colon-dated variants, 10 markdown-heading em-dash variants, 2 bold em-dash variants, 7 undated entries unreachable by any single regex — and wrote the predicate from that table. It worked on the first try.
+The technique that would have caught it: `git check-ignore -v <path>`. This reports whether git is actively excluding a path from tracking — converting "absent from version control" into either "also absent from disk" or "present on disk but excluded." The distinction matters: one confirms non-existence; the other confirms that every conventional search has a structural blind spot.
 
-HOST named the deeper principle: "the corpus is the tool." CXO sharpened it: "a predicate is a derived artifact — regenerable from the corpus it's meant to match, and diffable." The `day-closed-marker-census.md` document that came out of this session opens with: "regenerate before trusting — this table is a build output, not prose."
+Arch filed this as an extension of the "state the denominator" principle: before reporting an existence result, state what the search space can and cannot see. A repo that gitignores a path cannot attest to that path's absence on disk.
 
-This is the same relationship as the index-vs-source insight above, applied one layer down: a regex predicate is derived from the thing it matches, just as an index is derived from the memories it summarizes. Writing predicates from prose reasoning about the format is analogous to deleting source to fix an index — it's working at the wrong layer of the same abstraction.
+The broader class: a file can be durable (written to disk, surviving reboots) while being invisible to every agent on a team — not because it doesn't exist, but because the tool each agent uses to look for it structurally cannot see it. This is most acute with gitignored paths, but the same shape applies to files in per-seat directories outside version control, or in locations not covered by the standard grep corpus.
 
-**Three practical checks for any predicate written over a real corpus:**
-1. **Build the census first.** Before writing the regex, query the corpus and tabulate the actual variants. A five-minute grep survey beats five failed predicate iterations.
-2. **Store the census as a build output.** The table is regenerable; commit it alongside the predicate with a note that it was derived from a specific corpus snapshot. When the corpus changes, regenerate the table and rediff the predicate.
-3. **Flag anything the predicate cannot see.** If some entries are structurally unreachable by any single regex, document them — otherwise a predicate that passes on 394 of 401 entries reads as "works" when it silently drops 7.
-
-**Suggested action:** For any new monitoring script, import parser, or log-analysis predicate, make the census step explicit: enumerate the actual corpus variants before writing the match logic. If a census doc already exists, check whether it's fresh enough to trust before reusing its predicate.
-
----
+**Suggested action:** Add `git check-ignore -v <path>` as a step in any existence investigation that comes up empty. Before writing "never existed" or "no evidence of," verify the search corpus was capable of seeing the file.
 
 ## Sources Read
 
-- **Piper Morgan** — HOST session log `dev/2026/07/30/2026-07-30-0653-host-code-log.md` (full: Fire 2 — memory index generator fix; Fires 3–5 — corpus-as-predicate-authority; Fire 6 — self-referential m-46 instance, pre-commit hook bypass via `env -u` idiom, freeze-watchdog grace-period contradiction). Two insights elevated; remaining findings operational or already briefed.
-- **Mediajunkie** — Pard log `logs/2026-07-30-pard-log.md`: OLUS cold test delivered (both runs GATE: PASS; 10 frictions including F9 gate-semantics contradiction and F8 transfer-blocking plist); troll-blocker cadence raised 1×→5×/day; Themis stood up on Amber (agent #15). Operational milestones; no new cross-project methodology.
-- **Klatch** — Amber migration memo to team (`docs/mail/memo-pard-to-calliope-team-amber-migration-2026-07-29.md`): first-person handoff doc structure (Hard-won lessons / Load-bearing vs commodity / claims marked VERIFIED or BELIEVED); "push is the standup signal." Methodology landing in the Klatch team's practices; not yet a new insight for other projects.
-- **Globe** — Tessera: flat-v7 shipped and hero-toggled; prequel first assembled draft with ICS period labels and Nuna hold. All xian-gated: crossfade seam decision, Blender globe pass. Operational production day.
-- **One Job** — Coral: Amber migration and environment cleanup (npm ≥ 11.17 install-scripts block, Node 26 localStorage shim, Playwright browser-cache pin, git identity convention). Operational; env-cleanup findings may brief separately when Coral's own log for the day is available.
-- **DinP (hub)** — Sweep in progress; no new methodology.
-- **Atlas, Cuneo, Optilisten, NYT-Crossword** — no commits in 48h window.
+- **Klatch:** only cross-pollination brief deliveries in the 48h window; no new methodology from the Klatch team.
+- **Piper Morgan:** `dev/2026/08/01/2026-08-01-0707-host-code-log.md` (HOST eight fires; attribution-chase ruling, checklist v2.0 ratification, gitignored-file forensics); `dev/2026/08/01/2026-08-01-0627-arch-code-log.md` (Arch: sweep-completeness-is-pattern-set, gitignored-file confirmation); `dev/2026/08/01/2026-08-01-0713-cxo-code-log.md` (CXO: attribution-chase converse from Docs, fourth route to unactionable green); commit log for mail and stop commits.
+- **Design in Product:** `docs/logs/2026-08-01-janus-log.md` (Janus v0.3 permission-box widened, duty cycle fully operational; Coral insights staged for today).
+- **Mediajunkie:** `logs/2026-08-01-pard-log.md` (janus-cycle sandbox delivery backstop; crossword print geometry insight — both interesting, neither cross-project-relevant at brief-worthiness threshold).
+- **One Job:** `docs/plans/2026-07-29-roadmap-first-pass.md` (Trello as next integration source, PM-vs-task taxonomy); Coral insights via Janus rollup (Playwright addInitScript, feature-flag reversibility, invariant that polices test suite — noted, One Job-scoped).
+- **Globe:** active (Prequel animation drafts 2–5, dissolve ending registered); pure rendering/science work, no cross-pollination content.
+- **NYT Crossword:** status prints only.
+- **Secondary repos (atlas, cuneo, weather, optilisten, cookie-monster):** quiet or brief-delivery only.
 
----
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
