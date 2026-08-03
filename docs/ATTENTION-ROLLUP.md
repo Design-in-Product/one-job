@@ -21,6 +21,37 @@ re-published whenever items open or settle.
 
 ## Open
 
+### 🔴 18. The Android keystore must be rescued BEFORE faoilean is repurposed
+Relay's handoff flags it as **the single most losable artifact in the
+project**: `onejob-upload.keystore` exists only on faoilean (one copy in
+the stale `one-job-OLD-DELETE-ME` folder slated for deletion), is
+gitignored, and is in NO repository. The GitHub Actions secrets are
+derivatives — they *look* like a backup and are not. If One Job ever
+ships to Play with this key, losing it means never updating that
+listing again.
+
+**Your step, per the destructive-action protocol:** copy the keystore
+to durable storage (password manager attachment is ideal) and **verify
+by opening the copy** — not by seeing the file listed — before the
+laptop is repurposed for Piper Morgan. Two minutes now vs. a permanent
+capability loss.
+
+### 🟡 19. Enable Dan — with one line at the top of his instructions
+Device pass is GREEN (all 8 checks, on the real TestFlight artifact,
+Settings confirming rc.12). Dan is unblocked. Relay's hard-won ask —
+after a false alarm where symptoms were filed against a build that
+wasn't running: **Dan's instructions must open with "first, confirm
+Settings shows v1.0.0-rc.12."** A tester filing bugs against a build
+they aren't running sends everyone chasing ghosts.
+
+### 🟡 20. The ASC API key is the highest-leverage unblock on the board
+Relay's handoff names it plainly: with Amber's Xcode (your one install
+command) + an App Store Connect API key (`.p8`), archive AND upload run
+unattended forever — no interactive Apple login, for me or any
+successor. Runbook: docs/AMBER-XCODE.md §3. It also honestly shrinks
+the Relay role to "a physical device in a hand" — which is exactly the
+input your migration decision needs.
+
 ### 🟡 17. Morning item: paste a real PAT and watch your issues become cards
 R3.2 shipped tonight (rc.21) — read-only GitHub import, proven against
 a MOCKED API end to end (import, PR filtering, provenance dedupe,
