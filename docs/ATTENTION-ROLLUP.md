@@ -104,6 +104,15 @@ works, and hard-coding 8081 breaks your muscle memory on the day
 mediajunkie's 8080 retires (pending your call, per Pard). Documented
 instead. Tell me if you'd rather I pin it.
 
+### 🟡 5a. NEW REQUIREMENT for the Relay migration (Xian, 08-02)
+The kindbook-successor Relay must **delegate GitHub work to code
+agents** — the current Relay relies on Xian's hands for all git
+operations ("really not a great process," his words; the 07-25
+undelivered-mail incident is the proof). This goes into the migration
+plan as a hard requirement and into the successor's brief. My draft
+plan lands after your rc.12 smoke test (pipeline stays untouched
+mid-promotion).
+
 ### 🟡 5. Relay's future — DIRECTION SET 07-31; migration plan pending
 Xian: "Amber seems like a natural home. Relay is a cowork agent so as
 to operate the computer more readily. I am open to how to migrate those
