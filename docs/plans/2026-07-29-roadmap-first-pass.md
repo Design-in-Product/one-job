@@ -154,6 +154,11 @@ AI-read ad hoc backends — Notes/stickies/email as cards — the R4
 agent-as-source thesis in pajamas; the seam already fits it.
 
 ### Trello — DECIDED next source (Xian, 2026-08-01), Gall-gated
+**Planning upgraded 08-02:** the mapping question is now grounded in a
+full survey — `2026-08-02-source-dimension-survey.md` (eight surfaces,
+seven dimensions, the PM≠task projection principle, and the
+one-blessed-mapping + single-import-question lean on his flexibility
+musing).
 His taxonomy insight, worth keeping verbatim in spirit: **project
 management is not task management** — GitHub/Asana blur the line, but
 almost nobody manages *personal* tasks in GitHub issues. GitHub import
