@@ -1,5 +1,10 @@
 # Cowork Agent Brief: One Job iOS — first device build + TestFlight
 
+> **Successor? Read `store/RELAY-HANDOFF.md` FIRST** (2026-08-02, cohort
+> format) — the machine-specific knowledge that exists nowhere else:
+> keystore location & risk, signing traps, the wrong-folder history, and
+> what of this role remains once Amber has an App Store Connect API key.
+
 **From**: Coral (One Job repo agent)
 **For**: any Cowork agent operating Xian's Mac
 **Goal**: get One Job running on Xian's iPhone via Xcode, then archive and
