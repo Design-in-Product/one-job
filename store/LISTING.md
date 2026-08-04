@@ -98,6 +98,44 @@ version-dependent:
    makes re-capture free so assets can never age the way the rc.2 set
    did.
 
+## Screenshot captions (Relay, 2026-08-03) — PROPOSED, not applied
+
+The marketing canvases need a headline line per shot. Nothing was drafted
+yet, and these are the highest-leverage words in the listing: the **first
+three** appear on the install sheet, so more people will read caption 1
+than will ever read the description.
+
+Written against Coral's six-shot list. Voice follows the approved copy —
+plain, warm, faintly wry; no jargon a user wouldn't use ("sub-deck",
+"rooms", "hold-menu" all avoided).
+
+| # | Shot | Caption | Alternate |
+|---|---|---|---|
+| 01 | `01-the-deck` | **This is your whole to-do list.** | One card. One job. |
+| 02 | `02-swipe-to-complete` | **Done? Swipe it away.** | Finishing is a gesture. |
+| 03 | `03-inside-a-task` | **Big job? Deal it out.** | Every card can hold a deck. |
+| 04 | `04-done-archive-trash` | **Nothing ever just disappears.** | Done, archived, or gone — your call. |
+| 05 | `05-hold-anywhere` | **No clutter. Press and hold for the rest.** | Everything's one press away. |
+| 06 | `06-private-by-design` | **Your deck never leaves your device.** | No account. No cloud. No tracking. |
+
+**The arc, deliberately:** 1 states the premise and provokes the obvious
+question (*where's the rest of it?*) — the screenshot answers it. 2 shows
+the core gesture. 3 answers the first real objection (*that can't scale to
+big work*). Those three stand alone on the install sheet and have to carry
+the whole pitch between them. 4–6 then reassure: nothing is lost, nothing
+is cluttered, nothing leaves the device.
+
+Notes for whoever composes the frames:
+
+- These are sized for display at headline scale — roughly 3–7 words. If a
+  frame design wants a subhead too, ask and I'll draft second lines rather
+  than have the primaries stretched.
+- Caption 1 is doing the most work and is the one most worth arguing about.
+- Unreviewed against actual frames; type size and line breaks may push some
+  toward the shorter alternates.
+- If the Play listing reuses the frames, these hold — nothing here is
+  App-Store-specific.
+
 ## iPad presentation note (2026-08-04, from the 13" captures)
 
 Functionally clean at 2064×2752 — every flow drives. Presentation is a
