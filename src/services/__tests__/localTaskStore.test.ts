@@ -1180,3 +1180,25 @@ describe('moveCardToDeck (R2.1 stage 3: promote-at-top gains a meaning)', () => 
     await expect(store.moveCardToDeck(nested.id, d2.id)).rejects.toThrow(/top-level|promote/i);
   });
 });
+
+describe('future data refuses to boot — never quarantine-and-rollback (2026-08-04)', () => {
+  it('constructor throws, main key untouched, nothing quarantined, no snapshot rollback', () => {
+    localStorage.clear();
+    const KEY = 'futuretest';
+    // an older snapshot that a wrong recovery path would roll back to
+    localStorage.setItem(`${KEY}.meta`, JSON.stringify({ count: 1, updatedAt: '2026-08-01T00:00:00Z' }));
+    localStorage.setItem(`${KEY}.snapshot.2026-08-01`, JSON.stringify({ schemaVersion: 3, decks: [
+      { id: 'r', name: 'deck-1', createdAt: '2026-08-01T00:00:00Z', cards: [
+        { id: 'old', title: 'stale snapshot card', completed: false, createdAt: '2026-08-01T00:00:00Z' } ] } ] }));
+    const futureDoc = JSON.stringify({ schemaVersion: 99, holos: [{ shards: [] }] });
+    localStorage.setItem(KEY, futureDoc);
+
+    expect(() => new LocalTaskStore(KEY)).toThrow(/newer/i);
+    // the stored document is byte-identical — no write of any kind
+    expect(localStorage.getItem(KEY)).toBe(futureDoc);
+    // and no quarantine copy was minted
+    for (let i = 0; i < localStorage.length; i++) {
+      expect(localStorage.key(i)!.includes('.corrupt.')).toBe(false);
+    }
+  });
+});
