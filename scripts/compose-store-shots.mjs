@@ -29,12 +29,17 @@ const { chromium } = createRequire(resolve(PW_DIR, 'package.json'))('playwright'
 // DRAFT caption copy — the install sheet shows only the first three, so
 // they carry the whole pitch. Voice matches the approved LISTING.md.
 const CAPTIONS = {
-  '01-the-deck':          { head: 'See one task.',            sub: 'Everything else waits its turn — face down, out of mind.' },
-  '02-swipe-to-complete': { head: 'Do it. Swipe it away.',    sub: 'Right to complete, left to slide it to the bottom.' },
-  '03-inside-a-task':     { head: 'Big tasks open up.',       sub: 'Smaller decks inside — focus through them one card at a time.' },
-  '04-done-archive-trash':{ head: 'Done has its own room.',   sub: 'Finished cards file themselves. Nothing nags.' },
-  '05-hold-anywhere':     { head: 'Hold for everything else.',sub: 'One quiet menu. No chrome between you and the card.' },
-  '06-private-by-design': { head: 'Yours. Full stop.',        sub: 'No account, no cloud, no tracking. Backup is a file you own.' },
+  // MERGED SLATE (2026-08-04): Relay's headlines (the stronger set — their
+  // 01 provokes the question the screenshot answers; their arc: premise →
+  // gesture → first objection, then 4–6 reassure) over my supporting
+  // sublines. Alternates live in LISTING.md's PROPOSED table. Xian's to
+  // approve; one-line edits, free re-composition.
+  '01-the-deck':          { head: 'This is your whole to-do list.', sub: 'Everything else waits its turn — face down, out of mind.' },
+  '02-swipe-to-complete': { head: 'Done? Swipe it away.',           sub: 'Right to complete, left to slide it to the bottom.' },
+  '03-inside-a-task':     { head: 'Big job? Deal it out.',          sub: 'Every card can hold a deck of smaller ones.' },
+  '04-done-archive-trash':{ head: 'Nothing ever just disappears.',  sub: 'Done, archived, or gone — always your call.' },
+  '05-hold-anywhere':     { head: 'No clutter. Hold for the rest.', sub: 'One quiet menu — nothing between you and the card.' },
+  '06-private-by-design': { head: 'Your deck never leaves your device.', sub: 'No account, no cloud, no tracking. Backup is a file you own.' },
 };
 
 const PROFILES = {
