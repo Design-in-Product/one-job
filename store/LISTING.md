@@ -6,6 +6,12 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 ## Identity
 
 - **App name**: One Job
+  - *Etymology (Xian, recorded 2026-08-03)*: the name comes from the
+    **"you had one job"** meme. Worth knowing before writing any copy —
+    the name is already a joke the reader is in on, and copy that plays
+    to it lands harder than copy that explains the product. This is why
+    screenshot caption 1 is "You have one job": it closes the loop the
+    name opens.
 - **Bundle/package id**: co.onejob.deck  (renamed 2026-07-03; co.onejob.app abandoned to the free-team registration trap)
 - **Category**: Productivity
 - **Price**: Free
