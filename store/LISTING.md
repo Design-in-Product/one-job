@@ -75,3 +75,35 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 > deck to reveal, swipe right to complete, swipe left to defer, long-press
 > for the menu (Add Task / Completed / Integrations / Settings). Settings
 > includes export/import backup. Haptic feedback fires on swipe commits.
+
+---
+
+## Copy review vs current UI (Coral, 2026-08-04) — PROPOSED deltas, not applied
+
+The approved copy above holds up well; two spots aged and one is
+version-dependent:
+
+1. **"Big tasks break into substacks"** — "substack" is retired
+   vocabulary (now sub-decks / cards all the way down). Proposed:
+   *"Big tasks break into smaller decks you can focus through one card
+   at a time."*
+2. **Review notes menu list** is accurate for rc.12 but not later
+   builds (rc.13+ adds Undo; rc.17+ adds Decks…; rc.22+ Inchworm).
+   Keep as-is if 1.0 ships from rc.12; regenerate this line with the
+   release-version decision otherwise.
+3. Screenshots line: now regenerable in one command —
+   `node scripts/capture-store-shots.mjs` (see header for env; staging
+   sets land in `store/screenshots/staging-<date>/`). The SHUTTER for
+   final assets waits on the release-version decision; the harness
+   makes re-capture free so assets can never age the way the rc.2 set
+   did.
+
+## iPad presentation note (2026-08-04, from the 13" captures)
+
+Functionally clean at 2064×2752 — every flow drives. Presentation is a
+phone-width column centered in a wide field; the afterlife peek reads
+as a thin bar at this height. Options, Xian's call:
+(a) ship the honest centered column for 1.0;
+(b) scale card geometry up at tablet breakpoints (cheap, cosmetic);
+(c) the real answer is R2's canvas — 13" is where multiple decks
+side-by-side stops being a metaphor. Not a 1.0 blocker either way.
