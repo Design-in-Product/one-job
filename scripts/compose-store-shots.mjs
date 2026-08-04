@@ -34,7 +34,7 @@ const CAPTIONS = {
   // gesture → first objection, then 4–6 reassure) over my supporting
   // sublines. Alternates live in LISTING.md's PROPOSED table. Xian's to
   // approve; one-line edits, free re-composition.
-  '01-the-deck':          { head: 'This is your whole to-do list.', sub: 'Everything else waits its turn — face down, out of mind.' },
+  '01-the-deck':          { head: 'You have one job.', sub: 'Everything else waits its turn — face down, out of mind.' }, // Xian's line (2026-08-04, via Relay)
   '02-swipe-to-complete': { head: 'Done? Swipe it away.',           sub: 'Right to complete, left to slide it to the bottom.' },
   '03-inside-a-task':     { head: 'Big job? Deal it out.',          sub: 'Every card can hold a deck of smaller ones.' },
   '04-done-archive-trash':{ head: 'Nothing ever just disappears.',  sub: 'Done, archived, or gone — always your call.' },
