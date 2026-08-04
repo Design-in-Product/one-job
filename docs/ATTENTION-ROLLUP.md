@@ -34,6 +34,13 @@ The asset pipeline is built (one-command capture, 3 device profiles,
 3. **Confirm dimension slots in Media Manager** (1 min, your ASC login)
    — Apple moves these; the harness profiles are one-line edits.
 Also FYI: two proposed copy deltas in LISTING.md await your yes.
+4. **Caption copy approval** (added 08-04 after your marketing-canvas
+   correction): the composed canvases carry six DRAFT caption lines
+   (in `scripts/compose-store-shots.mjs`) — the first three are the
+   install sheet's whole pitch. Wordsmith freely; they're one-line
+   edits and re-composition is one command. If you'd rather iterate
+   the composition design in Figma (frames reusable for Play + site),
+   authenticate the connector and I'll port the layout there.
 
 ### 🔴 18. The Android keystore must be rescued BEFORE faoilean is repurposed
 Relay's handoff flags it as **the single most losable artifact in the
