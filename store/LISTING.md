@@ -153,3 +153,12 @@ as a thin bar at this height. Options, Xian's call:
 (b) scale card geometry up at tablet breakpoints (cheap, cosmetic);
 (c) the real answer is R2's canvas — 13" is where multiple decks
 side-by-side stops being a metaphor. Not a 1.0 blocker either way.
+
+### Rendered slate (Coral, 2026-08-04) — Relay's headlines + Coral's sublines
+
+The composed canvases in `store/screenshots/staging-2026-08-04/composed/`
+render a MERGED slate: Relay's headline set (the stronger of the two
+parallel drafts — 01 provokes the question the screenshot answers; the
+install-sheet arc runs premise → gesture → first objection) with short
+supporting sublines. Alternates remain in Relay's table above. All of it
+awaits Xian's wordsmithing; edits are one line + one command.
