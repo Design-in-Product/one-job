@@ -23,6 +23,11 @@ import { Task, InteriorDeck } from '@/types/task';
 
 export const CURRENT_SCHEMA_VERSION = 3;
 
+/** Newer-data-meets-older-code: distinct from corruption so the store can
+    REFUSE TO BOOT rather than quarantine + roll back an older snapshot
+    over newer data (which would convert refusal into silent loss). */
+export class FutureDataError extends Error {}
+
 export interface StorageDocument {
   schemaVersion: number;
   decks: InteriorDeck[];
@@ -97,6 +102,20 @@ export function migrateDocument(raw: unknown): StorageDocument {
     const v2 = raw as Partial<V2Document>;
     if (typeof v2.schemaVersion === 'number' && Array.isArray(v2.cards)) {
       return wrapAsRoot(v2.cards);
+    }
+    // A versioned envelope whose container we can't read is NEWER DATA
+    // MEETING OLDER CODE (the 2026-08-04 near-wipe: rc.8 read a v3 doc,
+    // returned empty, and only load-time no-write behavior stood between
+    // a display glitch and real loss). REFUSE loudly — an "empty" result
+    // invites the UI to run normally and eventually save nothing over
+    // everything. The store catches this and quarantines nothing: the
+    // stored document is untouched and a newer build reads it fine.
+    if (typeof (raw as { schemaVersion?: unknown }).schemaVersion === 'number') {
+      throw new FutureDataError(
+        'This data was written by a NEWER version of One Job than this ' +
+        'build understands. Refusing to read it as empty. Update the app ' +
+        '(close all tabs / relaunch) — your data is intact in storage.'
+      );
     }
     return wrapAsRoot([]);
   }
