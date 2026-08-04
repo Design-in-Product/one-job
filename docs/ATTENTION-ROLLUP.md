@@ -21,6 +21,20 @@ re-published whenever items open or settle.
 
 ## Open
 
+### 🟡 21. Store submission prep — three small calls when ready
+The asset pipeline is built (one-command capture, 3 device profiles,
+6-shot list; staging set committed). Waiting on you, none urgent:
+1. **Which build is 1.0?** This gates the final screenshot capture and
+   the review-notes copy line — the deliberate open decision from
+   Relay's memo.
+2. **iPad presentation**: honest centered column for 1.0, cheap
+   geometry scale-up, or wait for R2 canvas (options + captures in
+   store/LISTING.md and staging-2026-08-04/ipad-13/). My lean: (a) for
+   1.0 — it's true, and R2 makes it beautiful later.
+3. **Confirm dimension slots in Media Manager** (1 min, your ASC login)
+   — Apple moves these; the harness profiles are one-line edits.
+Also FYI: two proposed copy deltas in LISTING.md await your yes.
+
 ### 🔴 18. The Android keystore must be rescued BEFORE faoilean is repurposed
 Relay's handoff flags it as **the single most losable artifact in the
 project**: `onejob-upload.keystore` exists only on faoilean (one copy in
