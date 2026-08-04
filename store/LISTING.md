@@ -111,7 +111,7 @@ plain, warm, faintly wry; no jargon a user wouldn't use ("sub-deck",
 
 | # | Shot | Caption | Alternate |
 |---|---|---|---|
-| 01 | `01-the-deck` | **This is your whole to-do list.** | One card. One job. |
+| 01 | `01-the-deck` | **You have one job.** *(Xian, 2026-08-03)* | This is your whole to-do list. |
 | 02 | `02-swipe-to-complete` | **Done? Swipe it away.** | Finishing is a gesture. |
 | 03 | `03-inside-a-task` | **Big job? Deal it out.** | Every card can hold a deck. |
 | 04 | `04-done-archive-trash` | **Nothing ever just disappears.** | Done, archived, or gone — your call. |
@@ -124,6 +124,14 @@ the core gesture. 3 answers the first real objection (*that can't scale to
 big work*). Those three stand alone on the install sheet and have to carry
 the whole pitch between them. 4–6 then reassure: nothing is lost, nothing
 is cluttered, nothing leaves the device.
+
+**On caption 1** — Xian's line replaced my draft, and it's the stronger
+one. "This is your whole to-do list" *describes the screen*; "You have one
+job" *addresses the reader*, and does three things at once: it states the
+product name as a sentence, it borrows an idiom people already say with a
+wry edge ("you had one job"), and it puts the user in the frame rather
+than the software. Second person beats third for a line whose whole task
+is to make a stranger feel spoken to.
 
 Notes for whoever composes the frames:
 

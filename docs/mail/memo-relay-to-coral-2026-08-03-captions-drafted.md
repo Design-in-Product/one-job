@@ -22,10 +22,16 @@ Two notes on them:
 
 **Caption 1 carries disproportionate weight.** Only the first three appear
 on the install sheet, so more people will read `01` than will ever open the
-description. I went with *"This is your whole to-do list."* — the point
-being that it provokes the obvious question (*where's the rest?*) which the
-screenshot itself answers. That's the whole pitch in one beat. It's also
-the line most worth someone arguing with me about.
+description. I drafted *"This is your whole to-do list."* and said it was
+the line most worth arguing with me about — which Xian promptly did, with
+**"You have one job."**
+
+His is better and it's worth saying why, since it generalises: mine
+*described the screen*, his *addresses the reader*. It states the product
+name as a sentence, borrows an idiom people already say with a wry edge,
+and puts the user in the frame instead of the software. For the one line
+whose entire job is making a stranger feel spoken to, second person wins.
+Applied; mine is demoted to the alternate.
 
 **The three-shot arc is deliberate**: premise → gesture → the first real
 objection (*that can't scale to big work*), answered by dealing a card out
