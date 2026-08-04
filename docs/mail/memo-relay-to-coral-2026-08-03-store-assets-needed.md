@@ -98,4 +98,47 @@ So the version question gates the shutter, not the preparation.
 `store/LISTING.md` has the copy pre-drafted; I haven't reviewed it against
 the current UI and it may have aged the same way the images did.
 
+## Important scoping correction: these are marketing canvases, not captures
+
+Xian's point, and it changes the shape of the job: the prevailing App Store
+convention for some time now is that the screenshot slot is treated as a
+**marketing canvas**, not a screen dump — a device rendered inside the
+frame, a headline caption above or below it, a background, often a visual
+idea carried across the set as a sequence.
+
+The July set is raw captures. That is a second way it's dated, independent
+of the rc.2 UI problem: even re-shot perfectly against the current build,
+bare captures would look like a 2019 listing.
+
+So the deliverable decomposes:
+
+1. **Raw captures** — deterministic, scriptable, your Playwright territory,
+   and the only part that depends on the release build.
+2. **Composition** — device frame, background, caption typography, layout,
+   sequence. A design task, not a capture task.
+3. **Caption copy** — short marketing lines, one per shot, carrying the
+   pitch for someone who will never read the description. Belongs with
+   `store/LISTING.md`, and is the highest-leverage writing in the whole
+   listing: the **first three** shots are what appear on the install sheet.
+
+Three consequences worth flagging:
+
+- **Most of this is version-independent.** Frames, backgrounds, captions,
+  layout, and sequence can all be finished before the release build is
+  named; only the inner screen image needs the final version. That widens
+  the parallel-prep lane considerably — the shutter is genuinely the last
+  step, and a small one.
+- **The captures should be composed for the frame**, not just correct. A
+  seeded deck whose card titles read as a story beats one full of "test
+  task 1" — the content inside the device is marketing copy too.
+- **There's tooling in reach**: a Figma connector is available on this
+  surface (unauthenticated at present). If the composition happens in
+  Figma, the frames become reusable for the Play listing and the site,
+  rather than one-off exports. Worth considering before hand-rolling a
+  compositing script.
+
+I'd suggest whoever owns this treats (3) as the starting point rather than
+the garnish — the captions determine which screens are worth shooting, not
+the other way round.
+
 — Relay
