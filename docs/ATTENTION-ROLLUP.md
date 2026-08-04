@@ -156,6 +156,14 @@ works, and hard-coding 8081 breaks your muscle memory on the day
 mediajunkie's 8080 retires (pending your call, per Pard). Documented
 instead. Tell me if you'd rather I pin it.
 
+### 🟡 5b. Migration plan DRAFTED (08-04) — one small new call inside
+`docs/plans/2026-08-04-relay-migration-plan.md`: unbundles Relay's
+three jobs (git → code agents; build/upload → Amber unattended;
+physical-device duties → kindbook successor), sequences the steps with
+the two auth gates you already hold (keystore 18, Amber 20), and asks
+ONE new question: does the successor keep the name Relay? (My lean:
+yes — same thread, smaller role.)
+
 ### 🟡 5a. NEW REQUIREMENT for the Relay migration (Xian, 08-02)
 The kindbook-successor Relay must **delegate GitHub work to code
 agents** — the current Relay relies on Xian's hands for all git
