@@ -84,3 +84,26 @@ describe('v2 → v3: the root becomes a deck', () => {
     }
   });
 });
+
+describe('FUTURE data meets OLDER code (the 2026-08-04 near-wipe class)', () => {
+  // A stale cached build reading newer storage must REFUSE loudly, never
+  // return an empty deck: "empty" invites the UI to run normally and
+  // eventually save nothing over everything. Xian's device met exactly
+  // this — rc.8 code x v3 data — and only the no-write-on-load behavior
+  // stood between a display glitch and real loss.
+  it('throws on a future schemaVersion with an unknown container shape', async () => {
+    const v4ish = { schemaVersion: 4, tables: [{ decks: [] }] }; // no `decks` array at top
+    expect(() => migrateDocument(v4ish)).toThrow(/newer|future/i);
+  });
+
+  it('still passes through a future version whose decks shape it CAN read', () => {
+    const future = { schemaVersion: 9, decks: [], somethingNew: true };
+    expect(migrateDocument(future)).toBe(future);
+  });
+
+  it('a versioned envelope with NEITHER cards nor decks is refused, not emptied', () => {
+    // the exact rc.8-reads-v3 silhouette, generalized
+    const alien = { schemaVersion: 7, payload: 'opaque' };
+    expect(() => migrateDocument(alien)).toThrow(/newer|future/i);
+  });
+});

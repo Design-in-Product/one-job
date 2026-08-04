@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
 import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants } from '@/domain/tasks';
-import { migrateDocument, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
+import { migrateDocument, CURRENT_SCHEMA_VERSION, FutureDataError } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -262,7 +262,13 @@ export class LocalTaskStore implements TaskStore {
           this.writeSnapshot(this.serialize());
         }
         return;
-      } catch {
+      } catch (err) {
+        // Future data is NOT corruption: quarantining + snapshot-restore
+        // would roll an OLDER snapshot over NEWER data and then save it —
+        // converting a loud refusal into silent loss. Refuse to construct;
+        // the stored document stays byte-identical and a newer build reads
+        // it fine. (2026-08-04: rc.8 x v3 data, the near-wipe.)
+        if (err instanceof FutureDataError) throw err;
         // Preserve the unreadable payload for manual recovery — never clobber it
         localStorage.setItem(`${this.storageKey}.corrupt.${Date.now()}`, saved);
         console.warn(`Corrupt data in "${this.storageKey}" quarantined; attempting snapshot restore`);
