@@ -154,6 +154,21 @@
 
   <h2>Test now — on your phone's PWA (it updates on open)</h2>
 
+  <div class="card" data-test="t-rc24"><span class="chip test">test</span>
+    <h3>NEW: the rc.24 pro path, in order (~5 min)</h3>
+    <ol class="steps">
+      <li><strong>Comp this container</strong>: hold background → Settings → Pro features → <code>comp</code> → Apply ("Enabled on this device")</li>
+      <li>Back out → hold background → <strong>Decks…</strong> now appears → <strong>+ New deck</strong> (you land in empty deck-2)</li>
+      <li>Add a card here; <strong>drag the background</strong> sideways — pan between your decks and on to the rooms at the far right</li>
+      <li>On a top-level card: hold → <strong>Move to another deck…</strong> — lands on top of the target</li>
+      <li><strong>GitHub</strong>: Settings-adjacent Integrations → paste a fine-grained read-only-Issues PAT → "Import my open issues" → a <code>github</code> deck appears on the strip</li>
+      <li>Optional: Settings → Remove → confirm Decks… vanishes (data stays; wall gates creation only) → re-enter code</li>
+    </ol>
+    <label class="check"><input type="checkbox"> Pro path works end to end</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Something failed (note below)</label>
+  </div>
+
+
   <div class="card" data-test="t-pat"><span class="chip test">test</span>
     <h3>GitHub import — the one only you can verify</h3>
     <ol class="steps">
