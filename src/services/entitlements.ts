@@ -24,6 +24,21 @@ try {
   /* no window/storage (tests, SSR) — grants simply don't apply */
 }
 
+/** In-app grant path (2026-08-04): installed PWAs have no address bar,
+    and — learned in the same day's incident — a ?pro URL routes through
+    whatever browser owns links, i.e. possibly a DIFFERENT storage
+    container entirely. Settings owns a code field instead. Pre-business
+    code is deliberately simple; real unlock infra replaces this write
+    path later, hasPro() stays. */
+export const setPro = (on: boolean): void => {
+  try {
+    if (on) localStorage.setItem(ENTITLEMENT_KEY, 'pro');
+    else localStorage.removeItem(ENTITLEMENT_KEY);
+  } catch { /* storage unavailable */ }
+};
+
+export const PRO_CODE = 'comp';
+
 export const hasPro = (): boolean => {
   try {
     return localStorage.getItem(ENTITLEMENT_KEY) === 'pro';
