@@ -162,7 +162,15 @@
       "replaceEverything": "Replace my whole deck (can't undo)",
       "importedAsSubdeck": "Added {{count}} cards as a new deck",
       "quietTitle": "Quiet mode",
-      "quietDescription": "Mute the little confirmation messages. Problems still show, and Undo stays in the hold-menu (or shake)."
+      "quietDescription": "Mute the little confirmation messages. Problems still show, and Undo stays in the hold-menu (or shake).",
+      "proTitle": "Pro features",
+      "proCodePlaceholder": "Have a code?",
+      "proApply": "Apply",
+      "proEnabled": "Pro features enabled on this device",
+      "proCodeWrong": "That code didn’t match",
+      "proActive": "Enabled on this device",
+      "proRemove": "Remove",
+      "proDisabled": "Pro features removed from this device"
     },
     "toasts": {
       "undo": "Undo",
