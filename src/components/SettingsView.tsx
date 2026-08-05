@@ -4,11 +4,13 @@
 
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Task } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
 import { toast, isQuietMode, setQuietMode } from '@/components/ui/sonner';
+import { hasPro, setPro, PRO_CODE } from '@/services/entitlements';
 import { Switch } from '@/components/ui/switch';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +52,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         : t('settings.lastBackupDays', { count: backupAgeDays });
 
   const [quiet, setQuiet] = useState(isQuietMode());
+  const [pro, setProState] = useState(hasPro());
+  const [proCode, setProCode] = useState('');
+  const submitProCode = () => {
+    if (proCode.trim().toLowerCase() === PRO_CODE) {
+      setPro(true); setProState(true); setProCode('');
+      toast.success(t('settings.proEnabled'));
+    } else {
+      toast.error(t('settings.proCodeWrong'));
+    }
+  };
   const toggleQuiet = (on: boolean) => {
     setQuietMode(on);
     setQuiet(on);
@@ -239,6 +251,33 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
             aria-label={t('settings.quietTitle')}
           />
         </div>
+      </section>
+
+      {/* Pro (2026-08-04): the in-app grant path — installed PWAs have no
+          address bar, and a ?pro URL can open in the WRONG browser
+          container (the day's incident). Device-local, same seam. */}
+      <section className="bg-white rounded-xl shadow p-4 space-y-2">
+        <h3 className="font-semibold text-gray-800">{t('settings.proTitle')}</h3>
+        {pro ? (
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-gray-600">{t('settings.proActive')}</p>
+            <Button variant="outline" size="sm"
+              onClick={() => { setPro(false); setProState(false); toast.info(t('settings.proDisabled')); }}>
+              {t('settings.proRemove')}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              value={proCode}
+              onChange={e => setProCode(e.target.value)}
+              placeholder={t('settings.proCodePlaceholder')}
+              aria-label={t('settings.proTitle')}
+              onKeyDown={e => { if (e.key === 'Enter') submitProCode(); }}
+            />
+            <Button onClick={submitProCode}>{t('settings.proApply')}</Button>
+          </div>
+        )}
       </section>
 
       {/* Backup */}
