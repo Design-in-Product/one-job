@@ -1202,3 +1202,41 @@ describe('future data refuses to boot — never quarantine-and-rollback (2026-08
     }
   });
 });
+
+describe('housekeeping is NOT undoable (Xian 2026-08-06: shake undid the wrong thing)', () => {
+  const KEY = 'hkundo';
+  const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
+
+  it('a launch sweep leaves the undo stack EMPTY — undo must reverse user actions only', async () => {
+    localStorage.clear();
+    localStorage.setItem(KEY, JSON.stringify({ schemaVersion: 3, decks: [{
+      id: 'r', name: 'deck-1', createdAt: daysAgo(90), cards: [
+        { id: 'old', title: 'ancient done', completed: true, createdAt: daysAgo(90), completedAt: daysAgo(40) },
+        { id: 'live', title: 'live', completed: false, createdAt: daysAgo(2), sortOrder: 0 },
+      ] }] }));
+    const store = new LocalTaskStore(KEY);
+    expect(store.lastHousekeeping).toBe(1);          // the sweep DID something
+    expect(store.canUndo()).toBe(false);             // ...and it is not on the stack
+    // so a shake right after launch offers nothing, instead of silently
+    // reversing a background chore the user never performed
+    expect(await store.undoLast()).toBe(false);
+  });
+
+  it('user actions after a sweep still undo normally', async () => {
+    localStorage.clear();
+    localStorage.setItem(KEY, JSON.stringify({ schemaVersion: 3, decks: [{
+      id: 'r', name: 'deck-1', createdAt: daysAgo(90), cards: [
+        { id: 'old', title: 'ancient done', completed: true, createdAt: daysAgo(90), completedAt: daysAgo(40) },
+        { id: 'live', title: 'live', completed: false, createdAt: daysAgo(2), sortOrder: 0 },
+      ] }] }));
+    const store = new LocalTaskStore(KEY);
+    await store.completeTask('live');
+    expect(store.canUndo()).toBe(true);
+    await store.undoLast();
+    const live = (await store.getDecks())[0].cards.find(c => c.id === 'live')!;
+    expect(live.completed).toBe(false);
+    // and the housekeeping result is NOT rolled back by that undo
+    const old = (await store.getDecks())[0].cards.find(c => c.id === 'old')!;
+    expect(old.archivedAt).toBeTruthy();
+  });
+});
