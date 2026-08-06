@@ -180,7 +180,9 @@
         "awaiting-first-tap": "Waiting for your first tap to request motion access.",
         "denied": "Blocked — motion access was denied. iOS: aA menu → Website Settings → Motion & Orientation, or reinstall the home-screen app.",
         "unknown": "No signal yet on this device."
-      }
+      },
+      "betaTitle": "Beta features",
+      "betaDescription": "Early features still being shaped (Inchworm walk, GitHub import). Rough edges expected."
     },
     "toasts": {
       "undo": "Undo",

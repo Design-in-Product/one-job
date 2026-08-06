@@ -11,6 +11,7 @@ import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
 import { toast, isQuietMode, setQuietMode } from '@/components/ui/sonner';
 import { hasPro, setPro, proSince, PRO_CODE } from '@/services/entitlements';
+import { betaOptIn, setBetaOptIn } from '@/services/featureStages';
 import { Switch } from '@/components/ui/switch';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -53,6 +54,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
 
   const [quiet, setQuiet] = useState(isQuietMode());
   const [pro, setProState] = useState(hasPro());
+  const [beta, setBeta] = useState(betaOptIn());
   const [proCode, setProCode] = useState('');
   const submitProCode = () => {
     if (proCode.trim().toLowerCase() === PRO_CODE) {
@@ -289,6 +291,22 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
           </div>
         )}
       </section>
+
+      {/* Beta channel (stages model, 2026-08-06): pro devices may opt
+          into beta features (currently: inchworm, GitHub import). The
+          submitted store build never shows beta surface by default. */}
+      {pro && (
+        <section className="bg-white rounded-xl shadow p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="font-semibold text-gray-800">{t('settings.betaTitle')}</h3>
+              <p className="text-sm text-gray-600">{t('settings.betaDescription')}</p>
+            </div>
+            <Switch checked={beta} onCheckedChange={(on) => { setBetaOptIn(on); setBeta(on); }}
+              aria-label={t('settings.betaTitle')} />
+          </div>
+        </section>
+      )}
 
       {/* Backup */}
       <section className="bg-white rounded-xl shadow p-4 space-y-3">
