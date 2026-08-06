@@ -70,9 +70,12 @@ export class LocalTaskStore implements TaskStore {
   async createDeck(name?: string): Promise<InteriorDeck> {
     let finalName = name?.trim();
     if (!finalName) {
-      let n = 1;
-      while (this.decks.some(d => d.name === `deck-${n}`)) n++;
-      finalName = `deck-${n}`;
+      // Plain-english defaults (Xian, 2026-08-06): "deck 2", "deck 3"…
+      // ("first deck" is the migration wrapper's name). Rename is one
+      // hold away either way.
+      let n = this.decks.length + 1;
+      while (this.decks.some(d => d.name === `deck ${n}`)) n++;
+      finalName = `deck ${n}`;
     }
     const deck: InteriorDeck = {
       id: `root-${uuidv4()}`,
@@ -168,7 +171,7 @@ export class LocalTaskStore implements TaskStore {
     if (this.decks.length === 0) {
       this.decks.push({
         id: `root-${uuidv4()}`,
-        name: 'deck-1',
+        name: 'first deck',
         createdAt: new Date(),
         cards: [],
       });
@@ -366,10 +369,29 @@ export class LocalTaskStore implements TaskStore {
   // coarse cross-session fallback. Capped so a marathon session can't grow
   // without bound.
   private undoStack: string[] = [];
+  private redoStack: string[] = [];
   private static readonly UNDO_DEPTH = 500;
 
   canUndo(): boolean {
     return this.undoStack.length > 0;
+  }
+
+  canRedo(): boolean {
+    return this.redoStack.length > 0;
+  }
+
+  /** Re-apply what undo reversed ("especially if undoing too fast" —
+      Xian, 2026-08-06). Any NEW user action clears redo: no forked
+      histories, just a line you can walk both ways until you act. */
+  async redoLast(): Promise<boolean> {
+    const next = this.redoStack.pop();
+    if (next === undefined) return false;
+    const current = localStorage.getItem(this.storageKey);
+    if (current !== null) this.undoStack.push(current); // undo-of-redo works
+    this.loadDocument(migrateDocument(JSON.parse(next)));
+    this.capturingUndo = false;
+    try { this.saveTasks(); } finally { this.capturingUndo = true; }
+    return true;
   }
 
   /** Restore the deck to the state before the last mutation. False when
@@ -379,6 +401,8 @@ export class LocalTaskStore implements TaskStore {
   async undoLast(): Promise<boolean> {
     const prev = this.undoStack.pop();
     if (prev === undefined) return false;
+    const current = localStorage.getItem(this.storageKey);
+    if (current !== null) this.redoStack.push(current); // redo can re-apply
     this.loadDocument(migrateDocument(JSON.parse(prev)));
     this.capturingUndo = false;
     try {
@@ -396,6 +420,7 @@ export class LocalTaskStore implements TaskStore {
         this.undoStack.push(prev);
         if (this.undoStack.length > LocalTaskStore.UNDO_DEPTH) this.undoStack.shift();
       }
+      this.redoStack = []; // a new user action ends the redo line
     }
     const serialized = this.serialize();
     localStorage.setItem(this.storageKey, serialized);

@@ -46,7 +46,10 @@ export function useShake(onShake: () => void) {
       last = { x: a.x, y: a.y, z: a.z };
     };
 
-    const attach = () => window.addEventListener('devicemotion', onMotion);
+    const note = (state: string) => {
+      try { localStorage.setItem('oneJobShakeState', state); } catch { /* */ }
+    };
+    const attach = () => { window.addEventListener('devicemotion', onMotion); note('listening'); };
 
     // Safari's permission gate; absent everywhere else.
     const DME = DeviceMotionEvent as unknown as {
@@ -56,11 +59,12 @@ export function useShake(onShake: () => void) {
 
     const requestOnGesture = () => {
       DME.requestPermission!()
-        .then(state => { if (state === 'granted') attach(); })
-        .catch(() => { /* denied or unavailable — undo stays in the menu */ });
+        .then(state => { if (state === 'granted') attach(); else note('denied'); })
+        .catch(() => { note('denied'); /* undo stays in the menu */ });
     };
 
     if (needsPermission) {
+      note('awaiting-first-tap');
       window.addEventListener('pointerdown', requestOnGesture, { once: true });
     } else {
       attach();
