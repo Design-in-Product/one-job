@@ -44,7 +44,7 @@ const wrapAsRoot = (cards: Task[]): StorageDocument => ({
   schemaVersion: CURRENT_SCHEMA_VERSION,
   decks: [{
     id: `root-${Math.random().toString(36).slice(2)}`,
-    name: 'deck-1',
+    name: 'first deck',
     createdAt: new Date().toISOString() as unknown as InteriorDeck['createdAt'],
     cards,
   }],

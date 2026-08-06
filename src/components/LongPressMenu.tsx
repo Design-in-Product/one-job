@@ -13,9 +13,11 @@ interface LongPressMenuProps {
   onAddTask: () => void;
   /** Session undo (2026-07-29) — absent when the store can't undo. */
   onUndo?: () => void;
+  onRedo?: () => void;
   /** Root decks (R2.1 stage 2) — absent until the device has (or can
       create) more than one deck: no cruft till it's needed. */
   onDecks?: () => void;
+  onRenameDeck?: () => void;
   /** Inchworm walk (R2.7) — label carries the on/off state. */
   onInchworm?: () => void;
   inchwormOn?: boolean;
@@ -29,7 +31,9 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onClose,
   onAddTask,
   onUndo,
+  onRedo,
   onDecks,
+  onRenameDeck,
   onInchworm,
   inchwormOn,
   onViewCompleted,
@@ -40,8 +44,10 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   const actions: SheetAction[] = [
     // Undo leads: reaching for it means something just went wrong
     ...(onUndo ? [{ key: 'undo', label: t('menu.undo'), onClick: onUndo }] : []),
+    ...(onRedo ? [{ key: 'redo', label: t('menu.redo'), onClick: onRedo }] : []),
     { key: 'add', label: t('menu.addTask'), onClick: onAddTask },
     ...(onDecks ? [{ key: 'decks', label: t('menu.decks'), onClick: onDecks }] : []),
+    ...(onRenameDeck ? [{ key: 'renamedeck', label: t('menu.renameDeck'), onClick: onRenameDeck }] : []),
     ...(onInchworm ? [{ key: 'inchworm',
       label: (inchwormOn ? '✓ ' : '') + t('menu.inchworm'), onClick: onInchworm }] : []),
     { key: 'completed', label: t('menu.completed'), onClick: onViewCompleted },

@@ -39,7 +39,9 @@ interface CardDeckProps {
   onViewIntegrations: () => void;
   onViewSettings: () => void;
   onUndo?: () => void;
+  onRedo?: () => void;
   onDecks?: () => void;
+  onRenameDeck?: () => void;
   onInchworm?: () => void;
   inchwormOn?: boolean;
   /** Active deck identity (only when the device has >1 deck) */
@@ -61,7 +63,9 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onViewIntegrations,
   onViewSettings,
   onUndo,
+  onRedo,
   onDecks,
+  onRenameDeck,
   onInchworm,
   inchwormOn,
   deckIdentity
@@ -190,9 +194,17 @@ const CardDeck: React.FC<CardDeckProps> = ({
           setShowMenu(false);
           onUndo();
         } : undefined}
+        onRedo={onRedo ? () => {
+          setShowMenu(false);
+          onRedo();
+        } : undefined}
         onDecks={onDecks ? () => {
           setShowMenu(false);
           onDecks();
+        } : undefined}
+        onRenameDeck={onRenameDeck ? () => {
+          setShowMenu(false);
+          onRenameDeck();
         } : undefined}
         onInchworm={onInchworm ? () => {
           setShowMenu(false);

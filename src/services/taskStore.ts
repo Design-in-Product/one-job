@@ -71,6 +71,8 @@ export interface TaskStore {
   /** Session-deep undo: restore the state before the last mutation. */
   undoLast?(): Promise<boolean>;
   canUndo?(): boolean;
+  redoLast?(): Promise<boolean>;
+  canRedo?(): boolean;
   /** Move a sub-card up to be a peer of its parent (MVP blocker 1). */
   promoteCard?(id: string): Promise<Task>;
   /** Move a card into another card's interior deck (MVP blocker 1). */
