@@ -258,8 +258,11 @@
       r.addEventListener('change', () => { state[id] = r.value; save(); });
     });
   });
+  // Guard every lookup: a section rebuild that removes an element must
+  // not kill the whole script (2026-08-06 — it did; the composer died).
   ['test-notes', 'decide-notes'].forEach(id => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.value = state[id] || '';
     el.addEventListener('input', () => { state[id] = el.value; save(); });
   });
@@ -274,7 +277,8 @@
         .map(b => b.closest('label').textContent.trim());
       if (ticked.length) lines.push('- ' + name + ': ' + ticked.join('; '));
     });
-    const tn = document.getElementById('test-notes').value.trim();
+    const tnEl = document.getElementById('test-notes');
+    const tn = tnEl ? tnEl.value.trim() : '';
     if (tn) lines.push('- Test notes: ' + tn);
     lines.push('', '**Decisions:**');
     document.querySelectorAll('.card[data-q]').forEach(card => {
@@ -282,7 +286,8 @@
       const picked = card.querySelector('input[type=radio]:checked');
       if (picked) lines.push('- ' + name + ': **' + picked.value + '**');
     });
-    const dn = document.getElementById('decide-notes').value.trim();
+    const dnEl = document.getElementById('decide-notes');
+    const dn = dnEl ? dnEl.value.trim() : '';
     if (dn) lines.push('- Decision notes: ' + dn);
     const text = lines.join('\n');
     const hint = document.getElementById('compose-hint');
