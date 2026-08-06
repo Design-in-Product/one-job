@@ -32,9 +32,23 @@ try {
     path later, hasPro() stays. */
 export const setPro = (on: boolean): void => {
   try {
-    if (on) localStorage.setItem(ENTITLEMENT_KEY, 'pro');
-    else localStorage.removeItem(ENTITLEMENT_KEY);
+    if (on) {
+      localStorage.setItem(ENTITLEMENT_KEY, 'pro');
+      // Diagnostic (Xian, 2026-08-06: the HOME-SCREEN app asked for the
+      // code more than once — same container, grant evaporating; cause
+      // unknown). Recording WHEN each grant happened turns the next
+      // recurrence into evidence: if "since" resets, storage was
+      // evicted; if it persists while pro reads false, the bug is ours.
+      localStorage.setItem(ENTITLEMENT_KEY + 'Since', new Date().toISOString());
+    } else {
+      localStorage.removeItem(ENTITLEMENT_KEY);
+      localStorage.removeItem(ENTITLEMENT_KEY + 'Since');
+    }
   } catch { /* storage unavailable */ }
+};
+
+export const proSince = (): string | null => {
+  try { return localStorage.getItem(ENTITLEMENT_KEY + 'Since'); } catch { return null; }
 };
 
 export const PRO_CODE = 'comp';
