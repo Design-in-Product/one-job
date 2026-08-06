@@ -10,7 +10,7 @@ import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
 import { toast, isQuietMode, setQuietMode } from '@/components/ui/sonner';
-import { hasPro, setPro, PRO_CODE } from '@/services/entitlements';
+import { hasPro, setPro, proSince, PRO_CODE } from '@/services/entitlements';
 import { Switch } from '@/components/ui/switch';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -260,7 +260,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         <h3 className="font-semibold text-gray-800">{t('settings.proTitle')}</h3>
         {pro ? (
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-gray-600">{t('settings.proActive')}</p>
+            <p className="text-sm text-gray-600">{t('settings.proActive')}{proSince() ? ` · ${t('settings.proSince', { date: new Date(proSince()!).toLocaleDateString() })}` : ''}</p>
             <Button variant="outline" size="sm"
               onClick={() => { setPro(false); setProState(false); toast.info(t('settings.proDisabled')); }}>
               {t('settings.proRemove')}

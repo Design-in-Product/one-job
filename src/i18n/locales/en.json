@@ -170,7 +170,8 @@
       "proCodeWrong": "That code didn’t match",
       "proActive": "Enabled on this device",
       "proRemove": "Remove",
-      "proDisabled": "Pro features removed from this device"
+      "proDisabled": "Pro features removed from this device",
+      "proSince": "since {{date}}"
     },
     "toasts": {
       "undo": "Undo",
