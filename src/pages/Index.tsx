@@ -295,12 +295,17 @@ const Index = () => {
   // in as slivers of card-back material; tapping pans. Free-drag pan
   // waits for Xian's verdict on this layout.
   const canvasOn = canvasPreviewOn();
-  const [deckOrder, setDeckOrder] = useState<{ id: string; name: string | null }[]>([]);
+  const [deckOrder, setDeckOrder] = useState<{ id: string; name: string | null; color?: { g1: string; g2: string } }[]>([]);
   useEffect(() => {
     if (!canvasOn) return;
-    getTaskStore().getDecks?.().then(ds => setDeckOrder(ds.map(d => ({ id: d.id, name: d.name }))));
+    getTaskStore().getDecks?.().then(ds => setDeckOrder(ds.map(d => ({ id: d.id, name: d.name, color: d.color }))));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasOn, deckCount, tasks]);
+  // Deck identity reaches the UI only when the device has >1 deck —
+  // single-deck users see the classic brand back (no cruft till needed).
+  const activeDeckIdentity = deckCount > 1
+    ? deckOrder.find(d => d.id === getTaskStore().activeDeckId?.())
+    : undefined;
   const stripIndex = () => deckOrder.findIndex(d => d.id === getTaskStore().activeDeckId?.());
   const stripGo = async (delta: number) => {
     const i = stripIndex();
@@ -778,6 +783,7 @@ const Index = () => {
                 {stripIndex() > 0 && (
                   <CanvasPeek side="left"
                     label={deckOrder[stripIndex() - 1]?.name ?? t('decks.unnamed')}
+                    color={deckOrder[stripIndex() - 1]?.color}
                     onTap={() => stripGo(-1)} />
                 )}
                 <CanvasPeek side="right"
@@ -785,6 +791,7 @@ const Index = () => {
                     ? (deckOrder[stripIndex() + 1]?.name ?? t('decks.unnamed'))
                     : t('canvas.afterlife')}
                   variant={stripIndex() < deckOrder.length - 1 ? 'deck' : 'afterlife'}
+                  color={deckOrder[stripIndex() + 1]?.color}
                   onTap={() => stripGo(1)} />
                 <CardDeck
                   tasks={inchworm && walk ? walk.map(w => w.card) : activeTasks}
@@ -804,6 +811,7 @@ const Index = () => {
                   onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                   onInchworm={toggleInchworm}
                   inchwormOn={inchworm}
+                  deckIdentity={activeDeckIdentity}
                 />
               </motion.div>
             )}
@@ -826,6 +834,7 @@ const Index = () => {
                 onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                 onInchworm={toggleInchworm}
                 inchwormOn={inchworm}
+                deckIdentity={activeDeckIdentity}
               />
             )}
             

@@ -203,3 +203,17 @@ is done, and the walk almost never hits a block. Each deep card wears
 its ancestor trail ("in Ship it › sub"). Scoped to the active deck:
 decks are places; inchworm flattens depth, not place. Toggle off any
 time; a device preference, never data.
+
+### Shipped 2026-08-06 — deck identity (Xian's design session)
+
+With more than one deck, each deck owns its look: **name first** at the
+top of the back (the eye's landing point — his call), a **hue per deck**
+from a curated family (the red-deck/blue-deck move; deck-1 keeps the
+full brand gradient forever), "One Job" receding to a quiet wordmark.
+Face-up, the card's **margin takes the deck hue at ~50% saturation**
+(4px) with a small eyebrow name — the back's cream-margin idea on the
+reading side, so the object stays "of its deck" both ways. **Peeks
+inherit the hue**: the 14px sliver tells you what's next before you
+pan. Hue is DECK DATA (same on every device, in every backup); system
+rooms never take user hues; single-deck users see the classic back —
+no cruft till it's needed.

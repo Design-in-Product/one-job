@@ -6,7 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
-import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants } from '@/domain/tasks';
+import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants, nextDeckColor } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION, FutureDataError } from '@/domain/migrate';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
@@ -79,6 +79,9 @@ export class LocalTaskStore implements TaskStore {
       name: finalName,
       createdAt: new Date(),
       cards: [],
+      // Identity hue assigned at creation, stored ON the deck (deck data,
+      // not device preference). First deck = brand = no color.
+      color: nextDeckColor(this.decks),
     };
     this.decks.push(deck);
     this.saveTasks();

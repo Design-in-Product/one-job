@@ -13,6 +13,11 @@ import { useFitText } from '@/hooks/use-fit-text';
 
 interface TaskCardProps {
   task: Task;
+  /** Deck identity on the READING side (Xian-blessed 2026-08-06): the
+      card's margin takes the deck hue at ~50% saturation — the back's
+      cream-margin idea, so the object stays "of its deck" both sides.
+      Only when the device has >1 deck; deck-1 (brand) passes none. */
+  deckIdentity?: { name: string | null; color?: { g1: string; g2: string } };
   onClick?: (task: Task) => void;
   /** Tapping the sub-deck badge opens the interior directly — no edit
       step (MVP blocker 3). Absent → badge is a plain indicator. */
@@ -30,7 +35,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength) + '...';
 };
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFlipBack, showHints = false, className }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFlipBack, showHints = false, className, deckIdentity }) => {
   const { t } = useTranslation();
   // Honest badge (Item 15 corollary): show the count of UNFINISHED interior
   // cards; a card whose inside is done reads as childless.
@@ -43,16 +48,33 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFli
     [task.title, description, unfinishedInside, task.source, showHints]
   );
 
+  // Hued margin: deck color mixed ~50% toward the warm ground, 4px —
+  // "50%-ish saturated, possibly a bit thinner" (Xian, 2026-08-06).
+  const marginStyle = deckIdentity?.color
+    ? {
+        border: '4px solid transparent',
+        background: `linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg, color-mix(in srgb, ${deckIdentity.color.g1} 50%, #f3f1ee), color-mix(in srgb, ${deckIdentity.color.g2} 50%, #f3f1ee)) border-box`,
+      }
+    : undefined;
   return (
     <div
       className={cn(
         'w-full h-full bg-white rounded-2xl shadow-lg border border-gray-200',
-        'flex flex-col p-6 select-none',
+        'flex flex-col p-6 select-none relative',
         onClick && 'cursor-pointer',
         className
       )}
+      style={marginStyle}
       onClick={onClick ? () => onClick(task) : undefined}
     >
+      {deckIdentity?.color && (
+        <div
+          className="absolute top-2.5 right-4 text-[11px] font-bold tracking-[.08em] uppercase"
+          style={{ color: `color-mix(in srgb, ${deckIdentity.color.g2} 72%, #6d7280)` }}
+        >
+          {deckIdentity.name ?? ''}
+        </div>
+      )}
       {(onFlipBack || unfinishedInside > 0) && (
         <div className="flex items-center justify-between mb-2">
           {/* Left: turn the card face-down again (Item 19) */}
