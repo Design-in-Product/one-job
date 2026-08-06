@@ -99,6 +99,30 @@ export const applyUncompletion = (task: Task, tasks: Task[]): Task => {
 
 export type Room = 'deck' | 'done' | 'archive' | 'trash';
 
+/** Deck identity palette (Xian-blessed 2026-08-06): a curated family in
+    the brand's saturation/lightness range. deck-1 takes NO color — the
+    first deck is the brand. System rooms never take user hues. */
+export const DECK_PALETTE: ReadonlyArray<{ g1: string; g2: string }> = [
+  { g1: '#3a7bd5', g2: '#4b3ad5' }, // ocean
+  { g1: '#2ea86f', g2: '#1f8a8a' }, // forest
+  { g1: '#8a4bd5', g2: '#c23a9e' }, // plum
+  { g1: '#e8a13a', g2: '#e2603a' }, // amber
+  { g1: '#3ab5c9', g2: '#3a6fd5' }, // lagoon
+  { g1: '#c94b7c', g2: '#8a3ad5' }, // orchid
+];
+
+/** The next free hue for a NEW deck: first deck stays brand (undefined);
+    later decks take the first palette entry not already in use;
+    exhausted → cycle by count. */
+export const nextDeckColor = (
+  existing: Array<{ color?: { g1: string; g2: string } }>
+): { g1: string; g2: string } | undefined => {
+  if (existing.length === 0) return undefined;
+  const used = new Set(existing.map(d => d.color && `${d.color.g1}|${d.color.g2}`).filter(Boolean));
+  const free = DECK_PALETTE.find(c => !used.has(`${c.g1}|${c.g2}`));
+  return free ?? DECK_PALETTE[(existing.length - 1) % DECK_PALETTE.length];
+};
+
 /** Which room of the lifecycle a card currently sits in. */
 export const cardRoom = (t: Task): Room => {
   if (t.trashedAt) return 'trash';

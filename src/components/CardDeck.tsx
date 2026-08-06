@@ -42,6 +42,8 @@ interface CardDeckProps {
   onDecks?: () => void;
   onInchworm?: () => void;
   inchwormOn?: boolean;
+  /** Active deck identity (only when the device has >1 deck) */
+  deckIdentity?: { name: string | null; color?: { g1: string; g2: string } };
 }
 
 const CardDeck: React.FC<CardDeckProps> = ({
@@ -61,7 +63,8 @@ const CardDeck: React.FC<CardDeckProps> = ({
   onUndo,
   onDecks,
   onInchworm,
-  inchwormOn
+  inchwormOn,
+  deckIdentity
 }) => {
   const { t } = useTranslation();
   const [isFlipped, setIsFlipped] = useState(startRevealed);
@@ -294,12 +297,12 @@ const CardDeck: React.FC<CardDeckProps> = ({
           {/* Deck underlay: the rest of the pile, always face-down */}
           {underlayCount >= 2 && (
             <div className="absolute inset-0 translate-y-3 scale-[0.94] pointer-events-none">
-              <CardBack />
+              <CardBack deckColor={deckIdentity?.color} />
             </div>
           )}
           {underlayCount >= 1 && (
             <div className="absolute inset-0 translate-y-1.5 scale-[0.97] pointer-events-none">
-              <CardBack />
+              <CardBack deckColor={deckIdentity?.color} />
             </div>
           )}
 
@@ -325,9 +328,10 @@ const CardDeck: React.FC<CardDeckProps> = ({
                   isFlipped={isFlipped}
                   preset={flipPreset}
                   onTapBack={handleCardTap}
-                  back={<CardBack showHint />}
+                  back={<CardBack showHint deckName={deckIdentity?.name} deckColor={deckIdentity?.color} />}
                   front={
                     <TaskCard
+                      deckIdentity={deckIdentity}
                       task={currentTask}
                       onClick={onCardClick}
                       onOpenSubdeck={onOpenSubdeck}

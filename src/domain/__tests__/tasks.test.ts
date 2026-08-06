@@ -264,3 +264,38 @@ describe('inchwormWalk (R2.7: one walkable stack, leaves first)', () => {
     expect(walk.find(w => w.card.id === 'p')!.trail).toEqual([]);
   });
 });
+
+describe('deck palette (identity build, Xian-blessed 2026-08-06)', () => {
+  const mkDeck = (over: Record<string, unknown>) => ({
+    id: 'd', name: null, createdAt: new Date(), cards: [], ...over,
+  }) as { color?: { g1: string; g2: string } };
+
+  it('deck-1 never gets a color — the first deck IS the brand', async () => {
+    const { nextDeckColor } = await import('../tasks');
+    expect(nextDeckColor([])).toBeUndefined();
+  });
+
+  it('later decks draw distinct hues from the curated family, in order', async () => {
+    const { nextDeckColor, DECK_PALETTE } = await import('../tasks');
+    const d1 = mkDeck({ id: 'r1' });                       // brand, no color
+    const c2 = nextDeckColor([d1]);
+    expect(c2).toEqual(DECK_PALETTE[0]);
+    const d2 = mkDeck({ id: 'r2', color: c2 });
+    const c3 = nextDeckColor([d1, d2]);
+    expect(c3).toEqual(DECK_PALETTE[1]);
+    expect(c3).not.toEqual(c2);
+  });
+
+  it('skips hues already in use (deletion holes refill first-free)', async () => {
+    const { nextDeckColor, DECK_PALETTE } = await import('../tasks');
+    const decks = [ mkDeck({ id: 'r1' }), mkDeck({ id: 'r3', color: DECK_PALETTE[1] }) ];
+    expect(nextDeckColor(decks)).toEqual(DECK_PALETTE[0]);
+  });
+
+  it('cycles once the family is exhausted rather than failing', async () => {
+    const { nextDeckColor, DECK_PALETTE } = await import('../tasks');
+    const decks = [ mkDeck({ id: 'r0' }),
+      ...DECK_PALETTE.map((color, i) => mkDeck({ id: 'r'+(i+1), color })) ];
+    expect(DECK_PALETTE).toContainEqual(nextDeckColor(decks));
+  });
+});

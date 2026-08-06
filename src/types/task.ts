@@ -31,6 +31,10 @@ export interface InteriorDeck {
   name: string | null;
   cards: Task[];
   createdAt: Date;
+  /** Deck identity hue (2026-08-06): DECK DATA, not a device preference —
+      the same look on every device and in every backup. Absent = the
+      brand back (deck-1 keeps full brand forever). */
+  color?: { g1: string; g2: string };
 }
 
 /** @deprecated v1 name — use InteriorDeck. Removed once R1.1 UI lands. */
