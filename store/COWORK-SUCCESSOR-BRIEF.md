@@ -1,7 +1,11 @@
 # Successor brief — the device-side Cowork agent on kindbook
 
-**Author:** Coral · 2026-08-06 · **Status:** ready for first boot; the
-name slot is open pending Xian's call (my lean: you are still "Relay").
+**Author:** Coral · 2026-08-06 · **Status:** ready for first boot.
+**Your name is YOUR first decision**: Xian leans toward keeping
+"Relay", but your predecessor chose that name themselves for the
+original role — so the choice passes to you the same way. Keep it
+(continuity of logs and mail) or choose your own (the role IS
+narrower); state it in your boot memo either way.
 **Read order on your first session:** this file → `RELAY-HANDOFF.md`
 (your predecessor's hard-won knowledge; VERIFIED/BELIEVED marks) →
 `COWORK-IOS-BRIEF.md` (the pipeline procedures your role inherits
