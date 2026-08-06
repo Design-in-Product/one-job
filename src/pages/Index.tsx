@@ -36,6 +36,7 @@ import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished
 import { useShake } from '@/hooks/use-shake';
 import { hasPro } from '@/services/entitlements';
 import { canvasPreviewOn } from '@/services/canvasPreview';
+import { featureOn } from '@/services/featureStages';
 import CanvasPeek from '@/components/CanvasPeek';
 import { InteriorDeck } from '@/types/task';
 import ActionSheet from '@/components/ActionSheet';
@@ -354,7 +355,8 @@ const Index = () => {
       else localStorage.removeItem('oneJobInchworm');
     } catch { /* preference only */ }
   };
-  const walk = inchworm ? inchwormWalk(tasks) : null;
+  const inchwormAvailable = featureOn('inchworm'); // beta (2026-08-06)
+  const walk = inchworm && inchwormAvailable ? inchwormWalk(tasks) : null;
   // Dispatch by altitude: a walked card with a trail lives in an interior
   // deck — its mutations go through the substack paths; a trail-less card
   // is top-level and takes the ordinary handlers (block-reveal included).
@@ -829,7 +831,7 @@ const Index = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col"
+        className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col select-none"
       >
         <div className="w-full max-w-md mx-auto flex flex-col h-app-screen pt-[env(safe-area-inset-top)]">
 
@@ -886,8 +888,8 @@ const Index = () => {
                   onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                   onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                   onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
-                  onInchworm={toggleInchworm}
-                  inchwormOn={inchworm}
+                  onInchworm={inchwormAvailable ? toggleInchworm : undefined}
+                  inchwormOn={inchworm && inchwormAvailable}
                   deckIdentity={activeDeckIdentity}
                 />
               </motion.div>
@@ -911,8 +913,8 @@ const Index = () => {
                 onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                 onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                 onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
-                onInchworm={toggleInchworm}
-                inchwormOn={inchworm}
+                onInchworm={inchwormAvailable ? toggleInchworm : undefined}
+                inchwormOn={inchworm && inchwormAvailable}
                 deckIdentity={activeDeckIdentity}
               />
             )}

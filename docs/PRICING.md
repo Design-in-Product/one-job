@@ -186,3 +186,24 @@ keep the feature *cleanly severable* (a flag, not a fork).
 - **Comp mechanism** (`?pro=comp`) is explicitly interim: something
   secure and in-app arrives when — and only when — the paid tier faces
   real users.
+
+### The premium-path probe question (Xian, 2026-08-06) — the compliance answer
+
+His instinct to worry was right. Apple's rule (3.1.1) is that digital
+features unlocked in-app MUST use In-App Purchase — **selling codes
+outside the app that unlock in-app features is exactly the evasion
+Apple screens for** and is rejection/removal territory. Comped codes
+(testers, friends, press) are fine; SOLD codes are not.
+
+So the ladder is:
+1. **1.0 (now): comp-only, no public door.** Fully compliant; pro is
+   dormant supply. This is what ships.
+2. **The $1.99–2.99/mo probe (later): requires real StoreKit IAP** —
+   a Capacitor IAP plugin, App Store Connect subscription products,
+   Apple's review of the paid tier. A contained post-1.0 project, and
+   the moment it lands, the comp-code write path retires in favor of
+   receipt checking (the hasPro() read seam survives unchanged, as
+   designed on 08-04).
+3. Web-only sales (Stripe on onejob.co unlocking the PWA) are legal on
+   the WEB side but must never unlock the iOS app — one wall, two
+   doors is a compliance trap; don't.
