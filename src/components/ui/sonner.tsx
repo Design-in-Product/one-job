@@ -49,6 +49,16 @@ const toast: typeof sonnerToast = Object.assign(
   }
 )
 
+// Direct ANSWERS bypass quiet mode: when the user explicitly asks a
+// question (Check for updates, an export they triggered), silence reads
+// as "nothing happened" — Xian's 2026-08-06 report, with quiet mode on.
+// Quiet mutes ambient confirmations, never answers. Errors were always
+// exempt; this is the success/info twin for solicited feedback only.
+export const toastAnswer = {
+  success: sonnerToast.success,
+  info: sonnerToast.info,
+};
+
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
 
