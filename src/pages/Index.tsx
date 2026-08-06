@@ -522,6 +522,10 @@ const Index = () => {
   };
 
   const handleCardClick = (task: Task) => {
+    // Inchworm (2026-08-06 fix): the walk already contains every interior
+    // card, so descending into a sub-deck from inside the walk strands you
+    // in a view the walk doesn't own — Xian's "gets stuck in a subdeck".
+    // In inchworm mode a tap reads the card; it never changes altitude.
     setSelectedTask(task);
     setIsTaskDetailsOpen(true);
   };
@@ -790,7 +794,7 @@ const Index = () => {
                   onDefer={inchworm ? inchwormDefer : handleDeferTask}
                   onCardClick={handleCardClick}
                   onCardLongPress={handleCardLongPress}
-                  onOpenSubdeck={handleOpenSubdeckFromCard}
+                  onOpenSubdeck={inchworm ? undefined : handleOpenSubdeckFromCard}
                   startRevealed={deckStartRevealed}
                   onAddTask={handleAddTask}
                   onViewCompleted={() => setCurrentView('completed')}
@@ -812,7 +816,7 @@ const Index = () => {
                 onDefer={inchworm ? inchwormDefer : handleDeferTask}
                 onCardClick={handleCardClick}
                 onCardLongPress={handleCardLongPress}
-                onOpenSubdeck={handleOpenSubdeckFromCard}
+                onOpenSubdeck={inchworm ? undefined : handleOpenSubdeckFromCard}
                 startRevealed={deckStartRevealed}
                 onAddTask={handleAddTask}
                 onViewCompleted={() => setCurrentView('completed')}
