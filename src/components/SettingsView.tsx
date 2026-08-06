@@ -9,7 +9,7 @@ import { Task } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
-import { toast, isQuietMode, setQuietMode } from '@/components/ui/sonner';
+import { toast, toastAnswer, isQuietMode, setQuietMode } from '@/components/ui/sonner';
 import { hasPro, setPro, proSince, PRO_CODE } from '@/services/entitlements';
 import { betaOptIn, setBetaOptIn } from '@/services/featureStages';
 import { Switch } from '@/components/ui/switch';
@@ -184,11 +184,11 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         toast.info(t('settings.updatesUnavailable'));
         return;
       }
-      toast.info(t('settings.updateChecking'));
+      toastAnswer.info(t('settings.updateChecking'));
       await reg.update();
       // If an update was found, the page reloads on activation; if we're
       // still here after a beat, we're current.
-      setTimeout(() => toast.success(t('settings.updateCurrent', { version: __APP_VERSION__ })), 4000);
+      setTimeout(() => toastAnswer.success(t('settings.updateCurrent', { version: __APP_VERSION__ })), 4000);
     } catch (err) {
       toast.error(t('settings.updateCheckFailed', { message: (err as Error).message }));
     }
