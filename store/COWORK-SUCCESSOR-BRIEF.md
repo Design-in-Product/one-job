@@ -53,13 +53,25 @@ migration-plan.md, Xian-approved) unbundled the old role:
 ## First-session checklist
 
 1. Read the three documents in the order above.
-2. Spawn a code agent: pull one-job, read the latest coral-log and
+2. **VERIFY THE LEG BEFORE STANDING ON IT** (Relay's parting flag,
+   2026-08-06): this brief's hard requirement — code agents do your git
+   — rests on a capability your predecessor TESTED AND DID NOT HAVE
+   (spawned agents inherited a credential-less sandbox: no SSH key, no
+   gh, no GitHub connector). Whether kindbook differs is unknown. Run
+   **RELAY-HANDOFF.md §4b's three-command check INSIDE a spawned code
+   agent** — not your parent shell; assuming the two match is exactly
+   the mistake. **If it fails, SAY SO in your boot memo and stop there
+   on git matters** — do not quietly fall back to asking Xian's hands.
+   A silent fallback looks identical to a working successor from
+   outside, and that shape has already eaten one memo for a week.
+3. Spawn a code agent: pull one-job, read the latest coral-log and
    docs/ATTENTION-ROLLUP.md → know today's state.
-3. Verify your device access: TestFlight app signed in, One Job
+4. Verify your device access: TestFlight app signed in, One Job
    installed, Settings shows the expected version.
-4. File a boot memo to Coral (docs/mail/, via your code agent, with
-   delivery verification) — what you read, what you can see, what's
-   unclear. Unclear-and-said beats guessed-and-wrong.
+5. File a boot memo to Coral (docs/mail/, via your code agent if §4b
+   passed — via Xian's hands WITH THAT FACT STATED if it did not) —
+   what you read, what you can see, what's unclear, **and the §4b
+   verdict explicitly**. Unclear-and-said beats guessed-and-wrong.
 
 ## Standing division (so nothing is absorbed by accident)
 
