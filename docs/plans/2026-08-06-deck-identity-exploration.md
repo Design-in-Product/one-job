@@ -54,3 +54,31 @@ hold-menu later — not v1.
 His proposals side-by-side with these; a blessing or a synthesis. Then
 it's a small build: deck color field (schema-additive, no migration
 drama), CardBack accepts identity props, peeks inherit.
+
+
+---
+
+## Xian's direction (2026-08-06, mid-review) → synthesis rendered
+
+His three notes, now the governing constraints:
+
+1. **The deck NAME must be the first thing the eye sees** — D's top
+   placement wins over the under-medallion chip. (Applied: name at top
+   of the back, large; "One Job" demoted to a quiet wordmark.)
+2. **B best overall**, with a live question: how much must the brand
+   "own" the backs at all — especially for a pro feature? (Applied in
+   the synthesis: the hue owns the deck, the brand recedes. The
+   brand-ownership dial stays open for his call: wordmark small /
+   wordmark gone / brand only on deck-1.)
+3. **New exploration needed: deck name (+ color reminder) on the
+   FACE-UP card** — where you actually spend your time. Three options
+   rendered in `E-synthesis.png`:
+   - **Edge band + eyebrow** (12px hue band, small name below)
+   - **Corner chip** (deck-dot + name pill, sharing the flip-back's corner row)
+   - **Hued margin** (the border IS the deck color — most card-like;
+     the object stays "of its deck" on both sides)
+
+My lean among the three: **hued margin** — it's the back's cream-margin
+idea speaking the same material language, and it needs no new chrome
+inside the reading surface. Close second: edge band, if the margin
+reads too decorative at real size.
