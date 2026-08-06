@@ -58,3 +58,15 @@ describe('quiet mode', () => {
     expect(calls.success).toBe(1);
   });
 });
+
+describe('toastAnswer — direct answers bypass quiet (2026-08-06)', () => {
+  it('answers fire even when quiet is on', async () => {
+    const { toastAnswer } = await import('../sonner');
+    const { setQuietMode } = await import('../sonner');
+    setQuietMode(true);
+    toastAnswer.success('answer'); toastAnswer.info('answer');
+    const calls = (await import('sonner')).toast as unknown as { __calls: Record<string, number> };
+    expect(calls.__calls.success).toBe(1);
+    expect(calls.__calls.info).toBe(1);
+  });
+});
