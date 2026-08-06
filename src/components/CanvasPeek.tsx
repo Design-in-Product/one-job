@@ -16,18 +16,24 @@ interface CanvasPeekProps {
   onTap: () => void;
   /** The afterlife peeks in muted gray — a shade's edge, not a deck's */
   variant?: 'deck' | 'afterlife';
+  /** The neighbor deck's identity hue (2026-08-06): the sliver IS the
+      wayfinding — a colored peek tells you what's next before you pan. */
+  color?: { g1: string; g2: string };
 }
 
-const CanvasPeek: React.FC<CanvasPeekProps> = ({ side, label, onTap, variant = 'deck' }) => (
+const CanvasPeek: React.FC<CanvasPeekProps> = ({ side, label, onTap, variant = 'deck', color }) => (
   <button
     aria-label={label}
     onClick={onTap}
+    style={variant === 'deck' && color
+      ? { background: `linear-gradient(160deg, ${color.g1}, ${color.g2})` }
+      : undefined}
     className={cn(
       'absolute top-1/2 -translate-y-1/2 h-[38%] w-[14px] z-20',
       'rounded-none border-0 p-0 cursor-pointer',
       side === 'left' ? 'left-0 rounded-r-md' : 'right-0 rounded-l-md',
       variant === 'deck'
-        ? 'bg-gradient-to-b from-taskGradient-start to-taskGradient-end opacity-70'
+        ? (color ? 'opacity-80' : 'bg-gradient-to-b from-taskGradient-start to-taskGradient-end opacity-70')
         : 'bg-gray-300 opacity-60',
       'shadow-md'
     )}
