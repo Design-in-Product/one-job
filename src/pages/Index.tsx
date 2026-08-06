@@ -324,6 +324,16 @@ const Index = () => {
     if ((e.target as HTMLElement).closest('[data-oj-card]')) return;
     stripDrag.start(e);
   };
+  // Rooms view pan — SAME arm-from-background pattern. The first version
+  // used stopPropagation in the CAPTURE phase to "protect" card swipes,
+  // which prevented pointerdown from ever REACHING the card: sift was
+  // dead on every device from rc.20 until Xian's 08-06 report. A guard
+  // that fires before the thing it guards is a blockade.
+  const roomsDrag = useDragControls();
+  const armRoomsPan = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('[data-oj-card]')) return;
+    roomsDrag.start(e);
+  };
   const settleStripPan = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -60 || (info.offset.x < -24 && info.velocity.x < -400)) stripGo(1);
     else if (info.offset.x > 60 || (info.offset.x > 24 && info.velocity.x > 400)) stripGo(-1);
@@ -911,12 +921,11 @@ const Index = () => {
               <motion.div
                 className="relative flex flex-col flex-1"
                 drag={canvasOn ? 'x' : false}
+                dragControls={roomsDrag}
+                dragListener={false}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.18}
-                onPointerDownCapture={(e) => {
-                  // room cards keep their own swipe grammar
-                  if ((e.target as HTMLElement).closest('[data-oj-card]')) e.stopPropagation();
-                }}
+                onPointerDown={canvasOn ? armRoomsPan : undefined}
                 onDragEnd={(_, info) => {
                   if (info.offset.x > 60 || (info.offset.x > 24 && info.velocity.x > 400)) setCurrentView('main');
                 }}
