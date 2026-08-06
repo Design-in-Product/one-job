@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Manual dispatch (added 2026-08-06 during the GitHub Actions/Pages
+  # major outage): pushes made mid-outage never mint runs, so recovery
+  # needs a hand-crank. Also just good hygiene.
+  workflow_dispatch:
 
 permissions:
   contents: read
