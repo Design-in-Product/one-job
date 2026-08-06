@@ -19,6 +19,12 @@ export class LocalTaskStore implements TaskStore {
   // the pro wall, when the business work lands) uses deck[0].
   protected decks: InteriorDeck[] = [];
 
+  /** When false, saveTasks() does not push onto the undo stack — used by
+      undo itself (so repeated undo walks history) and by non-user
+      mutations like the launch housekeeping sweep. Declared here because
+      housekeep() runs from the constructor, before the undo section. */
+  private capturingUndo = true;
+
   /** The ACTIVE deck's cards — the deck the UI is showing. All the
       single-deck-era code reads and writes through this accessor
       unchanged; cross-deck operations (find, housekeeping, trash, undo)
@@ -216,7 +222,17 @@ export class LocalTaskStore implements TaskStore {
       }
     };
     for (const deck of this.decks) walk(deck.cards);
-    if (moved > 0) this.saveTasks();
+    if (moved > 0) {
+      // NOT undoable: housekeeping is a background chore, not a user
+      // action. Capturing it meant a shake right after launch offered
+      // "Undo last action?" and then reversed the SWEEP — which reads as
+      // "undo did nothing" because the card the user actually completed
+      // (in a previous, since-discarded session) never came back.
+      // Xian hit exactly this on 2026-08-06. Undo reverses what the
+      // PERSON did; nothing else may occupy that stack.
+      this.capturingUndo = false;
+      try { this.saveTasks(); } finally { this.capturingUndo = true; }
+    }
     this.lastHousekeeping = moved;
   }
 
@@ -347,7 +363,6 @@ export class LocalTaskStore implements TaskStore {
   // coarse cross-session fallback. Capped so a marathon session can't grow
   // without bound.
   private undoStack: string[] = [];
-  private capturingUndo = true;
   private static readonly UNDO_DEPTH = 500;
 
   canUndo(): boolean {
