@@ -101,7 +101,7 @@
 <main>
   <header class="hero">
     <h1>One Job — what's waiting on you</h1>
-    <div class="stamp">Coral · updated 2026-08-06 AM · main at <strong>rc.26</strong> (bugs fixed + grant diagnostic) · rc.12 with testers · migration plan approved · 150/150 tests</div>
+    <div class="stamp">Coral · updated 2026-08-06 PM · main at <strong>rc.30</strong> (deploy held by GitHub outage) · rc.12 with testers · migration plan approved · 150/150 tests</div>
     <div class="rule"></div>
   </header>
 
@@ -164,29 +164,37 @@
     </div>
   </div>
 
-  <h2>3 · Still to test (phone PWA — it updates on open)</h2>
+  <h2>3 · Still to test — WAIT for my "rc.30 is live" ping first (GitHub outage holds the deploy)</h2>
 
-  <div class="card" data-test="t-refix"><span class="chip test">test</span>
-    <h3>RETEST the two fixes from your bug reports (rc.25)</h3>
+  <div class="card" data-test="t-phone30"><span class="chip test">test</span>
+    <h3>Surface 1 — phone home-screen app (rc.30, once deployed)</h3>
     <ol class="steps">
-      <li><strong>Undo</strong>: complete a card → shake (or hold-background → Undo) →
-      the card must return to the top of the deck. (Root cause was the launch housekeeping
-      sweep occupying the undo stack — undo now reverses only what YOU did.)</li>
-      <li><strong>Inchworm</strong>: toggle it on with nested cards present → tapping a deep
-      card opens its details (never descends into a sub-deck view); you can never get stuck.</li>
+      <li><strong>Sift in Rooms</strong> — swipe ↓ on the room's card walks the pile, ↑ back. (Was dead since rc.20 — my capture-phase guard blockaded the card; your report found it)</li>
+      <li><strong>Undo returns the card FACE-UP</strong>; <strong>Redo</strong> appears in the hold-menu after an undo</li>
+      <li><strong>Long-press menus: no more accidental text selection</strong> (your pet peeve — shell is select-none now)</li>
+      <li><strong>Shake</strong> — and read me the Settings → "Shake to undo" line either way (listening / awaiting first tap / blocked)</li>
+      <li><strong>Rename deck…</strong> (hold-menu, 2+ decks) — rename your "deck-1" to taste</li>
+      <li><strong>Deck identity</strong> — backs name-first + hued, face margin at ~50%: judge the weight</li>
+      <li><strong>Beta toggle</strong> — Settings → Beta features ON → Inchworm + GitHub reappear; OFF → they vanish (they're beta now, both your calls)</li>
+      <li>Comp-code stability — still watching the "since" date</li>
     </ol>
-    <label class="check"><input type="checkbox"> Both fixed on my phone</label>
-    <label class="check"><input type="checkbox" data-flag="failed"> Still broken (note below)</label>
+    <label class="check"><input type="checkbox"> Phone pass done</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Issues (note below)</label>
   </div>
 
-  <div class="card" data-test="t-search6"><span class="chip test">test</span>
-    <h3>Rooms search — now you know where it lives</h3>
+  <div class="card" data-test="t-ipad30"><span class="chip test">test</span>
+    <h3>Surface 2 — iPad (rc.30)</h3>
     <ol class="steps">
-      <li>Hold background → Completed → a room with <strong>6+ cards</strong> shows a
-      "Find a card…" box; typing thins the pile the sift walks (title + description)</li>
+      <li>General pass at 13" — your (a) decision means this is exactly what ships in screenshots</li>
+      <li>Deck identity at tablet size (backs + margin)</li>
     </ol>
-    <label class="check"><input type="checkbox"> Found it, works</label>
-    <label class="check"><input type="checkbox" data-flag="failed"> Issue (note below)</label>
+    <label class="check"><input type="checkbox"> iPad pass done</label>
+    <label class="check"><input type="checkbox" data-flag="failed"> Issues (note below)</label>
+  </div>
+
+  <div class="card"><span class="chip ref">reference</span>
+    <h3>Surface 3 — TestFlight (rc.12): nothing new to test</h3>
+    <p>Stays the attributable MVP artifact for Dan. Next native cut comes after the 1.0 call.</p>
   </div>
 
   <div class="card"><span class="chip test">test</span>
