@@ -982,7 +982,7 @@ describe('v3 root-deck migration at the store (R2.1 stage 1, 2026-07-29)', () =>
     const stored = JSON.parse(localStorage.getItem(KEY7)!);
     expect(stored.schemaVersion).toBe(3);
     expect(stored.decks).toHaveLength(1);
-    expect(stored.decks[0].name).toBe('deck-1');
+    expect(stored.decks[0].name).toBe('first deck');
     expect(stored.decks[0].cards.map((c: { id: string }) => c.id)).toEqual(['a', 'b']);
 
     // the API contract is unchanged: same cards, dates revived
@@ -1040,7 +1040,7 @@ describe('root deck CRUD + active deck (R2.1 stage 2, 2026-07-29)', () => {
     const store = store8();
     const decks = await store.getDecks();
     expect(decks).toHaveLength(1);
-    expect(decks[0].name).toBe('deck-1');
+    expect(decks[0].name).toBe('first deck');
     expect(store.activeDeckId()).toBe(decks[0].id);
   });
 
@@ -1048,11 +1048,11 @@ describe('root deck CRUD + active deck (R2.1 stage 2, 2026-07-29)', () => {
     localStorage.clear();
     const store = store8();
     const d2 = await store.createDeck();
-    expect(d2.name).toBe('deck-2');
+    expect(d2.name).toBe('deck 2');
     expect(d2.cards).toEqual([]);
     const d3 = await store.createDeck('work');
     expect(d3.name).toBe('work');
-    expect((await store.getDecks()).map(d => d.name)).toEqual(['deck-1', 'deck-2', 'work']);
+    expect((await store.getDecks()).map(d => d.name)).toEqual(['first deck', 'deck 2', 'work']);
   });
 
   it('switchDeck changes where new cards land; decks stay isolated', async () => {
@@ -1238,5 +1238,53 @@ describe('housekeeping is NOT undoable (Xian 2026-08-06: shake undid the wrong t
     // and the housekeeping result is NOT rolled back by that undo
     const old = (await store.getDecks())[0].cards.find(c => c.id === 'old')!;
     expect(old.archivedAt).toBeTruthy();
+  });
+});
+
+describe('redo (Xian 2026-08-06: "especially if undoing too fast")', () => {
+  const KEY = 'redotest';
+  const store0 = () => new LocalTaskStore(KEY);
+
+  it('redo re-applies what undo reversed', async () => {
+    localStorage.clear();
+    const store = store0();
+    const a = await store.createTask('target');
+    await store.completeTask(a.id);
+    await store.undoLast();
+    expect((await store.getAllTasks()).find(t => t.id === a.id)!.completed).toBe(false);
+    expect(store.canRedo()).toBe(true);
+    await store.redoLast();
+    expect((await store.getAllTasks()).find(t => t.id === a.id)!.completed).toBe(true);
+  });
+
+  it('walks: undo undo redo redo lands where it started; undo after redo works', async () => {
+    localStorage.clear();
+    const store = store0();
+    await store.createTask('one');
+    await store.createTask('two');
+    await store.undoLast(); await store.undoLast();       // back to just 'one'... then empty? one createTask remains
+    await store.redoLast(); await store.redoLast();
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['two', 'one']);
+    await store.undoLast();                                // undo-of-redo
+    expect((await store.getAllTasks()).map(t => t.title)).toEqual(['one']);
+  });
+
+  it('a NEW user action clears redo — no forked histories', async () => {
+    localStorage.clear();
+    const store = store0();
+    await store.createTask('one');
+    await store.createTask('two');
+    await store.undoLast();
+    expect(store.canRedo()).toBe(true);
+    await store.createTask('three');       // divergence
+    expect(store.canRedo()).toBe(false);
+    expect(await store.redoLast()).toBe(false);
+  });
+
+  it('empty redo returns false harmlessly', async () => {
+    localStorage.clear();
+    const store = store0();
+    expect(store.canRedo()).toBe(false);
+    expect(await store.redoLast()).toBe(false);
   });
 });

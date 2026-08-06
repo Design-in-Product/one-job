@@ -44,7 +44,7 @@ describe('v2 → v3: the root becomes a deck', () => {
     const doc = migrateDocument(structuredClone(V2_REAL));
     expect(doc.schemaVersion).toBe(3);
     expect(doc.decks).toHaveLength(1);
-    expect(doc.decks[0].name).toBe('deck-1');
+    expect(doc.decks[0].name).toBe('first deck');
     expect(doc.decks[0].id).toBeTruthy();
     // cards byte-identical — nothing invented, nothing dropped
     expect(doc.decks[0].cards).toEqual(V2_REAL.cards);
@@ -60,7 +60,7 @@ describe('v2 → v3: the root becomes a deck', () => {
     ];
     const doc = migrateDocument(v1);
     expect(doc.schemaVersion).toBe(3);
-    expect(doc.decks[0].name).toBe('deck-1');
+    expect(doc.decks[0].name).toBe('first deck');
     const card = doc.decks[0].cards[0];
     expect(card.decks![0].name).toBe('Old sub');
     expect(card.decks![0].cards[0].title).toBe('old subtask');

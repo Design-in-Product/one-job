@@ -29,7 +29,9 @@
       "settings": "Settings",
       "undo": "Undo",
       "decks": "Decks…",
-      "inchworm": "Inchworm walk"
+      "inchworm": "Inchworm walk",
+      "redo": "Redo",
+      "renameDeck": "Rename deck…"
     },
     "form": {
       "addNew": "Add New Task",
@@ -171,7 +173,14 @@
       "proActive": "Enabled on this device",
       "proRemove": "Remove",
       "proDisabled": "Pro features removed from this device",
-      "proSince": "since {{date}}"
+      "proSince": "since {{date}}",
+      "shakeTitle": "Shake to undo",
+      "shakeState": {
+        "listening": "Active — a shake will offer Undo.",
+        "awaiting-first-tap": "Waiting for your first tap to request motion access.",
+        "denied": "Blocked — motion access was denied. iOS: aA menu → Website Settings → Motion & Orientation, or reinstall the home-screen app.",
+        "unknown": "No signal yet on this device."
+      }
     },
     "toasts": {
       "undo": "Undo",
@@ -209,7 +218,10 @@
       "housekeeping_one": "Tidied up: {{count}} done card over 30 days old moved to the Archive.",
       "housekeeping_other": "Tidied up: {{count}} done cards over 30 days old moved to the Archive.",
       "deckCreated": "Deck \"{{name}}\" created — you’re in it now",
-      "movedToDeck": "\"{{title}}\" moved to {{deck}} — top of that deck"
+      "movedToDeck": "\"{{title}}\" moved to {{deck}} — top of that deck",
+      "redone": "Redone.",
+      "nothingToRedo": "Nothing to redo.",
+      "deckRenamed": "Deck renamed to \"{{name}}\""
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -274,7 +286,9 @@
       "title": "Decks",
       "new": "+ New deck",
       "unnamed": "Unnamed deck",
-      "moveTitle": "Move to which deck?"
+      "moveTitle": "Move to which deck?",
+      "renameTitle": "Rename this deck",
+      "renameSave": "Save"
     },
     "canvas": {
       "afterlife": "Done, Archive & Trash"

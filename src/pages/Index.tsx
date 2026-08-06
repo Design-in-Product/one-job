@@ -384,12 +384,54 @@ const Index = () => {
       const undone = await store.undoLast();
       if (undone) {
         toast.success(t('toasts.undoneLast'));
+        // The restored card returns FACE-UP (Xian, 2026-08-06): you undid
+        // to look at it, not to be asked to reveal it again.
+        setDeckStartRevealed(true);
         await refreshAll();
       } else {
         toast.info(t('toasts.nothingToUndo'));
       }
     } catch (err) {
       console.error('Undo failed:', err);
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+  const handleRedoLast = async () => {
+    const store = getTaskStore();
+    if (!store.redoLast) return;
+    try {
+      const redone = await store.redoLast();
+      if (redone) {
+        toast.success(t('toasts.redone'));
+        setDeckStartRevealed(true);
+        await refreshAll();
+      } else {
+        toast.info(t('toasts.nothingToRedo'));
+      }
+    } catch (err) {
+      toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
+    }
+  };
+  // Rename the active deck (Xian, 2026-08-06 — "people will want to
+  // replace deck-1"). A tiny modal; store.renameDeck existed since
+  // stage 2, this is its first UI.
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
+  const openRename = () => {
+    const cur = deckOrder.find(d => d.id === getTaskStore().activeDeckId?.());
+    setRenameValue(cur?.name ?? '');
+    setRenameOpen(true);
+  };
+  const submitRename = async () => {
+    const store = getTaskStore();
+    const id = store.activeDeckId?.();
+    if (!store.renameDeck || !id) return setRenameOpen(false);
+    try {
+      await store.renameDeck(id, renameValue);
+      setRenameOpen(false);
+      toast.success(t('toasts.deckRenamed', { name: renameValue.trim() }));
+      await refreshAll();
+    } catch (err) {
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
@@ -692,6 +734,29 @@ const Index = () => {
         onClose={() => setDeckMove(null)}
       />
 
+      {/* Rename the active deck (first UI for store.renameDeck) */}
+      {renameOpen && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-4 pt-[max(6rem,env(safe-area-inset-top))]"
+             onClick={() => setRenameOpen(false)}>
+          <div className="w-full max-w-sm bg-white rounded-xl shadow-xl p-4 space-y-3"
+               onClick={e => e.stopPropagation()}>
+            <h3 className="font-semibold text-gray-800">{t('decks.renameTitle')}</h3>
+            <input
+              autoFocus
+              value={renameValue}
+              onChange={e => setRenameValue(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') submitRename(); }}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-base"
+            />
+            <div className="flex gap-2 justify-end">
+              <button className="px-3 py-1.5 text-sm text-gray-500" onClick={() => setRenameOpen(false)}>{t('form.cancel')}</button>
+              <button className="px-4 py-1.5 text-sm font-semibold text-white rounded-full bg-gradient-to-r from-taskGradient-start to-taskGradient-end"
+                      onClick={submitRename}>{t('decks.renameSave')}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Shake-to-undo asks before acting (a shake can be an accident) */}
       <ActionSheet
         open={shakeUndoPrompt}
@@ -808,7 +873,9 @@ const Index = () => {
                   onViewIntegrations={() => setCurrentView('integrate')}
                   onViewSettings={() => setCurrentView('settings')}
                   onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
+                  onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                   onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
+                  onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
                   onInchworm={toggleInchworm}
                   inchwormOn={inchworm}
                   deckIdentity={activeDeckIdentity}
@@ -831,7 +898,9 @@ const Index = () => {
                 onViewIntegrations={() => setCurrentView('integrate')}
                 onViewSettings={() => setCurrentView('settings')}
                 onUndo={getTaskStore().undoLast ? handleUndoLast : undefined}
+                onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                 onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
+                onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
                 onInchworm={toggleInchworm}
                 inchwormOn={inchworm}
                 deckIdentity={activeDeckIdentity}
