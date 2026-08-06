@@ -177,28 +177,56 @@ files, `ios/App/App/public` (rewritten by `cap sync`).
 
 ---
 
-## 3. ⚠️ The keystore — read this before any machine move
+## 3. ⚠️ The keystore — RESCUED 2026-08-06, but read the checksum note
 
-`onejob-upload.keystore` (2678 bytes, VERIFIED) is the Android **upload
-signing key**. It is **gitignored and exists in no repository.** Its three
-derived secrets are already set in GitHub Actions
-(`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
-`ANDROID_KEY_ALIAS`).
+`onejob-upload.keystore` (2678 bytes) is the Android **upload signing key**.
+It is gitignored and exists in no repository. Its three derived secrets are
+set in GitHub Actions (`ANDROID_KEYSTORE_BASE64`,
+`ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`) — those are derivatives,
+not a backup.
 
-If One Job ever ships to Google Play signed with this key, **losing the
-file means never being able to update that app again.** Google's recovery
-path is limited and unpleasant.
+If One Job ever ships to Google Play signed with this key, **losing the file
+means never being able to update that app again.**
 
-It currently exists in exactly two places on faoilean:
-`~/Development/one-job/` and the stale `~/Developer/one-job-OLD-DELETE-ME/`
-(which is slated for deletion). **Xian: before faoilean is repurposed for
-Piper Morgan, copy this file somewhere durable — password manager,
-encrypted backup — and verify by opening it, not by trusting a copy
-succeeded.** (That last clause is the standing destructive-action protocol,
-which exists in this repo because of a real data loss on 07-05.)
+**STATUS: rescued.** Coral reports it checksum-verified into durable storage
+(2026-08-06). The original ask in this section is satisfied; do not redo it.
+
+### The checksum itself — recorded here because it was recorded nowhere
+
+```
+sha256  8abf3ce172dd2c31332cc59da4a768e95bd9daeb395909674ac2085ac36096cd
+bytes   2678
+```
+
+Computed by Relay from `~/Development/one-job/onejob-upload.keystore` on
+2026-08-06, immediately before stand-down.
+
+Why this belongs in the trunk: "checksum-verified into durable storage" is
+only a *verifiable* claim if the expected checksum survives somewhere a
+future person can read. It didn't — a grep of the whole repo found the value
+nowhere. Without it, a restored file can only be trusted, not checked, and
+this project's entire accumulated lesson is that trusting an indicator in
+place of an observation is how things get lost.
+
+**To verify any future copy:**
+```bash
+shasum -a 256 onejob-upload.keystore    # must equal the value above
+```
 
 The password is in Xian's password manager. I have never seen it and should
 not.
+
+### One residue to close deliberately
+
+A second copy of this key was in `~/Developer/one-job-OLD-DELETE-ME/` (the
+stale wrong-volume clone from §1.1). I could not verify its current state at
+stand-down — that path is outside this session's connected folders.
+
+**Flagging because the combination is bad**: an Android signing key sitting
+in a directory whose name invites deletion, on a laptop being repurposed for
+a different project under a different Claude account. It should be removed
+deliberately — after confirming the durable copy matches the checksum above
+— rather than left to be swept up by whoever eventually empties that folder.
 
 ---
 
@@ -234,6 +262,50 @@ not.
   click, no local Java, no Android device required. Xian notes he has no
   Android device at present but wants to return to this soon. Taking Coral
   up on the offer *is* the remaining task.
+
+---
+
+## 4b. ⚠️ ADDED AT STAND-DOWN: verify the code-agent assumption FIRST
+
+The successor brief (`COWORK-SUCCESSOR-BRIEF.md`, Coral, 2026-08-06) makes
+this a **hard requirement**: *"Git/mail/logs: you delegate to code agents…
+you spawn a code agent for repo work; you never ask Xian to run git."*
+
+That is the right fix for the failure it addresses — my needing Xian's hands
+for every commit is exactly what ate the 07-25 memo. **But it rests on a
+capability I tested and did not have.**
+
+**VERIFIED, on faoilean**: a spawned agent inherits the *same* sandbox as its
+parent. Mine had no SSH key, no `gh`, no credential helper, and no GitHub
+connector — a registry search returned no GitHub MCP at all. Delegating repo
+work therefore failed for me not because I delegated wrongly, but because
+there was nothing different on the other end to delegate *to*.
+
+**UNKNOWN**: whether a Cowork session on kindbook is provisioned differently.
+Xian has observed other Cowork agents directing code agents to do GitHub work,
+so it is plainly possible on some configurations — but nobody has confirmed it
+for the successor's machine, and the plan already depends on it.
+
+**Therefore, successor: make this your first boot check, before anything
+depends on it.** Cheap and decisive:
+
+```bash
+gh auth status                    # is the CLI present and logged in?
+git config --get credential.helper
+ls ~/.ssh/ && ssh -T git@github.com
+```
+
+Run it *inside a spawned code agent*, not in your own shell — the agent's
+environment is the one that matters, and assuming they match is the mistake.
+
+If it fails, say so immediately and loudly rather than quietly falling back to
+asking Xian, because the fallback is invisible and looks like everything is
+fine. That silence is precisely how a memo goes undelivered for a week. The
+remedy is a decision for Xian (a connector, a scoped PAT, moving repo work to
+Coral) — but he can only make it if he knows the requirement didn't hold.
+
+*Recording this as the last thing I do because it is the single assumption in
+the new plan that I have direct evidence against, and it fails silently.*
 
 ---
 
