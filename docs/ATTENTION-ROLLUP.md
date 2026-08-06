@@ -42,21 +42,6 @@ Also FYI: two proposed copy deltas in LISTING.md await your yes.
    the composition design in Figma (frames reusable for Play + site),
    authenticate the connector and I'll port the layout there.
 
-### 🔴 18. The Android keystore must be rescued BEFORE faoilean is repurposed
-Relay's handoff flags it as **the single most losable artifact in the
-project**: `onejob-upload.keystore` exists only on faoilean (one copy in
-the stale `one-job-OLD-DELETE-ME` folder slated for deletion), is
-gitignored, and is in NO repository. The GitHub Actions secrets are
-derivatives — they *look* like a backup and are not. If One Job ever
-ships to Play with this key, losing it means never updating that
-listing again.
-
-**Your step, per the destructive-action protocol:** copy the keystore
-to durable storage (password manager attachment is ideal) and **verify
-by opening the copy** — not by seeing the file listed — before the
-laptop is repurposed for Piper Morgan. Two minutes now vs. a permanent
-capability loss.
-
 ### 🟡 19. Enable Dan — with one line at the top of his instructions
 Device pass is GREEN (all 8 checks, on the real TestFlight artifact,
 Settings confirming rc.12). Dan is unblocked. Relay's hard-won ask —
@@ -201,6 +186,11 @@ draft it and have you correct me, if you'd rather not start from blank.
 ---
 
 ## Settled
+
+*(2026-08-06) Keystore* — backed up to Xian's password manager and
+**verified by checksum: hashes identical** (bit-perfect restorable
+copy). The single-most-losable-artifact risk is closed; faoilean may
+now be repurposed without capability loss.
 
 *(2026-08-01) Trello = next source, Gall-gated* — Xian's call, with the
 taxonomy insight recorded in the roadmap first-pass (PM ≠ task
