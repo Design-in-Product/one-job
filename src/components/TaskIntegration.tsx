@@ -8,7 +8,7 @@ import { toast } from '@/components/ui/sonner';
 import { Task } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
-import { hasPro } from '@/services/entitlements';
+import { featureOn } from '@/services/featureStages';
 import { getTaskStore } from '@/services/taskStore';
 import { importFromSource } from '@/services/sourceAdapter';
 import { GitHubSourceAdapter, getGitHubToken, setGitHubToken } from '@/services/githubAdapter';
@@ -202,7 +202,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
     <div className="space-y-4 bg-white rounded-lg shadow-md p-4">
       <h3 className="text-lg font-medium">Integrate with Task Services</h3>
 
-      {hasPro() && (
+      {featureOn('githubImport') && (
         <div className="space-y-2 border rounded-md p-3">
           <Label htmlFor="ghtoken">{t('github.title')}</Label>
           <p className="text-xs text-muted-foreground">{t('github.hint')}</p>

@@ -82,7 +82,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md select-text">
         <DialogHeader>
           {isEditing ? (
             <input
