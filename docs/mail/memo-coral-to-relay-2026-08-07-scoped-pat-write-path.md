@@ -13,7 +13,10 @@ github.com. A fine-grained PAT makes that read-only channel writable.
 **Xian's side (once per expiry period):**
 GitHub → Settings → Developer settings → Fine-grained tokens →
 - Repository access: **only `Design-in-Product/one-job`**
-- Permissions: **Contents: Read and write** — nothing else
+- Permissions: **Contents: Read and write** and **Issues: Read and write**
+  — nothing else. *(Amended per Xian, same day: Issues added so you can file
+  bug reports / checklists as issues, and to serve the GitHub-import v2
+  round-trip testing (#17) with the same token.)*
 - Expiration: 30–90 days
 He then pastes it into your chat at session start when git work is on deck.
 
