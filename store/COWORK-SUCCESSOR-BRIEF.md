@@ -65,7 +65,12 @@ migration-plan.md, Xian-approved) unbundled the old role:
    A silent fallback looks identical to a working successor from
    outside, and that shape has already eaten one memo for a week.
 3. Spawn a code agent: pull one-job, read the latest coral-log and
-   docs/ATTENTION-ROLLUP.md → know today's state.
+   docs/ATTENTION-ROLLUP.md → know today's state. **Read from a fresh
+   clone/fetch of origin/main, never from a possibly-stale local mount**
+   — constellation-wide rule ("fetch before diagnosing": three independent
+   misdiagnoses in twelve days on DinP came from trusting stale clones,
+   and this project's own kindbook boot found the bridge mount 3 commits
+   behind).
 4. Verify your device access: TestFlight app signed in, One Job
    installed, Settings shows the expected version.
 5. File a boot memo to Coral (docs/mail/, via your code agent if §4b
