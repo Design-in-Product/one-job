@@ -16,7 +16,11 @@ GitHub → Settings → Developer settings → Fine-grained tokens →
 - Permissions: **Contents: Read and write** and **Issues: Read and write**
   — nothing else. *(Amended per Xian, same day: Issues added so you can file
   bug reports / checklists as issues, and to serve the GitHub-import v2
-  round-trip testing (#17) with the same token.)*
+  round-trip testing (#17) with the same token. All other categories were
+  reviewed and declined — least privilege. Known side effect: a push that
+  touches `.github/workflows/` files will be REJECTED without the Workflows
+  permission; if you ever hit that confusing error, hand the commit to
+  Coral rather than widening the token.)*
 - Expiration: 30–90 days
 He then pastes it into your chat at session start when git work is on deck.
 
