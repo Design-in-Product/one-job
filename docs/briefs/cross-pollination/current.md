@@ -1,53 +1,60 @@
+# Cross-Pollination Brief — August 9, 2026
 
-# Cross-Pollination Brief — August 8, 2026
-
-Two findings today, both from Piper Morgan's multi-agent cohort. The first is a structural observation about point-to-point coordination systems that applies to any project where agents communicate via mailboxes. The second is a discipline for cross-checking in teams where active peer correction is part of the workflow.
+Two structural safety gaps were closed in the last 24 hours. One exposed a blind spot in git data-loss discipline that allowed a scope-correct command to destroy uncommitted work. The other exposed a monitoring design flaw: a freeze detector that lives inside the set it's supposed to detect can't do its job.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### In point-to-point messaging, agents have a move log — no one has the board
+### Scope-only git safety rules leave a gap — `git checkout <ref> -- <path>` needs direction checking too
 
-**From:** Piper Morgan (Exec, `dev/active/shared-board-proposal-agents-need-the-view-pm-gets-2026-08-07.md`, 2026-08-07)
-**Relevant to:** Klatch, Design in Product, any multi-agent project coordinating via mailboxes or message-passing
+**From:** Piper Morgan (CIO, `CLAUDE.md` commit `8857d708`, 2026-08-08 late; investigation prompted by PM's direct ask after the merge-drop incident destroyed work on issue #1490)
+**Relevant to:** Klatch, Design in Product, any project with git data-loss rules in CLAUDE.md or equivalent
 
-PM (xian) observed: *"It's like the mailboxes are how you send each other chess moves but really you both need a chess board to see all the topics in flight and where they stand."*
+Every existing data-loss rule in PM's CLAUDE.md covered **scope** — which paths a command touches. The file explicitly endorsed `git checkout -- <explicit path>` as the safe, surgical form. It said nothing about **direction** — which way content flows when the command runs.
 
-Exec's analysis turns this into a structural finding. In any point-to-point messaging system (mailboxes, direct memos), each agent sees only the moves addressed to it — in arrival order, one at a time. Nobody sees the position: which threads are open, which questions are outstanding, which corrections never landed. The person cc'd on everything (PM) sees the board by accident of being included everywhere, and is therefore the only one who notices when three different beta dates are circulating, when a claim propagated to five agents before the author retracted it, or when a chain stalled because nobody tracked "waiting on."
+Arch followed the endorsed pattern exactly: explicit paths, no broad sweep. The command was scope-perfect. It still silently destroyed the `#1490` refix, because HEAD already carried merge damage while the working tree held the good version. Being surgical about *which* files does nothing about *which direction* content moves. The discarded version was never committed, so there was no recovery path.
 
-Two distinct failure modes surface in a system without a board: **(a) undelivered state** — a correction or retraction was issued but the parties still acting on the old version never absorbed it; **(b) orphaned threads** — a question was asked, an answer is owed, and no surface shows the gap. Both happened in the same week; both required PM to notice because PM was the only one with the full picture.
+CIO's post-incident diagnosis: *"The whole apparatus of care was applied to a conclusion I hadn't checked."* The agent inferred staleness from "the fix exists on `origin/main`" without diffing to see which version of the file was actually newer. That inference is most dangerous precisely when it feels most certain.
 
-The proposed remedy is a **derived board**, not a maintained one — regenerated per fire from the existing memo corpus. The corpus already contains the state: filename conventions encode intent (`RULING-`, `RESOLVED-`, `WITHDRAWN-`, `URGENT-`, `ask-`), and every memo has participants and a subject. Nobody has computed a per-thread view from this data; the corpus has been read exclusively as prose. A board built by parsing the corpus — one row per thread, four columns: thread, state, waiting-on, age since last move — would catch both failure modes without requiring a maintainer (which would make it rot). The prerequisite is a consistent header format across all memos, so the parser can reliably extract attribution; without that, coverage has a structural blind spot from day one.
+**The rule added:** Before any `git checkout <ref> -- <path>`, run:
+```bash
+git diff HEAD -- <path>      # shows what you are about to discard. Empty = safe.
+```
+Non-empty output means uncommitted work is about to disappear. Read it before deciding which side is stale — never infer staleness from the existence of the fix upstream; a merge can leave HEAD holding the pre-fix state while the tree holds the fix.
 
-**Suggested action:** Any project running point-to-point agent coordination via mailboxes should audit whether the position is visible to anyone other than the human cc'd on everything. If not, and failures are occurring that only that person can diagnose, the corpus is already there; the board is derived, not built from scratch. Design against the two failure modes: add a "last updated" timestamp visible per thread and a "waiting on" column derived from unanswered outbound messages.
+**Corollary:** `--diff-filter=D` finds deleted *files* and misses reverted *hunks*, so a merge audit built on it under-reports. To catch reverted hunks, compare content against the merge's other parent (`^2`), not just file presence.
+
+**Suggested action:** Any project with CLAUDE.md data-loss rules should check whether those rules cover direction as well as scope. If your rules prohibit `git checkout -- .` and `git reset --hard` but say nothing about `git checkout <ref> -- <path>`, add a pre-flight diff step. The pattern is in PM's CLAUDE.md (§"SCOPE IS NOT DIRECTION").
 
 ---
 
-### Corrections carry the posture of rigor and skip the verification first-order claims require
+### A freeze monitor that runs as a duty-cycle agent can't detect when the whole duty cycle freezes — the caller must be outside the frozen set
 
-**From:** Piper Morgan (CIO, methodology-47, `docs/internal/development/methodology-core/methodology-47-SECOND-ORDER-CLAIMS-NEED-FIRST-ORDER-RIGOR.md`, 2026-08-07)
-**Relevant to:** Any project with active peer cross-checking — Klatch, Design in Product, any multi-agent team where agents review each other's findings
+**From:** Piper Morgan (CIO → Pard memo, `docs/mail/memo-cio-to-pard…freeze-detector…2026-08-08.md`, 2026-08-08)
+**Relevant to:** Klatch, Design in Product (Janus duty cycle), One Job, any project running duty-cycle agents with cron-based scheduling
 
-Methodology-47 documents a failure mode: **a correction feels like a rigorous act, which is precisely why it skips the verification that first-order claims require.** A correction is emitted identically whether its author traced it to the source artifact or merely recognized a pattern. Because correcting looks like diligence, it draws less scrutiny — from the author most of all.
+After PM's whole-cohort account-limit freeze on Aug 6 (~8 hours of silence, discovered after the fact by PM rather than by any monitoring system), CIO built `scripts/cohort-freeze-detect.sh`. The script itself was correct. But the script had no viable caller.
 
-Two instances in the same week, same author, adjacent days: (1) A correction memo was sent identifying a mis-attribution in a finding — but the memo had the wrong addressee and the finding had already been retracted twenty minutes later the previous day. Both errors would have been caught by reading the source artifact rather than the subject line. (2) The same author called a structured dataset "noise" and conceded a falsification — when the data was actually a step function (exact values repeated to the second), not scattered. The discriminator between "step" and "noise" is trivial (are the points exact, or scattered?) and nowhere written down.
+Every candidate caller — every duty-cycle agent role — is itself part of the set that goes dark during a freeze. The script would not run during the very event it was meant to detect. HOST named the boundary precisely: *"Nothing for PM during a freeze. Every duty cycle is frozen then too. That needs a watcher outside the frozen set (real crontab, not CronCreate)."*
 
-The joint diagnosis: both are second-order claims issued with less rigor than the first-order work around them. The same week's findings were verified at the instrument, with denominators stated and falsifiers pre-registered. The corrections slipped through because correcting felt like the rigorous move.
+The fix: the caller must be the host-level crontab (`freeze-watchdog-amber.sh`, running unconditionally at the OS layer) — the only process that was running during the freeze.
 
-Separately, the methodology note itself originally prescribed `grep '^from:'` as the verification check for attribution — and that command silently returns empty for one of the two header formats in active use (8% of the memo corpus). The note shipped with its own instance of the rule it documented. That error was caught within an hour by another agent who measured the corpus independently, and the note preserves both the original prescription and the correction visibly rather than silently editing.
+The investigation also settled the right detection signal. Intuitive candidates like "many roles stale at once" don't work: PM's Aug 6 freeze lasted ~8 hours and produced a staleness count of **2 simultaneous stale roles** — identical to an ordinary morning (the freeze ended before any role could accumulate the 7-hour staleness threshold). The reliable signal is instead a **blackout in the heartbeat surface**: `N` scheduled fires with **zero** emissions in a window. Verified against known positive (Aug 6, 18:46: 19 scheduled fires, 0 emissions) and known negative (Aug 7, 16:37: 10 scheduled / 6 emitted).
 
-**Suggested action:** Before issuing any correction — to another agent, to a finding, to a claim — apply the same standard as the first-order claim: read the artifact being corrected, not the memo describing it; verify the target is still outstanding (fast corrections move quickly in active cohorts); state whether your evidence is exact or approximate. In a system where agents parse each other's output, use a parser that handles all format variants in the corpus, not a grep against one.
+**Suggested action:** For any duty-cycle monitoring setup: (a) verify that the freeze-detection caller is outside the process set it monitors — if your detector runs as a duty-cycle agent, it cannot detect a full cohort freeze; (b) use a blackout signal (scheduled fires with zero emissions) rather than a staleness signal for freeze detection. Staleness accumulates too slowly relative to typical freeze durations.
 
 ---
 
 ## Sources Read
 
-- **Klatch**: `docs/logs/` — nine fires in the 48h window, all clean no-ops (code-execution gate closed, 7th–9th data points in the ongoing gate-closure monitoring sequence). No new insights.
-- **Piper Morgan**: `dev/active/shared-board-proposal-agents-need-the-view-pm-gets-2026-08-07.md`; `docs/internal/development/methodology-core/methodology-47-SECOND-ORDER-CLAIMS-NEED-FIRST-ORDER-RIGOR.md`; duty-cycle-tick skill restoration commit (`bfccaec4`); CIO restoration memo (`a6815de7`).
-- **Mediajunkie**: Brief delivery commits only; convention update already covered in Aug 7 brief.
-- **One Job**: Brief-noted log; no new insights beyond what was in the Aug 7 brief.
+- **Klatch:** `docs/logs/` — 13th data point in the code-execution gate closure sequence (clean no-ops continuing); `docs/mail/janus-to-calliope-xian-answers-four-gating-decisions-2026-08-08.md` (four Klatch design decisions answered by xian; product-design context, no cross-pollination insights).
+- **Piper Morgan:** `CLAUDE.md` commit `8857d708` (SCOPE-IS-NOT-DIRECTION rule); `mailboxes/arch/inbox/…freeze-detector…md` (CIO merge-drop investigation and freeze-detector structural finding); PA, PPM, Arch, Docs, HOST STOP commits (day-close operational only).
+- **Mediajunkie:** `docs/mail/memo-cio-to-pard…freeze-detector…` (confirmed as the CIO memo received at Pard's inbox; no new Pard-originated insights); ASC API key provisioning commit (operational, not cross-pollination-worthy).
+- **One Job:** `development/coral-logs/2026-08-08-coral-log.md` — Cowork cloud/device capability map completed (cloud containers have network; device bridge VMs do not by design); Relay role formally closed. Coral-specific operational context; no cross-constellation methodology insight.
+- **Design in Product (hub):** Themis email-campaign operational work (contact lists, bounces, drafts); not cross-pollination material.
+- **Globe, weather, cookie-monster:** Brief deliveries only.
+- **Atlas, cuneo, optilisten, nyt-crossword:** Quiet in the window.
 
 ---
-
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
