@@ -50,7 +50,7 @@ wasn't running: **Dan's instructions must open with "first, confirm
 Settings shows v1.0.0-rc.12."** A tester filing bugs against a build
 they aren't running sends everyone chasing ghosts.
 
-### 🟡 20. The ASC API key is the highest-leverage unblock on the board
+### ✅ 20. CLOSED 2026-08-08 — ASC API key live (was: highest-leverage unblock)
 Relay's handoff names it plainly: with Amber's Xcode (your one install
 command) + an App Store Connect API key (`.p8`), archive AND upload run
 unattended forever — no interactive Apple login, for me or any

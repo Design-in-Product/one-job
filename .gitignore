@@ -47,3 +47,6 @@ dist-native/
 
 # Android signing (never commit)
 *.keystore
+
+# App Store Connect API keys — NEVER in the repo (see docs/AMBER-XCODE.md)
+*.p8
