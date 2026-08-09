@@ -70,6 +70,12 @@ xcodebuild -exportArchive -archivePath build/App.xcarchive \
 # upload: xcrun altool --upload-app -f build/export/*.ipa \
 #   --apiKey $KEY_ID --apiIssuer $ISSUER_ID   (API key at
 #   ~/.appstoreconnect/private_keys/AuthKey_$KEY_ID.p8)
+#   LIVE since 2026-08-08: KEY_ID=D96QY6RRB3
+#   ISSUER_ID=4d7298e0-7bf2-4f1f-a541-cccfe6281485  (IDs are
+#   non-secret; the .p8 itself is at the canonical path, 600,
+#   backed up in Xian's password manager, registered in Amber's
+#   harbor manifest. Verified by signed GET /v1/apps → 200,
+#   both One Job and OptiListen visible.)
 ```
 
 `ios/exportOptions.plist` (method `app-store-connect`, team ID) gets
