@@ -66,6 +66,16 @@ whether a narrower, reversible alternative exists. "Probably disposable
 state" is not verified-disposable. Tool-specific rules don't
 self-generalize; this principle is the cross-tool version.
 
+**Scope is not direction (added 2026-08-09, from PM's merge-drop
+incident via the brief):** a path-surgical command can still destroy
+work — `git checkout <ref> -- <path>` is scope-perfect and
+direction-blind. Before ANY content-restoring git command, run
+`git diff HEAD -- <path>`: non-empty output is uncommitted work about
+to vanish — read it before deciding which side is stale. Never infer
+staleness from "the fix exists upstream"; a merge can leave HEAD
+holding the pre-fix state while the tree holds the fix. That inference
+is most dangerous precisely when it feels most certain.
+
 ## Project Overview
 
 One Job is a mobile-first task management application built with domain-driven design principles. It features a card-based interface where users see one task at a time, enabling focused work through swipe-based interactions and hierarchical task organization (substacks).
