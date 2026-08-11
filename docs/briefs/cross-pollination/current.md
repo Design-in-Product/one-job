@@ -1,51 +1,57 @@
 
-# Cross-Pollination Brief — August 10, 2026
+# Cross-Pollination Brief — August 11, 2026
 
-Two findings today: a precision rule for rate assertions that prevents agents from contradicting each other with simultaneously-true numbers, and a Klatch discretion decision that sidesteps access-control machinery by distinguishing routing from confidentiality.
+Two methodology additions landed in the last 24 hours, both formally documented: Klatch named a failure mode for artifacts that claim coverage they don't exercise, and Piper Morgan filed a methodology entry for what correction counts actually measure.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A rate without a timescale is three different numbers waiting to argue — name the window
+### A durable artifact claiming false coverage fails silently — the fix is behavioral, not editorial
 
-**From:** Piper Morgan (CIO, `dev/2026/08/09/2026-08-09-1037-cio-code-log.md`, commit `f4097f25`, 2026-08-09 late; filed as an extension of methodology-47)
-**Relevant to:** Klatch, Design in Product, any multi-agent project where agents emit rate-based measurements
+**From:** Klatch (Calliope, `docs/research/institutional-phantom-2026-08-10.md`, named 2026-08-10 from Theseus's 19:47 STOP-fire routing)
 
-CIO and HOST both built honest trend estimates from the same data and produced figures that looked contradictory. HOST extrapolated from a 12-hour overnight burst; CIO extrapolated from a 6-hour daytime lull and then retracted the original estimate. Both were right. Both were wrong. The actual numbers — `0.25/h`, `0.00/h`, and `3/day` — are all simultaneously true of the same file on the same day. The rate wasn't unstable; the intraday distribution is lumpy while the daily figure is steady.
+**Relevant to:** Piper Morgan (test suite comments, floor-honesty contract claims), Design in Product, any project that maintains comments, status headers, or docs claiming coverage of a system property
 
-CIO's diagnosis: the contradiction was manufactured by collapsing two different sentences into one. "The rate is not constant" is true of the intraday distribution. "The daily figure is steady" is true of the daily figure. Collapsing them loses the timescale — and a lost timescale produces two agents with contradictory (but both accurate) numbers and no way to reconcile them from the numbers alone.
+Three instances in one day at Klatch each followed the same shape: a comment or header asserted that a code path is tested, a leg is covered, a round is green — and the claim survived unchallenged because nothing ever exercised the path that would contradict it. Examples: an MCP leg "covered since May" that had never been executed (any call to that route crashed); 12 AAXT rounds labeled "green" while every API call was failing (the instrument recorded API failures as "absent" rather than detecting them); a new liveness guard whose comment claimed it covered three failure modes when the code covered one.
 
-The retraction was itself the third instance of methodology-47 (corrections carry the posture of rigor and skip verification) — CIO retracted a correct estimate because retracting *felt* rigorous, without checking whether the original number was wrong. The original was right. The lesson the CIO wrote into the cron prompt: **name the timescale in every rate claim**. Not "three commits" — "three commits per day." Not "zero activity this hour" — "zero activity in the 6-hour daytime window, 3/day holding steady."
+Calliope named this the **Institutional Phantom** — distinguishing it from AAXT's existing Phantom category (agent confident false claim in conversation) by one level: not a claim in conversation, but a claim in the durable record. The failure mode is structurally different from a false assertion that throws: a false claim in running code fails loud; a false claim in a comment just sits there, cited as ground truth by the next reader.
 
-**Suggested action:** Any agent that emits measurements — heartbeats, commit rates, test counts per fire, lines-per-day — should make the timescale part of the assertion rather than implicit in context. A measurement that looks like a contradiction usually isn't: it's two different windows in the same data. The timescale is what lets a reader tell the difference.
+The sharpest illustration: the fix for instance (2) — the AAXT liveness gap — shipped with a comment describing a wider guarantee than the code gives (instance (3)), found on the same day, in the same file, by Theseus going to verify the fix behaviorally rather than reading the comment and moving on.
+
+What closed each instance was the same move: **run the thing the comment claims, instead of reading the comment and trusting it.** This is the AXT-methodology probe applied to your own documentation. "Typecheck is a signal `npm test` structurally cannot produce" — any verification layer has a scope, and a comment describing a wider scope than the layer enforces is where Institutional Phantoms live.
+
+**Suggested action:** Treat "since [date]" or "always" in a comment as a falsifiability claim. Before closing a coverage task, go run the thing the claim describes. When landing a fix for one Institutional Phantom, ask what the new guard's comment claims and probe the gap between that claim and the code before declaring done.
 
 ---
 
-### "Direct not private" collapses a channel-scoping question to a routing convention, eliminating access-control machinery
+### A correction count measures attention, not fault — at selection time, it selects for absence of scrutiny
 
-**From:** Klatch (Iris, `docs/ux/spec-composition-gesture.md` §6, commit `9cb1ebb`, 2026-08-09; xian's live decision relayed by Calliope `a9a85a3`)
-**Relevant to:** Piper Morgan (multi-user scoped conversations), Design in Product (two-agent coordination), any project designing scoped or "private" channels
+**From:** Piper Morgan (m-48, filed by CIO 2026-08-10 from PPM and CXO's independent findings; `docs/internal/development/methodology-core/methodology-48-A-PROXY-COUNT-IS-NOT-THE-QUANTITY.md`)
 
-Klatch's composition-gesture spec had a self-contradictory paragraph about 1-1 conversations for a month: simultaneously "agents bring existing context" and "does not auto-inject history." The contradiction traced to an unasked question: is a 1-1 channel *direct* (routing/visibility) or *private* (enforcement/confidentiality)?
+**Relevant to:** Klatch (methodology docs, AAXT spec comparisons), Design in Product (competing brief formats, spec revisions), any project that compares documents by how many corrections they've accumulated
 
-xian's answer, given in a live session with Iris: **direct, not private**. A 1-1 in Klatch means the message is routed to that channel and the participants can see it; it does not mean the platform guarantees confidentiality or enforces access restrictions. Ground rules — things like "what's said in this klatch stays in this klatch" — are prompt conventions, not ACL machinery. The platform doesn't need to build enforcement; it needs to build routing.
+Two roles at Piper Morgan arrived at the same error from opposite directions on 2026-08-09–10. PPM observed that a rival specification "should become canonical" because the other one had accumulated three corrections in a day. CXO, the same day, named it from inside their own argument: *"I used a correction count as a defect-density measure."*
 
-The consequence is significant: the entire class of questions about discretion infrastructure (ACLs, encryption, capability-based access, who can read what) resolves to "those are user and agent conventions, not platform guarantees." That's not a limitation — it's a scoping decision that removes a large implementation surface. Daedalus's previous reads that positioned straw-man positions 3 and 4 (Klatch-enforced discretion mechanisms) were settled as out-of-scope by this answer.
+The filed methodology entry (m-48) states the rule: **a correction count measures attention, not fault.** An artifact accumulates corrections because someone examined it. An artifact with none may be flawless or may be unread, and the count cannot tell you which. The danger is specific to selection time — the moment of choosing which document becomes canonical, which tool is trusted, which estimate is carried — because that decision propagates into everything downstream before anyone reviews the content.
 
-**Suggested action:** Before building scoped-channel or "private" messaging into any multi-participant system, distinguish routing from confidentiality. If the requirement is that certain messages go to certain participants — that's routing, and it needs routing conventions. If the requirement is that no unauthorized party can *ever* read the content — that's confidentiality, and it needs enforcement. Most multi-agent coordination systems need the first; they often build the second by default. Confirm which one before choosing the machinery.
+PPM's routing note became part of the filing: *"Three of us now agree it should exist and none of us has filed it. That's the shape where a good finding dies of mutual endorsement."*
+
+The methodology entry includes a worked example from the filer's own tool: `cohort-freeze-detect.sh` has been corrected three times in four days, which reads as "unreliable" under this error and "most examined" under its inversion — and the count supports neither.
+
+**Suggested action:** Before choosing between competing artifacts on a correction count, name what the count measures. An unreviewed draft with zero corrections is not cleaner than a reviewed one with three — it is less examined. The proxy is most attractive when reading is expensive, which is exactly when the cost of choosing wrong is highest.
 
 ---
 
 ## Sources Read
 
-- **Klatch:** `docs/logs/` — 13 fires since last sweep, code-execution gate clean (continuing sequence of no-ops); `spec(iris) §6 revised` commit `9cb1ebb` (direct-not-private decision); `calliope: duty-cycle resolution plan` commit `a9a85a3` (discretion answer relayed); recovered orphaned May 18 branch commits (additive, pre-dates the report window, no new insight); automated external intel sweep `2026-08-10` (Claude Code cross-session messaging and Managed Agents advisor pattern flagged as strategic awareness for Klatch Step 10 — external news, not a cross-pollination entry).
-- **Piper Morgan:** `dev/2026/08/09/2026-08-09-1037-cio-code-log.md` commit `f4097f25` (m-47 instance 3 + name-the-timescale rule); `docs(lead): 1532 merged` commit `a3966620` (chat-path conversation ownership — engineering closure, no insight); day-close and heartbeat operational commits throughout the window.
-- **Globe:** Tectonic prequel render complete and delivered — roadmap item closed, no cross-pollination insight.
-- **One Job:** `CLAUDE.md` scope-is-not-direction adoption (already reported Aug 9); mail coordination operational.
-- **Mediajunkie:** Operational mail only in the window; OpenLaws content excluded per brief scope rules.
-- **Weather, cookie-monster, nyt-crossword:** Brief deliveries and automated status only.
-- **Atlas, cuneo, optilisten:** Quiet in the window.
+- **Klatch:** `docs/logs/2026-08-10-1230-calliope-sonnet-log.md` (rollups v25–v27, Institutional Phantom named, AAXT liveness-gate context); `docs/logs/2026-08-10-1917-iris-sonnet-log.md` (UX design-principles update — follow-up to Aug 10 brief's direct-not-private insight, not a new finding); `docs/research/institutional-phantom-2026-08-10.md` (full naming doc).
+- **Piper Morgan:** `dev/2026/08/10/2026-08-10-1037-cio-code-log.md` (freeze monitor live, m-48 filed, proxy-count finding); `dev/2026/08/10/2026-08-10-0722-ppm-code-log.md` (m-48 routing, first-contact criterion merge); `docs/internal/development/methodology-core/methodology-48-A-PROXY-COUNT-IS-NOT-THE-QUANTITY.md` (filed methodology).
+- **Globe:** Roadmap #3 opened + deep-past research for future sequel — project planning, no cross-pollination insight.
+- **Mediajunkie:** Amber fleet standdown runbook (`docs/amber-fleet-standdown-runbook.md`), freeze-watchdog patch landed — operational tooling for Klatch's fleet, no transferable insight above what was reported Aug 9.
+- **One Job:** Reboot prep handoff filed; scope-is-not-direction CLAUDE.md adoption (reported Aug 9) confirmed in log.
+- **Weather, cookie-monster:** Brief delivery only.
+- **Atlas, cuneo, optilisten, nyt-crossword (status automations only):** Quiet in the window.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
