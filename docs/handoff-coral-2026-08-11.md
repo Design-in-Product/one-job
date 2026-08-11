@@ -34,8 +34,14 @@ Pard copies `~/.claude-kindsys/projects/-Users-xian-Development-one-job`
 ## Post-resume checklist
 1. Confirm memory visible (read `MEMORY.md` + one memory file) —
    report to Pard, it's the one thing they can't verify from outside.
-2. Re-arm the origin/main monitor (non-Coral commits; it dies with the
-   session).
+2. Re-arm the origin/main monitor — PARKED DELIBERATELY 2026-08-11
+   pre-reboot per Pard's second stand-down notice (it was
+   session-scoped and would have died invisibly). Exact spec to
+   restore: persistent Monitor, 90s git-fetch poll of origin/main,
+   emit non-Coral commits (`git log --format='%an|%h %s'` filtered to
+   exclude author `Coral (One Job)`), plus touched paths under
+   `store/` and `docs/mail/`. No CronCreate jobs existed (verified
+   empty at park time); no host-level LaunchAgents are mine.
 3. Check the briefing artifact
    (claude.ai/code/artifact/84885330-3ded-40c8-9271-eff2451a312a):
    artifacts are ACCOUNT-SCOPED and this one was published under the
