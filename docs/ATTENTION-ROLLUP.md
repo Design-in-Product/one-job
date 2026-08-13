@@ -34,19 +34,25 @@ default, "to support the unsupported multi-deck collisions" in our
 card-of-cards paradigm. Not scoped or estimated — waiting on his fuller
 writeup before this becomes a build item.
 
-### 🟡 21. Store submission prep — down to two small calls
-The asset pipeline is built (one-command capture, 3 device profiles,
-6-shot list; staging set committed).
-1. **Which build is 1.0? CONFIRMED 2026-08-13: rc.31.** Final shutter
-   (re-capture + re-compose against the tag, review-notes regen, Amber
-   cut memo, submit) waits on your device-pass soak clearing — that's
-   the one open condition on my own recommendation, not a new ask.
-2. **Caption copy approval** — put in front of you as an interactive
-   artifact 2026-08-13 (checkboxes + edit fields per shot, plus the
-   one lingering listing-copy delta) since a bare file-path reference
-   didn't render as a link in your client. Awaiting your pass.
-3. **Media Manager dimension check** (1 min, your ASC login) — walkthrough
-   steps in the same artifact.
+### 🟡 21. Store submission prep — down to your device pass
+1. **Which build is 1.0? CONFIRMED 2026-08-13: rc.31.**
+2. **Caption copy: APPROVED + APPLIED 2026-08-13.** You rewrote five of
+   six directly (more plainspoken, your voice); 06 kept as-is with a
+   flag to revisit once accounts exist. Listing description's
+   "substacks" line and the review-notes menu list (was still rc.12's)
+   both updated too. Live in `scripts/compose-store-shots.mjs` /
+   `store/LISTING.md`.
+3. **Media Manager dimension check: CLEAR.** You pasted the live ASC
+   page — Apple renamed the 6.7" bucket to 6.9" and added several
+   smaller legacy buckets, but our three pixel sizes (1290×2796,
+   1284×2778, 2064×2752) already land exactly in the current buckets.
+   No harness change needed; comment updated for future clarity.
+
+**Only real gate left: your device-pass soak on rc.31** (not yet done
+— artifact has a ~10min routine). Once that clears: re-capture + 
+re-compose against rc.31 (fresh staging set — the only one on disk,
+2026-08-04, predates deck identity and everything since rc.13), Amber
+cut memo, submit.
 
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
@@ -110,14 +116,37 @@ transitive. Ran plain `npm audit fix` (no `--force`) — every one of the
 (vite 5.4.19→5.4.21, postcss 8.5.16→8.5.26, uuid 11.1.0→11.1.1, plus 13
 transitive). Verified after: build clean, 164/164 tests green. Committed.
 
-**4 remain, held on purpose:** two newly-disclosed react-router CVEs
-that only a 6→7 major bump fixes, and a vite fix that means 5→8
-(pulling in the rolldown-based bundler — a pipeline swap, not a patch).
-Both are real regression surface across every screen, days from
-submission. Recommendation unchanged for these four: hold until after
-beta week / 1.0 ships. Not exploitable in a local-first PWA with no
-server and no untrusted input either way — supply-chain hygiene, not a
-live risk to your deck.
+**4 remain, held on purpose:** two newly-disclosed react-router CVEs,
+one react-router-dom open-redirect/XSS CVE (all need a 6→7 major bump),
+and a vite/esbuild/launch-editor cluster (needs 5→8, the rolldown
+bundler swap). Traced each to its actual attack surface (2026-08-13, in
+response to Xian asking what the worst case is):
+
+- **vite + esbuild + launch-editor: zero shipped exposure.** All three
+  are `devDependencies` — never in `npm run build` output, so no
+  end-user reachability at all. The narrowest real scenario is our own
+  dev workflow: a malicious webpage open in the same browser while
+  `npm run dev` is running could read source files served by the dev
+  server (CSRF-shaped — the dev server answers any origin). Requires
+  the dev server up + a hostile tab open at the same time; nothing
+  we've hit.
+- **react-router + react-router-dom: no reachable code path.** Both
+  CVEs need attacker-controlled input reaching `<Link to=…>` or
+  `useNavigate(...)`, or an SSR `deserializeErrors()` call. Checked:
+  this app has **no `<Link>` usage, no `useNavigate` calls, and no
+  SSR anywhere** — `App.tsx` just wraps one static catch-all route.
+  The vulnerable functions are imported but never invoked with
+  untrusted data.
+
+**Practical worst case: none, for users or for us**, as the code
+stands today. Mitigation cost if we did it anyway: vite 5→8 is a real
+bundler swap (rolldown) needing a full pipeline regression pass — not
+free; react-router 6→7 is a bigger API (data routers, framework mode)
+but our footprint is thin enough it would likely be low-risk in
+practice. Recommendation: no action before 1.0, and no urgency after
+either — this is closer to "someday hygiene" than "should fix," but
+revisit if we ever add real routing/navigation or SSR, which would
+change the calculus.
 
 ### 🟡 2. Which Node version is "supported"?
 CI pins Node 22. Amber runs Node 26. That gap is exactly what produced
