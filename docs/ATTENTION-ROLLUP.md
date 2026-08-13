@@ -21,26 +21,35 @@ re-published whenever items open or settle.
 
 ## Open
 
-### 🟡 21. Store submission prep — three small calls when ready
+### 🟢 22. Pro-feedback fragments captured 2026-08-13 — full writeup pending
+From chat, ahead of a fuller pass Xian will do "when he can" (may want
+prompting feature-by-feature): opinions forming on how **inchworm view
+ought to work** (unspecified yet — ask him to unpack this when he
+writes it up), and a gap he's hit directly — **no way to delete a deck,
+or merge one deck's contents into another** (currently "Move to another
+deck…" exists only for TOP-LEVEL cards, one at a time, rc.18; there's
+no deck-level delete or deck-into-deck merge). His framing: merging
+should land the source deck as a new card inside the target deck by
+default, "to support the unsupported multi-deck collisions" in our
+card-of-cards paradigm. Not scoped or estimated — waiting on his fuller
+writeup before this becomes a build item.
+
+### 🟡 21. Store submission prep — down to two small calls
 The asset pipeline is built (one-command capture, 3 device profiles,
-6-shot list; staging set committed). Waiting on you, none urgent:
-1. **Which build is 1.0?** This gates the final screenshot capture and
-   the review-notes copy line — the deliberate open decision from
-   Relay's memo.
-2. **iPad presentation**: honest centered column for 1.0, cheap
-   geometry scale-up, or wait for R2 canvas (options + captures in
-   store/LISTING.md and staging-2026-08-04/ipad-13/). My lean: (a) for
-   1.0 — it's true, and R2 makes it beautiful later.
-3. **Confirm dimension slots in Media Manager** (1 min, your ASC login)
-   — Apple moves these; the harness profiles are one-line edits.
-Also FYI: two proposed copy deltas in LISTING.md await your yes.
-4. **Caption copy approval** (added 08-04 after your marketing-canvas
-   correction): the composed canvases carry six DRAFT caption lines
-   (in `scripts/compose-store-shots.mjs`) — the first three are the
-   install sheet's whole pitch. Wordsmith freely; they're one-line
-   edits and re-composition is one command. If you'd rather iterate
-   the composition design in Figma (frames reusable for Play + site),
-   authenticate the connector and I'll port the layout there.
+6-shot list; staging set committed).
+1. **Which build is 1.0? CONFIRMED 2026-08-13: rc.31.** Final shutter
+   (re-capture + re-compose against the tag, review-notes regen, Amber
+   cut memo, submit) waits on your device-pass soak clearing — that's
+   the one open condition on my own recommendation, not a new ask.
+2. **Caption copy approval** — put in front of you as an interactive
+   artifact 2026-08-13 (checkboxes + edit fields per shot, plus the
+   one lingering listing-copy delta) since a bare file-path reference
+   didn't render as a link in your client. Awaiting your pass.
+3. **Media Manager dimension check** (1 min, your ASC login) — walkthrough
+   steps in the same artifact.
+
+*(Settled 2026-08-13: iPad presentation — honest centered column, no
+scaling, decided 2026-08-06 addendum; confirmed still correct.)*
 
 ### 🟡 19. Enable Dan — with one line at the top of his instructions
 Device pass is GREEN (all 8 checks, on the real TestFlight artifact,
@@ -93,25 +102,22 @@ Now: *"Sent to Zapier — the browser can't confirm delivery."* Accurate,
 but it is user-facing copy and you may want different words. Tell me and
 I will change it.
 
-### 🟡 1. Dependency vulnerabilities: 18 open, 4 in direct deps
-`npm audit` reports 5 moderate / 13 high. Direct dependencies among
-them: **vite**, **postcss**, **react-router-dom**, **uuid**. The rest
-are transitive (lodash, minimatch, glob, tar, js-yaml, esbuild …).
+### 🟢 1. Dependency vulnerabilities — 16 of 20 FIXED 2026-08-13, 4 remain (deliberately held)
+Re-checked with fresh advisory data (the original "18 open" count was
+stale): 20 total, 4 direct (vite, postcss, uuid, react-router-dom), 16
+transitive. Ran plain `npm audit fix` (no `--force`) — every one of the
+16 turned out to be a **patch/minor bump, no API surface change**
+(vite 5.4.19→5.4.21, postcss 8.5.16→8.5.26, uuid 11.1.0→11.1.1, plus 13
+transitive). Verified after: build clean, 164/164 tests green. Committed.
 
-**Recommendation: do nothing until beta week is over.** react-router
-is the one that matters and the fix is very likely a major-version
-bump — that is a real regression surface across every screen, and we
-are days from a TestFlight cut whose whole purpose is the R1 trust
-gate ("no card lost, stranded, unrecoverable"). Shipping a router
-upgrade into that week would muddy the signal we are trying to read.
-None of these are remotely exploitable in a local-first PWA with no
-server and no untrusted input; they are supply-chain hygiene, not a
+**4 remain, held on purpose:** two newly-disclosed react-router CVEs
+that only a 6→7 major bump fixes, and a vite fix that means 5→8
+(pulling in the rolldown-based bundler — a pipeline swap, not a patch).
+Both are real regression surface across every screen, days from
+submission. Recommendation unchanged for these four: hold until after
+beta week / 1.0 ships. Not exploitable in a local-first PWA with no
+server and no untrusted input either way — supply-chain hygiene, not a
 live risk to your deck.
-
-**Meanwhile:** I have written up the full triage (see
-`docs/ENVIRONMENT-CLEANUP-2026-07-28.md`) so the upgrade is a
-half-day of known work whenever you want it, not a research project.
-Say the word if you'd rather I do the safe subset now.
 
 ### 🟡 2. Which Node version is "supported"?
 CI pins Node 22. Amber runs Node 26. That gap is exactly what produced
