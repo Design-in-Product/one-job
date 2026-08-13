@@ -14,12 +14,17 @@
 // point PLAYWRIGHT_DIR at the session scratchpad install, version-matched
 // to the browser cache (playwright@1.61.0 ↔ chromium-1228 on Amber).
 //
-// Store dimension slots (CONFIRM in App Store Connect Media Manager
-// before final upload — Apple moves these; Relay's warning stands):
-//   iphone-67:  1290×2796  (6.7" — current primary slot)
-//   iphone-65:  1284×2778  (6.5" — legacy slot, still requested)
-//   ipad-13:    2064×2752  (13" iPad Pro portrait)
-// Each = viewport × deviceScaleFactor below.
+// Store dimension slots (CONFIRMED against Media Manager 2026-08-13 —
+// Apple renamed the bucket labels since these were captured, pixel
+// sizes unchanged; Relay's original warning is why this note exists):
+//   iphone-67:  1290×2796  (bucket now labeled "6.9"" — was "6.7"")
+//   iphone-65:  1284×2778  (bucket still labeled "6.5"")
+//   ipad-13:    2064×2752  (bucket still labeled "13"")
+// Each = viewport × deviceScaleFactor below. Media Manager also lists
+// smaller/legacy buckets (6.3", 6.1", 5.5", 4.7", 4", 3.5", plus
+// several iPad sizes) — per Apple's own copy ("we'll use these
+// screenshots for all iOS display sizes"), the largest bucket per
+// family covers the rest; we don't generate assets for those.
 
 import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
