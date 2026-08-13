@@ -207,3 +207,12 @@ So the ladder is:
 3. Web-only sales (Stripe on onejob.co unlocking the PWA) are legal on
    the WEB side but must never unlock the iOS app — one wall, two
    doors is a compliance trap; don't.
+
+### Noted for later — a theoretical tier above Pro (Xian, 2026-08-13)
+
+Raised in passing while settling the deck-identity brand-ownership
+question (kept at its current default — small wordmark on every deck):
+a full white-label / custom-rebrand offering (removing "One Job"
+branding entirely, enterprise use) would cost more than a Pro
+subscription. Not scoped, not urgent — just recorded so a future
+tiers pass doesn't start from a blank page.
