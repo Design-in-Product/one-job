@@ -46,7 +46,7 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 > • Single-tasking beats juggling: seeing one task removes the anxiety of
 >   seeing all of them
 > • Deferring is a gesture, not a failure — the card just waits its turn
-> • Big tasks break into substacks you can focus through one card at a time
+> • Big tasks break into smaller decks you can focus through one card at a time
 >
 > **Private by design**
 > • Your tasks live on your device — no account, no cloud, no tracking
@@ -79,32 +79,40 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 > required or possible; all data is stored on-device. To test: launch,
 > add a task from the empty-state form or the long-press menu, tap the
 > deck to reveal, swipe right to complete, swipe left to defer, long-press
-> for the menu (Add Task / Completed / Integrations / Settings). Settings
-> includes export/import backup. Haptic feedback fires on swipe commits.
+> for the menu (Undo / Add Task / Inchworm walk / Completed / Integrations
+> / Settings — a single-deck device won't show "Decks…", a pro-only
+> entry). Settings includes export/import backup and undo-shake toggle.
+> Shaking the phone after an action also offers to undo it. Haptic
+> feedback fires on swipe commits.
 
 ---
 
-## Copy review vs current UI (Coral, 2026-08-04) — PROPOSED deltas, not applied
+## Copy review vs current UI (Coral, 2026-08-04) — APPLIED 2026-08-13
 
-The approved copy above holds up well; two spots aged and one is
-version-dependent:
+Both deltas are now applied to the approved copy above, since 1.0 =
+rc.31 (confirmed 2026-08-13, not rc.12):
 
-1. **"Big tasks break into substacks"** — "substack" is retired
-   vocabulary (now sub-decks / cards all the way down). Proposed:
-   *"Big tasks break into smaller decks you can focus through one card
-   at a time."*
-2. **Review notes menu list** is accurate for rc.12 but not later
-   builds (rc.13+ adds Undo; rc.17+ adds Decks…; rc.22+ Inchworm).
-   Keep as-is if 1.0 ships from rc.12; regenerate this line with the
-   release-version decision otherwise.
+1. ~~"Big tasks break into substacks"~~ → *"Big tasks break into
+   smaller decks you can focus through one card at a time."* — Xian
+   approved the exact proposed wording. Applied.
+2. ~~Review notes menu list~~ — regenerated for rc.31's actual
+   long-press menu (Undo, Add Task, Inchworm walk, Completed,
+   Integrations, Settings; Decks… only on multi-deck/pro devices, so
+   omitted for the reviewer's plain device) and the shake-to-undo path
+   added, which rc.12's notes never mentioned. Applied.
 3. Screenshots line: now regenerable in one command —
    `node scripts/capture-store-shots.mjs` (see header for env; staging
-   sets land in `store/screenshots/staging-<date>/`). The SHUTTER for
-   final assets waits on the release-version decision; the harness
-   makes re-capture free so assets can never age the way the rc.2 set
-   did.
+   sets land in `store/screenshots/staging-<date>/`). Release version
+   is decided (rc.31, 2026-08-13) — the SHUTTER for final assets now
+   waits only on Xian's device-pass soak clearing; the harness makes
+   re-capture free so assets can never age the way the rc.2 set did.
 
-## Screenshot captions (Relay, 2026-08-03) — PROPOSED, not applied
+## Screenshot captions — historical drafting (Relay, 2026-08-03)
+
+**Superseded 2026-08-13** — Xian edited five of six directly; the live
+captions now live in `scripts/compose-store-shots.mjs`'s `CAPTIONS`
+object, which is the source of truth. This table is kept as drafting
+history only.
 
 The marketing canvases need a headline line per shot. Nothing was drafted
 yet, and these are the highest-leverage words in the listing: the **first

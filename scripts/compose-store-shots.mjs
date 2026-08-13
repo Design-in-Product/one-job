@@ -26,19 +26,18 @@ const PW_DIR = process.env.PLAYWRIGHT_DIR
   ?? '/private/tmp/claude-501/-Users-xian-Development-one-job/e3ab1cd8-adf1-4feb-8f0d-60312181d1b0/scratchpad';
 const { chromium } = createRequire(resolve(PW_DIR, 'package.json'))('playwright');
 
-// DRAFT caption copy — the install sheet shows only the first three, so
-// they carry the whole pitch. Voice matches the approved LISTING.md.
+// APPROVED caption copy (Xian, 2026-08-13 — his own edits, five of six
+// rewritten; 06 kept as-is). Prior drafting history (Relay's 2026-08-04
+// merged slate, alternates) lives in LISTING.md's PROPOSED table for
+// reference only — this object is now the source of truth.
 const CAPTIONS = {
-  // MERGED SLATE (2026-08-04): Relay's headlines (the stronger set — their
-  // 01 provokes the question the screenshot answers; their arc: premise →
-  // gesture → first objection, then 4–6 reassure) over my supporting
-  // sublines. Alternates live in LISTING.md's PROPOSED table. Xian's to
-  // approve; one-line edits, free re-composition.
-  '01-the-deck':          { head: 'You have one job.', sub: 'Everything else waits its turn — face down, out of mind.' }, // Xian's line (2026-08-04, via Relay)
-  '02-swipe-to-complete': { head: 'Done? Swipe it away.',           sub: 'Right to complete, left to slide it to the bottom.' },
-  '03-inside-a-task':     { head: 'Big job? Deal it out.',          sub: 'Every card can hold a deck of smaller ones.' },
-  '04-done-archive-trash':{ head: 'Nothing ever just disappears.',  sub: 'Done, archived, or gone — always your call.' },
-  '05-hold-anywhere':     { head: 'No clutter. Hold for the rest.', sub: 'One quiet menu — nothing between you and the card.' },
+  '01-the-deck':          { head: 'You have one job.', sub: 'Stop fiddling. Focus on what\'s next.' }, // Xian's edit, 2026-08-13
+  '02-swipe-to-complete': { head: 'Done? Swipe right.', sub: 'Not now? Swipe left to move this card to the bottom of the deck.' },
+  '03-inside-a-task':     { head: 'Big job?', sub: 'You can put a deck inside of any card.' },
+  '04-done-archive-trash':{ head: 'Know what you did.', sub: 'Archive done tasks. Trash the ones you don\'t care about. Undo anything.' },
+  '05-hold-anywhere':     { head: 'Calm uncluttered clarity.', sub: 'Press and hold to bring up a relevant menu.' },
+  // Approved as-is 2026-08-13 — Xian's flag: may need clarifying once
+  // accounts exist (still accurate today; revisit when that ships).
   '06-private-by-design': { head: 'Your deck never leaves your device.', sub: 'No account, no cloud, no tracking. Backup is a file you own.' },
 };
 
