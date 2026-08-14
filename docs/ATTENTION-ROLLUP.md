@@ -48,11 +48,33 @@ writeup before this becomes a build item.
    1284×2778, 2064×2752) already land exactly in the current buckets.
    No harness change needed; comment updated for future clarity.
 
-**Only real gate left: your device-pass soak on rc.31** (not yet done
-— artifact has a ~10min routine). Once that clears: re-capture + 
-re-compose against rc.31 (fresh staging set — the only one on disk,
-2026-08-04, predates deck identity and everything since rc.13), Amber
-cut memo, submit.
+**Two real gates left, independent of each other:**
+
+1. **Your device-pass soak on rc.31** (not yet done — artifact has a
+   ~10min routine, test the PWA at onejob.co/app, NOT TestFlight —
+   TestFlight is Dan's frozen rc.12, unrelated to 1.0).
+2. 🔴 **NEW 2026-08-13 — native pipeline needs one more Xian action.**
+   Proved end-to-end for the first time on Amber (never actually run
+   before — rc.12's TestFlight was cut on the old laptop pre-migration):
+   iOS platform SDK install, `npm run build:native` + `cap sync`, and a
+   full **archive succeeded**, auto-generating its own provisioning
+   profile via the ASC API key. But **export to a signed `.ipa` failed**:
+   `Cloud signing permission error` / `No signing certificate "iOS
+   Distribution" found`. The API key's role (App Manager, chosen
+   deliberately narrow) can't create a Distribution certificate —
+   that's a higher-privilege operation Apple gates. **Needs one
+   one-time interactive step from you**, either:
+   - Sign into Xcode's Accounts pane on Amber with your Apple ID once
+     (2FA) — Xcode auto-creates the Distribution cert through the
+     normal account flow, then automatic signing reuses it forever
+     after, API-key-driven runs included; or
+   - Create an "Apple Distribution" certificate manually via
+     developer.apple.com → Certificates → + (if you'd rather not sign
+     into Xcode on a shared machine).
+   Not urgent — doesn't block your device pass, only blocks the final
+   export/submit step, which is days away regardless. `ios/exportOptions.plist`
+   is now written and committed (54e3d89) so the moment a cert exists,
+   export is one command.
 
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
