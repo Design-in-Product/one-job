@@ -21,7 +21,7 @@ re-published whenever items open or settle.
 
 ## Open
 
-### 🟡 23. Two real bugs found 2026-08-16, both fixed and verified — one decision left
+### ✅ 23. Two real bugs found 2026-08-16, both fixed and verified — CLOSED
 Xian found this himself: **"multi-deck breaks the export feature —
 only a few cards are saved."** Real bug, not user error. Root cause:
 `buildBackup()` used `getAllTasks()`, which is scoped to the ACTIVE
@@ -62,12 +62,13 @@ frozen). The pipeline is fixed and verified now — rc.32 (with the
 backup fix) is genuinely live. Worth a fresh look if his device pass
 covered that window.
 
-**One decision outstanding**: build 31, uploaded to App Store
-Connect/TestFlight 2026-08-16 morning, carries the backup bug. Do NOT
-submit it for App Store review. A fresh native build 32 is one proven
-command sequence away (the pipeline itself is fine — this was a web-
-deploy-only issue) but needs his go-ahead before another TestFlight
-upload, same as yesterday.
+**Build 31 superseded**: Xian said go, so build 32 (bumped from 31,
+matching rc.32) was cut and uploaded same session — fresh archive/
+export/upload, the now-proven pipeline, no new issues. Delivery UUID
+`1ede4284-c514-4161-ba40-6f69c95df667`. Build 31 (the buggy one) should
+simply not be selected for App Store review; build 32 supersedes it in
+TestFlight. Only remaining gate before actual submission: Xian's
+device-pass soak (on the PWA, now genuinely current).
 
 ### 🟢 22. Pro-feedback fragments captured 2026-08-13 — full writeup pending
 From chat, ahead of a fuller pass Xian will do "when he can" (may want
@@ -83,6 +84,8 @@ card-of-cards paradigm. Not scoped or estimated — waiting on his fuller
 writeup before this becomes a build item.
 
 ### ✅ Native pipeline — CLOSED 2026-08-16 — build 31 uploaded to App Store Connect
+*(Build 31 itself was superseded same day by build 32 — see item 23
+above; this section is about the pipeline working, which it did.)*
 Was item 21's 🔴. Xian signed into Xcode on Amber (Admin role) and
 created the missing "Apple Distribution" certificate 08-15 (his first
 attempt made a "Mac Installer Distribution" cert by mistake — caught
@@ -102,7 +105,9 @@ end to end on Amber for the first time ever — repeatable for future
 builds without repeating the one-time interactive steps.
 
 ### 🟡 21. Store submission prep — down to your device pass
-1. **Which build is 1.0? CONFIRMED 2026-08-13: rc.31.**
+1. **Which build is 1.0? rc.32** (updated 2026-08-16 — rc.31 carried
+   the multi-deck backup bug; rc.32 is the current tag, TestFlight build
+   32 supersedes 31, see item 23 above).
 2. **Caption copy: APPROVED + APPLIED 2026-08-13.** You rewrote five of
    six directly (more plainspoken, your voice); 06 kept as-is with a
    flag to revisit once accounts exist. Listing description's
@@ -115,13 +120,13 @@ builds without repeating the one-time interactive steps.
    1284×2778, 2064×2752) already land exactly in the current buckets.
    No harness change needed; comment updated for future clarity.
 
-**Only real gate left: your device-pass soak on rc.31** (not yet done
+**Only real gate left: your device-pass soak on rc.32** (not yet done
 — artifact has a ~10min routine, test the PWA at onejob.co/app, NOT
-TestFlight — TestFlight now carries build 31 too as of today, but the
-PWA is still the fast-iterating surface to soak-test). Once that
-clears: the App Store submission itself (select the uploaded build,
-add release notes, submit for review) — everything upstream of that
-button is now done.
+TestFlight — TestFlight carries build 32 as of today, but the PWA is
+still the fast-iterating surface to soak-test, and it's genuinely
+current again after the deploy-freeze fix). Once that clears: the App
+Store submission itself (select build 32, add release notes, submit
+for review) — everything upstream of that button is now done.
 
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
