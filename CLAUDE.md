@@ -624,6 +624,34 @@ all **undeclared dependencies**. Full write-up:
    If the cache revision ever changes, find the matching Playwright by
    reading `node_modules/playwright-core/browsers.json`.
 
+4. **A green `npm install` on YOUR npm version proves nothing about
+   `npm ci` on the OTHER one — check optional peers.** (2026-08-16, cost
+   3 days of silently-failed deploys.) `npm audit fix` on 08-13 left
+   `package-lock.json` in a state npm 11 (Node 26, Amber's default)
+   accepted via `npm ci` but npm 10 (Node 22, CI's other matrix leg)
+   rejected: `Missing: esbuild@0.28.2 from lock file`. Root cause:
+   vitest's own nested `vite` had resolved to the rolldown-based 8.x,
+   where `esbuild` is an **optional peer dependency**
+   (`peerDependenciesMeta.esbuild.optional: true`) — whether npm
+   decides to satisfy and lock in an optional peer is where `npm ci`
+   gets non-deterministic, reproduced identically under the *same*
+   npm 10.9.8/Node 22.23.2 binary locally (installed via
+   `brew install node@22`, keg-only — doesn't touch Amber's shared
+   default `node`) and in CI. **Fix: pin the ambiguous nested package to
+   a version that doesn't have the optional peer** (`overrides`:
+   `vitest.vite` pinned to `^7.1.0`, pre-rolldown, where esbuild is a
+   regular non-optional dependency) — not by pinning the optional peer's
+   *version* directly, which just hoists it to the shared top-level slot
+   and can break whatever ELSE needed a different version there (first
+   attempt did exactly this: hoisted esbuild 0.28.2 over the production
+   `vite@5.4.21`'s required `^0.21.3`, breaking `npm run build` — caught
+   only by actually running the build, not by green tests). **Whenever
+   `npm audit fix` or any dependency bump touches devDependencies,
+   verify `npm ci` (not `npm install`) succeeds under BOTH engine
+   versions before trusting it** — a local `npm install` including on
+   the "other" Node version isn't the same check as `npm ci`, and CI's
+   own green run is the only real proof; watch it, don't infer it.
+
 **Node policy:** `engines` declares **>=22** and CI runs the suite on
 **both 22 and 26**, so host-dependence gets caught by machines rather
 than discovered on arrival. Amber runs 26 (Homebrew, no nvm).
