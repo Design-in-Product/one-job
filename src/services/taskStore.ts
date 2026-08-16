@@ -28,10 +28,15 @@ export interface TaskStore {
       until every store supports it — the UI falls back to local reorder. */
   deferSubstackTask?(id: string): Promise<Task>;
   /**
-   * Replace all tasks with an imported backup. Absent on stores that
-   * don't own their data (the API store) — the UI disables import there.
+   * Replace all tasks with an imported backup. Accepts either a flat
+   * card list (legacy single-deck backups, v1/v2) or `{ decks }` (v3+,
+   * every root deck preserved — a bare array wouldn't distinguish "one
+   * deck" from "the active deck of several," which was the 2026-08-16
+   * bug: exports only ever captured the active deck). Absent on stores
+   * that don't own their data (the API store) — the UI disables import
+   * there.
    */
-  importTasks?(tasks: Task[]): Promise<void>;
+  importTasks?(payload: Task[] | { decks: InteriorDeck[] }): Promise<void>;
   /**
    * Undo support: restore a task to a pre-action snapshot. Absent on
    * stores that can't guarantee it (the API store) — the UI only offers
