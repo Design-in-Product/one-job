@@ -34,6 +34,25 @@ default, "to support the unsupported multi-deck collisions" in our
 card-of-cards paradigm. Not scoped or estimated — waiting on his fuller
 writeup before this becomes a build item.
 
+### ✅ Native pipeline — CLOSED 2026-08-16 — build 31 uploaded to App Store Connect
+Was item 21's 🔴. Xian signed into Xcode on Amber (Admin role) and
+created the missing "Apple Distribution" certificate 08-15 (his first
+attempt made a "Mac Installer Distribution" cert by mistake — caught
+before it went anywhere, corrected same session). Export still needed
+his interactively-authenticated session for the provisioning profile
+too (same App-Manager-role limit as the cert, one layer further) — the
+API key alone couldn't do either half. Once both existed: build number
+bumped 2→31 (matching the tag), fresh archive from current source,
+export succeeded, and **08-16 10:50 — uploaded to App Store Connect**
+via `xcrun altool` (Delivery UUID `b96a2f65-177a-43ba-981d-659b3c202979`,
+10.7MB, upload took 0.63s). `ITSAppUsesNonExemptEncryption=false`
+already in Info.plist, so no manual export-compliance step should block
+processing. Xian confirmed he's fine with Dan seeing it once Apple
+finishes processing (typically minutes, sometimes longer). Full
+pipeline (SDK → cert → profile → archive → export → upload) now proven
+end to end on Amber for the first time ever — repeatable for future
+builds without repeating the one-time interactive steps.
+
 ### 🟡 21. Store submission prep — down to your device pass
 1. **Which build is 1.0? CONFIRMED 2026-08-13: rc.31.**
 2. **Caption copy: APPROVED + APPLIED 2026-08-13.** You rewrote five of
@@ -48,33 +67,13 @@ writeup before this becomes a build item.
    1284×2778, 2064×2752) already land exactly in the current buckets.
    No harness change needed; comment updated for future clarity.
 
-**Two real gates left, independent of each other:**
-
-1. **Your device-pass soak on rc.31** (not yet done — artifact has a
-   ~10min routine, test the PWA at onejob.co/app, NOT TestFlight —
-   TestFlight is Dan's frozen rc.12, unrelated to 1.0).
-2. 🔴 **NEW 2026-08-13 — native pipeline needs one more Xian action.**
-   Proved end-to-end for the first time on Amber (never actually run
-   before — rc.12's TestFlight was cut on the old laptop pre-migration):
-   iOS platform SDK install, `npm run build:native` + `cap sync`, and a
-   full **archive succeeded**, auto-generating its own provisioning
-   profile via the ASC API key. But **export to a signed `.ipa` failed**:
-   `Cloud signing permission error` / `No signing certificate "iOS
-   Distribution" found`. The API key's role (App Manager, chosen
-   deliberately narrow) can't create a Distribution certificate —
-   that's a higher-privilege operation Apple gates. **Needs one
-   one-time interactive step from you**, either:
-   - Sign into Xcode's Accounts pane on Amber with your Apple ID once
-     (2FA) — Xcode auto-creates the Distribution cert through the
-     normal account flow, then automatic signing reuses it forever
-     after, API-key-driven runs included; or
-   - Create an "Apple Distribution" certificate manually via
-     developer.apple.com → Certificates → + (if you'd rather not sign
-     into Xcode on a shared machine).
-   Not urgent — doesn't block your device pass, only blocks the final
-   export/submit step, which is days away regardless. `ios/exportOptions.plist`
-   is now written and committed (54e3d89) so the moment a cert exists,
-   export is one command.
+**Only real gate left: your device-pass soak on rc.31** (not yet done
+— artifact has a ~10min routine, test the PWA at onejob.co/app, NOT
+TestFlight — TestFlight now carries build 31 too as of today, but the
+PWA is still the fast-iterating surface to soak-test). Once that
+clears: the App Store submission itself (select the uploaded build,
+add release notes, submit for review) — everything upstream of that
+button is now done.
 
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
