@@ -21,6 +21,54 @@ re-published whenever items open or settle.
 
 ## Open
 
+### 🟡 23. Two real bugs found 2026-08-16, both fixed and verified — one decision left
+Xian found this himself: **"multi-deck breaks the export feature —
+only a few cards are saved."** Real bug, not user error. Root cause:
+`buildBackup()` used `getAllTasks()`, which is scoped to the ACTIVE
+deck by design (it's the display API) — every OTHER root deck was
+silently missing from every export path (share, download, clipboard).
+Even a correctly-shaped backup would have re-imported wrong too:
+`importTasks()` flattened everything into whichever deck was active on
+restore, discarding deck boundaries. **His live on-device data was
+never at risk** — only the exported backup files and the restore path.
+
+Fixed (commit 8271116, stamped rc.32): export now reads `getDecks()`
+(all root decks) when available; import does a full document replace
+preserving deck boundaries, matching the interface's own documented
+contract for the first time. New backup format (v3, `{decks: [...]}`)
+alongside full backward-compat for old v1/v2 flat-array backups. Store-
+level tests added; 167/167 pass, tsc clean, build clean.
+
+**Investigating this surfaced something bigger**: the web deploy
+pipeline had been silently failing for **three days** — every commit
+since 08-13's `npm audit fix` (89cdcb0) never actually reached
+production, meaning every "rc.31 LIVE, test the PWA" I told Xian since
+then was stale and unverified. Root cause (CLAUDE.md's toolchain traps
+now has the full writeup): an npm-optional-peer-dependency ambiguity
+in vitest's own nested vite made `npm ci` non-deterministic between
+npm 10 (CI's Node 22 job) and npm 11 (Amber's default, what I'd tested
+with) — a green local check was never actually proof. Fixed properly
+(commit 0a84bdc) after reproducing the exact CI npm version locally
+(`brew install node@22`, keg-only) — first fix attempt technically
+"worked" but broke the real production build by hoisting the wrong
+esbuild version, caught only by actually running `npm run build` before
+trusting it. **Verified by independent observation**: CI green AND the
+live bundle hash checked directly against what my own build produced —
+`index-Bom08g_d.js`, matching both sides.
+
+**What this means for Xian's testing**: anything tested on the PWA over
+the last few days may not reflect what actually shipped (deploys were
+frozen). The pipeline is fixed and verified now — rc.32 (with the
+backup fix) is genuinely live. Worth a fresh look if his device pass
+covered that window.
+
+**One decision outstanding**: build 31, uploaded to App Store
+Connect/TestFlight 2026-08-16 morning, carries the backup bug. Do NOT
+submit it for App Store review. A fresh native build 32 is one proven
+command sequence away (the pipeline itself is fine — this was a web-
+deploy-only issue) but needs his go-ahead before another TestFlight
+upload, same as yesterday.
+
 ### 🟢 22. Pro-feedback fragments captured 2026-08-13 — full writeup pending
 From chat, ahead of a fuller pass Xian will do "when he can" (may want
 prompting feature-by-feature): opinions forming on how **inchworm view
