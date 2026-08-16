@@ -734,10 +734,17 @@ export class LocalTaskStore implements TaskStore {
     this.saveTasks();
   }
 
-  async importTasks(tasks: Task[]): Promise<void> {
-    // Backups may carry v1 (substacks) or v2 (decks) card shapes —
-    // migrate either way in; the cards land in the current root deck.
-    this.tasks = migrateDocument(tasks).decks.flatMap(d => d.cards).map(reviveTask);
+  async importTasks(payload: Task[] | { decks: InteriorDeck[] }): Promise<void> {
+    // Two shapes: a bare card list (legacy v1/v2 backups — always
+    // single-deck, since root decks didn't exist yet) becomes the sole
+    // root deck via migrateDocument's existing wrapping. `{ decks }`
+    // (v3+, current export format) restores every root deck exactly as
+    // exported — this is a FULL document replace, same as loading from
+    // storage, not a merge into whichever deck happens to be active.
+    const doc = !Array.isArray(payload) && Array.isArray(payload?.decks)
+      ? { decks: payload.decks }
+      : migrateDocument(payload);
+    this.loadDocument(doc);
     this.saveTasks();
   }
 
