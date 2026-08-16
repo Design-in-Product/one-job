@@ -5,7 +5,7 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Task } from '@/types/task';
+import { Task, InteriorDeck } from '@/types/task';
 import { storageMode } from '@/config';
 import { getTaskStore } from '@/services/taskStore';
 import { withoutTrashed } from '@/domain/tasks';
@@ -16,7 +16,10 @@ import { Switch } from '@/components/ui/switch';
 import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const BACKUP_VERSION = 2; // v2: cards with named interior decks (import accepts v1 and v2)
+// v3: every root deck (fixed 2026-08-16 — v2 exported only the ACTIVE
+// deck's cards; anyone with 2+ decks got a backup silently missing the
+// rest. Import accepts v1, v2, and v3.
+const BACKUP_VERSION = 3;
 // Backup-age tracking, per storage mode (a demo export shouldn't quiet
 // the nudge for your real deck)
 const LAST_EXPORT_KEY = `oneJobLastExport-${storageMode}`;
@@ -34,6 +37,15 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingImport, setPendingImport] = useState<Task[] | null>(null);
+  // Set alongside pendingImport only for v3+ (multi-deck) backups — the
+  // full-replace path needs deck boundaries preserved; the "import as
+  // subdeck" path deliberately flattens everything into one container
+  // regardless, so it keeps using the flat pendingImport array either way.
+  const [pendingImportDecks, setPendingImportDecks] = useState<InteriorDeck[] | null>(null);
+  const clearPendingImport = () => {
+    setPendingImport(null);
+    setPendingImportDecks(null);
+  };
   const [lastExport, setLastExport] = useState<string | null>(
     () => localStorage.getItem(LAST_EXPORT_KEY)
   );
@@ -73,12 +85,21 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     // Backups exclude the trash (Xian, 2026-07-29): cards there are not
     // protected, and a restore should never resurrect what was already
     // thrown away. The toast count reflects what the file actually holds.
-    const tasks = withoutTrashed(await getTaskStore().getAllTasks());
-    const json = JSON.stringify(
-      { app: 'one-job', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), tasks },
-      null,
-      2
-    );
+    //
+    // getAllTasks() ONLY returns the ACTIVE deck (it's the display API,
+    // scoped on purpose — see localTaskStore.ts's `tasks` getter). A
+    // backup needs every root deck, so this walks getDecks() when the
+    // store has it; stores without multi-deck support (remote/API mode)
+    // fall back to the single-deck shape, unchanged.
+    const store = getTaskStore();
+    const decks = store.getDecks
+      ? (await store.getDecks()).map(d => ({ ...d, cards: withoutTrashed(d.cards) }))
+      : null;
+    const tasks = decks ? decks.flatMap(d => d.cards) : withoutTrashed(await store.getAllTasks());
+    const payload = decks
+      ? { app: 'one-job', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), decks }
+      : { app: 'one-job', version: 2, exportedAt: new Date().toISOString(), tasks };
+    const json = JSON.stringify(payload, null, 2);
     return { tasks, json, filename: `onejob-backup-${new Date().toISOString().slice(0, 10)}.json` };
   };
 
@@ -143,10 +164,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
 
   const stageImport = (raw: string) => {
     const parsed = JSON.parse(raw);
-    if (parsed?.app !== 'one-job' || !Array.isArray(parsed.tasks)) {
+    if (parsed?.app !== 'one-job' || (!Array.isArray(parsed.tasks) && !Array.isArray(parsed.decks))) {
       throw new Error(t('settings.notABackup'));
     }
-    setPendingImport(parsed.tasks);
+    if (Array.isArray(parsed.decks)) {
+      setPendingImportDecks(parsed.decks);
+      setPendingImport(parsed.decks.flatMap((d: InteriorDeck) => d.cards));
+    } else {
+      setPendingImportDecks(null);
+      setPendingImport(parsed.tasks);
+    }
   };
 
   const handleFileChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,9 +224,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
   const confirmImport = async () => {
     if (!pendingImport) return;
     try {
-      await getTaskStore().importTasks!(pendingImport);
+      await getTaskStore().importTasks!(pendingImportDecks ? { decks: pendingImportDecks } : pendingImport);
       toast.success(t('settings.restored', { count: pendingImport.length }));
-      setPendingImport(null);
+      clearPendingImport();
       onDataImported();
     } catch (err) {
       toast.error(t('settings.importFailed', { message: (err as Error).message }));
@@ -213,7 +240,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
     try {
       await getTaskStore().importAsSubdeck!(pendingImport);
       toast.success(t('settings.importedAsSubdeck', { count: pendingImport.length }));
-      setPendingImport(null);
+      clearPendingImport();
       onDataImported();
     } catch (err) {
       toast.error(t('settings.importFailed', { message: (err as Error).message }));
@@ -364,7 +391,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
                   <Button size="sm" variant="destructive" className="justify-start" onClick={confirmImport}>
                     {t('settings.replaceEverything')}
                   </Button>
-                  <Button size="sm" variant="ghost" className="justify-start" onClick={() => setPendingImport(null)}>
+                  <Button size="sm" variant="ghost" className="justify-start" onClick={clearPendingImport}>
                     {t('settings.cancel')}
                   </Button>
                 </div>

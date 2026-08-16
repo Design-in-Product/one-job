@@ -442,6 +442,79 @@ describe('backup import (restore path)', () => {
   });
 });
 
+describe('multi-deck backup round trip (Xian, 2026-08-16: "only a few cards are saved")', () => {
+  // Real bug: SettingsView's export used getAllTasks(), which only ever
+  // returns the ACTIVE deck (see the `tasks` getter above). Anyone with
+  // 2+ root decks got a backup silently missing every deck but the one
+  // they happened to be looking at. These tests exercise the STORE side
+  // of the fix — getDecks() for export, importTasks({decks}) for
+  // restore — since that's where the data actually lives; SettingsView's
+  // buildBackup/stageImport are thin wrappers around this.
+  const KEY9 = 'multideckbackup';
+  const store9 = () => new LocalTaskStore(KEY9);
+
+  it('getDecks() (the correct export source) includes every root deck, not just the active one', async () => {
+    localStorage.clear();
+    const store = store9();
+    await store.createTask('in deck one');
+    const d2 = await store.createDeck('deck two');
+    await store.switchDeck(d2.id);
+    await store.createTask('in deck two');
+
+    // This is what a correct buildBackup() reads from — proving the
+    // data needed for a full backup is available at the store layer.
+    const decks = await store.getDecks();
+    expect(decks.flatMap(d => d.cards.map(c => c.title))).toEqual(['in deck one', 'in deck two']);
+
+    // The bug, made explicit: getAllTasks() alone would have produced
+    // a backup with only the active deck's card.
+    expect((await store.getAllTasks()).map(c => c.title)).toEqual(['in deck two']);
+  });
+
+  it('importTasks({decks}) restores every deck, names and all, replacing the whole document', async () => {
+    localStorage.clear();
+    const store = store9();
+    await store.createTask('will be replaced');
+    await store.createDeck('also replaced');
+
+    const backup = JSON.parse(JSON.stringify({
+      decks: [
+        { id: 'r1', name: 'Restored A', createdAt: '2026-01-15T10:00:00.000Z', cards: [
+          { id: 'a1', title: 'Card A', completed: false, createdAt: '2026-01-15T10:00:00.000Z', sortOrder: 1 },
+        ] },
+        { id: 'r2', name: 'Restored B', createdAt: '2026-01-16T10:00:00.000Z', cards: [
+          { id: 'b1', title: 'Card B', completed: false, createdAt: '2026-01-16T10:00:00.000Z', sortOrder: 1 },
+        ] },
+      ],
+    }));
+
+    await store.importTasks(backup);
+    const decks = await store.getDecks();
+    expect(decks.map(d => d.name)).toEqual(['Restored A', 'Restored B']);
+    expect(decks.map(d => d.cards.map(c => c.title))).toEqual([['Card A'], ['Card B']]);
+    expect(decks[0].createdAt).toBeInstanceOf(Date); // dates revived, same as the v1/v2 path
+
+    // Round trip survives a cold start, same guarantee as single-deck import.
+    const cold = await new LocalTaskStore(KEY9).getDecks();
+    expect(cold.map(d => d.name)).toEqual(['Restored A', 'Restored B']);
+  });
+
+  it('a legacy bare-array backup (v1/v2, pre-multi-deck) still imports as before', async () => {
+    localStorage.clear();
+    const store = store9();
+    await store.createDeck('extra deck'); // multi-deck device, single-deck backup
+    await store.importTasks([
+      { id: 'x1', title: 'Legacy card', completed: false, createdAt: new Date() } as Task,
+    ]);
+    // Full replace is the documented contract either way — a legacy
+    // single-deck backup restores to exactly one deck, same as it
+    // always has, not merged with whatever deck was active.
+    const decks = await store.getDecks();
+    expect(decks).toHaveLength(1);
+    expect(decks[0].cards.map(c => c.title)).toEqual(['Legacy card']);
+  });
+});
+
 describe('Chain at depth: completed sub-cards live in the rooms too (2026-07-07)', () => {
   const buildNest = async (store: LocalTaskStore) => {
     const parent = await store.createTask('parent');
