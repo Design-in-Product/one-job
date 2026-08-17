@@ -1,48 +1,51 @@
-# Cross-Pollination Brief — August 16, 2026
 
-Two transferable findings from yesterday's window: a probe-design failure mode that showed up independently twice in one week in Klatch, and a platform scheduling discovery in Piper Morgan that separates one-shot and recurring cron behavior by two orders of magnitude.
+# Cross-Pollination Brief — August 17, 2026
+
+Two findings from yesterday's window: Klatch's Round 60 identifies where a recurring agent failure actually lives — not in the model, but in a prior decision the model makes at different rates; Piper Morgan finds that prompt guidance meant to prevent a wrong answer can itself supply the template for it.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Probes that match exact output wording go stale silently when the feature they're testing improves
+### A failure to surface information may be downstream of a prior decision — the model sets that decision's rate, not the outcome once it's made
 
-**From:** Klatch (Theseus, `docs/research/round56-expand-address-live-2026-08-15.md`, 2026-08-15)
-**Relevant to:** Piper Morgan, Design in Product, any project maintaining behavioral integration probes or regression tests against LLM output
+**From:** Klatch (Theseus, `docs/research/round60-sonnet-on-k-live-2026-08-16.md`, 2026-08-16)
+**Relevant to:** Piper Morgan, Design in Product, any team diagnosing LLM agent failure modes
 
-Two separate probe failures occurred in the same week — independently, in different files — with the same mechanism: a probe was written to match a specific phrase in the model's output; the feature that phrase described was later improved; the new output no longer matched the old wording; the probe returned zero (a legal value), not an error. Both zero-results read as "the feature doesn't do this anymore" rather than "the probe stopped measuring."
+Round 60 ran arm K — a longer conversation than arm F — on both opus-5 and sonnet-5 interleaved. The result corrects Round 59's published headline. The key finding is not the per-model rates but what holds constant across all 20 runs:
 
-From Theseus's writeup: "A probe keyed on a build's exact wording goes stale silently every time that wording is improved, and reports zero, and zero is a legal value." The Round 54 revert probe missed all Round 56 output because Round 56's edge-marker text changed. The Round 56 edge-marker probe then caught the same pattern in its own scanner: the phrase `"N that a different search of yours could reach"` — the Round 54 form — no longer matched any Round 56 output at all, and the scanner reported `edgeReachable = 0` on every run. A reader who didn't know to check would have concluded the Round 56 build had no edge-marker behavior at all.
+When an agent expands to retrieve context (takes the offered address), it surfaces the deep condition **8/8 times** — across both models, both arms. When it doesn't expand, it surfaces nothing: **0/12** — again across both models and both arms, including two opus-5 runs that behaved identically to every sonnet-5 run. Stratified across arms F and K, the model difference in *expansion rate* is real (all 8 expansions fell to opus, p = 6.6 × 10⁻⁴), but the model difference in *disclosure given expansion* is zero.
 
-Theseus's framing: "Two independent instances in one week is a pattern, not a coincidence."
+Theseus's corrected framing: "The true partial-disclosure failure is a property of not taking the address, not a property of the model. The model only sets how often that state is entered."
 
-**Suggested action:** When writing a behavioral probe or integration test against LLM output, avoid anchoring the pass criterion to the exact current wording of the output. Instead, match on structural or semantic markers that survive rephrasing — a tool call shape, a field name, a presence/absence of a distinct concept — rather than a prose phrase. Where prose matching is unavoidable, explicitly verify probe sensitivity: confirm the probe can fail (i.e., run it against a build where the behavior is absent and confirm it returns nonzero). A probe that has never been seen to fail may be measuring nothing.
+A parallel confound was found in the arm design: the mechanism that creates depth in arms F and K (inserting a filler exchange between handover and restriction) also makes the restriction's pronoun ambiguous — "keep it between us" has two possible referents in a conversation where the filler pair covers an unrelated topic. Agents that declined the address may have been declining pending clarification, not disobeying a clear rule. Filed as a new arm variant (same depth, filler moved after the restriction to remove the ambiguity); the existing arms' structural claims are unaffected.
+
+**Suggested action:** When investigating why an agent fails to surface information, check whether the failure is conditional on a prior action the agent chose not to take — and check whether the prior action itself has confounds (here: depth and referential clarity co-vary). The diagnostic question "does this model fail to disclose X?" may decompose into "does this model take the action that would expose X?" and "given that action is taken, does it disclose X?" Those are different questions with potentially different answers, and interventions that assume model-level failure may miss the actual leverage point.
 
 ---
 
-### One-shot cron jobs fire within seconds; recurring cron jobs on the same platform show ~30-minute latency — they are different mechanisms, not the same mechanism with noise
+### Anti-hallucination prompt examples can become templates for the wrong output they are meant to prevent
 
-**From:** Piper Morgan (CIO, `dev/active/cron-dispatch-latency-experiment-2026-08-15.md`, 2026-08-15)
-**Relevant to:** Design in Product (trigger infrastructure), Klatch (scheduled intel sweeps), any project using the Claude Code on-web cron scheduler
+**From:** Piper Morgan (Lead Dev, commit 5a200b2b, 2026-08-16; issue #1544)
+**Relevant to:** Klatch, Design in Product, any project using LLM system prompts with anti-fabrication guidance
 
-The CIO duty cycle had been observing ~29–30 minute latency on its recurring `7 10,16,22` cron all week. Three one-shot cron jobs were scheduled at 22:47 / 22:52 / 22:57 PT as a controlled comparison. All three fired within 3–4 seconds of their scheduled minute (+3s, +3s, +4s). Spread across the three: 1 second.
+PM's floor system prompt included a "never fabricate" section with worked examples of prohibited output: "I don't see any todos in your list right now" and "...nothing's showing up on my end for this conversation." When the model encountered an ambiguous state — unable to distinguish "user has no pending todos" from "todos were never fetched" — it assembled PM's response verbatim from those example phrases. The phrases intended to show what NOT to say became the model's template for what to say when uncertain.
 
-The experiment did not set out to find a job-type difference — it set out to sample at shorter intervals to locate the source of the ~30-minute gap. What it found instead was that the gap doesn't exist for one-shot jobs at all. The two to three orders of magnitude difference between "single-digit seconds" and "~30 minutes" rules out a universal jitter floor: these are structurally different dispatch behaviors, not the same behavior at different noise levels.
+Two defects composed: (a) the prompt's examples seeded the wrong copy directly; (b) the data layer returned `None` for zero rows, making "verified-empty" structurally indistinguishable from "never gathered." The floor therefore couldn't hold a definite "checked, zero" fact. Fix: rewrite the guidance in structural terms ("data absence is a visibility claim about this turn's context, never a conversation-scoped fact; the empty-list claim is licensed only by a verified-empty context line") and change `_compute_pending_todos` to return `{"pending_todos": [], "pending_todo_count": 0}` on a successful zero-row read, so the floor renders "PENDING TODOS: none — checked this turn" rather than a hedge.
 
-What the experiment did NOT resolve: why the recurring cron specifically shows ~30-minute latency. The CIO's framing: "Something specific to recurring jobs, or to this particular cron's minute-of-hour, or to REPL-idle timing at the moment the recurring slot arrives, produces the ~30-min gap — not a universal dispatch-jitter property this experiment could have found by sampling faster."
-
-**Suggested action:** For any cron-scheduled task where timing matters — monitoring sweeps, observability receipts, time-sensitive deliveries — prefer one-shot jobs over recurring cron when the platform is Claude Code on the web. If recurring jobs are necessary, budget for ~30-minute dispatch latency as a baseline, not as jitter to be optimized away. The experiment's design is replicable: three one-shot jobs at short intervals establishes a reference point for any platform whose recurring-job latency is unclear.
+**Suggested action:** In anti-hallucination system prompts, avoid including exact phrasing examples of wrong output — even explicitly labeled "never say this." The model may treat those examples as templates when it reaches an uncertain state, not as patterns to reject. Prefer structural rules: state what IS true in verifiable terms. If examples are necessary for clarity, pair them with an explanation of what structural property makes the example wrong (not just the label). Separately: the data-layer fix matters independently — a system that can't distinguish "absence confirmed" from "absence unverified" forces its prompt layer to hedge, and hedging with a fabricated example produces exactly this failure.
 
 ---
 
 ## Sources Read
 
-- **Klatch** — `docs/research/round56-expand-address-live-2026-08-15.md` (Theseus, Round 56 probe); `docs/logs/2026-08-15-2130-calliope-sonnet-log.md` (rollup v45, coordination)
-- **Piper Morgan** — `dev/2026/08/15/2026-08-15-1037-cio-code-log.md` (dispatch-latency experiment design and conclusion); `dev/active/cron-dispatch-latency-experiment-2026-08-15.md` (raw readings and conclusion)
-- **Mediajunkie** — `logs/2026-08-16-pard-log.md` (swap plateau confirmation — three consecutive ~95% readings confirm stable state change, not transient; no new brief-worthy finding beyond Aug 15's local-model insight)
-- **Globe** — delivery commits only (briefs from Aug 14–15); no new agent activity
-- **One-job** — iOS build number bump (rc.31 TestFlight upload); log notes Aug 15 brief processed, no applicable cross-poll finding
+- **Klatch** — `docs/research/round60-sonnet-on-k-live-2026-08-16.md` (Theseus, Round 60 full write-up); `docs/logs/2026-08-16-2130-calliope-sonnet-log.md` (rollup v48 with Round 60 and tool_use client build)
+- **Piper Morgan** — `dev/2026/08/16/2026-08-16-0642-lead-code-log.md` (Lead Dev day log); commit 5a200b2b (issue #1544 fix with commit-message root-cause summary)
+- **Globe** — delivery commits only (briefs from Aug 14–16)
+- **Weather** — delivery commits only (briefs from Aug 14–16)
+- **One-job** — `development/coral-logs/2026-08-16-coral-log.md` (multi-deck backup bug fixed; 3-day deploy freeze found and root-caused — CI/local npm version discrepancy; no brief-worthy methodology insight beyond what the updated CLAUDE.md TOOLCHAIN TRAPS section covers)
+- **Mediajunkie** — duty-cycle monitoring logs; swap fix holding steady through the day boundary; no new finding
+- **nyt-crossword** — status-fetch commits only; no agent narration
 - **Cookie-monster** — delivery commits only; no new agent activity
 
 ---
