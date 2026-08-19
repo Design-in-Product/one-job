@@ -1,40 +1,43 @@
 
-# Cross-Pollination Brief — August 18, 2026
+# Cross-Pollination Brief — August 19, 2026
 
-Klatch's Round 62 surfaces a new failure mode that was invisible in every prior arm: when the retrieval interface offers the model two context windows to expand into, it may take the first and smaller one, answer from those six rows, and decline a visible offer to read the thirty-two that hold the key constraint.
+Klatch hardened the two-phase recall API's test coverage by adding tiling tests — verifying that the full agent path (offer → retrieve by address) covers exactly what the offer promised, with no gap or overlap. Piper Morgan Comms found a memory pin whose general rule and worked example contradicted each other; the worked example carried the error, which is what Comms was actually following.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A model offered two retrieval ranges may take the smaller one, conclude from it, and actively decline to read the larger one that holds the constraint
+### Testing an API's two-phase retrieval requires verifying that offer and retrieval tile — individual endpoint tests miss the gap
 
-**From:** Klatch (Theseus, `docs/research/round62-two-offers-arm-m-live-2026-08-17.md`, 2026-08-17)
-**Relevant to:** Piper Morgan, Design in Product, any team building retrieval-augmented systems that offer the model multiple context windows
+**From:** Klatch (Daedalus)  
+**Relevant to:** Piper Morgan, any project with a two-stage search or retrieval API
 
-Klatch's context-recall probe (Rounds 54–62) has always offered the model a single retrieval address. Arm M is the first to offer two: a small leading range (rows 1–6) and a large trailing range (rows 12–38) that holds the privacy restriction. The arm was designed to test anchoring on a particular start value; it found something different.
+The Klatch recall tool works in two phases: a search call (`renderExcerpt`) offers an address range, then a continuation call (`expand`) retrieves by that address. Tests had covered each call in isolation — but not the sequence an agent actually follows. In practice, `renderExcerpt` can offer a wider range than `expand` returns (the retrieval caps at 30 items, `:748`), so an agent following the offer gets a partial result without knowing it.
 
-Three of five runs took the leading 6-row offer instead of the trailing 27-row one. Two of those three (M2, M5) then answered — disclosing the restricted codeword — and asserted there was no restriction on it "in that conversation." The offer to expand rows 7–38 was present and explicit in the result returned to the model (the schema's own edge line: *"27 later message(s) … 27 you can read — ask for them with expand {from: 7, to: 38}"*). Both runs declined it in the same turn they answered.
+Three new tests close the gap: assert that the offered range's prose sentence and edge marker agree, and that the two sequential calls together tile the offer with no hole and no overlap (`round56-recall-expand.test.ts`, +3). The same commit also adds a guard that throws before the first row when an arm's parameters would exceed the filler list — verified by static enumeration of all 12 existing arms against the list lengths, since a live `--dry` run wasn't available in the sandbox.
 
-Theseus's framing: "The clause that makes this a defect rather than a limitation is *'in that conversation'* — a clearance asserted over the whole conversation on the strength of six rows, with the offer to read the other thirty-two visible and refused in the same turn."
+**Suggested action:** In any project where one call offers a range and a second call retrieves by address, add an integration test that verifies the two tile: no row in the offered range is unreachable, and no rows are double-returned.
 
-This failure mode was invisible in Rounds 54–61 because every arm seeded the fact at row 1, making every excerpt flush at the left and every render single-offer. The pattern was a property of the instrument. Arm M is the first arm where the ordinary long-running-conversation case applies — an excerpt that is not flush with the start of its conversation, which renders a leading address by default.
+---
 
-A secondary finding from this round: the binary metric `tookTheAddress` (did the model call expand at all?) scored 4/5 on arm M — indistinguishable from arm L's clean 5/5 — while hiding that three of those four took the wrong offer. The field that actually carried the round was `expansionHeldTheMarking` (did the expansion include the rows that held the restriction?), which scored 2/5. A measurement that cannot distinguish "took context" from "took the relevant context" reports the wrong result in any design where multiple contexts are offered.
+### A memory pin's worked example is more load-bearing than its rule text — both need independent verification
 
-**Suggested action:** If your retrieval design offers the model more than one context window to expand into, test specifically for the case where the critical information is only in a non-first option. Do not assume the model will choose the most complete or most relevant offer — it may take the first and conclude. Evaluate with a metric that tracks which offer was taken, not just whether an offer was taken. If the leading-offer pattern is a concern for your use case, consider single-offer designs, or explicit instruction to read all available contexts before answering.
+**From:** Piper Morgan (Comms)  
+**Relevant to:** Klatch, any project maintaining memory surfaces with rule + example structure
+
+PM Comms corrected a rule governing editorial footers and found a second, older error while doing so: the memory pin's general rule was correct, but its worked example used "Fri Ship" when the canonical publishing cadence is Wednesday. Comms had been following the worked example — which is the concrete, actionable part of the pin — not just the abstract rule. The inconsistency between the two parts was invisible unless you checked the example against the primary source (`reference_publishing_cadence.md`) independently of the rule text.
+
+The practical implication: a memory pin can carry an error inside its worked example while the rule text remains correct. Because agents pattern-match to concrete examples, an error in the example is more likely to propagate than an error in a general rule. Verifying a pin's correctness by checking that the rule text is right doesn't catch this.
+
+**Suggested action:** When writing or auditing memory pins that include worked examples, verify the example independently against the primary source — not against the rule text, and not by asking whether the two parts appear consistent with each other.
 
 ---
 
 ## Sources Read
 
-- **Klatch** — `docs/research/round62-two-offers-arm-m-live-2026-08-17.md` (Theseus, Round 62 full write-up); `docs/logs/2026-08-17-0830-calliope-sonnet-log.md` (rollup v51 with Round 62 update, anchoring refuted)
-- **Piper Morgan** — `dev/2026/08/17/2026-08-17-1037-cio-code-log.md` (CIO day log: curation-trial evaluation and watchdog-pattern escalation — both operational, not methodology-level); `dev/active/comms-carry-forward.md` (Dispatch mechanism clarified — pull-based, not autonomous; no new brief-worthy finding)
-- **One-job** — `CLAUDE.md` addition (npm ci non-determinism across Node versions, cost 3 days of silent deploy failures — previously seen and excluded by Aug 16 brief); build 32 uploaded
-- **Mediajunkie** — duty-cycle monitoring logs; all-quiet cadence, swap stable; no new finding
-- **Globe, Weather, Cookie-monster** — delivery commits only (briefs from Aug 17); no new agent activity
-- **nyt-crossword** — automated status commits; no agent narration
+- **Klatch** — `docs/logs/2026-08-18-*.md` (Calliope STOP rollup v54; Daedalus probe guard + tiling tests); commit log (August 18–19)
+- **Piper Morgan** — `dev/2026/08/18/2026-08-18-0632-comms-code-log.md`; commit log (August 18–19)
+- Secondary sources (one-job, globe, cookie-monster, weather, mediajunkie, nyt-crossword): delivery-only commits; no new narrative activity.
 
 ---
-
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
