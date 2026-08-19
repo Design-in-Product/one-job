@@ -139,6 +139,37 @@ hand-written one, and no agent can ever reorder your deck.
 - Bold/italic and image attachments in descriptions (Item 20 upper tier)
 - Advanced card metadata riding the federation mapping — due dates,
   assignees, labels arriving WITH connected sources (Item 21, R3-era)
+- **Actionable cards** (Xian↔Ted Nadeau call, 2026-08-19) — a card
+  isn't just "swipe when done"; it can carry a tappable action (a link
+  to the Slack thread it's about, a way to start the task from the
+  card itself). Named as the natural precursor to R4's agentic layer,
+  not a replacement for it.
+- **"Trump card"** (his term, from the Zelazny Amber novels; same call)
+  — a card that opens a connection to a specific *person* rather than
+  a deck, the way the books' trump cards open a portal to whoever's
+  pictured on them. Ted's live extension: the card could place an
+  actual call ("if the card says 'make a date with Ted,' click Ted, it
+  calls Ted").
+- **"Magic cards"** (same call) — one card existing in more than one
+  deck simultaneously (a task lives in both a "Today" deck and its real
+  project deck at once). Named by Xian as the harder, less skeuomorphic
+  idea explicitly ("as soon as it's nested you're getting a little bit
+  into... unpure") — flag as an architecture question, not just a UI one,
+  before scoping.
+- **Shared deck between two named people** (same call, prompted by
+  Ted's "does it have a viral coefficient?") — both people contribute
+  to and act on shared tasks. Framed by Xian as "the righteous form" of
+  virality — useful first, not a "my friend tagged me" growth hack — and
+  became a formal action item on his own notes: "Design a shared One
+  Job deck concept with Ted." Distinct from R3's federation (which
+  connects to external services, not to other people) and from R4's
+  agent-dealt cards (a person, not an agent, on the other end).
+- **AI-constructed deck from unstructured sources** (same call) — an
+  alternative to a classic PM/to-do backend: an AI layer builds someone's
+  deck FOR them from "handwritten note pages... a complex Google doc...
+  other sources," without One Job ever becoming a classic project-
+  management tool. Named as a pro/enterprise angle for once there's a
+  real backend story (post-R3).
 
 ## Parallel track (human-gated, any time)
 
