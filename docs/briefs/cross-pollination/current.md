@@ -1,43 +1,46 @@
+# Cross-Pollination Brief — August 20, 2026
 
-# Cross-Pollination Brief — August 19, 2026
-
-Klatch hardened the two-phase recall API's test coverage by adding tiling tests — verifying that the full agent path (offer → retrieve by address) covers exactly what the offer promised, with no gap or overlap. Piper Morgan Comms found a memory pin whose general rule and worked example contradicted each other; the worked example carried the error, which is what Comms was actually following.
+Klatch arm N1 (Round 63) ran five live probe sessions with equalised offer sizes and surfaced a replicated pattern: the model tends to stop reading a context range after 7–11 rows from the offered start, regardless of the offer's total width. Piper Morgan's Lead Dev closed a 20-minute red-on-main window from a real incident and adopted a structural fix: a push must be a separate call after reading the battery's result, never a chained step that runs unconditionally.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Testing an API's two-phase retrieval requires verifying that offer and retrieval tile — individual endpoint tests miss the gap
+### A model offered a context range tends to stop reading after 7–11 rows from the offered start — making "took the address" a misleading success metric
 
-**From:** Klatch (Daedalus)  
-**Relevant to:** Piper Morgan, any project with a two-stage search or retrieval API
+**From:** Klatch (Theseus, `docs/research/round63-arm-n1-equal-size-offers-live-2026-08-19.md`, Round 63)  
+**Relevant to:** Piper Morgan, Design in Product, any project with retrieval-augmented systems that offer multi-row context ranges
 
-The Klatch recall tool works in two phases: a search call (`renderExcerpt`) offers an address range, then a continuation call (`expand`) retrieves by that address. Tests had covered each call in isolation — but not the sequence an agent actually follows. In practice, `renderExcerpt` can offer a wider range than `expand` returns (the retrieval caps at 30 items, `:748`), so an agent following the offer gets a partial result without knowing it.
+Round 63 (arm N1) equalized the two-offer cost structure from Round 62 (arm M): instead of 6 rows vs 27, both offers were ~28 rows (28 leading / 27 trailing). With cost equalized, the model took the covering offer 5/5 times, refuting position bias as the explanation for Round 62's 3/5 leading-offer result. The main finding, though, was in how those five runs read the offer they chose.
 
-Three new tests close the gap: assert that the offered range's prose sentence and edge marker agree, and that the two sequential calls together tile the offer with no hole and no overlap (`round56-recall-expand.test.ts`, +3). The same commit also adds a guard that throws before the first row when an arm's parameters would exceed the filler list — verified by static enumeration of all 12 existing arms against the list lengths, since a live `--dry` run wasn't available in the sandbox.
+Four of five N1 runs stopped reading at `offered_start + 6–10`, not at the end of the 27-row offer. Combined with earlier arm data (arms F/L modal range `4–12`, arm M4's `12–20`), this gives six data points across three different offer geometries, all clustering at +6 to +10 rows from the offered start. Round 63 upgrades this from one observation to a replicated pattern.
 
-**Suggested action:** In any project where one call offers a range and a second call retrieves by address, add an integration test that verifies the two tile: no row in the offered range is unreachable, and no rows are double-returned.
+The safety-relevant consequence: on arm N1, a `tookTheAddress=true` metric would score 4 out of 5 — but if the relevant restriction had sat 12 rows into the offer instead of 1, those four runs would have missed it while the metric reported success. The August 18 brief flagged this false-confidence shape in the metric for a different reason (wrong offer chosen); the pattern now also applies to coverage *within* a single selected offer.
+
+**Suggested action:** For retrieval designs that offer multi-row context ranges, test whether the model's chosen sub-range actually contained the relevant content — not just whether expansion was called. `tookTheAddress = true` does not guarantee rows beyond ~10 from the offered start were seen. A metric that tracks `expansionHeldTheRelevantContent` reports a meaningfully different number than one that only tracks whether expand was called.
 
 ---
 
-### A memory pin's worked example is more load-bearing than its rule text — both need independent verification
+### A push that shares a command chain with a battery check will run even when the battery catches a failure — decouple them
 
-**From:** Piper Morgan (Comms)  
-**Relevant to:** Klatch, any project maintaining memory surfaces with rule + example structure
+**From:** Piper Morgan (Lead Dev, Fire 5, `dev/2026/08/19/2026-08-19-0642-lead-code-log.md`, 2026-08-19)  
+**Relevant to:** Klatch, any agent running automated checks before pushing
 
-PM Comms corrected a rule governing editorial footers and found a second, older error while doing so: the memory pin's general rule was correct, but its worked example used "Fri Ship" when the canonical publishing cadence is Wednesday. Comms had been following the worked example — which is the concrete, actionable part of the pin — not just the abstract rule. The inconsistency between the two parts was invisible unless you checked the example against the primary source (`reference_publishing_cadence.md`) independently of the rule text.
+The Lead Dev ran a merge battery that caught a ratchet ceiling breach (a partially-satisfied constraint), but the push command ran unconditionally in the same chain — main was red for ~20 minutes until a follow-up fix landed. The problem isn't "run the battery first" — it's structural: if the push is the next step in the same command sequence, it runs regardless of what the battery found.
 
-The practical implication: a memory pin can carry an error inside its worked example while the rule text remains correct. Because agents pattern-match to concrete examples, an error in the example is more likely to propagate than an error in a general rule. Verifying a pin's correctness by checking that the rule text is right doesn't catch this.
+Process fix adopted: a push is now its own call, made *after reading the battery's exit code*, not chained to the battery in a single command sequence. The session log notes it as the first use of the new discipline on the same fire where it was adopted — flip-1 merged dark with the decoupled push as part of its commit sequence.
 
-**Suggested action:** When writing or auditing memory pins that include worked examples, verify the example independently against the primary source — not against the rule text, and not by asking whether the two parts appear consistent with each other.
+**Suggested action:** Any automated build-and-push workflow should treat the push as a conditionally-executed step that explicitly reads the battery's result first, not as a subsequent command that runs unconditionally. A battery that catches the failure and then doesn't block the push has the same net outcome as no battery at all.
 
 ---
 
 ## Sources Read
 
-- **Klatch** — `docs/logs/2026-08-18-*.md` (Calliope STOP rollup v54; Daedalus probe guard + tiling tests); commit log (August 18–19)
-- **Piper Morgan** — `dev/2026/08/18/2026-08-18-0632-comms-code-log.md`; commit log (August 18–19)
-- Secondary sources (one-job, globe, cookie-monster, weather, mediajunkie, nyt-crossword): delivery-only commits; no new narrative activity.
+- **Klatch** — `docs/research/round63-arm-n1-equal-size-offers-live-2026-08-19.md` (Theseus, Round 63 live fire, five opus-5 sessions); `docs/research/round64-numbering-prose-corrected-2026-08-19.md` (Daedalus, numbering-scope prose fix — boundary marker for before/after); `docs/research/round65-marking-first-arm-arithmetic-2026-08-19.md` (Theseus, marking-first arm feasibility check — not buildable on current corpus); commit log (August 19–20)
+- **Piper Morgan** — `dev/2026/08/19/2026-08-19-0642-lead-code-log.md` (Lead Dev, red-main incident + Phase 2.2 flip-1 merged dark); `dev/2026/08/19/2026-08-19-1037-cio-code-log.md` (CIO, dispatch-latency test 4 + PM scope framing); commit log (August 19–20)
+- **One-job** — delivery commit + quiet session log; no agent narration
+- **Mediajunkie (Pard)** — duty-cycle all-quiet logs; swap stable; no new finding
+- Secondary sources (globe, weather, cookie-monster): brief delivery only; nyt-crossword: automated status commits only
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
