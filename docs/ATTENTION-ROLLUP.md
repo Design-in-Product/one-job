@@ -21,6 +21,45 @@ re-published whenever items open or settle.
 
 ## Open
 
+### 🔴 24. rc.32 device pass (2026-08-20): 2 of 5 items surfaced real bugs
+1. **White screen of death on the PWA — happening on his phone right
+   now as of the report.** Live site independently verified fully
+   healthy (all assets 200: index.html, JS bundle, CSS, manifest,
+   sw.js) — this is NOT a server-side outage, it's his device stuck on
+   a stale service worker (matches the exact failure class
+   `pwaUpdateCheck.ts`'s own comment already anticipated: "iOS
+   home-screen PWAs only check for service-worker updates at launch...
+   users can sit on a stale version for days"). His data is not at
+   risk — a render-time crash doesn't touch localStorage, and he has a
+   fresh, verified-by-observation backup from today's own test pass
+   regardless. Gave him a staged, least-destructive-first recovery
+   sequence (restart → force-quit/relaunch → open in Safari directly
+   vs. the home-screen icon → TestFlight as a parallel unaffected
+   surface) and explicitly told him NOT to clear site data yet.
+   **Needs a real fix, not just a workaround** — filed for
+   investigation; likely direction is a version-mismatch detector that
+   can force-unregister a stuck SW without relying on the user finding
+   Safari's site-data settings.
+2. **Shake → confirm "undo" in the dialog fails** (menu-path Undo
+   works fine). Read the code: both paths call the identical
+   `handleUndoLast()`, and the ActionSheet's button wiring looks
+   structurally sound — no bug found by inspection alone. RED ZONE
+   discipline says don't guess a fix without repro clarity; asked him
+   what "fails" actually looked like (silent no-op / error / crash)
+   before touching code.
+
+Passed clean: warm-up/daily-use, backup round trip (the actual fix —
+he opened the export and confirmed all decks present), rooms sift +
+deck switching, iPad pass.
+
+**This changes the submission call**: no longer "just needs a device
+pass" — a real device pass just ran and found two issues on the trust
+surface (a crash + a safety-feature failure). Holding submission until
+both are understood, at minimum the white screen. This is exactly the
+R1 trust gate this whole release plan is built around ("no card lost,
+stranded, unrecoverable") — applying it honestly now that newer code
+is what's being tested, same discipline as everything before it.
+
 ### ✅ 23. Two real bugs found 2026-08-16, both fixed and verified — CLOSED
 Xian found this himself: **"multi-deck breaks the export feature —
 only a few cards are saved."** Real bug, not user error. Root cause:
@@ -70,18 +109,28 @@ simply not be selected for App Store review; build 32 supersedes it in
 TestFlight. Only remaining gate before actual submission: Xian's
 device-pass soak (on the PWA, now genuinely current).
 
-### 🟢 22. Pro-feedback fragments captured 2026-08-13 — full writeup pending
-From chat, ahead of a fuller pass Xian will do "when he can" (may want
-prompting feature-by-feature): opinions forming on how **inchworm view
-ought to work** (unspecified yet — ask him to unpack this when he
-writes it up), and a gap he's hit directly — **no way to delete a deck,
-or merge one deck's contents into another** (currently "Move to another
-deck…" exists only for TOP-LEVEL cards, one at a time, rc.18; there's
-no deck-level delete or deck-into-deck merge). His framing: merging
+### 🟡 22. Pro-feedback — conversational format agreed 2026-08-20, format: I ask, he answers, I log, we triage
+Xian's call on how to do this: not a written-up-cold pass — a
+conversation where I ask about each feature/use case, he gives
+impressions, I log them, then we triage together. Not yet scheduled;
+his call on timing.
+
+**Fragments already captured (2026-08-13), feed the first pass:**
+opinions forming on how **inchworm view ought to work** (unspecified
+yet), and a gap he's hit directly — **no way to delete a deck, or merge
+one deck's contents into another** (currently "Move to another deck…"
+exists only for TOP-LEVEL cards, one at a time, rc.18; no deck-level
+delete or deck-into-deck merge exists at all). His framing: merging
 should land the source deck as a new card inside the target deck by
 default, "to support the unsupported multi-deck collisions" in our
-card-of-cards paradigm. Not scoped or estimated — waiting on his fuller
-writeup before this becomes a build item.
+card-of-cards paradigm.
+
+**Folded in 2026-08-20**: the pro-backup-import-notice question (a
+multi-deck backup imported on a non-pro device already fully restores
+everything today, no gating — deliberate, per PRICING.md's "import must
+never be gated"; what's missing is a friendly notice plus the same
+deck-delete gap above). Same underlying gap as the paragraph above, so
+same pass rather than a separate item.
 
 ### ✅ Native pipeline — CLOSED 2026-08-16 — build 31 uploaded to App Store Connect
 *(Build 31 itself was superseded same day by build 32 — see item 23
@@ -120,13 +169,11 @@ builds without repeating the one-time interactive steps.
    1284×2778, 2064×2752) already land exactly in the current buckets.
    No harness change needed; comment updated for future clarity.
 
-**Only real gate left: your device-pass soak on rc.32** (not yet done
-— artifact has a ~10min routine, test the PWA at onejob.co/app, NOT
-TestFlight — TestFlight carries build 32 as of today, but the PWA is
-still the fast-iterating surface to soak-test, and it's genuinely
-current again after the deploy-freeze fix). Once that clears: the App
-Store submission itself (select build 32, add release notes, submit
-for review) — everything upstream of that button is now done.
+**Device pass RAN 2026-08-20 — see item 24 above.** 4 of 5 items clean;
+2 real issues surfaced (white-screen-of-death on stale PWA cache, and
+shake→undo dialog failing). Submission holds until both are understood
+— superseding the "just needs a device pass" framing below, which is
+now stale.
 
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
