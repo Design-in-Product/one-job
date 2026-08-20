@@ -33,7 +33,6 @@ import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished, inchwormWalk } from '@/domain/tasks';
-import { useShake } from '@/hooks/use-shake';
 import { hasPro } from '@/services/entitlements';
 import { canvasPreviewOn } from '@/services/canvasPreview';
 import { featureOn } from '@/services/featureStages';
@@ -386,9 +385,12 @@ const Index = () => {
 
   // Session-deep undo (Xian, 2026-07-29): the store replays its state from
   // before the last mutation — any mutation, including a whole-deck import.
-  // Reached from the long-press menu and (on devices with motion) a shake,
-  // which asks first rather than acting: a shake can be an accident.
-  const [shakeUndoPrompt, setShakeUndoPrompt] = useState(false);
+  // Reached from the long-press menu. (Shake-to-undo shipped 2026-07-29,
+  // removed 2026-08-20: iOS's own system "Undo Typing" shake gesture wins
+  // the race for the physical shake before our devicemotion listener ever
+  // sees it, so ours never fired and iOS's own dialog undid nothing useful
+  // — a platform collision with no web-exposed fix, not a code bug. See
+  // ATTENTION-ROLLUP.md item 12.)
   const handleUndoLast = async () => {
     const store = getTaskStore();
     if (!store.undoLast) return;
@@ -447,11 +449,6 @@ const Index = () => {
       toast.error(t('toasts.updateFailed', { message: (err as Error).message }));
     }
   };
-  useShake(() => {
-    // Only prompt when there is history — a shake with nothing to undo
-    // should not interrupt anyone.
-    if (getTaskStore().canUndo?.()) setShakeUndoPrompt(true);
-  });
 
   // Undo support: restore a pre-action snapshot of a task (5s toast window).
   // Only offered when the active store implements restoreTask (local/demo).
@@ -768,17 +765,6 @@ const Index = () => {
           </div>
         </div>
       )}
-
-      {/* Shake-to-undo asks before acting (a shake can be an accident) */}
-      <ActionSheet
-        open={shakeUndoPrompt}
-        title={t('undoDialog.title')}
-        actions={[
-          { key: 'undo', label: t('undoDialog.confirm'),
-            onClick: () => { setShakeUndoPrompt(false); handleUndoLast(); } },
-        ]}
-        onClose={() => setShakeUndoPrompt(false)}
-      />
 
       <MoveIntoPicker
         movingCard={movingCardId ? findCardById(tasks, movingCardId) ?? null : null}

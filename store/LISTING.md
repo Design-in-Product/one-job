@@ -81,9 +81,8 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 > deck to reveal, swipe right to complete, swipe left to defer, long-press
 > for the menu (Undo / Add Task / Inchworm walk / Completed / Integrations
 > / Settings — a single-deck device won't show "Decks…", a pro-only
-> entry). Settings includes export/import backup and undo-shake toggle.
-> Shaking the phone after an action also offers to undo it. Haptic
-> feedback fires on swipe commits.
+> entry). Settings includes export/import backup. Haptic feedback fires
+> on swipe commits.
 
 ---
 
@@ -100,6 +99,11 @@ rc.31 (confirmed 2026-08-13, not rc.12):
    Integrations, Settings; Decks… only on multi-deck/pro devices, so
    omitted for the reviewer's plain device) and the shake-to-undo path
    added, which rc.12's notes never mentioned. Applied.
+   **Superseded 2026-08-20**: shake-to-undo removed entirely (root
+   cause diagnosed — iOS's own system "Undo Typing" gesture wins the
+   race and undoes nothing, a platform collision, not fixable from web
+   content). The shake mention above is now stale history; the live
+   review notes (top of this file) reflect the removal.
 3. Screenshots line: now regenerable in one command —
    `node scripts/capture-store-shots.mjs` (see header for env; staging
    sets land in `store/screenshots/staging-<date>/`). Release version

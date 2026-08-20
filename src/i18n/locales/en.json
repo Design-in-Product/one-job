@@ -164,7 +164,7 @@
       "replaceEverything": "Replace my whole deck (can't undo)",
       "importedAsSubdeck": "Added {{count}} cards as a new deck",
       "quietTitle": "Quiet mode",
-      "quietDescription": "Mute the little confirmation messages. Problems still show, and Undo stays in the hold-menu (or shake).",
+      "quietDescription": "Mute the little confirmation messages. Problems still show, and Undo stays in the hold-menu.",
       "proTitle": "Pro features",
       "proCodePlaceholder": "Have a code?",
       "proApply": "Apply",
@@ -174,13 +174,6 @@
       "proRemove": "Remove",
       "proDisabled": "Pro features removed from this device",
       "proSince": "since {{date}}",
-      "shakeTitle": "Shake to undo",
-      "shakeState": {
-        "listening": "Active — a shake will offer Undo.",
-        "awaiting-first-tap": "Waiting for your first tap to request motion access.",
-        "denied": "Blocked — motion access was denied. iOS: aA menu → Website Settings → Motion & Orientation, or reinstall the home-screen app.",
-        "unknown": "No signal yet on this device."
-      },
       "betaTitle": "Beta features",
       "betaDescription": "Early features still being shaped (Inchworm walk, GitHub import). Rough edges expected."
     },
@@ -278,11 +271,6 @@
       "moveIntoTitle": "Move “{{title}}” into…",
       "moveIntoEmpty": "No other card to move this into yet.",
       "moveToDeck": "Move to another deck…"
-    },
-    "undoDialog": {
-      "title": "Undo last action?",
-      "confirm": "Undo",
-      "cancel": "Cancel"
     },
     "decks": {
       "title": "Decks",

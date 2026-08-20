@@ -266,18 +266,8 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         <p className="text-sm text-gray-600">{t(`settings.mode.${storageMode}.description`)}</p>
       </section>
 
-      {/* Shake diagnostic (2026-08-06: "shake not working at all now" —
-          worked on 08-05; cause unknown). Surface the listener state so
-          the next report carries evidence. Healthy = says listening. */}
-      <section className="bg-white rounded-xl shadow p-4">
-        <h3 className="font-semibold text-gray-800">{t('settings.shakeTitle')}</h3>
-        <p className="text-sm text-gray-600">
-          {t(`settings.shakeState.${(() => { try { return localStorage.getItem('oneJobShakeState') ?? 'unknown'; } catch { return 'unknown'; } })()}`)}
-        </p>
-      </section>
-
       {/* Quiet mode (Xian, 2026-07-29): mute the confirmation toasts.
-          Errors always surface; undo stays in the hold-menu and shake. */}
+          Errors always surface; undo stays in the hold-menu. */}
       <section className="bg-white rounded-xl shadow p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
