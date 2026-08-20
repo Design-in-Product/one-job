@@ -162,13 +162,19 @@ Xian's calls (message of 2026-07-29):
 - **Search is a filter on the pile, not a results view** (rooms, from a
   pile of 6 up): typing narrows what the existing sift walks, matching
   title AND description; one-card-at-a-time survives untouched.
-- **Undo enters the grammar twice:** an **Undo** entry leads the
-  hold-menu (mistake recovery is time-sensitive; the rest of that menu
-  is navigation), and **shaking the phone** asks "Undo last action?" —
-  asks, because a shake can be an accident. Session-deep history behind
-  both: every mutation is undoable back to session start, including a
-  whole-deck import. Cross-session recovery stays with the dated
-  snapshots.
+- **Undo lives in the hold-menu:** an **Undo** entry leads it (mistake
+  recovery is time-sensitive; the rest of that menu is navigation).
+  Session-deep history behind it: every mutation is undoable back to
+  session start, including a whole-deck import. Cross-session recovery
+  stays with the dated snapshots.
+  **Shaking the phone also asked "Undo last action?" from 2026-07-29
+  until removed 2026-08-20** — a real device repro (Xian) traced it to
+  a platform collision: iOS's own system "Undo Typing" shake gesture
+  wins the race for the physical shake before our JS ever sees it, so
+  our dialog never fired and iOS's own alert undid nothing useful
+  (there was nothing left for it to act on). No web-exposed API lets a
+  page suppress that OS feature, so no code fix was possible — dropped
+  entirely rather than ship a gesture that silently does nothing.
 
 ### Shipped 2026-07-29 (evening) — R2.1 stages 1–3
 
