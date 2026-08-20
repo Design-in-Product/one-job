@@ -40,41 +40,32 @@ re-published whenever items open or settle.
    investigation; likely direction is a version-mismatch detector that
    can force-unregister a stuck SW without relying on the user finding
    Safari's site-data settings.
-2. **Shake → "undo" fails — DIAGNOSED 2026-08-20, root cause confirmed,
-   not a code bug.** His precise repro nailed it: the dialog he's
-   tapping is titled **"Undo Typing" / "Redo Typing"** — that's iOS's
-   own native system shake-to-undo-text-entry feature (the same one in
-   Notes/Mail), not our app. Confirmed by contrast: our own dialog's
-   string is `"Undo last action?"` / `"Undo"` (`en.json`), completely
-   different wording. iOS's OS-level gesture recognizer catches the
-   shake before our JS `devicemotion` listener does, shows its own
-   alert (with nothing live left to undo, hence the no-op), and likely
-   prevents our own ActionSheet from ever appearing at all. **This
-   fully resolves item 12 below**, open since 2026-07-29 ("ships blind
-   until a device confirms it") — now confirmed broken, with a clear
-   mechanism, not just unverified.
-   **Not fixable with a code patch on the web/PWA surface** — iOS gives
-   web content no way to suppress its own system undo gesture; menu
-   Undo avoids this entirely since it's a tap, not a motion gesture.
-   Real options (his call, not mine to decide unilaterally): (a) drop
-   shake-to-undo on web/PWA, keep menu Undo as the sole path there —
-   my lean; (b) investigate native-layer suppression for the
-   TestFlight/App Store build specifically, where we control the
-   shell — real work, low priority given the small cohort there; (c)
-   leave as-is, which I'd steer away from — a gesture that silently
-   does nothing is worse than no gesture.
+2. **Shake → "undo" fails — DIAGNOSED and REMOVED 2026-08-20, CLOSED.**
+   His precise repro nailed it: the dialog he was tapping was titled
+   **"Undo Typing" / "Redo Typing"** — iOS's own native system
+   shake-to-undo-text-entry feature (same as Notes/Mail), not our app;
+   confirmed by contrast against our own dialog's actual copy
+   (`"Undo last action?"`). iOS's OS-level gesture recognizer caught
+   the shake before our JS ever saw it. No web-exposed API lets a page
+   suppress it — not fixable with a patch. Xian's call: drop it
+   entirely ("not cross-platform... not an MVP feature"). Removed
+   (commit 530fdc0, stamped rc.33): `use-shake.ts` deleted, all wiring
+   in `Index.tsx`/`SettingsView.tsx` gone, i18n strings cleaned up,
+   reviewer-facing copy in `store/LISTING.md` fixed (was describing a
+   feature that no longer exists — needed fixing before submission
+   regardless), historical record in `GESTURES.md` annotated not
+   silently rewritten. 167/167 tests, tsc clean, build clean. **Fully
+   resolves item 12 below**, open since 2026-07-29.
 
 Passed clean: warm-up/daily-use, backup round trip (the actual fix —
 he opened the export and confirmed all decks present), rooms sift +
 deck switching, iPad pass.
 
-**This changes the submission call**: no longer "just needs a device
-pass" — a real device pass just ran and found two issues on the trust
-surface (a crash + a safety-feature failure). Holding submission until
-both are understood, at minimum the white screen. This is exactly the
-R1 trust gate this whole release plan is built around ("no card lost,
-stranded, unrecoverable") — applying it honestly now that newer code
-is what's being tested, same discipline as everything before it.
+**Submission call, updated**: shake-undo is closed. The white screen
+(#1 above) is the one remaining item holding submission — genuinely a
+"stranded" case per the R1 trust gate, unlike shake-undo which turned
+out to be a silent no-op (confusing, not destructive). Investigating
+independently; not asking Xian to keep testing a known-broken instance.
 
 ### ✅ 23. Two real bugs found 2026-08-16, both fixed and verified — CLOSED
 Xian found this himself: **"multi-deck breaks the export feature —
@@ -223,15 +214,14 @@ issues land in a `github` deck on the strip; re-import any time, dupes
 skip by provenance. The token stays on the device. Nothing writes
 upstream — closing issues from One Job is R3.4 and must be earned.
 
-### ✅ 12. Shake-to-undo — RESOLVED 2026-08-20 (see item 24 above), NOT device-independent, real platform collision
+### ✅ 12. Shake-to-undo — REMOVED 2026-08-20 (see item 24 above)
 Was "ships blind until a device confirms it" (2026-07-29). A device
-confirmed it, and it's broken — but not for a code reason. iOS's own
-native "shake to undo typing" system feature wins the race for the
-physical shake gesture before our JS ever sees it, popping an
-unrelated OS dialog. No code fix exists for the web surface; awaiting
-Xian's call in item 24 on whether to drop the web-surface trigger,
-pursue native-layer suppression for the App Store build, or leave it.
-Menu Undo remains fully reliable and unaffected — always was.
+confirmed it, and it was broken — a platform collision (iOS's own
+native "shake to undo typing" wins the race before our JS ever sees
+it), not a code bug, not fixable on the web surface. Xian's call: drop
+it entirely, "not cross-platform... not an MVP feature." Removed,
+stamped rc.33. Menu Undo remains fully reliable and unaffected —
+always was.
 
 ### 🟢 13. Purge copy now says less than it could
 With session undo, "Delete forever" is technically undoable *within the
