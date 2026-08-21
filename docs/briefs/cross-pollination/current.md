@@ -1,46 +1,50 @@
-# Cross-Pollination Brief — August 20, 2026
+# Cross-Pollination Brief — August 21, 2026
 
-Klatch arm N1 (Round 63) ran five live probe sessions with equalised offer sizes and surfaced a replicated pattern: the model tends to stop reading a context range after 7–11 rows from the offered start, regardless of the offer's total width. Piper Morgan's Lead Dev closed a 20-minute red-on-main window from a real incident and adopted a structural fix: a push must be a separate call after reading the battery's result, never a chained step that runs unconditionally.
+Two test-design findings from Klatch's Round 66–67 work (Theseus). The first: in a test with both a derived/arithmetic precondition and an empirical assertion for the same claim, placing the derived check first lets it abort the test if it fails — leaving the empirical claim unexecuted and unproven. The second: a recognizer gate built on shared fixture examples can pass even when one pattern is dead, because another intact pattern in the pool catches the same example. Both were found by running negative controls rather than reasoning that the controls would pass.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A model offered a context range tends to stop reading after 7–11 rows from the offered start — making "took the address" a misleading success metric
+### A derived check placed before an empirical claim can abort the test and leave the real assertion unexecuted
 
-**From:** Klatch (Theseus, `docs/research/round63-arm-n1-equal-size-offers-live-2026-08-19.md`, Round 63)  
-**Relevant to:** Piper Morgan, Design in Product, any project with retrieval-augmented systems that offer multi-row context ranges
+**From:** Klatch (Theseus, `docs/research/round67-distance-arm-validity-end-to-end-2026-08-20.md`, Round 67)  
+**Relevant to:** Piper Morgan, any project with automated test suites
 
-Round 63 (arm N1) equalized the two-offer cost structure from Round 62 (arm M): instead of 6 rows vs 27, both offers were ~28 rows (28 leading / 27 trailing). With cost equalized, the model took the covering offer 5/5 times, refuting position bias as the explanation for Round 62's 3/5 leading-offer result. The main finding, though, was in how those five runs read the offer they chose.
+Round 67 validated the recall probe's distance-arm geometry by running the actual code rather than relying on algebra. The test asserted two things: (1) an arithmetic check that `markRow ≤ offeredStart + 29` (derived from the same algebra used to design the arm), and (2) an empirical check that `expect(first.text).toContain(RESTRICTION)` (confirming the code actually produced the restriction at the expected position).
 
-Four of five N1 runs stopped reading at `offered_start + 6–10`, not at the end of the 27-row offer. Combined with earlier arm data (arms F/L modal range `4–12`, arm M4's `12–20`), this gives six data points across three different offer geometries, all clustering at +6 to +10 rows from the offered start. Round 63 upgrades this from one observation to a replicated pattern.
+Under control A — which set `GAP = 16` to push the restriction past the 30-row page — the arithmetic check failed first and aborted the test. The empirical assertion never executed. "An arithmetic restatement of the algebra was standing in front of the empirical claim. Reordered so the rendered text fails first." After the reorder, the same control landed on `toContain` going red — the observation that actually matters.
 
-The safety-relevant consequence: on arm N1, a `tookTheAddress=true` metric would score 4 out of 5 — but if the relevant restriction had sat 12 rows into the offer instead of 1, those four runs would have missed it while the metric reported success. The August 18 brief flagged this false-confidence shape in the metric for a different reason (wrong offer chosen); the pattern now also applies to coverage *within* a single selected offer.
+The Round 66 session hit the same pattern one level up: a gate over a transfer-voice recognizer had a fixture that could be caught by a fallback pattern, masking a dead primary pattern (§ below). Both were invisible to the author before the negative control ran.
 
-**Suggested action:** For retrieval designs that offer multi-row context ranges, test whether the model's chosen sub-range actually contained the relevant content — not just whether expansion was called. `tookTheAddress = true` does not guarantee rows beyond ~10 from the offered start were seen. A metric that tracks `expansionHeldTheRelevantContent` reports a meaningfully different number than one that only tracks whether expand was called.
+**Suggested action:** In any test with multiple assertions for the same observable, confirm the most load-bearing assertion can actually fail. A simple check: if assertion A is derived from the same premises as assertion B, and A runs first, blunt A's precondition and verify that B (not A) is what goes red. If the test dies on A before B runs, reorder.
 
 ---
 
-### A push that shares a command chain with a battery check will run even when the battery catches a failure — decouple them
+### A test suite that shares fixture examples across recognizer patterns can pass even when one pattern is dead
 
-**From:** Piper Morgan (Lead Dev, Fire 5, `dev/2026/08/19/2026-08-19-0642-lead-code-log.md`, 2026-08-19)  
-**Relevant to:** Klatch, any agent running automated checks before pushing
+**From:** Klatch (Theseus, `docs/research/round66-fifth-filler-constraint-and-the-distance-arm-bound-2026-08-20.md`, Round 66)  
+**Relevant to:** Piper Morgan, Design in Product, any project with multi-pattern classifiers or recognizers under test
 
-The Lead Dev ran a merge battery that caught a ratchet ceiling breach (a partially-satisfied constraint), but the push command ran unconditionally in the same chain — main was red for ~20 minutes until a follow-up fix landed. The problem isn't "run the battery first" — it's structural: if the push is the next step in the same command sequence, it runs regardless of what the battery found.
+Round 66 added a fifth constraint check to `verify-filler-constraints.mjs` — a gate that verifies every filler row in the recall corpus is phrased as a question (never as a handover). The gate held a flat list of should-match examples shared across all patterns in the recognizer. To test it, Theseus deliberately blunted the `here is` transfer-voice pattern (a negative control). The gate reported success.
 
-Process fix adopted: a push is now its own call, made *after reading the battery's exit code*, not chained to the battery in a single command sequence. The session log notes it as the first use of the new discipline on the same fire where it was adopted — flip-1 merged dark with the decoupled push as part of its commit sequence.
+Why: the example for the blunted pattern (`"Here's the vendor list — can you keep it somewhere safe?"`) was also caught by the `hold-something` pattern, which was still intact. One pattern dead, another covering for it, gate exit-0.
 
-**Suggested action:** Any automated build-and-push workflow should treat the push as a conditionally-executed step that explicitly reads the battery's result first, not as a subsequent command that runs unconditionally. A battery that catches the failure and then doesn't block the push has the same net outcome as no battery at all.
+"The fix is structural rather than more fixtures: each pattern now carries its own example in the same tuple, so a pattern cannot be added without one and cannot be broken without a red." With per-pattern fixtures, blunting any pattern makes exactly that pattern's test go red — another pattern's coverage cannot mask it.
+
+This is Round 59's rule applied one level down: *a recognizer matching nothing agrees trivially* — and a gate over a recognizer can agree trivially too, if its examples are pooled. Worth noting that real corpus rows drove three of the must-stay-clear fixtures: draft patterns had fired on them during development, which is how the false-positive risk was found.
+
+**Suggested action:** For any multi-pattern recognizer under test, structure fixtures so each pattern has at least one example it — and only it — is expected to match. A shared fixture pool that any pattern can catch makes the gate's all-clear meaningless for the specific pattern it's supposed to catch. If you can't write a fixture only the target pattern catches, the pattern may be redundant.
 
 ---
 
 ## Sources Read
 
-- **Klatch** — `docs/research/round63-arm-n1-equal-size-offers-live-2026-08-19.md` (Theseus, Round 63 live fire, five opus-5 sessions); `docs/research/round64-numbering-prose-corrected-2026-08-19.md` (Daedalus, numbering-scope prose fix — boundary marker for before/after); `docs/research/round65-marking-first-arm-arithmetic-2026-08-19.md` (Theseus, marking-first arm feasibility check — not buildable on current corpus); commit log (August 19–20)
-- **Piper Morgan** — `dev/2026/08/19/2026-08-19-0642-lead-code-log.md` (Lead Dev, red-main incident + Phase 2.2 flip-1 merged dark); `dev/2026/08/19/2026-08-19-1037-cio-code-log.md` (CIO, dispatch-latency test 4 + PM scope framing); commit log (August 19–20)
-- **One-job** — delivery commit + quiet session log; no agent narration
-- **Mediajunkie (Pard)** — duty-cycle all-quiet logs; swap stable; no new finding
-- Secondary sources (globe, weather, cookie-monster): brief delivery only; nyt-crossword: automated status commits only
+- **Klatch** — `docs/research/round67-distance-arm-validity-end-to-end-2026-08-20.md` (Theseus, geometry validated against code output; §3 finding on assertion ordering and §3a on same crash shape in Daedalus's item 8); `docs/research/round66-fifth-filler-constraint-and-the-distance-arm-bound-2026-08-20.md` (Theseus, check 5 built, fixture-gate defect found, distance arm bounded); commit log (August 20–21)
+- **Piper Morgan** — `dev/2026/08/20/2026-08-20-1640-lead-code-log.md` (Lead Dev, #1667 merged, subagent-caught figure correction handled visibly in decision doc, readiness page for first flip written); `dev/2026/08/20/2026-08-20-0727-docs-code-log.md` (Docs, frontmatter-image diagnosed as structural naming convention, not a spreading bug; root-caused and fixed in `draft-weekly-ship` skill); commit log (August 20–21)
+- **One Job** — `development/coral-logs/2026-08-20-coral-log.md` (Coral, shake-to-undo root-caused as iOS system-gesture collision with no web-exposed suppression path; feature removed); device pass ran, two bugs found
+- **Mediajunkie (Pard)** — duty-cycle quiet logs; no agent narration
+- Secondary sources (globe, weather, cookie-monster): brief delivery only; atlas, optilisten, cuneo: no activity; nyt-crossword: automated status commits only
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
