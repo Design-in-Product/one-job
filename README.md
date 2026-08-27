@@ -17,7 +17,7 @@
 ## 😵 The Problem
 
 - **47 browser tabs** open, 3 todo apps, sticky notes everywhere
-- **Context switching** kills productivity (studies show 23 minutes to refocus!)
+- **Context switching** kills productivity — every interruption costs you the thread, and the list guarantees interruptions
 - Traditional task lists create **anxiety**, not clarity
 - You spend more time **organizing** tasks than **doing** them
 
@@ -29,7 +29,7 @@
 
 ## 🤔 Why One Job?
 
-- **🧠 Psychology-backed**: Single-tasking improves focus by 40% and reduces errors by 50%
+- **🧠 One thing at a time**: seeing one task removes the anxiety of seeing all of them
 - **📱 Mobile-first**: Actually works on your phone (revolutionary, we know!)
 - **⚡ Zero friction**: Swipe right = done. No menus, no clicks, no confusion
 - **🎯 Intentional**: No notifications, badges, or guilt trips about overdue tasks
