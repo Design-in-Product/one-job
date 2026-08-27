@@ -21,6 +21,45 @@ re-published whenever items open or settle.
 
 ## Open
 
+### 🟡 25. Roadmap reordering memo (2026-08-26) — big strategic call, his to make
+Cowork-agent memo (`docs/mail/memo-xian-to-coral-2026-08-26-roadmap-reordering-after-investment-review.md`)
+from a VC-readiness exercise: investment review scored traction 1.0/5,
+distribution 1.5/5; recommends R2 (spatial layer) holds in favor of
+local opt-in instrumentation before any invitations, a near-zero-cost
+"fleet probe" (feed ATTENTION-ROLLUP.md's own open items into a One Job
+deck as cards, see if answering-via-card feels better than
+file-reading), one scoped read-only Todoist integration, and
+recruiting 10 agent-heavy users before 40 ordinary ones.
+
+**Verified independently, not taken on faith**: Question 2 in the memo
+asks whether the white-screen bug (item 24) can occur in the native/
+TestFlight build — checked `vite.config.ts` directly: `mode !==
+'capacitor' && VitePWA(...)` means the ENTIRE PWA plugin (service
+worker, precache manifest) is structurally absent from the native
+build, not just untriggered. The diagnosed failure mechanism (stale SW
+serving a 404'd bundle after a subsequent deploy) cannot exist there —
+this isn't probabilistic, it's a build-configuration fact. §0's premise
+holds with high confidence.
+
+**Flagged, not in the memo**: local instrumentation — even fully
+on-device, no network calls — needs a real check against the App Store
+data-safety questionnaire before shipping (currently "Data Not
+Collected"). My read is it stays accurate as long as export stays
+user-initiated (same shape as the existing backup/export feature), but
+this needs verifying against Apple's actual categories before
+committing, not assumed.
+
+**A concrete build-path worth noting**: the "fleet probe" may need
+zero new app code — a script that reads the rollup and emits a JSON
+in the existing v1/v2 backup-import shape, imported via Settings'
+existing "add as new deck" path, is the whole mechanism. Matches the
+memo's own "no adapter seam" ceiling exactly.
+
+The big calls (R2 holding, cohort recruiting order, pricing-as-
+conversation) are his to make — gave my engineering read where invited,
+did not presume to answer for him. Holding for his direction on what to
+actually execute.
+
 ### 🔴 24. rc.32 device pass (2026-08-20): 2 of 5 items surfaced real bugs
 1. **White screen of death on the PWA — happening on his phone right
    now as of the report.** Live site independently verified fully
