@@ -75,6 +75,22 @@ count. Cards left untended long enough yellow and craze at the edges —
 the passage of time as whimsy, not a nag. Deck-thickness and card-aging
 are **one material language**: time and volume made tactile and kind.
 
+**The deep-vs-broad tension is real, and the product nudges rather than
+resolves it** (Xian, 2026-08-28). Multi-deck is a pro/power-user
+feature, deliberately unrevealed to a new user — so the tension between
+"one pure stack" and "several decks to choose among" is only ever felt
+by someone who opted into more. That tension isn't a design flaw to
+engineer away: it mirrors a real tradeoff in the person's actual life
+(go deep on one thing vs. keep several things warm). The product's
+aspiration is to **nudge people toward the right side of that choice at
+any given moment** — never to pretend the choice doesn't exist. Multi-
+deck still honors covenant 1 because you choose one deck to focus on,
+that deck shows one card, and the card dominates the view; the only new
+decision is *which deck*, and that decision is the honest one. Concrete
+surfaces where this principle should govern future design: deck-
+switching UX, and inchworm mode (which already flattens depth by
+design — the "go broad shallowly" move made explicit).
+
 ## The strategy
 
 One Job does not compete with task databases; it **faces** them. The
