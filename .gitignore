@@ -53,3 +53,6 @@ build/
 
 # App Store Connect API keys — NEVER in the repo (see docs/AMBER-XCODE.md)
 *.p8
+
+# Vite dev-server scratch
+vite.config.ts.timestamp-*
