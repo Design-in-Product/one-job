@@ -55,19 +55,32 @@ in the existing v1/v2 backup-import shape, imported via Settings'
 existing "add as new deck" path, is the whole mechanism. Matches the
 memo's own "no adapter seam" ceiling exactly.
 
-The big calls (R2 holding, cohort recruiting order, pricing-as-
-conversation) are his to make — gave my engineering read where invited,
-did not presume to answer for him. Holding for his direction on what to
-actually execute.
-
-**The memo poses 4 explicit questions back to Xian, still open:**
-(1) does R2 holding sit right; (2) confirm the PWA/native split —
-answered above, independently, with high confidence; (3) which rollup
-items feed the fleet probe, everything or just 🔴/🟡 — my instinct
-matches the memo's own: everything, so the pilot carries real volume;
-(4) should covenant 7 in VISION.md be amended to say "calm-UI
-principle, not a privacy commitment," explicitly, so this doesn't get
-re-litigated in three months.
+**Answered 2026-08-28, via the briefing artifact's composer:**
+1. **R2 holding: "partial/other."** His reasoning, verbatim: hedged
+   "because we can probably walk and chew gum at the same time by
+   developing solid plans and delegating them to well governed
+   subagents, but this should be done only when we are sure we are not
+   diverting priority or resources from meeting our primary goals."
+   **Resolved concretely, not left abstract**: the memo itself already
+   named two R2 exceptions worth doing regardless — R2.3 (the table
+   surface) and dark-mode from the fun shelf, both "store-listing
+   quality issues and cheap." These are exactly the bounded,
+   low-ambiguity candidates his condition describes — delegation cost
+   scales with ambiguity/judgment required, not raw effort, so a
+   small, clearly-scoped visual task is genuinely cheap to review even
+   if built by a subagent, while R2.2 (zoom continuum) or R2.8 (kinetic
+   conversation) would cost real review attention regardless of who
+   writes the code. **Proposed reading: R2.3 + dark-mode proceed now
+   (already scoped, already an exception), the rest of R2 holds until
+   the priority items have real evidence.** Awaiting his confirmation
+   before starting either.
+2. **PWA/native split** — confirmed above independently; no action
+   needed from him.
+3. **Fleet probe scope: "everything."** Confirmed, matches instinct.
+4. **Covenant 7: "yes, amend it."** Done same day — `docs/VISION.md`
+   now states explicitly that covenant 7 governs what the deck's UI
+   renders, not what the app may privately know about its own use
+   (commit 245f981).
 
 **Dan's real feedback (2026-08-26 chat, pasted in full) is the
 qualitative evidence sitting behind this memo, not yet formally
