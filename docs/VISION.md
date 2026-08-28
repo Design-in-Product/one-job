@@ -106,7 +106,12 @@ Asana task are the same event: a card arriving with provenance.
    the house rule).
 7. The count is one or none. The app never renders the pile as a number
    that could become dread — depth is felt (a thickening deck), never
-   tallied.
+   tallied. **This is a calm-UI principle governing what the interface
+   shows, not a privacy commitment about what the app may know locally
+   about its own use** (Xian, 2026-08-28 — written down explicitly so
+   it isn't re-litigated later: local, opt-in-export usage
+   instrumentation does not violate this covenant, provided nothing it
+   measures is ever surfaced as a number in the deck itself).
 
 ## The releases, in one line each
 
