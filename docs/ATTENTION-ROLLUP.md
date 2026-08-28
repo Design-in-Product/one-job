@@ -60,6 +60,31 @@ conversation) are his to make — gave my engineering read where invited,
 did not presume to answer for him. Holding for his direction on what to
 actually execute.
 
+**The memo poses 4 explicit questions back to Xian, still open:**
+(1) does R2 holding sit right; (2) confirm the PWA/native split —
+answered above, independently, with high confidence; (3) which rollup
+items feed the fleet probe, everything or just 🔴/🟡 — my instinct
+matches the memo's own: everything, so the pilot carries real volume;
+(4) should covenant 7 in VISION.md be amended to say "calm-UI
+principle, not a privacy commitment," explicitly, so this doesn't get
+re-litigated in three months.
+
+**Dan's real feedback (2026-08-26 chat, pasted in full) is the
+qualitative evidence sitting behind this memo, not yet formally
+triaged**: confusion about web-vs-native being the same app (a real
+onboarding-copy gap); "the experience is beautiful," empty state "a
+little dry" (his own aside); activated immediately by populating cards
+right away (the exact quote item 25's memo already cites); his
+instinct was reversed swipe direction (left=complete) though he valued
+the intentionality of the current design once he understood it; and
+his central, unprompted question — does this replace his existing
+to-do apps, or sit as a decision layer on top of them — which
+independently validates the memo's Todoist-integration and
+layer-not-replacement framing without having seen the memo. Xian's own
+reply to Dan already named the real tension: multi-deck utility vs.
+the one-card simplicity that's the whole point. This is the live
+thread in the ongoing Pro-feedback interview (item 22).
+
 ### 🔴 24. rc.32 device pass (2026-08-20): 2 of 5 items surfaced real bugs
 1. **White screen of death on the PWA — happening on his phone right
    now as of the report.** Live site independently verified fully
@@ -224,13 +249,10 @@ now stale.
 *(Settled 2026-08-13: iPad presentation — honest centered column, no
 scaling, decided 2026-08-06 addendum; confirmed still correct.)*
 
-### 🟡 19. Enable Dan — with one line at the top of his instructions
-Device pass is GREEN (all 8 checks, on the real TestFlight artifact,
-Settings confirming rc.12). Dan is unblocked. Relay's hard-won ask —
-after a false alarm where symptoms were filed against a build that
-wasn't running: **Dan's instructions must open with "first, confirm
-Settings shows v1.0.0-rc.12."** A tester filing bugs against a build
-they aren't running sends everyone chasing ghosts.
+### ✅ 19. Enable Dan — DONE, and now the pitch memo's own primary evidence
+Dan's been testing for weeks now (his real chat feedback, 2026-08-26,
+is the qualitative signal cited in item 25's roadmap memo — his
+activation quote appears verbatim in it). No longer an open item.
 
 ### ✅ 20. CLOSED 2026-08-08 — ASC API key live (was: highest-leverage unblock)
 Relay's handoff names it plainly: with Amber's Xcode (your one install
@@ -240,18 +262,21 @@ successor. Runbook: docs/AMBER-XCODE.md §3. It also honestly shrinks
 the Relay role to "a physical device in a hand" — which is exactly the
 input your migration decision needs.
 
-### 🟡 17. Morning item: paste a real PAT and watch your issues become cards
-R3.2 shipped tonight (rc.21) — read-only GitHub import, proven against
-a MOCKED API end to end (import, PR filtering, provenance dedupe,
-idempotent re-import, the github deck on the strip). The one thing a
-mock cannot prove is GitHub itself accepting a real token.
-
-**Your two minutes:** make a fine-grained PAT with read-only Issues
-access → open the app (a ?pro=comp device) → hold background →
-Integrations → paste → "Import my open issues." Your open assigned
-issues land in a `github` deck on the strip; re-import any time, dupes
-skip by provenance. The token stays on the device. Nothing writes
-upstream — closing issues from One Job is R3.4 and must be earned.
+### ✅ 17. Real-PAT test — SUPERSEDED BY REAL USE (2026-08-19), and the result matters now
+This item asked for a two-minute real-token test against the MOCKED-only
+GitHub import. That's long since happened via actual daily use, not the
+scripted test — and it surfaced exactly the failure a mock couldn't
+have shown: on the Ted Nadeau call (08-19) Xian described it in his own
+words as *"it pulls in like every single issue, it makes like a
+thousand cards... overflow the buffer. Not a really good use case
+yet... it's a beta feature."* Confirmed, real, known.
+**This item is closed but its finding is now load-bearing**: the
+08-26 roadmap memo (item 25) makes fixing or hiding this a hard
+precondition before Todoist ships — "shipping a second integration
+while the first one is embarrassing is how a product acquires a
+reputation for integrations being broken." Repo-scoping is named as a
+small adapter change. Rolled into item 25's priority list rather than
+tracked separately.
 
 ### ✅ 12. Shake-to-undo — REMOVED 2026-08-20 (see item 24 above)
 Was "ships blind until a device confirms it" (2026-07-29). A device
@@ -344,31 +369,19 @@ works, and hard-coding 8081 breaks your muscle memory on the day
 mediajunkie's 8080 retires (pending your call, per Pard). Documented
 instead. Tell me if you'd rather I pin it.
 
-### 🟡 5b. Migration plan DRAFTED (08-04) — one small new call inside
-`docs/plans/2026-08-04-relay-migration-plan.md`: unbundles Relay's
-three jobs (git → code agents; build/upload → Amber unattended;
-physical-device duties → kindbook successor), sequences the steps with
-the two auth gates you already hold (keystore 18, Amber 20), and asks
-ONE new question: does the successor keep the name Relay? (My lean:
-yes — same thread, smaller role.)
-
-### 🟡 5a. NEW REQUIREMENT for the Relay migration (Xian, 08-02)
-The kindbook-successor Relay must **delegate GitHub work to code
-agents** — the current Relay relies on Xian's hands for all git
-operations ("really not a great process," his words; the 07-25
-undelivered-mail incident is the proof). This goes into the migration
-plan as a hard requirement and into the successor's brief. My draft
-plan lands after your rc.12 smoke test (pipeline stays untouched
-mid-promotion).
-
-### 🟡 5. Relay's future — DIRECTION SET 07-31; migration plan pending
-Xian: "Amber seems like a natural home. Relay is a cowork agent so as
-to operate the computer more readily. I am open to how to migrate those
-functionalities." Pard's infra read concurs (always-on, one Xcode, the
-wedge as evidence), with the cost named: submission-forced macOS updates
-become fleet reboot events. **Remaining decision is the migration plan's
-shape** — I'll draft one after the rc.12 cut lands (not during: never
-change the pipeline mid-cut). Relay keeps the current cut unchanged.
+### ✅ 5/5a/5b. Relay migration — SUPERSEDED BY EVENTS, stale since 2026-08-09
+These three items tracked an active migration-planning process (unbundle
+Relay's three jobs, pick a successor name, delegate git to code agents).
+**That process didn't conclude the way these items assumed.** Relay-on-
+kindbook was **paused with honors** (`docs/mail/memo-coral-to-relay-2026-08-09-map-closed.md`)
+after a full capability map found the git-delegation requirement (5a)
+couldn't be met on that surface at all — no standing kindbook agent, task-
+scoped sessions on demand only. The ASC API key (item 20) made the actual
+build pipeline the App-Store-submission unblock these items were reaching
+for, via a different, simpler path than a Relay successor. These three
+sat open and unmarked for weeks after being overtaken — caught in this
+2026-08-28 rollup refresh, not before. Native build pipeline runbook:
+`docs/AMBER-XCODE.md`.
 
 ### 🟢 10. REQUIREMENTS.md has drifted (doc debt, not urgent)
 It's dated 2026-07-04 and its status line still reads *"concept-model
