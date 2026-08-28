@@ -41,13 +41,17 @@ serving a 404'd bundle after a subsequent deploy) cannot exist there —
 this isn't probabilistic, it's a build-configuration fact. §0's premise
 holds with high confidence.
 
-**Flagged, not in the memo**: local instrumentation — even fully
-on-device, no network calls — needs a real check against the App Store
-data-safety questionnaire before shipping (currently "Data Not
-Collected"). My read is it stays accurate as long as export stays
-user-initiated (same shape as the existing backup/export feature), but
-this needs verifying against Apple's actual categories before
-committing, not assumed.
+**Data-safety check: RESOLVED 2026-08-28, verified against Apple's own
+published definition** (developer.apple.com/app-store/app-privacy-details):
+*"Data that is processed only on device is not 'collected' and does not
+need to be disclosed."* Local-only counters are definitively fine —
+"Data Not Collected" holds. The opt-in export is mechanically identical
+to the existing backup export (app writes a file, hands it to the share
+sheet, user owns what happens next — the app never transmits anything),
+so it inherits the same standing. **The one line not to cross**: any
+in-app "send to developer" that transmits to a server we can read
+would flip the label to collection — if that's ever wanted, the
+privacy label changes with it, deliberately, not as a surprise.
 
 **A concrete build-path worth noting**: the "fleet probe" may need
 zero new app code — a script that reads the rollup and emits a JSON
