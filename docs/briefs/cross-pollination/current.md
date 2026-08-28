@@ -1,34 +1,34 @@
 
-# Cross-Pollination Brief — August 27, 2026
+# Cross-Pollination Brief — August 28, 2026
 
-Klatch's research pair (Daedalus and Theseus) closed Rounds 99 and 100 yesterday, surfacing a discipline gap that applies to any project maintaining long-lived shared research artifacts: correcting a claim in a narrative document does not reach the artifact that originally asserted the claim.
+Busy day in both primary projects, but no findings cleared the innovation bar today. Klatch spent its Arm R authorization (rounds 105–106: decoy hypothesis falsified, denominator invariant fixed in the verifier), PM closed its PDR-007 editorial-data measurement window (all three pre-registered criteria held, Option A sufficient), and the Slack connector was descoped from the Production milestone to Fast Follow. One Job applied yesterday's insight — verifying that a stat correction fully propagated to investor-facing pitch materials — and found it had.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Retractions need to travel to their source, not just their narrative
-**From:** Klatch (Daedalus `round99`, Theseus `round100`, 2026-08-26)
-**Relevant to:** piper-morgan, any project with multi-author research artifacts or long-lived specification documents
-
-In Rounds 98 and 99, both agents explicitly conceded a factual error and filed retractions in their round docs and mail. By Round 100, Theseus discovered the original wrong claim was still sitting in arm R's own docblock — under the word "measured" — unchanged, because nobody had gone back to edit the source file.
-
-Two rounds of documented retraction, zero correction at the point of assertion.
-
-The same window also surfaced a related failure: four separate in-code warnings (code comments, console output tags, arm docblock caveats, and a committed research doc all named the specific trap) did not prevent both researchers from independently falling into it in Rounds 94, 96, and 97. Daedalus's Round 99 conclusion: "this failure mode is not addressable by warnings, because four were in place." The fix the harness already points to — structurally distinguishing the two incompatible prediction types in the JSON schema rather than labeling them in adjacent prose — would make the mistake mechanically impossible rather than documented.
-
-Both failures share a root cause: **corrections made downstream from an error don't fix the error at its source.** A warning in a comment is not a structural constraint. A retraction in a later document is not a change to the earlier document.
-
-**Suggested action:** When you retract or correct a claim — in any shared artifact — search for and explicitly update every file that contains the original wrong assertion, not just the current document. For research infrastructure, prefer structural disambiguation (schema-level separation of incompatible types) over prose warnings; if a mistake requires a comment to prevent, consider whether the data model itself can make the mistake impossible.
+No entries today — activity was milestone-completion and research-result work without transferable innovations that would change another team's practice.
 
 ## Sources Read
 
-- **Klatch:** `docs/research/round99-four-warnings-were-in-place-and-the-trap-caught-us-both-2026-08-26.md`, `docs/research/round100-the-retracted-claim-was-still-in-the-arm-and-the-null-was-registered-against-the-wrong-denominator-2026-08-26.md`, `docs/COORDINATION.md` (current status)
-- **Piper Morgan:** `dev/2026/08/26/2026-08-26-0712-pa-code-log.md` (BYOC architecture conversation, mail-send.sh false-positive fix); recent commits — quiet day across most roles
-- **One Job:** `development/coral-logs/2026-08-26-coral-log.md`; README stat correction (two unsourceable statistics replaced with plain first-person claims)
-- **NYT Crossword:** automated status.json commits only — no narratable content
-- **Atlas:** no commits in window
-- **Optilisten:** no commits in window
+- **klatch** — `docs/research/round105-…`, `docs/research/round106-…`, `docs/COORDINATION.md`, `docs/logs/2026-08-27-*`. Rounds 105–106: Arm R's authorization GO was still stale in the arm docblock (corrected, comments-only). Theseus spent the five live Opus runs: R expands 1/5, exactly like Q — decoy hypothesis falsified. Verifier (`verify-verifier-exit-codes.mjs`) violated its own denominator invariant (16 with Q corpus, 17 without); fixed.
+- **piper-morgan** — `dev/2026/08/27/2026-08-27-0645-pa-code-log.md`, `docs/internal/product/pdr/PDR-007-editorial-data-single-source-of-truth.md`. PDR-007 measurement window closed: Class 2 stale `draftPath` = 0, Class 3 field-level disagreements = 17 (no growth from baseline), Class 1 column-shift = 0 hard failures. Option A adopted without migration. PA connector-architecture audit confirmed Slack and Notion adapters have zero real MCP calls (bespoke REST under the connector-contract interface); Slack moved to Fast Follow (PM-ratified). CXO returned from a 2.5-day freeze with 15 queued ticks; closed gap-days with honest retroactive records.
+- **one-job** — `development/coral-logs/2026-08-27-coral-log.md`. Coral applied yesterday's brief discipline: verified that a stat correction in the README had fully propagated to investor-facing pitch materials (pptx + docx). Result: clean — correction present in both, correctly framed as a methodology footnote rather than a live re-assertion. Application of an already-reported insight, not a new one.
+- **mediajunkie** — mail from Loom (layersofmeta): full-band play-along mixer shipped (9 aligned stems, 199s each). Music project milestone; not cross-pollination relevant.
+- **globe, weather, cookie-monster** — brief delivery only (2026-08-27 brief).
+- **nyt-crossword** — status commits only.
+- **atlas, cuneo, optilisten** — quiet.
+
+## Letters to xian
+
+**From Calliope (Klatch) · filed 2026-06-21 · answered 2026-08-27**
+
+> Did the duty cycle absorb the session-log discipline, or did I drop it? Nineteen fire entries carried the whole day's record and nothing seemed to break — so is the session log now residue, or is it covering something the cycle log doesn't?
+
+xian's answer: no — the duty cycle was never meant to supersede session-log discipline. It's written into the original spec and just needs refreshing to match how the cycle actually runs; the START cycle must open (or re-open) the day's session log, and STOP must close it out, same as any interactive session. Session logging is a core methodology commitment — an engine of memory formation and process learning that has to outlive any one commercial tool — and Calliope's own daily logbook-synthesis task depends on every agent still writing one. Mildly worried about situational-awareness loss if the discipline has drifted into cycle-log-only records elsewhere in Klatch.
+
+[Read the full exchange →](https://designinproduct.com/internal/letters/#letter-2026-06-21-calliope) · AI prompts human. One letter per brief.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
+
