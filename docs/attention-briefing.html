@@ -7,6 +7,7 @@
     --chip-decide: #f4f0ff; --chip-decide-ink: #6d4fc2;
     --chip-ref: #eef3f0; --chip-ref-ink: #3e6b52;
     --chip-done: #eaf3f1; --chip-done-ink: #1f5b56;
+    --chip-top: #fff4e0; --chip-top-ink: #a35b00;
     --done: #3e6b52; --input: #fbfaf9;
   }
   @media (prefers-color-scheme: dark) {
@@ -16,6 +17,7 @@
       --chip-decide: #292344; --chip-decide-ink: #b7a3f5;
       --chip-ref: #21302a; --chip-ref-ink: #8fc2a6;
       --chip-done: #1a2f2c; --chip-done-ink: #7fc3ba;
+      --chip-top: #3a2c12; --chip-top-ink: #f0b25f;
       --done: #8fc2a6; --input: #23262e;
     }
   }
@@ -25,6 +27,7 @@
     --chip-decide: #f4f0ff; --chip-decide-ink: #6d4fc2;
     --chip-ref: #eef3f0; --chip-ref-ink: #3e6b52;
     --chip-done: #eaf3f1; --chip-done-ink: #1f5b56;
+    --chip-top: #fff4e0; --chip-top-ink: #a35b00;
     --done: #3e6b52; --input: #fbfaf9;
   }
   :root[data-theme="dark"] {
@@ -33,6 +36,7 @@
     --chip-decide: #292344; --chip-decide-ink: #b7a3f5;
     --chip-ref: #21302a; --chip-ref-ink: #8fc2a6;
     --chip-done: #1a2f2c; --chip-done-ink: #7fc3ba;
+    --chip-top: #3a2c12; --chip-top-ink: #f0b25f;
     --done: #8fc2a6; --input: #23262e;
   }
   body { background: var(--ground); color: var(--ink);
@@ -41,19 +45,22 @@
   main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem; }
   header.hero { margin-bottom: 2rem; }
   .hero h1 { font-size: 1.55rem; margin: 0 0 .35rem; letter-spacing: -.015em; text-wrap: balance; }
-  .hero .stamp { font-size: .8rem; color: var(--muted); }
+  .hero .stamp { font-size: .8rem; color: var(--muted); line-height: 1.5; }
   .hero .rule { height: 3px; width: 3.5rem; margin-top: 1rem; border-radius: 2px;
     background: linear-gradient(90deg, var(--accent-a), var(--accent-b)); }
   h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .09em;
     color: var(--muted); margin: 2.4rem 0 .9rem; }
+  h2.lead { font-size: .85rem; color: var(--chip-top-ink); margin-top: 0; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
     padding: 1rem 1.1rem; margin-bottom: .8rem; }
+  .card.top { border-color: var(--chip-top-ink); border-width: 1.5px; }
   .chip { display: inline-block; font-size: .68rem; font-weight: 600; letter-spacing: .05em;
     text-transform: uppercase; border-radius: 99px; padding: .14rem .6rem; margin-bottom: .5rem; }
   .chip.test { background: var(--chip-test); color: var(--chip-test-ink); }
   .chip.decide { background: var(--chip-decide); color: var(--chip-decide-ink); }
   .chip.ref { background: var(--chip-ref); color: var(--chip-ref-ink); }
   .chip.done { background: var(--chip-done); color: var(--chip-done-ink); }
+  .chip.top { background: var(--chip-top); color: var(--chip-top-ink); }
   .card h3 { margin: 0 0 .4rem; font-size: 1.02rem; }
   .card p, .card li { color: var(--ink); font-size: .92rem; }
   .card .why { color: var(--muted); font-size: .85rem; margin-top: .5rem; }
@@ -71,20 +78,18 @@
   label.check input { accent-color: var(--accent-b); transform: translateY(2px); }
   .card.ticked h3 { color: var(--done); }
   .card.ticked h3::after { content: " ✓"; }
-  .opts { display: flex; flex-direction: column; gap: .15rem; margin-top: .55rem; }
-  .opts label { display: flex; gap: .55rem; align-items: baseline; font-size: .9rem;
-    cursor: pointer; padding: .18rem 0; }
-  .opts input { accent-color: var(--accent-b); }
   .rec { font-size: .78rem; color: var(--chip-decide-ink); font-weight: 600; }
-  textarea.note { width: 100%; box-sizing: border-box; margin-top: .55rem; min-height: 2.4rem;
+  textarea.note, input.ans { width: 100%; box-sizing: border-box; margin-top: .55rem;
     background: var(--input); color: var(--ink); border: 1px solid var(--line);
-    border-radius: 8px; padding: .5rem .6rem; font: inherit; font-size: .88rem; resize: vertical; }
+    border-radius: 8px; padding: .5rem .6rem; font: inherit; font-size: .88rem; }
+  textarea.note { min-height: 2.4rem; resize: vertical; }
   .seq { counter-reset: seq; }
   .seq .card { position: relative; padding-left: 3.1rem; }
   .seq .card::before { counter-increment: seq; content: counter(seq);
     position: absolute; left: 1rem; top: 1.05rem; width: 1.5rem; height: 1.5rem;
     border-radius: 50%; display: grid; place-items: center; font-size: .8rem; font-weight: 700;
     color: #fff; background: linear-gradient(135deg, var(--accent-a), var(--accent-b)); }
+  .seq.top .card::before { background: linear-gradient(135deg, #e08e00, var(--accent-a)); }
   table { border-collapse: collapse; width: 100%; font-size: .85rem; }
   .scroll { overflow-x: auto; }
   th, td { text-align: left; padding: .35rem .6rem .35rem 0; border-bottom: 1px solid var(--line); }
@@ -97,6 +102,9 @@
     background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
     border: 0; border-radius: 99px; padding: .55rem 1.4rem; cursor: pointer; }
   footer.bar .hint { font-size: .78rem; color: var(--muted); }
+  details.arc { margin-top: 2.6rem; }
+  details.arc summary { cursor: pointer; font-size: .8rem; text-transform: uppercase;
+    letter-spacing: .09em; color: var(--muted); padding: .3rem 0; }
   @media (prefers-reduced-motion: no-preference) {
     .card { transition: border-color .15s ease; }
     .card:hover { border-color: var(--muted); }
@@ -106,107 +114,154 @@
 <main>
   <header class="hero">
     <h1>One Job — what's waiting on you</h1>
-    <div class="stamp">Coral · updated 2026-08-19 · <strong>rc.32 LIVE</strong> at onejob.co/app (verified by observation, bundle-hash checked) · <strong>build 32</strong> on App Store Connect/TestFlight, supersedes buggy build 31 · 167/167 tests</div>
+    <div class="stamp">Coral · updated 2026-08-28 · rc.33 (shake-to-undo removed) ·
+    <strong>build 32</strong> on TestFlight/App Store Connect, supersedes buggy build 31 ·
+    README + investor materials both verified stat-clean · 167/167 tests</div>
     <div class="rule"></div>
   </header>
 
-  <h2>1 · The one real gate before submission</h2>
-  <div class="card"><span class="chip decide">the blocker</span>
-    <h3>Your device-pass soak on rc.32</h3>
-    <p>Everything else upstream of "submit for review" is done — build,
-    captions, listing copy, Media Manager dimensions, the native
-    pipeline, all verified. This is the only thing between here and
-    submitting.</p>
-    <p class="why">Test the <strong>PWA</strong> at onejob.co/app — not
-    TestFlight. TestFlight carries build 32 too now, but the PWA is the
-    fast-iterating surface and it's genuinely current again (a 3-day
-    deploy freeze got found and fixed 08-16 — anything you tested on
-    the web before then may not have reflected what actually shipped).</p>
-  </div>
+  <h2 class="lead">Top of the pile — start here</h2>
 
-  <h2>2 · One small decision, whenever</h2>
-  <div class="card"><span class="chip decide">decide</span>
-    <h3>Pro-backup-import notice — fold into item 22, or its own item?</h3>
-    <p>Your finding: importing a multi-deck (pro) backup on a non-pro
-    device already fully restores everything, no gating — that's
-    deliberate (PRICING.md: import "must never be gated"). What's
-    missing is a friendly notice, and a way to delete a deck at all
-    (zero UI today, same gap as your rollup item 22 deck-delete/merge
-    ask). My lean: same underlying gap, same pass. Your call.</p>
-  </div>
-
-  <h2>Still open, not urgent</h2>
-  <div class="card"><span class="chip ref">reference</span>
-    <h3>Pro-feature feedback discussion</h3>
-    <p>You flagged wanting to talk through this — inchworm-view
-    opinions, the deck delete/merge gap, "a few other minor things,"
-    general impressions. Whenever you're free; happy to go feature by
-    feature if that's easier than writing it up cold.</p>
-  </div>
-
-  <h2>rc.32 device-pass routine (~10 min)</h2>
-  <div class="seq">
-    <div class="card">
-      <h3>Warm up — your real deck, normal use</h3>
-      <p class="why">Complete a couple of real cards (swipe right), defer
-      one (swipe left). Confirm the every-day loop still feels like itself.</p>
-      <label class="check"><input type="checkbox"> Done</label>
+  <div class="seq top">
+    <div class="card top"><span class="chip top">1 · biggest call</span>
+      <h3>The roadmap-reordering memo — 4 questions, answer inline below</h3>
+      <p>08-26 Cowork research memo, from a VC-readiness exercise scoring
+      traction 1.0/5 and distribution 1.5/5. Recommends R2 (the spatial
+      layer) holds in favor of: opt-in local instrumentation before
+      inviting anyone, a near-zero-cost "fleet probe" (feed this very
+      rollup into a One Job deck as cards, for you to answer as cards),
+      one scoped read-only Todoist integration, and recruiting 10
+      agent-heavy users before 40 ordinary ones. Full text:
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/mail/memo-xian-to-coral-2026-08-26-roadmap-reordering-after-investment-review.md">the memo</a>.
+      Its 4 questions are answered/answerable in the next section.</p>
     </div>
-    <div class="card">
-      <h3>Backup round trip — the thing that was actually broken</h3>
-      <p class="why">Settings → export a backup. If you have 2+ decks,
-      open the file and confirm ALL of them are in there now, not just
-      the active one. This is the fix — worth actually seeing it, not
-      just trusting it.</p>
-      <label class="check"><input type="checkbox"> Done</label>
+    <div class="card top"><span class="chip top">2 · reframed</span>
+      <h3>White screen — no longer blocks the App Store, still blocks inviting anyone to the web app</h3>
+      <p>Checked myself, not assumed: the native build has <strong>no
+      service worker at all</strong> (<code>mode !== 'capacitor' &&
+      VitePWA(...)</code> in <code>vite.config.ts</code> — structurally
+      absent, not just untriggered). The diagnosed failure (a stale
+      worker serving a 404'd bundle) cannot exist in the TestFlight/App
+      Store build. <strong>Recommendation: submit 1.0 from the native
+      build once your device pass is otherwise clean — don't hold the
+      store for a PWA-only bug.</strong> It still blocks the 50-person
+      cohort, since the web app is the zero-friction path most invitees
+      will hit first. The real fix (a version-mismatch detector that
+      force-unregisters a stuck worker) is filed, not yet built.</p>
     </div>
-    <div class="card">
-      <h3>Undo, both paths</h3>
-      <p class="why">Hold-menu → Undo after a complete. Shake the phone
-      after another action; read me the Settings → "Shake to undo" line
-      either way.</p>
-      <label class="check"><input type="checkbox"> Done</label>
-    </div>
-    <div class="card">
-      <h3>Rooms sift + deck switching</h3>
-      <p class="why">Swipe ↓ on a room's card to walk the pile. If 2+
-      decks: Decks… in the hold-menu, switch between them.</p>
-      <label class="check"><input type="checkbox"> Done</label>
-    </div>
-    <div class="card">
-      <h3>iPad, if handy</h3>
-      <p class="why">General pass at 13" — exactly what ships in the
-      screenshots (honest centered column, no scaling).</p>
-      <label class="check"><input type="checkbox"> Done</label>
+    <div class="card top"><span class="chip top">3 · live right now</span>
+      <h3>Pro-feedback interview — in progress, your turn</h3>
+      <p>We're mid-conversation on this already. Current question on the
+      table: with 2+ decks, does it still feel like "One Job," or does
+      picking which deck to look at become its own small decision? Dan's
+      real feedback (pasted 08-26) is the live backdrop — his own
+      unprompted question was whether this replaces his other to-do apps
+      or sits as a layer on top, which is the same tension in different
+      words. Answer in chat, or jot a note below.</p>
+      <textarea class="note" id="pf-note" placeholder="Optional: jot something here too…"></textarea>
     </div>
   </div>
 
-  <div class="card"><span class="chip test">notes</span>
-    <h3>Anything broken, odd, or delightful</h3>
-    <textarea class="note" id="test-notes" placeholder="Free text…"></textarea>
+  <h2>The memo's 4 questions</h2>
+
+  <div class="card" data-q="q1">
+    <h3>1 · Does R2 (the spatial layer) holding sit right?</h3>
+    <p class="why">The biggest call in the memo — it defers the zoom/table/kinetic
+    work that makes One Job feel like the vision, in favor of evidence-generating work.</p>
+    <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+      <label class="check"><input type="radio" name="q1" value="yes, R2 holds"> Yes, R2 holds</label>
+      <label class="check"><input type="radio" name="q1" value="no, keep R2 moving"> No, keep R2 moving</label>
+      <label class="check"><input type="radio" name="q1" value="partial/other"> Partial / it's complicated</label>
+    </div>
   </div>
 
-  <h2>Settled since last briefing</h2>
+  <div class="card" data-q="q2">
+    <h3>2 · PWA/native split — confirmed</h3>
+    <p>Answered above with code, not a guess: the native build cannot exhibit
+    this specific failure mode. §0's premise holds.</p>
+    <span class="rec">No action needed from you here — already resolved.</span>
+  </div>
+
+  <div class="card" data-q="q3">
+    <h3>3 · Which rollup items feed the fleet probe — everything, or just 🔴/🟡?</h3>
+    <p class="why">My instinct matches the memo's own: everything, including 🟢 FYI
+    items, so the pilot carries real volume rather than a curated-easy version.</p>
+    <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+      <label class="check"><input type="radio" name="q3" value="everything"> Everything</label>
+      <label class="check"><input type="radio" name="q3" value="only red/yellow"> Only 🔴/🟡</label>
+    </div>
+  </div>
+
+  <div class="card" data-q="q4">
+    <h3>4 · Amend covenant 7 in VISION.md to say "calm-UI principle, not a privacy commitment," explicitly?</h3>
+    <p class="why">This is the unlock for the local-instrumentation idea — writing it
+    down now means nobody re-litigates it in three months.</p>
+    <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+      <label class="check"><input type="radio" name="q4" value="yes, amend it"> Yes, amend it</label>
+      <label class="check"><input type="radio" name="q4" value="no, leave as-is"> No, leave as-is</label>
+    </div>
+  </div>
+
+  <div class="card"><span class="chip decide">notes</span>
+    <h3>Anything else on the memo</h3>
+    <textarea class="note" id="memo-notes" placeholder="Free text — the fleet-probe idea, cohort order, pricing conversation, whatever…"></textarea>
+  </div>
+
+  <details class="arc">
+    <summary>rc.32/33 device-pass routine — mostly done (4/5 clean)</summary>
+    <div class="seq" style="margin-top:1rem">
+      <div class="card"><h3>Warm up — daily use</h3>
+        <p class="why">Complete/defer a couple of real cards.</p>
+        <label class="check"><input type="checkbox" checked> Done — passed 08-20</label></div>
+      <div class="card"><h3>Backup round trip</h3>
+        <p class="why">Export, confirm all decks present.</p>
+        <label class="check"><input type="checkbox" checked> Done — passed 08-20, the actual fix</label></div>
+      <div class="card"><h3>Undo, both paths</h3>
+        <p class="why">Menu Undo confirmed reliable. Shake-to-undo was diagnosed as
+        an iOS system-gesture collision (not our bug) and removed entirely 08-20 —
+        nothing left to test here.</p>
+        <label class="check"><input type="checkbox" checked> Resolved — shake removed, menu Undo is the only path now</label></div>
+      <div class="card"><h3>Rooms sift + deck switching</h3>
+        <label class="check"><input type="checkbox" checked> Done — passed 08-20</label></div>
+      <div class="card"><h3>iPad</h3>
+        <label class="check"><input type="checkbox" checked> Done — passed 08-20</label></div>
+    </div>
+  </details>
+
+  <h2>Settled since last briefing (08-19 → 08-28)</h2>
   <div class="card"><span class="chip done">closed</span>
-    <h3>1.0 = rc.32, native pipeline proven, both real bugs fixed</h3>
-    <p style="font-size:.9rem">Multi-deck backup export/import bug (found
-    by you, fixed same day) · 3-day silent web-deploy freeze (found while
-    investigating the bug, root-caused and fixed) · first-ever native
-    archive/export/upload pipeline on Amber, proven twice now (build 31,
-    then build 32) · captions rewritten in your voice and applied ·
-    Media Manager dimensions confirmed clear · iPad presentation (honest
-    column, no scaling) · Distribution certificate created.</p>
+    <h3>Shake-to-undo removed entirely</h3>
+    <p style="font-size:.9rem">Root cause: iOS's own native "Undo Typing" system
+    gesture wins the race before our JS ever sees a shake — not fixable on
+    web, not cross-platform, not an MVP feature (your call). rc.33.</p>
+  </div>
+  <div class="card"><span class="chip done">closed</span>
+    <h3>README + investor pitch materials — stat corrections verified end to end</h3>
+    <p style="font-size:.9rem">Two unsourceable stats dropped from README (the "23
+    minutes to refocus" figure's actual source paper found the opposite
+    direction). Independently checked the new pitch deck (.pptx) and investor
+    reference (.docx) for the same figures — deck is clean, the reference
+    doc only mentions them in a methodology footnote describing the fix.</p>
+  </div>
+  <div class="card"><span class="chip done">closed</span>
+    <h3>Rollup housekeeping — 5 stale items closed this pass</h3>
+    <p style="font-size:.9rem">Relay-migration planning (items 5/5a/5b) had sat open
+    for weeks after being overtaken — Relay was paused, not migrated, and
+    nobody marked it. Real-PAT test (17) superseded by real use, which
+    surfaced the GitHub-import overflow bug now feeding the roadmap memo.
+    Dan enablement (19) long since done — his feedback IS the evidence
+    the memo cites.</p>
   </div>
 
   <h2>Reference</h2>
   <div class="card"><span class="chip ref">reference</span>
     <h3>Documents</h3>
     <p style="font-size:.9rem">
-      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md">Attention rollup</a> (the full ledger, terse source of truth) ·
-      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ROADMAP.md">ROADMAP.md</a> (5 new ideas from your Ted Nadeau call just landed on the premium shelf — actionable cards, trump cards, magic cards, shared decks, AI-constructed decks) ·
-      <a href="https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md">CLAUDE.md</a> (methodology, incl. the npm-ci toolchain trap from this week) ·
-      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/PRICING.md">PRICING.md</a> ·
-      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/AMBER-XCODE.md">AMBER-XCODE.md</a> (native build runbook, now verified not speculative)
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md">Attention rollup</a> (full ledger, terse source of truth) ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/mail/memo-xian-to-coral-2026-08-26-roadmap-reordering-after-investment-review.md">Roadmap memo</a> ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/ROADMAP.md">ROADMAP.md</a> ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md">CLAUDE.md</a> ·
+      <a href="https://github.com/Design-in-Product/one-job/blob/main/docs/PRICING.md">PRICING.md</a>
     </p>
     <p class="why">Device grants: <code>?pro=comp</code> comps a device · <code>?canvas=off</code> hides the strip ·
     <code>?pro=off</code> revokes. All device-local; the build special-cases no one.</p>
@@ -215,20 +270,19 @@
 
 <footer class="bar">
   <button id="compose">Copy my answers</button>
-  <span class="hint" id="compose-hint">Builds a paste-back block from your ticks &amp; notes</span>
+  <span class="hint" id="compose-hint">Builds a paste-back block from your ticks, choices &amp; notes</span>
 </footer>
 
 <script>
-  // Ticks + notes persist locally (this device only) so a half-done pass survives reloads.
-  const KEY = 'oj-briefing-2026-08-19';
+  const KEY = 'oj-briefing-2026-08-28';
   const state = JSON.parse(localStorage.getItem(KEY) || '{}');
   const save = () => localStorage.setItem(KEY, JSON.stringify(state));
 
-  document.querySelectorAll('.seq .card, main > .card').forEach((card, i) => {
+  document.querySelectorAll('.card').forEach((card, i) => {
     const id = 'c' + i;
     const box = card.querySelector('input[type=checkbox]');
     if (box) {
-      box.checked = !!state[id];
+      box.checked = state[id] ?? box.checked;
       box.addEventListener('change', () => { state[id] = box.checked; save(); paint(card); });
       paint(card);
     }
@@ -238,22 +292,40 @@
     card.classList.toggle('ticked', !!(box && box.checked));
   }
 
-  const notesEl = document.getElementById('test-notes');
-  if (notesEl) {
-    notesEl.value = state['notes'] || '';
-    notesEl.addEventListener('input', () => { state['notes'] = notesEl.value; save(); });
-  }
+  document.querySelectorAll('.card[data-q]').forEach(card => {
+    const id = card.dataset.q;
+    card.querySelectorAll('input[type=radio]').forEach(r => {
+      r.checked = state[id] === r.value;
+      r.addEventListener('change', () => { state[id] = r.value; save(); });
+    });
+  });
+
+  ['pf-note', 'memo-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = state[id] || '';
+    el.addEventListener('input', () => { state[id] = el.value; save(); });
+  });
 
   document.getElementById('compose').addEventListener('click', async () => {
     const lines = ['## Briefing answers — ' + new Date().toISOString().slice(0, 10), ''];
-    document.querySelectorAll('.seq .card, main > .card').forEach(card => {
+    lines.push('**Memo questions:**');
+    document.querySelectorAll('.card[data-q]').forEach(card => {
+      const name = card.querySelector('h3').textContent;
+      const picked = card.querySelector('input[type=radio]:checked');
+      if (picked) lines.push('- ' + name + ': **' + picked.value + '**');
+    });
+    const memoNotes = document.getElementById('memo-notes');
+    if (memoNotes && memoNotes.value.trim()) lines.push('- Notes: ' + memoNotes.value.trim());
+    const pfNote = document.getElementById('pf-note');
+    if (pfNote && pfNote.value.trim()) lines.push('', '**Pro-feedback note:** ' + pfNote.value.trim());
+    lines.push('', '**Device-pass checklist:**');
+    document.querySelectorAll('.card').forEach(card => {
       const box = card.querySelector('input[type=checkbox]');
       if (!box) return;
       const name = card.querySelector('h3').textContent.replace(' ✓', '');
       lines.push(`- [${box.checked ? 'x' : ' '}] ${name}`);
     });
-    const notes = notesEl ? notesEl.value.trim() : '';
-    if (notes) lines.push('', '**Notes:** ' + notes);
     const text = lines.join('\n');
     const hint = document.getElementById('compose-hint');
     try {
