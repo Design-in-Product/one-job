@@ -318,7 +318,20 @@ Now: *"Sent to Zapier — the browser can't confirm delivery."* Accurate,
 but it is user-facing copy and you may want different words. Tell me and
 I will change it.
 
-### 🟢 1. Dependency vulnerabilities — 16 of 20 FIXED 2026-08-13, 4 remain (deliberately held)
+### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29: 7 current (4 held on purpose + 1 new dev-only chain)
+**Recount (2026-08-29, prompted by the cross-pollination brief's Rule
+14 — "when you narrow a clause, recompute every number it generated"):
+the "4 remain" below was computed against the 08-13 dependency tree,
+which the 08-16 lockfile surgery then changed. Current truth: 7 total
+(6 moderate, 1 high).** The original 4 (vite high + esbuild +
+react-router + react-router-dom) are unchanged, same held-for-major-
+bump reasoning as below. The 3 new entries are ONE chain:
+`@capacitor/cli → xcode → nested old uuid` (a moderate advisory on a
+uuid copy inside the xcode package) — all devDependency/build tooling
+that runs only on Amber during native builds, zero shipped exposure,
+same class as the vite cluster. No action needed; same
+hold-until-after-1.0 posture. Original 08-13 analysis follows,
+unedited, for the per-package reasoning:
 Re-checked with fresh advisory data (the original "18 open" count was
 stale): 20 total, 4 direct (vite, postcss, uuid, react-router-dom), 16
 transitive. Ran plain `npm audit fix` (no `--force`) — every one of the
