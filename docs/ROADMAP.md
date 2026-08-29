@@ -1,10 +1,49 @@
 # One Job — Roadmap
 
-**Author**: Coral · 2026-07-03 · **Status**: BASELINE — converged with
-Xian 2026-07-04 ("I'm ready for convergence if you are!"). Supersedes
-the tier sketch in BIG-PICTURE-2026-07-03.md. Companion docs: VISION.md
-(the distillation), DOMAIN-MODEL.md (what we're building toward),
-DEPENDENCIES.md (why this order), VISION-2026-07.md (capture record).
+**Author**: Coral · 2026-07-03 · **REORDERED 2026-08-28** (investment-
+readiness review + Xian's answers; see "The pivot" below) · original
+baseline converged with Xian 2026-07-04. Supersedes the tier sketch in
+BIG-PICTURE-2026-07-03.md. Companion docs: VISION.md (the distillation,
+covenant 7 amended 2026-08-28), DOMAIN-MODEL.md, DEPENDENCIES.md,
+`docs/mail/memo-xian-to-coral-2026-08-26-roadmap-reordering-after-investment-review.md`
+(the reordering's full argument), `docs/plans/2026-08-28-instrumentation-plan.md`
+(P1's full design).
+
+---
+
+## The pivot (2026-08-28) — evidence before beauty
+
+An investment-readiness review (2026-08-26) scored traction 1.0/5 and
+distribution 1.5/5 — and its advice was: don't polish the pitch,
+produce evidence. Xian ratified a reordering (with one hedge, recorded
+below): **R2, the spatial layer, holds** — except R2.3 (table surface)
+and dark-mode, both cheap store-listing-quality work — in favor of
+work that generates evidence. The venture-scale part of the vision is
+R4 (agents dealing cards), and MCP shipped Tasks as an official
+extension 2026-07-28 with no client yet implementing it.
+
+**The priority sequence now:**
+
+| P | What | State |
+|---|---|---|
+| P0 | **Submit 1.0 to the App Store from the native build** (build 32+, white-screen bug structurally impossible there — verified). The PWA service-worker fix gates the *cohort*, not the store | Ready when Xian's device-pass soak feels settled; shake-to-undo removal (rc.33) not yet in a native build — cut build 33 at submission |
+| P1 | **R1.5 Local instrumentation** (new) — opt-in, on-device, pre-registered metrics; instrument BEFORE anyone is invited. Full design: `docs/plans/2026-08-28-instrumentation-plan.md` (plan approved by Xian 2026-08-29, "looks good") | Designed; 4 open questions pending his answers, then build |
+| P2 | **R4.2-lite fleet probe** (new) — the crudest thing that works: this repo's own ATTENTION-ROLLUP items land as cards in a One Job deck; Xian answers from the deck for two weeks. NO MCP, no protocol, no adapter seam — if it grows an architecture it has failed. Scope: EVERYTHING on the rollup (his call, 2026-08-28). Likely zero new app code (script emits backup-import-shaped JSON) | Not started |
+| P3 | **R3 scoped hard: one Todoist list, read-only first** — earns write-back after a proven week. **Precondition: fix or flag-hide the GitHub import** (imports all issues across all repos, "a thousand cards... overflow the buffer" — his words; repo-scoping is a small adapter change) | Not started |
+| P4 | **The 50-user cohort** — ~10 agent-heavy users recruited FIRST, then ~40 ordinary. Gated on P1 (instrument before inviting) and the PWA white-screen fix (no invitation into a known white-screen — the standing HARD GATE discipline, same reason) | Blocked on P1 + SW fix |
+| P5 | **Economic-buyer conversations** — ask the ten agent-heavy users what a reliable human-review queue is worth; a week of calendar, not a quarter of engineering | After P4 recruiting starts |
+
+**Xian's hedge on R2 holding (2026-08-28, recorded verbatim in the
+rollup):** "we can probably walk and chew gum at the same time by
+developing solid plans and delegating them to well governed subagents,
+but this should be done only when we are sure we are not diverting
+priority or resources from meeting our primary goals." Working
+reading: R2.3 + dark-mode are the bounded, low-review-cost candidates
+that fit this; the rest of R2 waits for evidence.
+
+**What the pivot does NOT change:** the HARD GATE (below), the R3
+read-only-before-write gate, covenant discipline, and the release
+rhythm (steady drumbeat once there are active users).
 
 **Ordering principle** (Xian): Gall's law, Cunningham-style — a complex
 system that works evolves from a simple system that works; do the
@@ -27,7 +66,12 @@ choice.
 
 ---
 
-## R0 — Trust for daily use (finish 1.0) — NOW
+## R0 — Trust for daily use (finish 1.0) — ✅ ESSENTIALLY COMPLETE (rc series through rc.33)
+
+*Status annotation 2026-08-29: R0.0–R0.4 shipped across the rc series
+(undo went beyond the toast — session-deep menu undo + redo; backup
+proven on-device including the multi-deck fix, rc.32). R0.5: build 32
+on TestFlight, store submission is P0 above.*
 
 The app is Xian's daily driver as of 07-03; these are the holes real use
 has already found. All are small, none touch the concept model, all pay
@@ -48,11 +92,19 @@ lifecycle chain (R1.2) as *one* coherent feature instead of two bolted
 switches. Undo (R0.1) covers the accident-recovery need meanwhile —
 that's the easiest thing that could possibly work.
 
-## R1 — The concept model lands (1.x series)
+## R1 — The concept model lands (1.x series) — ✅ SHIPPED
 
-Rebuild the core around the domain model, one proven step at a time.
-This is the Gall sequence: each sub-stage is shippable and the app works
-after each.
+*Status annotation 2026-08-29: R1.1–R1.4 all live (recursive cards,
+lifecycle chain with rooms at every depth, schema — now v3 with root
+decks — and card-face ergonomics). The R1 gate ("a week of real use
+where no card is lost, stranded, or unrecoverable") has been met by
+weeks of Xian's daily driving. New sub-item from the pivot:*
+
+| # | Item | What changes |
+|---|---|---|
+| **R1.5** | **Local instrumentation** (NEW, 2026-08-28 — P1 above) — opt-in, on-device metrics with pre-registered definitions; full design in `docs/plans/2026-08-28-instrumentation-plan.md` | roadmap memo |
+
+Original R1 sequence, for the record:
 
 | # | Item | What changes |
 |---|---|---|
@@ -64,7 +116,14 @@ after each.
 Gate: the chain feels *safe* — a week of real use where no card is ever
 lost, stranded, or unrecoverable.
 
-## R2 — The spatial layer (the app becomes the vision)
+## R2 — The spatial layer (the app becomes the vision) — ⏸ HOLDS (2026-08-28), two exceptions
+
+*Status annotation 2026-08-29: R2.1 (root canvas strip, rc.16–20) and
+R2.7 (inchworm, rc.22) already SHIPPED before the pivot. The rest
+holds per the pivot — except **R2.3 (table surface)** and **dark-mode**
+(fun shelf), both store-listing-quality and cheap, proposed to proceed
+via well-governed delegation per Xian's hedge; awaiting his
+confirmation.*
 
 | # | Item | What changes |
 |---|---|---|
@@ -80,7 +139,15 @@ lost, stranded, or unrecoverable.
 Gate: navigation needs no menu for daily flow; a new user finds
 Completed by *looking around*, not by long-pressing.
 
-## R3 — 2.0: the experience layer (federation)
+## R3 — 2.0: the experience layer (federation) — partially shipped; next move is P3
+
+*Status annotation 2026-08-29: R3.1 (SourceAdapter seam) and R3.2
+(first import = GitHub, read-only, rc.21) SHIPPED — but the GitHub
+import needs repo-scoping or a beta flag before any second source
+ships (P3's precondition). Todoist is the chosen second source
+(personal-shaped, unified API, official MCP server — doubles as R4
+groundwork): one designated list, read-only for a proven week, then
+completion write-back only (R3.4, scoped to that single list).*
 
 Import first, then sync — in that order, per Item 11. Each source lands
 read-only before any source earns write access.
@@ -98,7 +165,17 @@ Gate: Xian (or his employer's tool) runs a real project where One Job is
 the *only* surface he touches daily, and nothing in the source system is
 ever corrupted or surprised.
 
-## R4 — The agentic layer
+## R4 — The agentic layer — now the strategic center; probe first
+
+*Status annotation 2026-08-29: the pivot names this stage as where the
+venture-scale case lives (MCP Tasks shipped as an official extension
+2026-07-28, durable `input_required` state, no client implements it
+yet). The path in is NOT R4.1 — it's **R4.2-lite** (P2 above): the
+deliberately-crude fleet probe, this repo's own attention items as
+cards, two weeks of Xian answering from the deck. What it measures is
+*feel* — if it's a relief, R4.1 becomes urgent; if it's ceremony,
+One Job is a lifestyle app and that's a legitimate answer. The probe
+must not grow an adapter seam.*
 
 | # | Item | What changes |
 |---|---|---|
@@ -188,36 +265,30 @@ hand-written one, and no agent can ever reorder your deck.
 
 ---
 
-## The build sequence (converged 2026-07-04 — the next ten moves)
+## The build sequence — 2026-07-04's ten moves: ✅ ALL COMPLETE
 
-The stages above are strategy; this is the order work actually leaves
-the shop. Each move is small, shippable, and verified before the next
-starts (tests + Playwright; real device where gestures are involved).
+The original converged sequence (data safety net → undo → backup nudge
+→ crispness → depth signal → domain extraction → schema migration →
+recursive cards → lifecycle chain → R1 gate week) shipped in full
+across the rc series, several of them exceeded (undo became
+session-deep + redo; schema went to v3).
 
-1. ✅ **Data safety net** (R0.0) — shipped 07-04, test-first.
-2. **Undo toast** (R0.1) — the biggest daily-trust win still open.
-3. **Backup-age nudge** (R0.0 tail) — Settings shows "last export N
-   days ago"; gentle prompt past a week. Small, pairs with 1.
-4. **Portal crispness pass** (R0.3) — background/theme-color/
-   overscroll/dvh audit with before/after screenshots on device.
-5. **Deck-depth signal** (R0.2) — needs Xian's design call first
-   (number vs. suggestion); implementation is small once called.
-6. **Domain layer extraction** (R1 prep) — pure-TS `src/domain/` with
-   today's *exact* behavior, fully tested, zero visible change. The
-   safe stepping stone the migration stands on.
-7. **Schema v2 + migration** (R1.3) — RED ZONE, test-first, must
-   round-trip through backup export/import. The riskiest single move
-   on the map; nothing else ships alongside it.
-8. **Recursive cards** (R1.1) — interiors replace substacks in the UI;
-   migrated data already fits.
-9. **Lifecycle chain** (R1.2) — Done/Archive/Trash decks, advance/
-   regress gestures, provenance return. Un-complete and delete arrive
-   here.
-10. **R1 gate week** — Xian runs a real week on the new model; odd
-    behaviors fixed as they surface; then R2 (canvas) planning begins.
+## The build sequence NOW (from the pivot, 2026-08-28)
 
-Store track (R0.5) proceeds in parallel throughout, human-gated:
-Cowork Phase 4 → TestFlight; keystore → Play internal. Fun-shelf items
-may jump the queue whenever morale wants them.
+1. **Cut native build 33** (rc.33 — shake removal isn't in build 32)
+   and **submit 1.0** when Xian's soak feels settled (P0).
+2. **Answer the instrumentation plan's 4 open questions** → build
+   R1.5 (P1): metricsStore + store seam + Settings surface + collate
+   script. Instrument before anyone is invited.
+3. **Fleet probe** (P2): rollup→cards script, two-week trial.
+4. **PWA service-worker fix** (version-mismatch detector,
+   force-unregister) — gates the cohort, runs parallel to 2–3.
+5. **GitHub import repo-scoping or beta-flag hide**, then **Todoist
+   read-only** (P3).
+6. **Recruit the ten**, then the forty (P4); economic-buyer
+   conversations ride along (P5).
+7. R2.3 + dark-mode via delegation, if/when Xian confirms the
+   walk-and-chew-gum path.
 
-*REQUIREMENTS.md re-baselined against this document 2026-07-04.*
+*REQUIREMENTS.md re-baselined against this document 2026-07-04; a
+fresh re-baseline is queued post-pivot (rollup item 10).*
