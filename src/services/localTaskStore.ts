@@ -8,6 +8,10 @@ import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
 import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants, nextDeckColor } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION, FutureDataError } from '@/domain/migrate';
+// R1.5 instrumentation seam — every recorder is a guaranteed-safe no-op
+// on failure or outside plain local mode (metricsStore's one hard rule:
+// metrics can never break a task operation).
+import { recordCardCreated, recordCardCompleted, recordCardDeferred } from './metricsStore';
 
 /** Dated snapshots kept as a wipe/corruption safety net */
 const SNAPSHOT_RETENTION = 7;
@@ -460,6 +464,7 @@ export class LocalTaskStore implements TaskStore {
     };
     this.tasks.push(newTask);
     this.saveTasks();
+    recordCardCreated();
     return newTask;
   }
 
@@ -500,12 +505,14 @@ export class LocalTaskStore implements TaskStore {
     this.refuseIfUnfinishedInside(found);
     const task = applyCompletion(found);
     this.saveTasks();
+    recordCardCompleted();
     return task;
   }
 
   async deferTask(id: string): Promise<Task> {
     const task = applyDeferral(this.findTask(id), this.tasks);
     this.saveTasks();
+    recordCardDeferred(task.deferralCount ?? 0);
     return task;
   }
 
@@ -617,6 +624,7 @@ export class LocalTaskStore implements TaskStore {
     // New items land on top in sub-decks too (display order = array order)
     deck.cards.unshift(newCard);
     this.saveTasks();
+    recordCardCreated();
     return newCard;
   }
 
@@ -628,6 +636,7 @@ export class LocalTaskStore implements TaskStore {
     card.completed = true;
     card.completedAt = new Date();
     this.saveTasks();
+    recordCardCompleted();
     return card;
   }
 
@@ -717,6 +726,7 @@ export class LocalTaskStore implements TaskStore {
     deck.cards.splice(index, 1);
     deck.cards.push(card);
     this.saveTasks();
+    recordCardDeferred(card.deferralCount ?? 0);
     return card;
   }
 

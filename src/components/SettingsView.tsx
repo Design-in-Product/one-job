@@ -13,7 +13,8 @@ import { toast, toastAnswer, isQuietMode, setQuietMode } from '@/components/ui/s
 import { hasPro, setPro, proSince, PRO_CODE } from '@/services/entitlements';
 import { betaOptIn, setBetaOptIn } from '@/services/featureStages';
 import { Switch } from '@/components/ui/switch';
-import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical } from 'lucide-react';
+import { Download, Upload, Copy, ClipboardPaste, Smartphone, Cloud, FlaskConical, Share2 } from 'lucide-react';
+import { getMetrics, buildUsageExport } from '@/services/metricsStore';
 import { useTranslation } from 'react-i18next';
 
 // v3: every root deck (fixed 2026-08-16 — v2 exported only the ACTIVE
@@ -52,6 +53,9 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
 
   const ModeIcon = MODE_ICONS[storageMode];
   const canImport = !!getTaskStore().importTasks;
+  // R1.5: snapshot read is fine — Settings remounts on open, and metrics
+  // lag of one visit costs nothing.
+  const usage = getMetrics();
 
   const backupAgeDays = lastExport
     ? Math.floor((Date.now() - new Date(lastExport).getTime()) / 86_400_000)
@@ -143,6 +147,45 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
       a.click();
       URL.revokeObjectURL(url);
       recordExport();
+      toast.info(t('settings.exportDownloaded', { filename }), { duration: 8000 });
+    } catch (err) {
+      toast.error(t('settings.exportFailed', { message: (err as Error).message }));
+    }
+  };
+
+  // R1.5: share the usage summary — same observed-outcome discipline as
+  // the backup export (share resolves = shared; download messaged with
+  // the filename; never a success toast for a mere attempt).
+  const handleShareUsage = async () => {
+    try {
+      const store = getTaskStore();
+      const decksActive = store.getDecks
+        ? (await store.getDecks()).filter(d =>
+            d.cards.some(c => !c.completed && !c.trashedAt && !c.archivedAt)
+          ).length
+        : null;
+      const payload = buildUsageExport(decksActive);
+      if (!payload) return;
+      const json = JSON.stringify(payload, null, 2);
+      const filename = `onejob-usage-${new Date().toISOString().slice(0, 10)}.json`;
+      const file = new File([json], filename, { type: 'application/json' });
+
+      if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file] });
+          toast.success(t('settings.usageShared'));
+          return;
+        } catch (err) {
+          if ((err as Error).name === 'AbortError') return;
+          // fall through to download
+        }
+      }
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
       toast.info(t('settings.exportDownloaded', { filename }), { duration: 8000 });
     } catch (err) {
       toast.error(t('settings.exportFailed', { message: (err as Error).message }));
@@ -265,6 +308,30 @@ const SettingsView: React.FC<SettingsViewProps> = ({ onDataImported }) => {
         </div>
         <p className="text-sm text-gray-600">{t(`settings.mode.${storageMode}.description`)}</p>
       </section>
+
+      {/* Usage (R1.5, 2026-08-29): local-only metrics, shown to their
+          owner first — "give value of data to users" (Xian's principle).
+          Numbers live HERE and in the export, never on the deck
+          (covenant 7 as amended). Sharing is the consent act. */}
+      {usage && (
+        <section className="bg-white rounded-xl shadow p-4 space-y-2">
+          <h3 className="font-semibold text-gray-800">{t('settings.usageTitle')}</h3>
+          <p className="text-sm text-gray-600">{t('settings.usageDescription')}</p>
+          <ul className="text-sm text-gray-700 space-y-0.5">
+            <li>{t('settings.usageCreated', { count: usage.totals.created })}</li>
+            <li>{t('settings.usageCompleted', { count: usage.totals.completed })}</li>
+            <li>{t('settings.usageDeferred', { count: usage.totals.deferred })}</li>
+            {usage.deferralDepth.max > 0 && (
+              <li>{t('settings.usageDeferralMax', { count: usage.deferralDepth.max })}</li>
+            )}
+            <li>{t('settings.usageActiveDays', { count: usage.activeDays.length })}</li>
+          </ul>
+          <Button onClick={handleShareUsage} variant="outline" className="w-full justify-start gap-2">
+            <Share2 className="w-4 h-4" />
+            {t('settings.usageShare')}
+          </Button>
+        </section>
+      )}
 
       {/* Quiet mode (Xian, 2026-07-29): mute the confirmation toasts.
           Errors always surface; undo stays in the hold-menu. */}
