@@ -34,6 +34,7 @@ import { DemoService } from '@/services/demoService';
 import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished, inchwormWalk } from '@/domain/tasks';
 import { hasPro } from '@/services/entitlements';
+import { recordInteriorOpened } from '@/services/metricsStore';
 import { canvasPreviewOn } from '@/services/canvasPreview';
 import { featureOn } from '@/services/featureStages';
 import CanvasPeek from '@/components/CanvasPeek';
@@ -678,6 +679,7 @@ const Index = () => {
 
   const handleOpenSubstack = (parentTask: Task, substack: Substack) => {
     setDeckStartRevealed(false); // going deeper — reset the return-face-up flag
+    recordInteriorOpened(); // R1.5 — safe no-op outside local mode
     setSubstackStack(prev => [...prev, { parentTask, substack }]);
   };
 
