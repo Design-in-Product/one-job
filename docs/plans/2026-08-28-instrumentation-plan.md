@@ -181,15 +181,22 @@ later hit the escalation gate and add real transmission, running the
 full skill pipeline against a hosted destination is the right move at
 that point, with this document as its input.
 
-## Open questions for Xian
+## Open questions — ANSWERED (Xian, 2026-08-29), BUILT same day (rc.34)
 
-1. **Checkpoint cadence**: week 1 + week 4 (proposed), or more/fewer?
-2. **The install ID**: comfortable with a random UUID for
-   linking a person's week-1 and week-4 exports? (Alternative: none,
-   and you match exports by who sent them — works at n=50, slightly
-   more manual.)
-3. **Does the Settings "Usage" section show the person their own
-   metrics** (proposed — they can read what they'd share, and it's a
-   small trust feature), or stay invisible until export?
-4. Sign-off to build, and where it sits relative to the fleet probe in
-   order of execution.
+1. **Checkpoint cadence: week 1 + week 4.** Agreed as proposed; an
+   optional midpoint ask stays available for the agent-heavy ten.
+2. **Install ID: random UUID approved.**
+3. **Settings shows your own metrics: YES — and elevated to a stated
+   principle**: "this is a strong principle of mine: give value of
+   data to users." Recorded in persistent memory; governs future
+   data-touching features, not just this one.
+4. **Build: started immediately** ("yes let's start R1.5 now"), landed
+   as rc.34: `src/services/metricsStore.ts` (recorders + executable
+   definitions), the LocalTaskStore seam (create/complete/defer at
+   every depth; imports excluded from "created" by design), the
+   interior-open hook, Settings "Your usage" section + share (same
+   observed-outcome discipline as backup export),
+   `scripts/collate-metrics.mjs` (bounded-rates checkpoint report),
+   16 new tests incl. the metrics-can-never-break-tasks guarantee
+   proven against a poisoned store. Ordering vs the probe: moot — the
+   probe shipped the same day with zero app code.
