@@ -35,11 +35,12 @@ Screenshots against the current build are mine to generate and I will
 have them ready; uploading them, writing the release notes, selecting
 build 33, and pressing Submit are ASC actions only you can do.
 
-**Ask:** Say go, and I will generate the rc.33 screenshot set and hand
-you a numbered ASC walkthrough — or tell me to hold.
-**Rec:** Go. The white-screen bug cannot occur in the native build
-(verified structurally in `vite.config.ts`), so nothing about it should
-delay the store.
+**Ask:** Ship 1.0 now? Say go and I prep everything you need.
+**Rec:** Go. I generate the rc.33 screenshots and hand you a numbered
+ASC walkthrough; you upload, write release notes, select build 33,
+submit. The white-screen bug cannot occur in the native build (verified
+structurally in `vite.config.ts`), so nothing about it should delay
+the store.
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -48,10 +49,10 @@ prose instead of stating an ask (fixed in this very rewrite), and items
 were stale (audited, five closed). This is the R4.2-lite question
 running live — is a card a good place to answer an agent?
 
-**Ask:** When you have time, tell me how answering-from-the-deck
-actually felt — relief, ceremony, or something in between.
-**Rec:** No rush; two weeks of real use beats an early verdict. Keep
-noting friction as it happens rather than saving it up.
+**Ask:** How did answering from the deck actually feel?
+**Rec:** Relief, ceremony, or something between — that is the whole
+R4.2-lite question. No rush; two weeks of real use beats an early
+verdict. Note friction as it happens rather than saving it up.
 
 ### 🟡 22. Pro-feedback interview — one question at a time, ongoing
 Format agreed 2026-08-20: I ask per feature, you answer, I log, we
@@ -62,9 +63,9 @@ principle. Still unasked: inchworm's shape, the deck delete/merge gap
 (no deck-level delete or deck-into-deck merge exists at all today), and
 whatever else surfaces.
 
-**Ask:** Nothing right now — I will bring the next question when
-there is room; say "next question" any time you want one.
-**Rec:** Keep it opportunistic rather than scheduled.
+**Ask:** Nothing now — say "next question" when you want one.
+**Rec:** Keep it opportunistic rather than scheduled; I will bring one
+when there is room.
 
 ### 🟢 28. Cohort recruiting — blocked on me, not you
 The 50-user pilot (10 agent-heavy first, then 40 ordinary) needs two
@@ -74,7 +75,7 @@ which shipped 2026-08-29 in rc.34. So: one of two done.
 
 **Ask:** Nothing yet — I will tell you when the gate clears.
 **Rec:** Meanwhile, if names occur to you for the agent-heavy ten, jot
-them somewhere; they are the harder half to recruit.
+them somewhere. They are the harder half to recruit.
 
 ### 🟢 13. Purge copy could say less than it does
 "Delete forever" is technically undoable *within* the session (the undo
@@ -82,16 +83,16 @@ stack captures pre-purge state). I left the strong copy — overstating
 danger beats understating it — but it is user-facing wording and yours
 to call.
 
-**Ask:** Leave it, or soften it to mention the within-session undo?
-**Rec:** Leave it. Across sessions and in backups, "gone for good" is
-simply true.
+**Ask:** Keep "Delete forever" as-is, or soften the wording?
+**Rec:** Keep it. Across sessions and in backups, "gone for good" is
+simply true, and overstating danger beats understating it.
 
 ### 🟢 8. Zapier export toast wording
 It now reads *"Sent to Zapier — the browser can't confirm delivery."*
 Accurate (the request uses `mode: "no-cors"`, which genuinely cannot
 observe the outcome), but it is your voice, not mine.
 
-**Ask:** Keep this wording, or give me different words?
+**Ask:** Keep the Zapier toast wording, or give me different words?
 **Rec:** Keep it. It is honest and the honesty is the point.
 
 ### 🟢 10. REQUIREMENTS.md has drifted — needs your judgment, not my edit
@@ -101,10 +102,9 @@ substacks as live. Deciding what is now true across a 434-line spec is
 a product call with a lot of your judgment in it, which is why I have
 patched only what my work touched rather than re-baselining it.
 
-**Ask:** Want me to draft a full re-baseline for you to correct, or
-leave it until after 1.0 ships?
+**Ask:** Draft a REQUIREMENTS.md re-baseline now, or after 1.0?
 **Rec:** After 1.0. It is doc debt, not a live risk, and the pivot may
-change more of it.
+change more of it before then.
 
 ### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current
 Recount prompted by the Rule-14 brief (the old "4 remain" was computed
@@ -116,7 +116,7 @@ regression surface, and none is reachable in shipped code (traced
 are one dev-only chain, `@capacitor/cli → xcode → nested old uuid`,
 which runs on Amber during native builds and never ships.
 
-**Ask:** Nothing — FYI only unless you want a different posture.
+**Ask:** FYI only — nothing needed unless you want a different posture.
 **Rec:** Hold until after 1.0, then revisit as routine hygiene.
 
 ## Settled

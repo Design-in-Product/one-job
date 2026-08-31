@@ -82,23 +82,54 @@ const openItems = items.filter(i => i.status.kind === 'open');
 // Status ordering: blocking first, FYI last — the deck's initial order.
 openItems.sort((a, b) => a.status.rank - b.status.rank);
 
-const today = new Date().toISOString().slice(0, 10);
-const tasks = openItems.map((item, i) => ({
-  id: randomUUID(),
-  title: item.heading,
-  // The card face carries enough to answer from; the full ledger stays
-  // the source of truth. Truncated at a phone-readable size, provenance
-  // stamped so the card names its origin like any future agent card.
-  description:
-    item.body.slice(0, 900) +
-    (item.body.length > 900 ? '\n[…more in ATTENTION-ROLLUP.md]' : '') +
-    `\n\n— dealt by Coral from ATTENTION-ROLLUP.md · ${today}`,
-  completed: false,
-  status: 'todo',
-  createdAt: new Date().toISOString(),
-  sortOrder: i + 1,
-  source: 'coral/attention-rollup',
-}));
+// ---- Card shape (2026-08-31, Xian's probe feedback: "concise and clear
+// about what is needed of me"). A card is not a ledger excerpt. It leads
+// with the ASK, carries the recommendation, and points at the ledger for
+// the rest. Same no-silent-default discipline as the status markers: an
+// open item WITHOUT an Ask cannot become a card, because a card that
+// doesn't say what it wants is exactly the failure he reported.
+export const parseAsk = body => {
+  const grab = label => {
+    const m = body.match(new RegExp(`\\*\\*${label}:\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*|\\n### |$)`));
+    return m ? m[1].trim().replace(/\s+/g, ' ') : null;
+  };
+  return { ask: grab('Ask'), rec: grab('Rec') };
+};
+
+for (const i of openItems) Object.assign(i, parseAsk(i.body));
+
+const askless = openItems.filter(i => !i.ask);
+if (askless.length) {
+  console.error(
+    `\nRefusing to deal: ${askless.length} open item(s) have no **Ask:** line:\n` +
+    askless.map(i => `  ### ${i.heading}`).join('\n') +
+    `\n\nA card that doesn't say what it needs is the exact problem this\n` +
+    `format exists to fix. Add an **Ask:** to each, then re-run.\n`
+  );
+  process.exit(1);
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+const tasks = openItems.map((item, i) => {
+  // Title = the ask itself, so the face of the card is the question.
+  // Number + status stay as a short prefix for provenance and triage.
+  const num = (item.heading.match(/\b(\d+[a-z]?(?:\/\d+[a-z]?)*)\./) || [, '?'])[1];
+  const marker = [...item.heading.trim()][0];
+  return {
+    id: randomUUID(),
+    title: item.ask,
+    description:
+      `${marker} #${num} · ${item.heading.replace(/^\S+\s*/, '').replace(/^\d+[a-z]?\.\s*/, '')}` +
+      (item.rec ? `\n\nCoral's rec: ${item.rec}` : '') +
+      `\n\nFull context: docs/ATTENTION-ROLLUP.md` +
+      `\n— dealt by Coral · ${today()}`,
+    completed: false,
+    status: 'todo',
+    createdAt: new Date().toISOString(),
+    sortOrder: i + 1,
+    source: 'coral/attention-rollup',
+  };
+});
 
 const backup = {
   app: 'one-job',
@@ -108,7 +139,7 @@ const backup = {
 };
 
 mkdirSync('docs/probe', { recursive: true });
-const outPath = `docs/probe/attention-deck-${today}.json`;
+const outPath = `docs/probe/attention-deck-${today()}.json`;
 writeFileSync(outPath, JSON.stringify(backup, null, 2));
 console.log(`${tasks.length} open items → ${outPath}`);
 for (const t of tasks) console.log('  ·', t.title);
