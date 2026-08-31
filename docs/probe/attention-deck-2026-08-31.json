@@ -1,0 +1,107 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-08-31T19:07:02.497Z",
+  "tasks": [
+    {
+      "id": "db8896e7-4cd7-4e7a-a519-74df90f68104",
+      "title": "🔴 24. rc.32 device pass (2026-08-20): 2 of 5 items surfaced real bugs",
+      "description": "1. **White screen of death on the PWA — happening on his phone right\n   now as of the report.** Live site independently verified fully\n   healthy (all assets 200: index.html, JS bundle, CSS, manifest,\n   sw.js) — this is NOT a server-side outage, it's his device stuck on\n   a stale service worker (matches the exact failure class\n   `pwaUpdateCheck.ts`'s own comment already anticipated: \"iOS\n   home-screen PWAs only check for service-worker updates at launch...\n   users can sit on a stale version for days\"). His data is not at\n   risk — a render-time crash doesn't touch localStorage, and he has a\n   fresh, verified-by-observation backup from today's own test pass\n   regardless. Gave him a staged, least-destructive-first recovery\n   sequence (restart → force-quit/relaunch → open in Safari directly\n   vs. the home-screen icon → TestFlight as a parallel unaffected\n   surface) and explicitly \n[…more in ATTENTION-ROLLUP.md]\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "c8bbaf59-3192-42ba-be1e-38b268c9edb4",
+      "title": "🟡 25. Roadmap reordering memo (2026-08-26) — big strategic call, his to make",
+      "description": "Cowork-agent memo (`docs/mail/memo-xian-to-coral-2026-08-26-roadmap-reordering-after-investment-review.md`)\nfrom a VC-readiness exercise: investment review scored traction 1.0/5,\ndistribution 1.5/5; recommends R2 (spatial layer) holds in favor of\nlocal opt-in instrumentation before any invitations, a near-zero-cost\n\"fleet probe\" (feed ATTENTION-ROLLUP.md's own open items into a One Job\ndeck as cards, see if answering-via-card feels better than\nfile-reading), one scoped read-only Todoist integration, and\nrecruiting 10 agent-heavy users before 40 ordinary ones.\n\n**Verified independently, not taken on faith**: Question 2 in the memo\nasks whether the white-screen bug (item 24) can occur in the native/\nTestFlight build — checked `vite.config.ts` directly: `mode !==\n'capacitor' && VitePWA(...)` means the ENTIRE PWA plugin (service\nworker, precache manifest) is structurally absent from the nati\n[…more in ATTENTION-ROLLUP.md]\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "9c975e5d-aab5-42fe-a78a-263d1a7405a4",
+      "title": "🟡 22. Pro-feedback — conversational format agreed 2026-08-20, format: I ask, he answers, I log, we triage",
+      "description": "Xian's call on how to do this: not a written-up-cold pass — a\nconversation where I ask about each feature/use case, he gives\nimpressions, I log them, then we triage together. Not yet scheduled;\nhis call on timing.\n\n**Fragments already captured (2026-08-13), feed the first pass:**\nopinions forming on how **inchworm view ought to work** (unspecified\nyet), and a gap he's hit directly — **no way to delete a deck, or merge\none deck's contents into another** (currently \"Move to another deck…\"\nexists only for TOP-LEVEL cards, one at a time, rc.18; no deck-level\ndelete or deck-into-deck merge exists at all). His framing: merging\nshould land the source deck as a new card inside the target deck by\ndefault, \"to support the unsupported multi-deck collisions\" in our\ncard-of-cards paradigm.\n\n**Folded in 2026-08-20**: the pro-backup-import-notice question (a\nmulti-deck backup imported on a non-pro devi\n[…more in ATTENTION-ROLLUP.md]\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "9907d498-ad87-4192-8621-87b481a0f015",
+      "title": "🟡 21. Store submission prep — down to your device pass",
+      "description": "1. **Which build is 1.0? rc.32** (updated 2026-08-16 — rc.31 carried\n   the multi-deck backup bug; rc.32 is the current tag, TestFlight build\n   32 supersedes 31, see item 23 above).\n2. **Caption copy: APPROVED + APPLIED 2026-08-13.** You rewrote five of\n   six directly (more plainspoken, your voice); 06 kept as-is with a\n   flag to revisit once accounts exist. Listing description's\n   \"substacks\" line and the review-notes menu list (was still rc.12's)\n   both updated too. Live in `scripts/compose-store-shots.mjs` /\n   `store/LISTING.md`.\n3. **Media Manager dimension check: CLEAR.** You pasted the live ASC\n   page — Apple renamed the 6.7\" bucket to 6.9\" and added several\n   smaller legacy buckets, but our three pixel sizes (1290×2796,\n   1284×2778, 2064×2752) already land exactly in the current buckets.\n   No harness change needed; comment updated for future clarity.\n\n**Device pass RAN 2\n[…more in ATTENTION-ROLLUP.md]\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "436f5be1-06d6-40bf-85d2-12b9829378dc",
+      "title": "🟡 2. Which Node version is \"supported\"?",
+      "description": "CI pins Node 22. Amber runs Node 26. That gap is exactly what produced\ntoday's 63 red tests, and it will produce another one eventually.\n\n**Recommendation:** declare **Node 22 the floor, 26 the development\nreality** — I've added an `engines` field and a CI test job that runs\n**both**, so host-dependence gets caught by machines instead of by me\non a Tuesday. (Verified: run 30412029053, `test (22)` and `test (26)`\nboth green.) No action needed unless you want a single pinned version.\n\n**No `.nvmrc`, deliberately** — an earlier draft of this doc said I'd\nadded one; I hadn't, and shouldn't. Amber has no nvm, and a file\npinning 22 would misstate the dev reality, which is the exact trap this\nitem exists to close.\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "497827f8-fe31-4c8c-8b77-395500a35bd3",
+      "title": "🟡 3. Dev server port — 8080 is taken on Amber",
+      "description": "`mediajunkie/local_chat.py` holds 8080. Vite auto-falls-back to 8081,\nso nothing is broken, but **your phone bookmarks and the docs both say\n8080**.\n\n**Update (Pard, this evening):** **8081 is formally ours** in Amber's\nport registry, so the fallback is now a claim rather than an accident.\n\n**Recommendation:** still leave `vite.config.ts` alone — auto-fallback\nworks, and hard-coding 8081 breaks your muscle memory on the day\nmediajunkie's 8080 retires (pending your call, per Pard). Documented\ninstead. Tell me if you'd rather I pin it.\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 6,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "b3d4e2f0-5515-44de-8367-b9dc878da292",
+      "title": "🟢 13. Purge copy now says less than it could",
+      "description": "With session undo, \"Delete forever\" is technically undoable *within the\nsession* (the undo stack captures pre-purge state). I left the strong\ncopy — overstating danger beats understating it — but flag it in case\nyou'd rather the trash confirm mention the shake-out: \"gone for good\"\nremains true across sessions and in backups.\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 7,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "be39521d-b01c-4a5e-8cff-0dd113d78a35",
+      "title": "🟢 8. Zapier export toast now claims less",
+      "description": "It said \"Tasks exported to Zapier webhook\" while using `mode: \"no-cors\"`,\nwhich cannot observe whether the endpoint accepted, 500'd, or exists.\nNow: *\"Sent to Zapier — the browser can't confirm delivery.\"* Accurate,\nbut it is user-facing copy and you may want different words. Tell me and\nI will change it.\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 8,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "98e0260b-9e6b-42b3-9d88-e9514e3e9ce3",
+      "title": "🟢 1. Dependency vulnerabilities — recomputed 2026-08-29: 7 current (4 held on purpose + 1 new dev-only chain)",
+      "description": "**Recount (2026-08-29, prompted by the cross-pollination brief's Rule\n14 — \"when you narrow a clause, recompute every number it generated\"):\nthe \"4 remain\" below was computed against the 08-13 dependency tree,\nwhich the 08-16 lockfile surgery then changed. Current truth: 7 total\n(6 moderate, 1 high).** The original 4 (vite high + esbuild +\nreact-router + react-router-dom) are unchanged, same held-for-major-\nbump reasoning as below. The 3 new entries are ONE chain:\n`@capacitor/cli → xcode → nested old uuid` (a moderate advisory on a\nuuid copy inside the xcode package) — all devDependency/build tooling\nthat runs only on Amber during native builds, zero shipped exposure,\nsame class as the vite cluster. No action needed; same\nhold-until-after-1.0 posture. Original 08-13 analysis follows,\nunedited, for the per-package reasoning:\nRe-checked with fresh advisory data (the original \"18 open\" coun\n[…more in ATTENTION-ROLLUP.md]\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 9,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "26f61ec2-e58f-463a-a679-fb9f7db914d8",
+      "title": "🟢 10. REQUIREMENTS.md has drifted (doc debt, not urgent)",
+      "description": "It's dated 2026-07-04 and its status line still reads *\"concept-model\nrebuild (R1) is next\"* — but most of R1 shipped (recursive cards,\nlifecycle chain, schema v2), and FR2 is still described as the live\nsubstack mechanism it explicitly says is sunset.\n\nI patched the part today's work touched (new **FR1.2b**: whole-subtree\ncompletion, store-level enforcement, the no-false-completion animation\nrule, and the known depth gap). I did **not** re-baseline the whole\n434-line spec — deciding what is now true across the document is a\nproduct call with a lot of your judgment in it, not a mechanical edit.\n\n**Recommendation:** worth a dedicated pass after beta week, when the R1\ngate has actually told us whether the chain is trustworthy. Happy to\ndraft it and have you correct me, if you'd rather not start from blank.\n\n---\n\n— dealt by Coral from ATTENTION-ROLLUP.md · 2026-08-31",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-08-31T19:07:02.497Z",
+      "sortOrder": 10,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}
