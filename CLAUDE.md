@@ -17,6 +17,46 @@ This mirrors how every other agent in the constellation already does it (Piper M
 
 - **Coral ↔ Relay** (the Mac-side build agent): both directions in THIS repo's `docs/mail/` (Relay works from a fresh clone of this repo, so it is the receiver's repo for both). Convention `memo-{from}-to-{to}-{date}-{topic}.md`; Relay's brief (`store/COWORK-IOS-BRIEF.md`) tells them to check at session start.
 
+## ATTENTION ROLLUP & THE FLEET PROBE (convention, 2026-08-31 — from Xian's probe feedback)
+
+`docs/ATTENTION-ROLLUP.md` is the ledger of things waiting on Xian, and
+since 2026-08-29 it is also the **source for the fleet probe**
+(`scripts/fleet-probe.mjs`, roadmap item R4.2-lite): its open items are
+dealt into a One Job deck as cards that Xian answers from his phone.
+That dual role imposes two hard rules, both learned from him using it:
+
+**1. Every open item carries an explicit `**Ask:**` line — one
+scannable sentence naming the single thing needed from him — plus a
+`**Rec:**` line with my recommendation.** The card's TITLE becomes the
+Ask verbatim, so the face of the card is the question. His words on the
+first draft: *"We need to work on a format that is concise and clear
+about what is needed of me."* The old cards pasted ledger prose onto
+the card face; my internal reasoning is not an ask. Write the Ask
+short enough to read at a glance on a phone (~60 chars); put the
+elaboration in the Rec.
+
+**2. Audit for staleness before every regeneration.** His other
+observation: *"some items seemed possibly stale."* He was right — five
+open items had been overtaken by events and never marked. An item
+answered in conversation does NOT close itself; move it to *Settled*
+with the answer recorded, in the same session the answer arrives.
+Regenerating a deck from a stale ledger deals dead work to a real
+person.
+
+**Both rules are enforced structurally, not by my diligence** — the
+probe script refuses to write a deck if any heading lacks a recognized
+status marker (🔴/🟡/🟢/✅) or any open item lacks an Ask, naming what
+to fix. This is deliberate: a card that doesn't say what it wants, or
+that shouldn't exist at all, is the exact failure mode the format
+exists to prevent, so it is made impossible rather than discouraged.
+Regression tests in `src/services/__tests__/fleetProbeClassify.test.ts`
+assert both guards can actually fire.
+
+**The probe's ceiling stays intact** (roadmap memo, 2026-08-26): no
+MCP, no protocol, no adapter seam. It emits a v2-backup-shaped JSON
+imported through Settings' existing "bring in as a new deck" path —
+zero app code. If it grows an architecture, it has failed at its job.
+
 ## CRITICAL: Excellence Flywheel Methodology - READ FIRST
 
 **WARNING**: Skipping this section will break our systematic excellence.

@@ -1,85 +1,85 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-08-31T20:31:29.240Z",
+  "exportedAt": "2026-08-31T21:01:04.416Z",
   "tasks": [
     {
-      "id": "c1e8e425-904d-493e-8549-d50b0ad868b0",
+      "id": "fa27130b-9181-4d1d-83c6-76d718687b4b",
       "title": "Ship 1.0 now? Say go and I prep everything you need.",
       "description": "🔴 #26 · Ship 1.0 — the last steps are yours, in App Store Connect\n\nCoral's rec: Go. I generate the rc.33 screenshots and hand you a numbered ASC walkthrough; you upload, write release notes, select build 33, submit. The white-screen bug cannot occur in the native build (verified structurally in `vite.config.ts`), so nothing about it should delay the store.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7ce4eaa8-1023-42d6-85b9-34bf0a8dc774",
+      "id": "974d4fe1-d03b-4893-8a59-51dafa53efb3",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "332f035a-e73d-481f-ab0f-f85200e64e7a",
+      "id": "351ffc8f-828d-4a59-b0da-386cec866fe1",
       "title": "Nothing now — say \"next question\" when you want one.",
       "description": "🟡 #22 · Pro-feedback interview — one question at a time, ongoing\n\nCoral's rec: Keep it opportunistic rather than scheduled; I will bring one when there is room.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "850f88fe-b51c-4e99-af8b-6a03b784d63b",
+      "id": "0260f1e1-9cf5-47aa-932c-cda440879083",
       "title": "Nothing yet — I will tell you when the gate clears.",
       "description": "🟢 #28 · Cohort recruiting — blocked on me, not you\n\nCoral's rec: Meanwhile, if names occur to you for the agent-heavy ten, jot them somewhere. They are the harder half to recruit.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "2409961e-99b8-420e-803a-089f3801db1e",
+      "id": "2418ba98-6eeb-4ba9-9dfa-bb6e715a6e54",
       "title": "Keep \"Delete forever\" as-is, or soften the wording?",
       "description": "🟢 #13 · Purge copy could say less than it does\n\nCoral's rec: Keep it. Across sessions and in backups, \"gone for good\" is simply true, and overstating danger beats understating it.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "1ccc5da4-1cc7-4a71-9cf3-b5b956b619ea",
+      "id": "97f9898b-39c8-4315-ad9f-91580e1fef64",
       "title": "Keep the Zapier toast wording, or give me different words?",
       "description": "🟢 #8 · Zapier export toast wording\n\nCoral's rec: Keep it. It is honest and the honesty is the point.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 6,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "952ecfb5-a2fb-4a41-8215-4fd5e96fb6b1",
+      "id": "ea1a02a2-8dcd-4ac3-8d8f-8123077f7997",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 7,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "1c183cbc-4f72-42af-bfc9-0ee19b28240e",
+      "id": "66c0440a-29d9-494e-87da-bf72f2d8e4b0",
       "title": "FYI only — nothing needed unless you want a different posture.",
       "description": "🟢 #1 · Dependency vulnerabilities — recomputed 2026-08-29, 7 current\n\nCoral's rec: Hold until after 1.0, then revisit as routine hygiene.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-08-31",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-08-31T20:31:29.240Z",
+      "createdAt": "2026-08-31T21:01:04.416Z",
       "sortOrder": 8,
       "source": "coral/attention-rollup"
     }
