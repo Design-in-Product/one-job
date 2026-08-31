@@ -26,7 +26,33 @@ const rollup = readFileSync('docs/ATTENTION-ROLLUP.md', 'utf8');
 const open = rollup.split(/^## Open$/m)[1]?.split(/^## Settled$/m)[0];
 if (!open) throw new Error('Could not find the Open section — rollup structure changed?');
 
-// Items are "### <status> <n>. <title>" headings; ✅ items are closed.
+// Items are "### <status> <n>. <title>" headings.
+//
+// EXPLICIT CLASSIFICATION, no silent default (2026-08-31, after the
+// cross-pollination brief on filter-widening: "a widening turns a
+// previously-unreachable narrow filter into a live silent default").
+// The original version ranked with `startsWith('🔴') ? 0 : '🟡' ? 1 : 2`
+// and filtered closed items with `!startsWith('✅')` — both anchored to
+// exact markers, both silently defaulting anything else. A discriminating
+// probe proved the cost: headings marked closed a different way ("✔︎",
+// "CLOSED") were dealt to Xian as live work, and an unmarked urgent item
+// was buried below the FYI cards. The count went UP, reading as coverage.
+//
+// Now: every heading must classify against a known marker, or the script
+// refuses to write a deck that would mis-deal attention. A five-second
+// heading fix beats a silently wrong deck (the deterministic-pipeline
+// principle: surface the unhandled shape, never absorb it).
+export const OPEN_RANK = { '🔴': 0, '🟡': 1, '🟢': 2 };
+export const CLOSED_MARKERS = ['✅'];
+
+/** → {kind:'open', rank} | {kind:'closed'} | {kind:'unclassified'} */
+export function classifyHeading(heading) {
+  const marker = [...heading.trim()][0];
+  if (CLOSED_MARKERS.includes(marker)) return { kind: 'closed' };
+  if (marker in OPEN_RANK) return { kind: 'open', rank: OPEN_RANK[marker] };
+  return { kind: 'unclassified' };
+}
+
 const items = [];
 const re = /^### (.+)$/gm;
 let m, prev = null;
@@ -37,11 +63,24 @@ while ((m = re.exec(open)) !== null) {
 }
 if (prev) prev.body = open.slice(prev.end).trim();
 
-const openItems = items.filter(i => !i.heading.startsWith('✅'));
+for (const i of items) i.status = classifyHeading(i.heading);
 
+const unclassified = items.filter(i => i.status.kind === 'unclassified');
+if (unclassified.length) {
+  console.error(
+    `\nRefusing to deal: ${unclassified.length} rollup heading(s) carry no ` +
+    `recognized status marker (${Object.keys(OPEN_RANK).join(' ')} open, ` +
+    `${CLOSED_MARKERS.join(' ')} closed):\n` +
+    unclassified.map(i => `  ### ${i.heading}`).join('\n') +
+    `\n\nA deck built from these would misfile Xian's attention silently.\n` +
+    `Fix the heading(s) in docs/ATTENTION-ROLLUP.md, then re-run.\n`
+  );
+  process.exit(1);
+}
+
+const openItems = items.filter(i => i.status.kind === 'open');
 // Status ordering: blocking first, FYI last — the deck's initial order.
-const rank = h => (h.startsWith('🔴') ? 0 : h.startsWith('🟡') ? 1 : 2);
-openItems.sort((a, b) => rank(a.heading) - rank(b.heading));
+openItems.sort((a, b) => a.status.rank - b.status.rank);
 
 const today = new Date().toISOString().slice(0, 10);
 const tasks = openItems.map((item, i) => ({
