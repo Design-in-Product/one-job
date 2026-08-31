@@ -13,7 +13,7 @@
 
 import { describe, it, expect } from 'vitest';
 // @ts-expect-error — plain .mjs script, no types; importing the pure part.
-import { classifyHeading, OPEN_RANK, CLOSED_MARKERS } from '../../../scripts/fleet-probe.mjs';
+import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS } from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
   it('ranks the three open markers, blocking first', () => {
@@ -45,5 +45,38 @@ describe('fleet probe heading classification', () => {
   it('reads the marker as a full code point, not a UTF-16 unit', () => {
     // Emoji are surrogate pairs; a charAt(0) implementation would break here.
     expect(classifyHeading('🟡 x').kind).toBe('open');
+  });
+});
+
+// 2026-08-31, Xian's probe feedback: "we need a format that is concise
+// and clear about what is needed of me." Cards now lead with the Ask,
+// and an open item without one cannot become a card at all.
+describe('fleet probe ask extraction', () => {
+  it('pulls the Ask and Rec out of an item body', () => {
+    const body = [
+      'Some context prose about the item.',
+      '',
+      '**Ask:** Ship 1.0 now? Say go and I prep everything you need.',
+      '**Rec:** Go. Nothing about the white screen should delay the store.',
+    ].join('\n');
+    expect(parseAsk(body)).toEqual({
+      ask: 'Ship 1.0 now? Say go and I prep everything you need.',
+      rec: 'Go. Nothing about the white screen should delay the store.',
+    });
+  });
+
+  it('joins a wrapped Ask into one line (markdown wraps at 72 cols)', () => {
+    const body = '**Ask:** Keep the Zapier toast wording,\nor give me different words?\n**Rec:** Keep it.';
+    expect(parseAsk(body).ask).toBe('Keep the Zapier toast wording, or give me different words?');
+  });
+
+  it('returns null for a body with no Ask — the script refuses to deal these', () => {
+    expect(parseAsk('Just prose, no ask at all.').ask).toBeNull();
+  });
+
+  it('returns null rec when only an Ask is present (rec is optional)', () => {
+    const r = parseAsk('**Ask:** Do the thing?');
+    expect(r.ask).toBe('Do the thing?');
+    expect(r.rec).toBeNull();
   });
 });
