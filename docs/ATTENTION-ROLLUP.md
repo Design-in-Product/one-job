@@ -1,24 +1,3 @@
-# Attention Rollup — things waiting on Xian
-
-**Maintained by:** Coral · **Swept by:** Janus (majordomo)
-**Convention:** newest section at the top. Each item states the
-decision needed, what I recommend, and — importantly — **what I am
-doing meanwhile**, so nothing here is blocking unless it says so.
-When an item is answered, it moves to *Settled* at the bottom with the
-answer recorded.
-
-**Status key:** 🔴 blocking (I cannot proceed) · 🟡 wants an answer
-(I have a working default) · 🟢 FYI (no action needed)
-
-**Xian's working surface (2026-07-30):** this ledger now has an
-interactive companion — the **attention briefing artifact**
-(`docs/attention-briefing.html`, published private to Xian) with test
-checklists, inline decision answers, and a copy-back composer. This
-file remains the terse source of truth for the sweep; the briefing is
-re-published whenever items open or settle.
-
----
-
 ## Open
 
 *Convention (2026-08-31, after Xian's probe feedback): every open item
@@ -35,12 +14,19 @@ Screenshots against the current build are mine to generate and I will
 have them ready; uploading them, writing the release notes, selecting
 build 33, and pressing Submit are ASC actions only you can do.
 
-**Ask:** Ship 1.0 now? Say go and I prep everything you need.
-**Rec:** Go. I generate the rc.33 screenshots and hand you a numbered
-ASC walkthrough; you upload, write release notes, select build 33,
-submit. The white-screen bug cannot occur in the native build (verified
-structurally in `vite.config.ts`), so nothing about it should delay
-the store.
+**Ask:** Ready to do the ASC steps? Everything else is already done.
+**Rec:** Yes. Screenshots and a numbered walkthrough are prepared and
+waiting (that half was never blocked on you — see the misfiling note
+below); what needs you is uploading them, writing release notes,
+selecting build 33, and pressing Submit. The white-screen bug cannot
+occur in the native build (verified structurally in `vite.config.ts`),
+so nothing about it should delay the store.
+
+*Misfiling caught 2026-09-01 (cross-pollination brief, "misfiled is not
+deferred"): this item previously read "say go and I prep everything,"
+which filed MY unblocked screenshot work behind HIS decision. Nothing
+was waiting on him for that half. Prep now proceeds independently; only
+the ASC actions — which genuinely require his login — remain his.*
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -53,29 +39,6 @@ running live — is a card a good place to answer an agent?
 **Rec:** Relief, ceremony, or something between — that is the whole
 R4.2-lite question. No rush; two weeks of real use beats an early
 verdict. Note friction as it happens rather than saving it up.
-
-### 🟡 22. Pro-feedback interview — one question at a time, ongoing
-Format agreed 2026-08-20: I ask per feature, you answer, I log, we
-triage. Answered so far: multi-deck still feels like One Job (you
-choose one deck, it shows one card, the only new decision is which
-deck) — now written into VISION.md as the deep-vs-broad nudge
-principle. Still unasked: inchworm's shape, the deck delete/merge gap
-(no deck-level delete or deck-into-deck merge exists at all today), and
-whatever else surfaces.
-
-**Ask:** Nothing now — say "next question" when you want one.
-**Rec:** Keep it opportunistic rather than scheduled; I will bring one
-when there is room.
-
-### 🟢 28. Cohort recruiting — blocked on me, not you
-The 50-user pilot (10 agent-heavy first, then 40 ordinary) needs two
-things that are mine: the PWA service-worker fix (no invitation into a
-known white-screen — the standing HARD GATE), and R1.5 instrumentation,
-which shipped 2026-08-29 in rc.34. So: one of two done.
-
-**Ask:** Nothing yet — I will tell you when the gate clears.
-**Rec:** Meanwhile, if names occur to you for the agent-heavy ten, jot
-them somewhere. They are the harder half to recruit.
 
 ### 🟢 13. Purge copy could say less than it does
 "Delete forever" is technically undoable *within* the session (the undo
@@ -106,6 +69,37 @@ patched only what my work touched rather than re-baselining it.
 **Rec:** After 1.0. It is doc debt, not a live risk, and the pivot may
 change more of it before then.
 
+## What I'm carrying (no ask — here so nothing is invisible)
+
+*Added 2026-09-01. These were in the Open list with an Ask of
+"nothing," which put no-op cards in Xian's deck and diluted a surface
+whose whole value is "what needs me." They are real work, they are
+mine, and they stay visible here — but the probe only deals from Open,
+so they no longer reach his phone as cards.*
+
+### 🟡 22. Pro-feedback interview — one question at a time, ongoing
+Format agreed 2026-08-20: I ask per feature, you answer, I log, we
+triage. Answered so far: multi-deck still feels like One Job (you
+choose one deck, it shows one card, the only new decision is which
+deck) — now written into VISION.md as the deep-vs-broad nudge
+principle. Still unasked: inchworm's shape, the deck delete/merge gap
+(no deck-level delete or deck-into-deck merge exists at all today), and
+whatever else surfaces.
+
+**Ask:** Nothing now — say "next question" when you want one.
+**Rec:** Keep it opportunistic rather than scheduled; I will bring one
+when there is room.
+
+### 🟢 28. Cohort recruiting — blocked on me, not you
+The 50-user pilot (10 agent-heavy first, then 40 ordinary) needs two
+things that are mine: the PWA service-worker fix (no invitation into a
+known white-screen — the standing HARD GATE), and R1.5 instrumentation,
+which shipped 2026-08-29 in rc.34. So: one of two done.
+
+**Ask:** Nothing yet — I will tell you when the gate clears.
+**Rec:** Meanwhile, if names occur to you for the agent-heavy ten, jot
+them somewhere. They are the harder half to recruit.
+
 ### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current
 Recount prompted by the Rule-14 brief (the old "4 remain" was computed
 against a tree the 08-16 lockfile surgery had since changed). Current:
@@ -118,6 +112,8 @@ which runs on Amber during native builds and never ships.
 
 **Ask:** FYI only — nothing needed unless you want a different posture.
 **Rec:** Hold until after 1.0, then revisit as routine hygiene.
+
+---
 
 ## Settled
 
