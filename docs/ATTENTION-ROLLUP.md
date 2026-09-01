@@ -15,10 +15,13 @@ have them ready; uploading them, writing the release notes, selecting
 build 33, and pressing Submit are ASC actions only you can do.
 
 **Ask:** Ready to do the ASC steps? Everything else is already done.
-**Rec:** Yes. Screenshots and a numbered walkthrough are prepared and
-waiting (that half was never blocked on you — see the misfiling note
-below); what needs you is uploading them, writing release notes,
-selecting build 33, and pressing Submit. The white-screen bug cannot
+**Rec:** Yes. Both halves of the prep are now real, not promised:
+18 screenshots captured against rc.34 and verified at exact Media
+Manager dimensions (`store/screenshots/staging-2026-09-01/composed/`),
+and a numbered walkthrough written
+(`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes
+in ASC: upload the images, select build 33, paste the review notes,
+submit. The white-screen bug cannot
 occur in the native build (verified structurally in `vite.config.ts`),
 so nothing about it should delay the store.
 
