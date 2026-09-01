@@ -1,55 +1,55 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-01T13:29:58.727Z",
+  "exportedAt": "2026-09-01T13:37:58.156Z",
   "tasks": [
     {
-      "id": "c1d12ba1-0e27-4f40-b313-a25586fb68c2",
+      "id": "58f76937-31f7-4c0f-a523-1e2f6161953e",
       "title": "Ready to do the ASC steps? Everything else is already done.",
-      "description": "🔴 #26 · Ship 1.0 — the last steps are yours, in App Store Connect\n\nCoral's rec: Yes. Screenshots and a numbered walkthrough are prepared and waiting (that half was never blocked on you — see the misfiling note below); what needs you is uploading them, writing release notes, selecting build 33, and pressing Submit. The white-screen bug cannot occur in the native build (verified structurally in `vite.config.ts`), so nothing about it should delay the store. *Misfiling caught 2026-09-01 (cross-pollination brief, \"misfiled is not deferred\"): this item previously read \"say go and I prep everything,\" which filed MY unblocked screenshot work behind HIS decision. Nothing was waiting on him for that half. Prep now proceeds independently; only the ASC actions — which genuinely require his login — remain his.*\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
+      "description": "🔴 #26 · Ship 1.0 — the last steps are yours, in App Store Connect\n\nCoral's rec: Yes. Both halves of the prep are now real, not promised: 18 screenshots captured against rc.34 and verified at exact Media Manager dimensions (`store/screenshots/staging-2026-09-01/composed/`), and a numbered walkthrough written (`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes in ASC: upload the images, select build 33, paste the review notes, submit. The white-screen bug cannot occur in the native build (verified structurally in `vite.config.ts`), so nothing about it should delay the store. *Misfiling caught 2026-09-01 (cross-pollination brief, \"misfiled is not deferred\"): this item previously read \"say go and I prep everything,\" which filed MY unblocked screenshot work behind HIS decision. Nothing was waiting on him for that half. Prep now proceeds independently; only the ASC actions — which genuinely require his login — remain his.*\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-01T13:29:58.727Z",
+      "createdAt": "2026-09-01T13:37:58.156Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "c203e6b2-d50b-4c21-8ef5-179ecca71ea2",
+      "id": "2412f3e5-388f-4ac6-ba48-93ea625012f3",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-01T13:29:58.727Z",
+      "createdAt": "2026-09-01T13:37:58.156Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "df94ee1d-ab43-42cb-9d8c-59bf21a69de0",
+      "id": "ee12fcf2-1424-407d-af65-6098296d53f8",
       "title": "Keep \"Delete forever\" as-is, or soften the wording?",
       "description": "🟢 #13 · Purge copy could say less than it does\n\nCoral's rec: Keep it. Across sessions and in backups, \"gone for good\" is simply true, and overstating danger beats understating it.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-01T13:29:58.727Z",
+      "createdAt": "2026-09-01T13:37:58.156Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "3840e5b4-e150-42e3-93ce-4536064a08f1",
+      "id": "fbf718db-affb-4032-a29b-11585396701e",
       "title": "Keep the Zapier toast wording, or give me different words?",
       "description": "🟢 #8 · Zapier export toast wording\n\nCoral's rec: Keep it. It is honest and the honesty is the point.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-01T13:29:58.727Z",
+      "createdAt": "2026-09-01T13:37:58.156Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "c134e2c8-7949-408c-b452-fad7699e6039",
+      "id": "57f8208e-6364-489e-8283-f1f7d5270f95",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-01",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-01T13:29:58.727Z",
+      "createdAt": "2026-09-01T13:37:58.156Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     }
