@@ -78,7 +78,16 @@ for (const name of targets) {
     deviceScaleFactor: p.scale, hasTouch: true, isMobile: p.width < 800,
   });
   const page = await ctx.newPage();
-  await page.addInitScript(([s]) => localStorage.setItem('oneJobTasks', JSON.stringify(s)), [SEED]);
+  // Seed the deck AND enable quiet mode (2026-09-01): without it,
+  // transient toasts freeze into the shots — the 09-01 set caught a
+  // housekeeping notice ("Tidied up: 3 done cards…") sitting across the
+  // TOP of 01-the-deck, the install sheet's lead image, where a stranger
+  // reads it as an error. Quiet mode mutes confirmations; problems still
+  // surface, so nothing real is being hidden from the capture.
+  await page.addInitScript(([s]) => {
+    localStorage.setItem('oneJobTasks', JSON.stringify(s));
+    localStorage.setItem('oneJobQuietMode', '1');
+  }, [SEED]);
   await page.goto(BASE_URL, { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
 
