@@ -22,9 +22,17 @@ import { randomUUID } from 'node:crypto';
 
 const rollup = readFileSync('docs/ATTENTION-ROLLUP.md', 'utf8');
 
-// The Open section runs from "## Open" to "## Settled".
-const open = rollup.split(/^## Open$/m)[1]?.split(/^## Settled$/m)[0];
-if (!open) throw new Error('Could not find the Open section — rollup structure changed?');
+// The Open section runs from "## Open" to the NEXT top-level heading —
+// not to "## Settled" specifically. 2026-09-01: an intervening section
+// ("What I'm carrying") was added between them and its items silently
+// leaked into the deck, because the old split only stopped at Settled.
+// Ending at any `## ` means a new section can never leak in unnoticed —
+// the same no-silent-default rule the status and Ask guards follow.
+const afterOpen = rollup.split(/^## Open$/m)[1];
+if (afterOpen === undefined) {
+  throw new Error('Could not find the Open section — rollup structure changed?');
+}
+const open = afterOpen.split(/^## /m)[0];
 
 // Items are "### <status> <n>. <title>" headings.
 //
