@@ -177,6 +177,36 @@ cards, two weeks of Xian answering from the deck. What it measures is
 One Job is a lifestyle app and that's a legitimate answer. The probe
 must not grow an adapter seam.*
 
+**The category framing (Ted Nadeau via Themis, 2026-09-02) — recorded,
+not yet ratified as positioning.** Ted's criticism of classical task
+tooling: *"task-based management things like Jira, they have no
+structure for responsibility… make sure the work area is clean, make
+sure this rule is checked, make sure this stays this way — all of those
+responsibility notations are never in task management software."*
+Xian's gloss from the same call: a task is workload; **responsibility
+is the lens, the portfolio, the thing you're in charge of.**
+
+Why this matters here rather than as trivia: **agents do not primarily
+hold tasks — they hold standing responsibilities, and tasks are what
+those responsibilities emit.** That is the gap which makes pointing One
+Job at agent oversight coherent rather than opportunistic, and it
+explains why generic task managers feel wrong for the job even when
+they technically work.
+
+Themis's observation, which I think is correct and was unplanned: the
+fleet probe's `Ask:`/`Rec:` convention is already a **responsibility-
+surface** convention rather than a task convention. An attention card
+does not say *here is a unit of work to complete*; it says *here is the
+judgment my standing responsibility requires from you*. The R4.2-lite
+probe is therefore testing something narrower and more interesting than
+"can agents deal cards" — it is testing whether a card is a good
+surface for **an emission from a responsibility**.
+
+*Candidate positioning language, Xian's call, not adopted:* the
+category is less "task manager for agents" than "the surface where
+standing responsibilities produce the few decisions only the human can
+make."
+
 | # | Item | What changes |
 |---|---|---|
 | R4.1 | **MCP inbox** — agents deal cards into a per-user inbox; the phone pulls; status events flow back (MCP-DESIGN.md's model, its 4 open questions answered by then-real R3 infrastructure — an agent is just another source) | MCP memo |

@@ -6,6 +6,39 @@ in one sentence — and a **Rec:** line with my recommendation. The fleet
 probe REFUSES to deal a deck if any open item lacks an Ask, so a card
 can never arrive without saying what it wants.*
 
+### 🟡 29. Ted Nadeau is a live beta user as of today — send him the TestFlight invite
+Themis relayed (2026-09-02): Ted has **no iPhone but does have an
+iPad**, and TestFlight works there. On the call he opened the web app
+and read the empty state aloud — *"One, you're all caught up. What a
+wonderful feeling to have no pending tasks."* He already has the URL in
+your shared doc and understands the local-storage model. An articulate,
+technically fluent, genuinely non-average tester arriving the same week
+as 1.0 ships is worth not losing to a forgotten invite.
+
+**Ask:** Send Ted the TestFlight invite — it only takes your ASC login.
+**Rec:** Do it alongside the submission steps; same session, same
+login. Build 33 is already processed and available to testers. Worth
+noting he is an iPad user, which is the surface we have visually
+verified least and where the honest-column decision actually lands.
+
+### 🟡 30. Two pilot framings are circulating — reconcile them deliberately
+Themis flagged (2026-09-02) that you described the pilot to Ted as
+*"a pilot of 50 people said they would use this, they would buy this if
+it was for money"*, while the ratified roadmap sequences **10
+agent-heavy users first, then 40 ordinary**. Not a contradiction —
+10-then-40 reaches 50 — but two numbers are now live in two rooms, and
+the framings answer different questions: "50 people would pay" is a
+willingness-to-pay proof; "10 agent-heavy first" is a
+which-category-are-we-in probe.
+
+**Ask:** Which framing is the real one — or are both true in sequence?
+**Rec:** Both, sequenced, and say so explicitly: the ten answer
+*whether the agentic thesis holds* (P5's economic-buyer conversations),
+the forty answer *whether ordinary people retain*. "50 who would pay"
+is the outcome you would report afterward, not the design of the pilot.
+Cheaper to reconcile now than to let two numbers drift apart in
+different rooms.
+
 ### 🔴 26. Ship 1.0 — the last steps are yours, in App Store Connect
 Everything upstream is done: build 33 (rc.33) is uploaded and
 processed, listing copy and captions are approved and applied, Media
