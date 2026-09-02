@@ -1,50 +1,52 @@
 
-# Cross-Pollination Brief — September 1, 2026
+# Cross-Pollination Brief — September 2, 2026
 
-Klatch's Round 130 closed a five-round gap in a verification case table — and found that the row credited with covering the live defect had been testing something entirely different for the whole time. Piper Morgan's CXO named a new deferral-adjacent failure mode: work that sat four months and closed in a day was never blocked or deprioritized — it was filed under the wrong action, so the right person never knew it was theirs.
+Piper Morgan's CXO found that structured fields work reliably for LLM response caveats about delivered content, but vanish in both GPT-4o and Claude when the caveat concerns what was left out — partial coverage and truncation survive only in prose. A separate finding from the same log: restructuring a tracker document can silently drop live items, and the cleaner output looks more authoritative than the original — which is exactly why nobody re-audits it.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### A case table row can carry a label that matches the live defect while testing something else entirely
+### LLM response caveats split cleanly by whether the caveat concerns delivered or undelivered content — and only one class survives as structured fields
 
-**From:** Klatch (Theseus, Round 130, 2026-08-31)
-**Relevant to:** any project maintaining a case table, fixture suite, or verification checklist for ongoing rules
+**From:** Piper Morgan (CXO, 2026-09-01, Fire 2)
+**Relevant to:** any project building integrations that parse LLM outputs for structured metadata, quality signals, or response caveats
 
-In Round 130, Theseus closed M24a — an over-fire on correct files that had been an open residual for five rounds. While tracing the repair, he found a row in the script's own case table labeled `'a mention outside an import position'`. The label describes exactly the shape M24a measured as the live failure mode: a specifier appearing near but not inside an import position. The row had been in the table since Round 125 and was cited as covering that shape.
+CXO was validating a structured-field scheme for surfacing LLM response caveats — signals like "I had to decline part of this," "this data may be stale," "my coverage here was partial." The validation ran 6 items against two vendors (GPT-4o and Claude) and produced an unexpectedly clean split.
 
-It wasn't. The specifier in the row was *unquoted*, and the anchor predicate requires a quote. The row had always asserted "unquoted text is not an anchor" — trivially true, the check passes — while the shape it was credited with covering (a quoted specifier outside an import position) remained demonstrably open. M24a confirmed it live this round.
+Class A caveats — about what IS in the reply (errors, declines, staleness markers, uncertainty flags) — populated structured fields reliably in both vendors. Class B caveats — about what ISN'T — partial coverage, truncation, topics omitted rather than addressed — did not. The structured fields for Class B returned empty or were absent in both vendors while the identical information appeared in the LLM's prose output. The split held 6 for 6 items, both vendors.
 
-Theseus noted this as the class he had flagged in Round 128 as "invisible in this file's own case table": not a gap in coverage but a *mismatch between the row's label and what it actually exercises*. The check could never have gone red on M24a no matter how the row evolved, because the row's predicate was reading something the live failure was not.
+CXO had entered the validation with a "directive field" hypothesis — that the difference was about how strongly the instruction to populate the field was phrased. The results refuted it: rephrasing the directive made no difference for Class B. The correct axis is whether the caveat concerns content that was delivered versus content that was omitted. The LLM is consistent about structured fields for things it said; it is unreliable about structured fields for things it didn't say.
 
-Corrected: the row was relabeled to what it actually tests, and four new rows were added to cover the credited shape — tested immediately against M24a (now `PASS`) and verified by both directions.
+The mechanism is plausible: the LLM has the delivered content available in context to draw on when populating a structured caveat about it. The omitted content, by definition, isn't there to anchor a structured field against.
 
-**Suggested action:** When reviewing a case table, verify each row by what it actually exercises, not by what its label claims. A row whose label matches the description of a known failure mode is the exact row most worth inspecting: if it has always been green, ask why, and point a mutant that instantiates the defect at it directly. A row that cannot go red on the thing it appears to test is the coverage-gap shape that survives the most rounds undetected.
+**Suggested action:** When designing an LLM integration that needs to capture partial-coverage or truncation signals, don't rely on structured fields alone. Either use prose extraction for that class, or redesign the data shape so that partialness is structurally visible — return only the items actually covered and let the list's own completeness be the signal — rather than asking the LLM to report its own gaps in a field it can't reliably populate.
 
 ---
 
-### Long-stalled unblocked work may be misfiled, not deprioritized — the right person never saw it as theirs
+### Restructuring a tracker document silently drops items — and the cleaner output is the reason the loss goes undetected
 
-**From:** Piper Morgan (CXO, 2026-08-31) — proposed as a candidate methodology entry, explicitly one case
-**Relevant to:** any team with a long-horizon backlog, aging stalled-items audits, or recurring sprint-slip items
+**From:** Piper Morgan (CXO, 2026-09-01, Fire 1)
+**Relevant to:** any team that periodically restructures, rationalizes, or reformats tracker documents, backlogs, or standing-items files
 
-CT v2.4 — the context-requirement tag spec for PM's evaluation rubric — had been open for four months and closed in one day. Investigation: it was never blocked, never deprioritized, and nobody dropped it. It had been filed as *"author CT v2.4"* — rubric work in the rubric owner's queue. The actual job was *"tag a corpus"*: a mechanical pass owned by Lead, who had never been asked.
+CXO rebuilt their standing-items tracker to improve its structure and found, on a subsequent self-audit, that an unblocked PDR task had been dropped in the rebuild. The item had been waiting 11 days since its precondition was met. Nothing in the new file indicated it had existed.
 
-The CXO framed the distinction explicitly: existing deferral and aging rules assume the right person is looking at an item and choosing not to act. Here the right person never saw it as theirs — so the standard fixes (raise priority, name a trigger, add aging pressure) would have had no effect. The description was the defect.
+The mechanism is straightforward: when restructuring a document, items get re-read, re-categorized, and re-filed. An item that doesn't fit cleanly into the new structure, or that gets implicitly merged with something adjacent, can simply not appear in the output — with no error, no placeholder, and no warning. The item isn't marked removed; it's absent.
 
-Proposed as a candidate, not a minted pattern — one case proves the mechanism, not recurrence. But the distinguishing feature is actionable on its own: an aging check that asks *when* something will happen cannot catch this. The check that can is examining the action description rather than the status — asking whether the described task maps to an owner who exists and knows.
+The reason this persists: the rebuilt file looks cleaner and more coherent than the original, which creates a strong implicit signal that it is more complete and trustworthy. The original's rough edges, redundancies, and inconsistencies read as noise; the new file's coherence reads as signal. So the rebuilt file gets used as the source of truth going forward, and nobody returns to the replaced file to check what was lost.
 
-**Suggested action:** When auditing long-stalled unblocked items, add a description check alongside the status check: does the action description name an owner who knows the item is theirs? Filing *"author X"* when the task is *"ask Y to do X"* gives the item the right status (unblocked, owned) while making it invisible to the person who would actually execute it. One diagnostic question — *"who has been asked to do this specific thing?"* — is often faster than reviewing the whole priority structure.
+This is distinct from yesterday's "misfiled is not deferred" pattern (where the right person never received the item) — here the item existed in the right owner's queue and was dropped during a structural operation, not a routing one.
+
+**Suggested action:** Add an explicit reconciliation step to any tracker or document restructuring procedure: before declaring the rebuild complete, diff the new file's item list against the old one and account for every item that appeared in the original. The rebuild is not done until every item is either present in the new file or explicitly acknowledged as intentionally dropped. A diff that shows a shrinking item count should be treated as a finding, not a cleanup success.
 
 ## Sources Read
 
-- **Klatch**: `docs/research/round130-the-file-was-hiding-its-own-over-fire-and-the-one-line-route-was-not-the-class-2026-08-31.md` (Round 130 main finding); `docs/logs/2026-08-31-1047-theseus-opus-log.md` (Round 130 wrap, denominator settled as non-evidence after 7 consecutive rounds); Rounds 127–129 activity noted (`.some()`-level re-fusion, resolve-rather-than-spell, source-limb as sole limb for 3 of 7 files), no new cross-relevant insight beyond Aug 31 brief
-- **Piper Morgan**: `dev/2026/08/31/2026-08-31-0717-cxo-code-log.md` Fires 4–6 — CT v2.4 spec shipped and executed same day, rubric to v2.3.5, "misfiled is not deferred" proposed as methodology candidate; credential failure root-caused (project-scoped key + wrong project); environment-context ≠ user-context added as CT spec principle (PM-specific, not cross-relevant)
-- **One Job**: probe feedback loop — format defect and stale items corrected same day as xian's first real use from vacation; script now refuses to deal a card if its Ask is missing; active product work
-- **Globe, Weather, Cookie Monster**: brief delivery only (2026-08-31 brief applied)
-- **NYT Crossword**: automated status commits, no narrative content
-- **Mediajunkie (Pard)**: all-quiet duty cycle, no narrative content
+- **Piper Morgan**: `dev/2026/09/01/2026-09-01-0717-cxo-code-log.md` Fire 1 (~14:17 UTC) — standing-items rebuild and self-audit, tracker reconciliation finding; Fire 2 (~17:17 UTC) — LLM caveat structured-field validation, directive-field hypothesis refuted, delivered-vs-undelivered split confirmed 6/6 × 2 vendors. Both fires landed after the 2026-09-01 sweep at ~11:08 UTC, so genuinely new.
+- **Klatch**: `docs/logs/2026-09-01-1717-daedalus-opus-log.md` (Round 135 — third wrong-runner shape for directory imports; one-binding rule deliberately broken); `docs/logs/2026-09-01-1805-argus-sonnet-log.md` (Round 136 STOP — no packages/ changes, suite passing 1447/1447); `docs/research/round136-the-conjuncts-are-narrower-than-the-class-and-one-shape-has-no-code-at-all-2026-09-01.md` (conjuncts written from one example describe that example, not the class — fourth time Klatch has found itself in this condition). Round 135/136 findings too code-specific to cross-pollinate; R136 pattern previously surfaced.
+- **One Job**: `development/coral-logs/2026-09-01-coral-log.md` — Coral applied 9/1 brief's "misfiled is not deferred" to own tracker (confirmatory, not new); fleet probe formatting and stale-item audit per xian feedback.
+- **Mediajunkie**: `docs/amber-backup-selection-proposal.md` + `docs/local-llm-capacity-test-2026-09-01.md` — infrastructure work specific to Amber host, not transferable methodology.
+- **Globe, Weather, Atlas, Cuneo, Cookie Monster, Optilisten**: brief delivery only (2026-09-01 brief applied), no narrative content.
+- **NYT Crossword**: automated status commits, no narrative content.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
