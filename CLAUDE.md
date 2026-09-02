@@ -43,7 +43,25 @@ with the answer recorded, in the same session the answer arrives.
 Regenerating a deck from a stale ledger deals dead work to a real
 person.
 
-**Both rules are enforced structurally, not by my diligence** — the
+**3. Reconcile before declaring a restructure done** (added
+2026-09-02, after a real loss). Any rewrite of the rollup — a staleness
+sweep, a section split, a reorganization — must end with a diff of the
+item list against the pre-rewrite state, accounting for every `###`
+item: present, or explicitly recorded in *Settled*. Not optional, and
+not satisfied by "it looks right." When I did this for the 08-31/09-01
+restructures, twelve items had left Open and **seven had no Settled
+entry at all** — their closures survived only in coral-logs, so the
+ledger no longer recorded that they were ever decided. The mechanism is
+that the rebuilt file reads as cleaner and therefore more trustworthy
+than what it replaced, so nobody returns to check. A shrinking item
+count is a finding, not a tidiness win. One-liner that does it:
+
+```bash
+git show <pre-rewrite-rev>:docs/ATTENTION-ROLLUP.md | grep '^### '
+diff <(that) <(grep '^### ' docs/ATTENTION-ROLLUP.md)
+```
+
+**Rules 1 and 2 are enforced structurally, not by my diligence** — the
 probe script refuses to write a deck if any heading lacks a recognized
 status marker (🔴/🟡/🟢/✅) or any open item lacks an Ask, naming what
 to fix. This is deliberate: a card that doesn't say what it wants, or
