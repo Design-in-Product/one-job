@@ -120,6 +120,58 @@ which runs on Amber during native builds and never ships.
 
 ## Settled
 
+*(2026-09-02) Reconciliation audit — seven closures restored to the
+record.* Applying the day's cross-pollination brief ("restructuring a
+tracker silently drops items, and the cleaner output is why nobody
+re-audits it"), I diffed every `###` item across the 08-31/09-01
+restructures. Twelve items left the Open section; five had Settled
+entries, **seven did not** — their closures existed only in coral-logs
+and commit messages, so the rollup no longer recorded that they were
+ever decided. Restored below as terse entries. The full stories stay in
+the logs; what belongs here is that the decision happened.
+
+*(2026-08-20) Shake-to-undo removed* (was item 12) — iOS's own native
+"Undo Typing" shake gesture wins the race before our JS sees it; no
+web-exposed API can suppress it. Xian: "not cross-platform… not an MVP
+feature." Removed entirely in rc.33; menu Undo unaffected.
+
+*(2026-08-16) Multi-deck backup bug + the three-day deploy freeze* (was
+item 23) — export read `getAllTasks()` (active deck only), so
+multi-deck users' backups silently omitted every other deck; import
+flattened decks on restore. Both fixed in rc.32 with a v3 backup format
+and full v1/v2 back-compat. Investigating it surfaced that CI had been
+failing silently for three days (an npm optional-peer nondeterminism);
+fixed and verified by live bundle hash. Full account:
+`development/coral-logs/2026-08-16-coral-log.md`.
+
+*(2026-08-16) Native build pipeline proven* — first archive → export →
+upload ever completed on Amber. The ASC API key (App Manager role)
+could auto-create a Development cert/profile but NOT a Distribution
+one; that needed Xian's interactively-authenticated Admin Xcode
+session, separately for cert and profile. Now one-time; runbook in
+`docs/AMBER-XCODE.md`.
+
+*(2026-08-19) Real-PAT GitHub test* (was item 17) — superseded by real
+use rather than a scripted test. Result, in Xian's words: "it pulls in
+like every single issue… overflow the buffer. Not a really good use
+case yet." Repo-scoping or a beta flag is now a precondition for
+shipping any second source.
+
+*(2026-08-09) Relay migration* (was items 5/5a/5b) — superseded by
+events, not completed. Relay-on-kindbook was paused with honors after a
+capability map showed the git-delegation requirement couldn't be met on
+that surface at all. The ASC API key made the build pipeline the actual
+unblock these items had been reaching for.
+
+*(2026-08-08) ASC API key live* (was item 20) — `.p8` at the
+tool-canonical path, 700/600, verified by signed `GET /v1/apps` → 200.
+Made unattended archive+upload possible.
+
+*(2026-08-02) Dan enabled as tester* (was item 19) — device pass green
+on the real TestFlight artifact. His 2026-08-26 feedback later became
+the primary qualitative evidence in the investment-readiness memo.
+
+
 *(2026-08-31) Rollup staleness audit* — five items closed as overtaken
 by events, caught when Xian reported the probe deck "seemed possibly
 stale": **24** (rc.32 device pass — he called it settled; shake-undo
