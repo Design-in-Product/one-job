@@ -60,6 +60,14 @@ export async function importFromSource(
     (await store.getDecks()).find(d => d.name === adapter.service);
   if (!deck) deck = await store.createDeck(adapter.service);
 
+  // Seeded from what's already stored, then GROWN as the loop imports.
+  // 2026-09-04: it used to be a pre-loop snapshot only, so two entries
+  // sharing an externalId inside ONE feed both passed the check and both
+  // imported — the exact duplicate this dedupe exists to prevent, with no
+  // error and correct-looking output. Realistic trigger: paginated fetches
+  // overlapping when upstream data changes mid-fetch, which is how the
+  // GitHub adapter reads issues across every repo. The set must see what
+  // the loop itself creates; do not hoist this back to a snapshot.
   const known = new Set(
     deck.cards.filter(c => c.source === adapter.service).map(c => c.externalId)
   );
@@ -71,6 +79,7 @@ export async function importFromSource(
       skipped++;
       continue;
     }
+    known.add(e.externalId); // grow as we go — see the note on `known`
     fresh.push({
       id: uuidv4(), // LOCAL identity — never the upstream id
       title: e.title,
