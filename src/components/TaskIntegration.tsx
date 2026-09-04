@@ -22,7 +22,6 @@ interface TaskIntegrationProps {
 const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSourceImported }) => {
   const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState<string>("");
-  const [apiKey, setApiKey] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ghToken, setGhToken] = useState<string>(getGitHubToken());
   const [ghBusy, setGhBusy] = useState(false);
@@ -103,40 +102,6 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
 
   const renderServiceSpecificFields = () => {
     switch (selectedService) {
-      case "asana":
-        return (
-          <div className="space-y-2">
-            <Label htmlFor="apiKey">{t('integration.asanaLabel')}</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              placeholder={t('integration.asanaPlaceholder')}
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              You can create a Personal Access Token in your Asana account settings.
-            </p>
-          </div>
-        );
-      
-      case "todoist":
-        return (
-          <div className="space-y-2">
-            <Label htmlFor="apiKey">{t('integration.todoistLabel')}</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              placeholder={t('integration.todoistPlaceholder')}
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Find your API token in Todoist settings under Integrations.
-            </p>
-          </div>
-        );
-      
       case "demo":
         return (
           <div className="text-sm text-muted-foreground p-2 bg-muted rounded-md">
@@ -151,6 +116,15 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
 
   return (
     <div className="space-y-4 bg-white rounded-lg shadow-md p-4">
+      {/* 2026-09-04: Asana, Todoist and Zapier were removed from this
+          picker. All three were scaffold-era stubs — Asana and Todoist
+          collected a real API token into React state and then had NO
+          branch in handleImport at all (one-second fake spinner, then
+          silence); Zapier POSTed a payload containing no task data while
+          the button said "Export Tasks". Only genuinely-working sources
+          belong here. Todoist returns properly as a 1.1 release feature
+          (Xian, 2026-09-04): read-only, one designated list, riding the
+          same R3.1 seam the GitHub import uses. */}
       <h3 className="text-lg font-medium">Integrate with Task Services</h3>
 
       {featureOn('githubImport') && (
@@ -178,8 +152,6 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="demo">Demo (Sample Tasks)</SelectItem>
-            <SelectItem value="asana">Asana</SelectItem>
-            <SelectItem value="todoist">Todoist</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -188,7 +160,7 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
       
       <Button 
         onClick={handleImport} 
-        disabled={isLoading || !selectedService || (selectedService !== "demo" && !apiKey)}
+        disabled={isLoading || !selectedService}
         className="w-full bg-gradient-to-r from-taskGradient-start to-taskGradient-end hover:opacity-90 text-white"
       >
         {isLoading ? "Processing..." : "Import Tasks"}

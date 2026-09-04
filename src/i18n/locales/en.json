@@ -229,11 +229,7 @@
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
-      "selectService": "Select Service",
-      "asanaLabel": "Asana Personal Access Token",
-      "asanaPlaceholder": "Enter your Asana PAT",
-      "todoistLabel": "Todoist API Token",
-      "todoistPlaceholder": "Enter your Todoist API token"
+      "selectService": "Select Service"
     },
     "notFound": {
       "title": "404",
