@@ -53,7 +53,12 @@ const SEED = {
       { id: 'c2', title: 'Plan the launch party', completed: false, createdAt: iso(18), sortOrder: 1,
         decks: [{ id: 'd2', name: null, createdAt: iso(18), cards: [
           { id: 's1', title: 'Send invitations', completed: true, createdAt: iso(18), completedAt: iso(24) },
-          { id: 's2', title: 'Order the cake', completed: false, createdAt: iso(18) },
+          // 2026-09-04: this sub-card carries a description on purpose.
+          // Without one the card is short AND the title auto-sizes up to
+          // fill it, so shot 03 rendered as a shouty two-word card jammed
+          // under the breadcrumb with ~40% dead space below — it read as a
+          // broken layout rather than a feature. Xian caught it mid-upload.
+          { id: 's2', title: 'Order the cake', description: 'Chocolate, serves 20 — order by Friday', completed: false, createdAt: iso(18) },
           { id: 's3', title: 'Make a playlist', completed: false, createdAt: iso(18) },
         ] }] },
       { id: 'c3', title: 'Water the tomatoes', completed: false, createdAt: iso(19), sortOrder: 2 },

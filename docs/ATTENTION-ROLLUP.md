@@ -32,7 +32,7 @@ build 33, and pressing Submit are ASC actions only you can do.
 **Ask:** Ready to do the ASC steps? Everything else is already done.
 **Rec:** Yes. Both halves of the prep are now real, not promised:
 18 screenshots captured against rc.34 and verified at exact Media
-Manager dimensions (`store/screenshots/staging-2026-09-01/composed/`),
+Manager dimensions (`store/screenshots/staging-2026-09-04/composed/`),
 and a numbered walkthrough written
 (`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes
 in ASC: upload the images, select build 33, paste the review notes,
