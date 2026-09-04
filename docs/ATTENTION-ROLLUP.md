@@ -21,24 +21,6 @@ login. Build 33 is already processed and available to testers. Worth
 noting he is an iPad user, which is the surface we have visually
 verified least and where the honest-column decision actually lands.
 
-### 🟡 30. Two pilot framings are circulating — reconcile them deliberately
-Themis flagged (2026-09-02) that you described the pilot to Ted as
-*"a pilot of 50 people said they would use this, they would buy this if
-it was for money"*, while the ratified roadmap sequences **10
-agent-heavy users first, then 40 ordinary**. Not a contradiction —
-10-then-40 reaches 50 — but two numbers are now live in two rooms, and
-the framings answer different questions: "50 people would pay" is a
-willingness-to-pay proof; "10 agent-heavy first" is a
-which-category-are-we-in probe.
-
-**Ask:** Which framing is the real one — or are both true in sequence?
-**Rec:** Both, sequenced, and say so explicitly: the ten answer
-*whether the agentic thesis holds* (P5's economic-buyer conversations),
-the forty answer *whether ordinary people retain*. "50 who would pay"
-is the outcome you would report afterward, not the design of the pilot.
-Cheaper to reconcile now than to let two numbers drift apart in
-different rooms.
-
 ### 🔴 26. Ship 1.0 — the last steps are yours, in App Store Connect
 Everything upstream is done: build 33 (rc.33) is uploaded and
 processed, listing copy and captions are approved and applied, Media
@@ -152,6 +134,14 @@ which runs on Amber during native builds and never ships.
 ---
 
 ## Settled
+
+*(2026-09-04) Pilot framing — the roadmap is authoritative.* Themis
+flagged two numbers circulating: "a pilot of 50 people who'd pay" (as
+Xian described it to Ted) vs. the ratified **10 agent-heavy users
+first, then 40 ordinary**. Xian: *"the roadmap is accurate… my
+paraphrase was sloppy."* No change to the plan; the sequencing stands,
+and the two-audience design is the point — the ten test whether the
+agentic thesis holds, the forty test whether ordinary people retain.
 
 *(2026-09-02) Reconciliation audit — seven closures restored to the
 record.* Applying the day's cross-pollination brief ("restructuring a
