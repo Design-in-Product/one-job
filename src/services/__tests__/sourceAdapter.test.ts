@@ -62,3 +62,46 @@ describe('SourceAdapter seam (R3.1)', () => {
     }
   });
 });
+
+// 2026-09-04, from the cross-pollination brief: "hoisting a lookup out of
+// a loop silently breaks dedup if the loop creates what it's looking up."
+// Our `known` set is built from deck.cards BEFORE the loop and was never
+// updated as the loop pushed new cards — so two entries sharing an
+// externalId inside ONE feed both passed the check. Realistic trigger:
+// paginated fetches overlap when upstream data changes mid-fetch, which
+// is exactly how the GitHub adapter reads issues across all repos.
+describe('within-batch dedupe (the snapshot-stale trap)', () => {
+  class DuplicateFeedAdapter {
+    service = 'dupes';
+    async fetchCards() {
+      return [
+        { externalId: 'ext-1', title: 'Appears twice in one feed', completed: false },
+        { externalId: 'ext-2', title: 'Ordinary', completed: false },
+        { externalId: 'ext-1', title: 'Appears twice in one feed', completed: false },
+      ];
+    }
+  }
+
+  it('imports a repeated externalId only once within a single feed', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore('dupetest');
+    const result = await importFromSource(store, new DuplicateFeedAdapter() as never);
+
+    const deck = (await store.getDecks()).find(d => d.name === 'dupes')!;
+    const ids = deck.cards.map(c => c.externalId);
+    expect(ids).toEqual(['ext-1', 'ext-2']);
+    expect(result.imported).toBe(2);
+    expect(result.skipped).toBe(1);
+  });
+
+  it('stays idempotent across a re-import of the same duplicate-bearing feed', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore('dupetest2');
+    const adapter = new DuplicateFeedAdapter() as never;
+    await importFromSource(store, adapter);
+    const second = await importFromSource(store, adapter);
+    expect(second.imported).toBe(0);
+    const deck = (await store.getDecks()).find(d => d.name === 'dupes')!;
+    expect(deck.cards).toHaveLength(2);
+  });
+});

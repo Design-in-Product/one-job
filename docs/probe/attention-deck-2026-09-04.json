@@ -1,75 +1,75 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-04T13:21:08.097Z",
+  "exportedAt": "2026-09-04T13:22:57.196Z",
   "tasks": [
     {
-      "id": "8a143e92-8aaa-47b6-9367-e3f00724caf3",
+      "id": "fa489899-d01b-435f-b52a-22202a462fd4",
       "title": "Ready to do the ASC steps? Everything else is already done.",
       "description": "🔴 #26 · Ship 1.0 — the last steps are yours, in App Store Connect\n\nCoral's rec: Yes. Both halves of the prep are now real, not promised: 18 screenshots captured against rc.34 and verified at exact Media Manager dimensions (`store/screenshots/staging-2026-09-01/composed/`), and a numbered walkthrough written (`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes in ASC: upload the images, select build 33, paste the review notes, submit. The white-screen bug cannot occur in the native build (verified structurally in `vite.config.ts`), so nothing about it should delay the store. *Misfiling caught 2026-09-01 (cross-pollination brief, \"misfiled is not deferred\"): this item previously read \"say go and I prep everything,\" which filed MY unblocked screenshot work behind HIS decision. Nothing was waiting on him for that half. Prep now proceeds independently; only the ASC actions — which genuinely require his login — remain his.*\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "77396365-7eb6-473a-a90b-b2b0d79cae47",
+      "id": "1351772e-f655-4337-a52d-ee4f22062337",
       "title": "Send Ted the TestFlight invite — it only takes your ASC login.",
       "description": "🟡 #29 · Ted Nadeau is a live beta user as of today — send him the TestFlight invite\n\nCoral's rec: Do it alongside the submission steps; same session, same login. Build 33 is already processed and available to testers. Worth noting he is an iPad user, which is the surface we have visually verified least and where the honest-column decision actually lands.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "42d1204f-2e63-41c8-8e40-4969c005226f",
+      "id": "7b316a82-be8e-4217-a739-0792205aeed1",
       "title": "Which framing is the real one — or are both true in sequence?",
       "description": "🟡 #30 · Two pilot framings are circulating — reconcile them deliberately\n\nCoral's rec: Both, sequenced, and say so explicitly: the ten answer *whether the agentic thesis holds* (P5's economic-buyer conversations), the forty answer *whether ordinary people retain*. \"50 who would pay\" is the outcome you would report afterward, not the design of the pilot. Cheaper to reconcile now than to let two numbers drift apart in different rooms.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "ac130548-3a9b-44b7-9584-befc2402a3f8",
+      "id": "8b44eb50-885a-4226-bc41-0aa0be6b4854",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "61037e9e-baf9-49b3-9f35-d1d2f6545be2",
+      "id": "08e934ae-80e9-4cbd-97e8-be29a5b9ea70",
       "title": "Keep \"Delete forever\" as-is, or soften the wording?",
       "description": "🟢 #13 · Purge copy could say less than it does\n\nCoral's rec: Keep it. Across sessions and in backups, \"gone for good\" is simply true, and overstating danger beats understating it.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "420a7dca-a752-4cb4-8ed4-9a7b2c424a61",
+      "id": "eec97872-cf9f-4327-a90e-15560b8a84b0",
       "title": "Keep the Zapier toast wording, or give me different words?",
       "description": "🟢 #8 · Zapier export toast wording\n\nCoral's rec: Keep it. It is honest and the honesty is the point.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 6,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "bd1c82b6-fcd2-4618-b66f-05afdca4dfb9",
+      "id": "3d5d1faa-d6c1-482f-9dc2-49e10cee8b0a",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-04",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-04T13:21:08.097Z",
+      "createdAt": "2026-09-04T13:22:57.196Z",
       "sortOrder": 7,
       "source": "coral/attention-rollup"
     }
