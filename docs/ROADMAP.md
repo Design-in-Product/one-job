@@ -271,6 +271,29 @@ hand-written one, and no agent can ever reorder your deck.
   Job deck concept with Ted." Distinct from R3's federation (which
   connects to external services, not to other people) and from R4's
   agent-dealt cards (a person, not an agent, on the other end).
+- **Seeded starter stacks** (Ted 2026-09-04 + Dan 2026-08-26, the
+  strongest independent convergence in `docs/USER-FEEDBACK.md`) — offer
+  a sample deck at first run so the activation moment (*"I just
+  populated it right away and I really liked that experience"*) is
+  reachable without typing eight cards first. Ted's own suggestions:
+  plan a party · buy a car · become a ballet dancer · build an app · be
+  a Product Manager · transform your house · shop for groceries ·
+  spring cleaning. **The mechanism already exists** (DemoService seeds
+  decks) — what is missing is the placement. Cheap, and it is the same
+  work as measuring activation. **Not premium — this is onboarding**,
+  and belongs near 1.1 rather than on this shelf.
+- **`defer [why]`** (Ted 2026-09-04) — capture the *reason* a card was
+  deferred, not just the count. R1.5 already instruments deferral depth
+  as "the honest measure of the failure mode the product deliberately
+  hides"; a reason turns that from descriptive into diagnostic.
+- **The 2-card A/B format** (Ted 2026-09-04) — "pick one, gives an A/B
+  option." The only prioritization mechanic anyone has proposed that
+  does not violate the anti-grooming ethos: a *choice*, not a sort.
+  Worth real design thought rather than a backlog line.
+- **`card-types: task, rule`** (Ted 2026-09-04, arrived at
+  independently twice — see the R4 category-framing note) — a "rule"
+  card is a standing responsibility; a task card is an emission from
+  one. Architecture question before UI question.
 - **AI-constructed deck from unstructured sources** (same call) — an
   alternative to a classic PM/to-do backend: an AI layer builds someone's
   deck FOR them from "handwritten note pages... a complex Google doc...
