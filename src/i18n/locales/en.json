@@ -229,14 +229,11 @@
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
-      "exportedToZapier": "Sent to Zapier — the browser can't confirm delivery",
       "selectService": "Select Service",
       "asanaLabel": "Asana Personal Access Token",
       "asanaPlaceholder": "Enter your Asana PAT",
       "todoistLabel": "Todoist API Token",
-      "todoistPlaceholder": "Enter your Todoist API token",
-      "zapierLabel": "Zapier Webhook URL",
-      "zapierPlaceholder": "Enter your Zapier webhook URL"
+      "todoistPlaceholder": "Enter your Todoist API token"
     },
     "notFound": {
       "title": "404",

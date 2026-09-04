@@ -23,7 +23,6 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
   const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
-  const [webhookUrl, setWebhookUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ghToken, setGhToken] = useState<string>(getGitHubToken());
   const [ghBusy, setGhBusy] = useState(false);
@@ -88,39 +87,8 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
             source: "demo"
           }
         ];
-      } else if (selectedService === "zapier" && webhookUrl) {
-        // For Zapier integration, we would actually send our tasks to the webhook
-        // This is just a demo implementation
-        // m-44 audit, 2026-07-28: `mode: "no-cors"` yields an OPAQUE response
-        // — status is always 0 and this promise resolves even if the endpoint
-        // 500s or does not exist. Only a network-level failure rejects. The
-        // old code assigned `response`, never looked at it, and toasted
-        // "Tasks exported to Zapier webhook" — asserting a delivery it could
-        // not observe. Same family as the export toast that cost a real deck
-        // on 2026-07-05 (FR4.0b.8: success signals report OBSERVED outcomes).
-        //
-        // What is genuinely observable here is that the request left the
-        // browser without erroring, so that is what we claim. Confirming
-        // delivery would mean dropping no-cors and reading response.ok, which
-        // depends on the webhook sending CORS headers — a behavior change to
-        // make deliberately, not as a side effect of fixing a message.
-        await fetch(webhookUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "no-cors",
-          body: JSON.stringify({
-            action: "export_tasks",
-            timestamp: new Date().toISOString(),
-            source: window.location.origin,
-          }),
-        });
-
-        toast.success(t('integration.exportedToZapier'));
-        importedTasks = []; // No tasks to import in this case
       }
-      
+
       if (importedTasks.length > 0) {
         onImportTasks(importedTasks);
         toast.success(`Imported ${importedTasks.length} tasks from ${selectedService}`);
@@ -169,23 +137,6 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
           </div>
         );
       
-      case "zapier":
-        return (
-          <div className="space-y-2">
-            <Label htmlFor="webhookUrl">{t('integration.zapierLabel')}</Label>
-            <Input
-              id="webhookUrl"
-              type="text"
-              placeholder={t('integration.zapierPlaceholder')}
-              value={webhookUrl}
-              onChange={(e) => setWebhookUrl(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Create a Zapier webhook trigger to connect your tasks.
-            </p>
-          </div>
-        );
-
       case "demo":
         return (
           <div className="text-sm text-muted-foreground p-2 bg-muted rounded-md">
@@ -229,7 +180,6 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
             <SelectItem value="demo">Demo (Sample Tasks)</SelectItem>
             <SelectItem value="asana">Asana</SelectItem>
             <SelectItem value="todoist">Todoist</SelectItem>
-            <SelectItem value="zapier">Zapier (Export)</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -238,10 +188,10 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
       
       <Button 
         onClick={handleImport} 
-        disabled={isLoading || (!selectedService) || (selectedService !== "demo" && selectedService !== "zapier" && !apiKey) || (selectedService === "zapier" && !webhookUrl)}
+        disabled={isLoading || !selectedService || (selectedService !== "demo" && !apiKey)}
         className="w-full bg-gradient-to-r from-taskGradient-start to-taskGradient-end hover:opacity-90 text-white"
       >
-        {isLoading ? "Processing..." : selectedService === "zapier" ? "Export Tasks" : "Import Tasks"}
+        {isLoading ? "Processing..." : "Import Tasks"}
       </Button>
     </div>
   );
