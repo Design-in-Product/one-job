@@ -155,7 +155,7 @@ export class LocalTaskStore implements TaskStore {
     const index = this.decks.findIndex(d => d.id === id);
     if (index === -1) throw new Error('Unknown deck');
     if (this.decks[index].cards.length > 0) {
-      throw new Error('This deck still holds cards — move them out first');
+      throw new Error('This deck still holds cards — move or complete them first, then delete the deck');
     }
     if (this.decks.length === 1) {
       throw new Error('The last deck cannot be deleted');
@@ -495,7 +495,8 @@ export class LocalTaskStore implements TaskStore {
     const open = unfinishedDescendants(card);
     if (open.length > 0) {
       throw new Error(
-        `Cannot complete "${card.title}": ${open.length} unfinished card${open.length === 1 ? '' : 's'} inside`
+        `Cannot complete "${card.title}": ${open.length} unfinished card${open.length === 1 ? '' : 's'} inside — ` +
+        `finish what is inside it first (tap the card to go there)`
       );
     }
   }
@@ -574,7 +575,7 @@ export class LocalTaskStore implements TaskStore {
     // A completed card is hidden from the deck — dropping active work into
     // it would bury the work where navigation can't reach it (2026-07-26).
     if (target.completed) {
-      throw new Error('Cannot move a card into a completed card');
+      throw new Error('Cannot move a card into a completed card — un-complete it first');
     }
     if (collectDescendantIds(card).has(targetId)) {
       throw new Error('Cannot move a card into its own descendant');
@@ -593,7 +594,7 @@ export class LocalTaskStore implements TaskStore {
     const task = this.findTask(taskId);
     // A completed card is sealed — no new decks, no new cards (Xian,
     // 2026-07-26: "we can't allow cards to be added to finished cards").
-    if (task.completed) throw new Error('Cannot add a deck to a completed card');
+    if (task.completed) throw new Error('Cannot add a deck to a completed card — un-complete it first');
     const newDeck: InteriorDeck = {
       id: uuidv4(),
       name,
@@ -612,7 +613,7 @@ export class LocalTaskStore implements TaskStore {
     // Don't add work into a deck owned by a completed card — it would be
     // sealed away out of sight (Xian, 2026-07-26).
     const owner = findCardOwningDeck(this.tasks, substackId);
-    if (owner?.completed) throw new Error('Cannot add a card to a completed card');
+    if (owner?.completed) throw new Error('Cannot add a card to a completed card — un-complete it first');
     const newCard: Task = {
       id: uuidv4(),
       title,
@@ -645,7 +646,7 @@ export class LocalTaskStore implements TaskStore {
 
   async archiveTask(id: string): Promise<Task> {
     const task = this.findTask(id);
-    if (cardRoom(task) !== 'done') throw new Error('Only done cards can be archived');
+    if (cardRoom(task) !== 'done') throw new Error('Only done cards can be archived — complete it first');
     applyArchive(task);
     this.saveTasks();
     return task;
@@ -661,7 +662,7 @@ export class LocalTaskStore implements TaskStore {
 
   async trashTask(id: string): Promise<Task> {
     const task = this.findTask(id);
-    if (cardRoom(task) !== 'archive') throw new Error('Only archived cards can be trashed');
+    if (cardRoom(task) !== 'archive') throw new Error('Only archived cards can be trashed — archive it first');
     applyTrash(task);
     this.saveTasks();
     return task;
@@ -711,7 +712,7 @@ export class LocalTaskStore implements TaskStore {
     const index = holder?.findIndex(c => c.id === id) ?? -1;
     if (!holder || index === -1) throw new Error('Task not found');
     if (cardRoom(holder[index]) !== 'trash') {
-      throw new Error('Only trashed cards can be purged');
+      throw new Error('Only trashed cards can be purged — move it to the trash first');
     }
     holder.splice(index, 1);
     this.saveTasks();
