@@ -29,7 +29,7 @@ extension 2026-07-28 with no client yet implementing it.
 | P0 | **Submit 1.0 to the App Store from the native build** (build 32+, white-screen bug structurally impossible there — verified). The PWA service-worker fix gates the *cohort*, not the store | Ready when Xian's device-pass soak feels settled; shake-to-undo removal (rc.33) not yet in a native build — cut build 33 at submission |
 | P1 | **R1.5 Local instrumentation** (new) — opt-in, on-device, pre-registered metrics; instrument BEFORE anyone is invited. Full design: `docs/plans/2026-08-28-instrumentation-plan.md` (plan approved by Xian 2026-08-29, "looks good") | Designed; 4 open questions pending his answers, then build |
 | P2 | **R4.2-lite fleet probe** (new) — the crudest thing that works: this repo's own ATTENTION-ROLLUP items land as cards in a One Job deck; Xian answers from the deck for two weeks. NO MCP, no protocol, no adapter seam — if it grows an architecture it has failed. Scope: EVERYTHING on the rollup (his call, 2026-08-28). Likely zero new app code (script emits backup-import-shaped JSON) | Not started |
-| P3 | **R3 scoped hard: one Todoist list, read-only first** — earns write-back after a proven week. **Precondition: fix or flag-hide the GitHub import** (imports all issues across all repos, "a thousand cards... overflow the buffer" — his words; repo-scoping is a small adapter change) | Not started |
+| P3 | **Todoist integration — now a 1.1 RELEASE FEATURE** (Xian, 2026-09-04: "prioritize the todoist integration asap as a 1.1 release feature"). One designated list, read-only first, earning write-back after a proven week. Rides the R3.1 seam the GitHub import already proves. **Precondition: fix or flag-hide the GitHub import** (pulls every assigned issue across every repo — "a thousand cards… overflow the buffer"); shipping a second source while the first embarrasses is how integrations get a reputation | **NEXT UP** — P1/P2 both shipped |
 | P4 | **The 50-user cohort** — ~10 agent-heavy users recruited FIRST, then ~40 ordinary. Gated on P1 (instrument before inviting) and the PWA white-screen fix (no invitation into a known white-screen — the standing HARD GATE discipline, same reason) | Blocked on P1 + SW fix |
 | P5 | **Economic-buyer conversations** — ask the ten agent-heavy users what a reliable human-review queue is worth; a week of calendar, not a quarter of engineering | After P4 recruiting starts |
 
@@ -302,6 +302,34 @@ The original converged sequence (data safety net → undo → backup nudge
 recursive cards → lifecycle chain → R1 gate week) shipped in full
 across the rc series, several of them exceeded (undo became
 session-deep + redo; schema went to v3).
+
+## 1.1 — the first post-launch release (scoped 2026-09-04)
+
+**Todoist, done properly**, is the headline. Context that makes it
+urgent rather than merely next: cutting the scaffold-era stubs today
+(Asana, Todoist, Zapier — see below) means One Job currently ships
+*one* real source, GitHub, and that one overflows. 1.1's job is to make
+the integration story true.
+
+Scope, deliberately narrow:
+1. **GitHub repo-scoping or beta-hide** — the precondition. A source
+   that dumps a thousand cards is the counter-advertisement for the
+   whole lens thesis.
+2. **Todoist read-only, one designated list** — the R3.2 pattern the
+   GitHub adapter already established, pointed at a personal task
+   manager (the right shape for a personal overlay; Doist ships an
+   official MCP server, so it doubles as R4 groundwork).
+3. **A proven week of read-only** before completion write-back (R3.4).
+   The R3 gate is Xian's own and predates any pressure to demo the
+   lens.
+
+*Stub removal, 2026-09-04:* Asana and Todoist sat in the Integrations
+picker collecting real API tokens with **no handler at all** — a fake
+spinner, then silence. Zapier POSTed a payload containing no tasks
+while its button read "Export Tasks." All three removed before 1.0
+ships (rc.36). Todoist returns in 1.1 as a real integration; Asana
+stays retired (a team database, wrong shape for a personal overlay —
+the 2026-08-02 source-dimension survey's finding).
 
 ## The build sequence NOW (from the pivot, 2026-08-28)
 
