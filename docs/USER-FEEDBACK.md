@@ -48,7 +48,14 @@ card is an emission from one. See ROADMAP R4's category-framing note.
 **Not yet a build item** — recorded because two independent arrivals at
 the same distinction is the kind of thing that turns out to matter.
 
-**3 · Layer, not replacement.**
+**3 · Layer, not replacement** — *confirming the thesis, not
+discovering it.* Xian's correction, 2026-09-04: One Job as
+fundamentally an **interaction layer** that could sit in front of
+existing info stores — even as middleware, even as merely a
+trope/paradigm — **has always been in scope.** So this convergence is
+not users revealing a direction; it is two independent users
+independently landing on the design intent without being told it. That
+is a stronger result than a discovery would have been.
 - **Dan**: *"could I promote some things from my to-do app to this to
   knock them out?"* … *"how do you picture this working with their main
   to do?"*
@@ -85,13 +92,22 @@ Sent an unprompted structured list.
 **Two of these are genuinely novel and worth flagging:**
 
 - **`defer [why]`** — capturing the *reason* for a deferral, not just
-  the count. We already instrument deferral depth (R1.5) as "the honest
-  measure of the failure mode the product deliberately hides." A reason
-  would make that measure diagnostic rather than merely descriptive.
-- **The 2-card A/B format** — pick one of two rather than rank a list.
-  This is the only prioritization mechanic anyone has proposed that
-  does not violate the anti-grooming ethos: it is a *choice*, not a
-  sort. Worth real design thought.
+  the count. Would make R1.5's deferral-depth metric diagnostic rather
+  than merely descriptive. **Xian's reservation, 2026-09-04: "seems
+  cool but is also rather friction-y."** He is right, and it cuts at
+  the core: deferring is meant to cost nothing — a gesture, not a
+  confession. Any version of this has to be optional and silent by
+  default, or it converts the app's kindest interaction into a small
+  interrogation. Unresolved.
+- **The 2-card A/B format** — **meaning genuinely unresolved.** Xian
+  read Ted's line differently than I did and has asked him to clarify
+  ("format meaning back-design (aesthetics) or something different in
+  how they work?"). My reading: pick one of two rather than rank a
+  list — the only prioritization mechanic proposed that does not
+  violate the anti-grooming ethos, a *choice* rather than a sort.
+  Xian's reading differs. **Both branches are worth keeping even if one
+  turns out to be a misinterpretation** (his call, 2026-09-04) —
+  awaiting Ted.
 
 **Xian's framing in reply**, worth preserving as policy: most of these
 become pro features for three reasons — each takes more work and adds

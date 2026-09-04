@@ -283,13 +283,17 @@ hand-written one, and no agent can ever reorder your deck.
   work as measuring activation. **Not premium — this is onboarding**,
   and belongs near 1.1 rather than on this shelf.
 - **`defer [why]`** (Ted 2026-09-04) — capture the *reason* a card was
-  deferred, not just the count. R1.5 already instruments deferral depth
-  as "the honest measure of the failure mode the product deliberately
-  hides"; a reason turns that from descriptive into diagnostic.
+  deferred. Would turn R1.5's deferral-depth metric from descriptive
+  into diagnostic. **Held: Xian's "cool but rather friction-y"
+  (2026-09-04) is the right objection** — deferring is meant to cost
+  nothing; any version must be optional and silent by default or it
+  turns the kindest gesture into an interrogation.
 - **The 2-card A/B format** (Ted 2026-09-04) — "pick one, gives an A/B
-  option." The only prioritization mechanic anyone has proposed that
-  does not violate the anti-grooming ethos: a *choice*, not a sort.
-  Worth real design thought rather than a backlog line.
+  option." **Meaning unresolved**: Coral read it as pick-one-of-two
+  (a choice rather than a sort — the only proposed prioritization
+  mechanic that does not violate the anti-grooming ethos); Xian read it
+  differently and has asked Ted. Both branches kept deliberately, his
+  call — a productive misreading is still a design idea.
 - **`card-types: task, rule`** (Ted 2026-09-04, arrived at
   independently twice — see the R4 category-framing note) — a "rule"
   card is a standing responsibility; a task card is an emission from
