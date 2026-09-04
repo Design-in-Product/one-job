@@ -58,24 +58,6 @@ running live — is a card a good place to answer an agent?
 R4.2-lite question. No rush; two weeks of real use beats an early
 verdict. Note friction as it happens rather than saving it up.
 
-### 🟢 13. Purge copy could say less than it does
-"Delete forever" is technically undoable *within* the session (the undo
-stack captures pre-purge state). I left the strong copy — overstating
-danger beats understating it — but it is user-facing wording and yours
-to call.
-
-**Ask:** Keep "Delete forever" as-is, or soften the wording?
-**Rec:** Keep it. Across sessions and in backups, "gone for good" is
-simply true, and overstating danger beats understating it.
-
-### 🟢 8. Zapier export toast wording
-It now reads *"Sent to Zapier — the browser can't confirm delivery."*
-Accurate (the request uses `mode: "no-cors"`, which genuinely cannot
-observe the outcome), but it is your voice, not mine.
-
-**Ask:** Keep the Zapier toast wording, or give me different words?
-**Rec:** Keep it. It is honest and the honesty is the point.
-
 ### 🟢 10. REQUIREMENTS.md has drifted — needs your judgment, not my edit
 Dated 2026-07-04; its status line still says "concept-model rebuild
 (R1) is next" when R1 shipped long ago, and FR2 still describes
@@ -134,6 +116,20 @@ which runs on Amber during native builds and never ships.
 ---
 
 ## Settled
+
+*(2026-09-04) Purge copy — keep it.* Xian's call: "Delete forever"
+stays as written. Across sessions and in backups it is simply true, and
+overstating danger beats understating it.
+
+*(2026-09-04) Zapier export — removed, not reworded.* The open item
+asked whether to change the toast's wording. Xian asked what Zapier
+even was, which surfaced the real defect: the button said "Export
+Tasks", the toast said "Sent to Zapier", and the payload carried no
+task data. The July fix had made the message honest about transmission
+while the feature underneath still misrepresented itself. Removed in
+rc.36 along with the Asana and Todoist stubs (both collected real API
+tokens with no handler at all). Roadmap already listed push-export as
+Explicitly Retired; Todoist returns as a real 1.1 feature.
 
 *(2026-09-04) Pilot framing — the roadmap is authoritative.* Themis
 flagged two numbers circulating: "a pilot of 50 people who'd pay" (as
