@@ -15,6 +15,7 @@ your shared doc and understands the local-storage model. An articulate,
 technically fluent, genuinely non-average tester arriving the same week
 as 1.0 ships is worth not losing to a forgotten invite.
 
+**Since:** 2026-09-02
 **Ask:** Send Ted the TestFlight invite — it only takes your ASC login.
 **Rec:** Do it alongside the submission steps; same session, same
 login. Build 33 is already processed and available to testers. Worth
@@ -29,6 +30,7 @@ Screenshots against the current build are mine to generate and I will
 have them ready; uploading them, writing the release notes, selecting
 build 33, and pressing Submit are ASC actions only you can do.
 
+**Since:** 2026-08-31
 **Ask:** Ready to do the ASC steps? Everything else is already done.
 **Rec:** Yes. Both halves of the prep are now real, not promised:
 18 screenshots captured against rc.34 and verified at exact Media
@@ -53,6 +55,7 @@ prose instead of stating an ask (fixed in this very rewrite), and items
 were stale (audited, five closed). This is the R4.2-lite question
 running live — is a card a good place to answer an agent?
 
+**Since:** 2026-08-31
 **Ask:** How did answering from the deck actually feel?
 **Rec:** Relief, ceremony, or something between — that is the whole
 R4.2-lite question. No rush; two weeks of real use beats an early
@@ -65,6 +68,7 @@ substacks as live. Deciding what is now true across a 434-line spec is
 a product call with a lot of your judgment in it, which is why I have
 patched only what my work touched rather than re-baselining it.
 
+**Since:** 2026-07-28
 **Ask:** Draft a REQUIREMENTS.md re-baseline now, or after 1.0?
 **Rec:** After 1.0. It is doc debt, not a live risk, and the pivot may
 change more of it before then.
