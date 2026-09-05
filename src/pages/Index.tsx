@@ -781,7 +781,16 @@ const Index = () => {
     return (
       <div className="min-h-app-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
         <div className="w-full max-w-md mx-auto flex flex-col h-app-screen pt-[max(0.75rem,env(safe-area-inset-top))]">
+          {/* flex-1/min-h-0 are load-bearing (Xian, 2026-09-04, from the
+              store screenshots): without them this animating wrapper is a
+              flex child sizing to its CONTENT, so SubstackView's own
+              flex-1 and TaskStack's items-center had nothing to fill or
+              centre against. The sub-deck therefore top-aligned — card
+              high, "+" floating under it, dead space below — while the
+              main deck centred correctly. Covenant 1 says a card is a card
+              at every depth; the layout should say so too. */}
           <motion.div
+            className="flex flex-col flex-1 min-h-0"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
