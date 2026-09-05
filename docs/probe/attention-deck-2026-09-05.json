@@ -1,45 +1,45 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-05T13:12:21.744Z",
+  "exportedAt": "2026-09-05T13:15:37.981Z",
   "tasks": [
     {
-      "id": "36a9b741-4bae-460f-b369-2e7c0ea6a2b9",
+      "id": "0f7b43d7-ab75-4a91-9ae9-12537f3bba25",
       "title": "Ready to do the ASC steps? Everything else is already done.",
       "description": "🔴 #26 · Ship 1.0 — the last steps are yours, in App Store Connect\n\nCoral's rec: Yes. Both halves of the prep are now real, not promised: 18 screenshots captured against rc.34 and verified at exact Media Manager dimensions (`store/screenshots/staging-2026-09-05/composed/`), and a numbered walkthrough written (`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes in ASC: upload the images, select build 33, paste the review notes, submit. The white-screen bug cannot occur in the native build (verified structurally in `vite.config.ts`), so nothing about it should delay the store. *Misfiling caught 2026-09-01 (cross-pollination brief, \"misfiled is not deferred\"): this item previously read \"say go and I prep everything,\" which filed MY unblocked screenshot work behind HIS decision. Nothing was waiting on him for that half. Prep now proceeds independently; only the ASC actions — which genuinely require his login — remain his.*\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-05 · waiting 5 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-05T13:12:21.744Z",
+      "createdAt": "2026-09-05T13:15:37.981Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "d13ebac7-2595-4223-b084-1392e3677b0d",
+      "id": "f3f9b5a6-4d1d-4784-be87-cb69a7bd8267",
       "title": "Send Ted the TestFlight invite — it only takes your ASC login.",
       "description": "🟡 #29 · Ted Nadeau is a live beta user as of today — send him the TestFlight invite\n\nCoral's rec: Do it alongside the submission steps; same session, same login. Build 33 is already processed and available to testers. Worth noting he is an iPad user, which is the surface we have visually verified least and where the honest-column decision actually lands.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-05 · waiting 3 days (since 2026-09-02)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-05T13:12:21.744Z",
+      "createdAt": "2026-09-05T13:15:37.981Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "8859b6b6-003c-4db4-ac89-e4c441fd5477",
+      "id": "928f8579-f73e-4ab9-8e68-098795805e0b",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-05 · waiting 5 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-05T13:12:21.744Z",
+      "createdAt": "2026-09-05T13:15:37.981Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "dce07c48-beaf-406e-8802-4e0e90364ad6",
+      "id": "0b6a670b-c990-43aa-849f-5d504258ecb7",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-05 · waiting 39 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-05T13:12:21.744Z",
+      "createdAt": "2026-09-05T13:15:37.981Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     }
