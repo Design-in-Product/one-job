@@ -96,12 +96,27 @@ openItems.sort((a, b) => a.status.rank - b.status.rank);
 // the rest. Same no-silent-default discipline as the status markers: an
 // open item WITHOUT an Ask cannot become a card, because a card that
 // doesn't say what it wants is exactly the failure he reported.
+// A ledger that reports "open" says only that the item isn't closed NOW.
+// It cannot distinguish an ask raised yesterday from one that has been
+// waiting five weeks — they render identically, which is precisely why
+// Xian's read of the first deck was "some items seemed possibly stale."
+// **Since:** converts that boolean into a timestamp. (Cross-pollination
+// brief 2026-09-04, from Piper Morgan: an alert that reports silence
+// should say when the thing last ran — "the difference between an
+// instrument and a fire drill.")
+export const ageInDays = (since, now) => {
+  const a = Date.parse(`${since}T00:00:00Z`);
+  const b = Date.parse(`${now}T00:00:00Z`);
+  if (Number.isNaN(a) || Number.isNaN(b)) return null;
+  return Math.round((b - a) / 86400000);
+};
+
 export const parseAsk = body => {
   const grab = label => {
     const m = body.match(new RegExp(`\\*\\*${label}:\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*|\\n### |$)`));
     return m ? m[1].trim().replace(/\s+/g, ' ') : null;
   };
-  return { ask: grab('Ask'), rec: grab('Rec') };
+  return { ask: grab('Ask'), rec: grab('Rec'), since: grab('Since') };
 };
 
 for (const i of openItems) Object.assign(i, parseAsk(i.body));
@@ -113,6 +128,18 @@ if (askless.length) {
     askless.map(i => `  ### ${i.heading}`).join('\n') +
     `\n\nA card that doesn't say what it needs is the exact problem this\n` +
     `format exists to fix. Add an **Ask:** to each, then re-run.\n`
+  );
+  process.exit(1);
+}
+
+const dateless = openItems.filter(i => !i.since || ageInDays(i.since, '2026-01-01') === null);
+if (dateless.length) {
+  console.error(
+    `\nRefusing to deal: ${dateless.length} open item(s) have no valid **Since:** line:\n` +
+    dateless.map(i => `  ### ${i.heading}`).join('\n') +
+    `\n\nWithout a date, an ask raised yesterday and one that has been\n` +
+    `waiting five weeks look identical on the card — the staleness Xian\n` +
+    `reported. Add **Since:** YYYY-MM-DD to each, then re-run.\n`
   );
   process.exit(1);
 }
@@ -130,7 +157,7 @@ const tasks = openItems.map((item, i) => {
       `${marker} #${num} · ${item.heading.replace(/^\S+\s*/, '').replace(/^\d+[a-z]?\.\s*/, '')}` +
       (item.rec ? `\n\nCoral's rec: ${item.rec}` : '') +
       `\n\nFull context: docs/ATTENTION-ROLLUP.md` +
-      `\n— dealt by Coral · ${today()}`,
+      `\n— dealt by Coral · ${today()} · waiting ${ageInDays(item.since, today())} days (since ${item.since})`,
     completed: false,
     status: 'todo',
     createdAt: new Date().toISOString(),
