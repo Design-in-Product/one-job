@@ -15,8 +15,10 @@ Apps** → **One Job** → the **1.0 Prepare for Submission** page (left
 rail, under the iOS app).
 
 **What's already true, so you don't have to check:**
-- **Build 33** (v1.0.0-rc.33) is uploaded and processed — Delivery UUID
-  `42326745-068d-4106-8744-7d772e28fe73`.
+- **Build 37** (cut from rc.37, 2026-09-05) is uploaded — Delivery UUID
+  `45248f86-9c7b-4335-91fd-0bfccc947f37`. It supersedes build 33: it has
+  the sub-deck centering fix and the Zapier/Asana/Todoist stubs removed
+  (the review notes describe the current Integrations screen either way).
 - Export compliance is pre-answered in the binary
   (`ITSAppUsesNonExemptEncryption=false`), so it shouldn't stop to ask.
 - Privacy label: **Data Not Collected** — still accurate as of rc.34's
@@ -57,9 +59,9 @@ If they land out of order, drag to reorder — ASC keeps upload order.
 ## 2 · Select the build
 
 Scroll to the **Build** section → **+** (or "Select a build before you
-submit") → choose **1.0 (33)**. Not build 31 or 32; 33 is the one with
-shake-to-undo removed, which matters because the review notes describe
-the current menu.
+submit") → choose **1.0 (37)**. Not 31–33 — 37 is the one cut from the
+same code the screenshots show. (If 37 isn't listed yet it's still
+processing; that usually takes 15–60 minutes from upload.)
 
 ## 3 · Paste the review notes
 
