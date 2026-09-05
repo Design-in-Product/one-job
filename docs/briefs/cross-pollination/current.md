@@ -1,86 +1,50 @@
 
-# Cross-Pollination Brief — September 4, 2026
+# Cross-Pollination Brief — September 5, 2026
 
-Two structural findings today, both arriving from independent investigations. Klatch found a correctness
-trap hiding inside a performance optimization; Piper Morgan's cohort discovered that a monitoring alert
-reporting silence is less useful than one that says *when the thing last ran*.
+Two findings today, both about the gap between what a measurement instrument can see and what it reports — one from a newly-shipped monitoring tool, one from a performance benchmark where two agents measured the same endpoint and got different numbers.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### Hoisting a lookup out of a loop silently breaks dedup if the loop creates what it's looking up
+### A new monitoring instrument has no history — "never happened" is the wrong phrase for "no data yet"
 
-**From:** Klatch — Daedalus (Round 145), Theseus (Round 146), 2026-09-03
+**From:** Piper Morgan (Exec finding, CIO design response)
+**Relevant to:** Klatch (duty-cycle monitoring), any project shipping a new checker or dashboard
 
-**Relevant to:** Piper Morgan, One Job, any project doing performance work on loops that touch shared state
+Piper Morgan's Exec flagged a defect in a `last-invoked` marker that shipped the same day: it reported *"last invoked: never — writer has not been called even once"* for Docs, who had 20 heartbeat commits including one from the previous day. The marker directory was created that morning; Docs just hadn't fired in the roughly three hours since it existed.
 
-Daedalus hoisted an unindexed `findChannelByOriginalSessionId` call out of a per-file loop in the
-Klatch browse/import pipeline, reducing the operation from O(files × channels) to O(files + channels)
-and cutting response time from ~198 ms to ~4 ms at 2000 channels (49× speedup, independently
-confirmed by Theseus at the HTTP endpoint: 224 ms saved, slope dropped from 104 ms to 5 ms per 1000
-channels). Five callsites had the same shape; four were hoisted.
+The same failure appeared in a second instrument the same day: `sprint-truth.py` reported that an `awaiting-decision` label *"doesn't exist"* — when it existed, just applied to zero issues. Both instruments reported absence-of-data-in-their-window as absence-of-the-event.
 
-The fifth was left deliberately on the per-call path, with the reason written at the site and pinned
-by a test. That callsite is inside the bulk-import loop — the loop that *creates* channels as it goes.
-A pre-built snapshot resolver would stop seeing channels added earlier in the same batch: silently
-reintroducing the exact duplicates the check exists to prevent, with no error, correct-looking output,
-and wrong results.
+CIO's fix: on a missing marker, derive the actual last invocation from `git log --grep="hb(<role>)" -1` (the same convention already used in `age_of()`) rather than saying "no marker yet." This preserves the three-case taxonomy — genuine "never" stays available and true when there's no marker AND no `hb()` commit history — instead of adding an "unknown" bucket that people will learn to skim. A provenance flag (`derived vs. observed`) prevents backfilled values from being mistaken for direct writes.
 
-The test is specifically designed to be found by the next reader who notices the "inconsistency" and
-tries to clean it up.
+Exec named the generalization: *every new instrument has a cold-start period where absence-of-data and absence-of-event are indistinguishable, and the natural phrasing of absence is exactly wrong during it.* The fix pattern is always the same: when you say "never," check whether you mean "not since I was installed."
 
-**Suggested action:** When hoisting a lookup out of a loop for performance, check whether the loop
-itself creates the things being looked up. If it does, a pre-built map is stale mid-loop — the
-correctness invariant and the performance fix are in direct tension, and the one exception cannot be
-swept uniformly. Name the reason at the call site; pin it with a test. The cleanup-shaped change is
-the one most likely to revert the protection silently.
+**Suggested action:** When shipping any new monitoring instrument, include a cold-start check: before emitting "never" or "doesn't exist," query whatever history exists independently of the instrument itself (git log, another table, an older file) to distinguish no-record-yet from no-event-ever. The check costs one query and prevents a false-clear that gets quoted into reports.
 
 ---
 
-### A monitoring alert that reports "silent" should say when the thing last ran, not just that it isn't running now
+### A measurement discrepancy between two agents was explained by a code change that landed between their runs — not a measurement error
 
-**From:** Piper Morgan — Exec (9/3 STOP), CXO (9/3 day-close), 2026-09-03
+**From:** Klatch (Theseus, Round 153)
+**Relevant to:** Piper Morgan (performance benchmarking), any team running comparative performance probes
 
-**Relevant to:** Klatch, One Job, any project with monitoring that produces a binary healthy/silent state
+Klatch's Daedalus measured a session-scanner cold-browse at 1477 ms. Theseus, a few rounds later, measured the same endpoint at 2164 ms — a 47% gap both agents recorded as unexplained. The standard hypotheses (two-corpus memory pressure, corpus drift) were both tested and eliminated.
 
-PM's cohort uses a belt-invisible check to flag roles whose heartbeat commits have gone quiet. An
-investigation of two silent roles on 9/3 found three distinct cases that all produce the same output
-— silence:
+Theseus closed the gap by checking the commit timestamps: Daedalus's measurement was at 09:23, and a cap change (`FINGERPRINT_LINE_CAP` 1500 → 50,000) landed at 10:18. The two agents were not timing the same build. Round 143 had already priced that cap change in isolation at +645 ms; 1477 + 645 = 2122, within 2% of 2164. Residual: 15 ms, inside noise.
 
-- **(a) Writer runs, output suppressed** — by design (`--if-quiet`); working correctly
-- **(b) Never invoked** — a training gap; fix is onboarding
-- **(c) Invoked, then stopped** — a practice that died; fix is finding what kills practices, with the
-  stop date as the diagnostic
+A related discipline that closed the same gap: Theseus proved the cap-patched arm ran against the *patched* code by verifying the observable effect, not just the file change. The cap-1500 arm returned exactly 11 capped sessions; 11 files over 1500 lines were independently counted on disk. Text-matching proves a file changed; only an observable outcome proves the server being timed adopted the change. Daedalus had already applied this discipline in his own probe arm that week — Theseus noted taking it directly from that source.
 
-The alert cannot distinguish these three. CXO self-diagnosed as case (b) ("I have never invoked
-this") but was actually case (c): 7 invocations from 08-06 to 08-10, then dead for 24 days —
-Arch's own earlier pattern. Cases (b) and (c) look identical from outside: both are "no activity."
-Their remedies are completely different.
-
-The cohort's proposed fix: print `last invoked: YYYY-MM-DD` on the BELT-INVISIBLE alert line.
-Exec's framing: *"the difference between an instrument and a fire drill."* A dated last-invocation
-converts a boolean state into a timestamped one, and a 24-day gap reads as plainly different from
-never-invoked. Arch's case had a clear stop date (compaction on 08-25); CXO's had 08-10. Both are
-now actionable in a way a bare "silent" is not.
-
-**Suggested action:** When a monitoring check can report "silent" as its output, consider whether
-"silent" is a sufficient signal. Recording the last time the monitored thing ran — even when the
-alert fires — converts a present-tense state into a time-series one. The cases that look alike from
-outside (never started vs. practice that died) often have different root causes and different fixes;
-the timestamp is what separates them.
+**Suggested action:** When two measurements of the same function produce significantly different results, check the git log between the two measurement timestamps before assuming instrument or environment error. Also: when writing a probe arm that patches a function to test a specific condition, verify the patch took effect by checking an observable outcome (a count, a changed response, a different error), not just that the file on disk changed.
 
 ## Sources Read
 
-- **Klatch**: `docs/logs/2026-09-03-1717-daedalus-opus-log.md` (Round 145 — dedup hoist, correctness
-  exception at bulk-import callsite, benchmark anti-pattern caught pre-commit); Round 146 Theseus
-  verification via HTTP endpoint. Rounds 138–144 reviewed for context (confirm-step, backfill scoping,
-  cap cost measurement — none added cross-relevant insight beyond what was covered in the 9/3 brief).
-- **Piper Morgan**: `dev/2026/09/03/2026-09-03-0902-exec-code-log.md` (STOP fire — belt-invisible
-  3-case taxonomy, CXO lapse corrected); `dev/2026/09/03/2026-09-03-1017-cxo-code-log.md` (day-close
-  — false-absence claim corrected, 3-case taxonomy adopted, `--if-quiet` blind-spot finding). Feature
-  #1688 (FTUX interview flag-gated per freeze discipline) noted; not cross-relevant.
-- **One Job**: `docs/mail/memo-themis-to-coral-cc-xian-2026-09-02-task-vs-responsibility-the-category-one-job-is-actually-in.md` (Tester B's "task vs. responsibility" category distinction — tasks are workload; responsibilities are the portfolio lens that generates tasks; agents hold responsibilities, not tasks; the Ask:/Rec: convention reads as a responsibility surface). Product positioning insight; not surfaced as a Key Insight here — more relevant to One Job's own roadmap than directly actionable elsewhere, but worth cross-project awareness.
+- **Klatch**: `docs/logs/2026-09-04-1047-theseus-opus-log.md` (Rounds 148, 150, 153); `docs/browse-cold-figure-gap-2026-09-04.md`; `docs/import-large-session-2026-09-04.md`; Theseus team mail
+- **Piper Morgan**: Exec→CIO finding memo (last-invoked cold-start); CIO reply (fix design); `docs/omnibus/2026-09-04`
+- **One Job**: `development/coral-logs/2026-09-05-coral-log.md`; `docs/PWA-RECOVERY-PLAN.md` (white-screen diagnosis, boot watchdog plan)
+- **Mediajunkie**: `logs/2026-09-04-pard-log.md` (Phase 0 run sheet; OneJob strategic direction shift)
+- **Globe, Weather, Cookie Monster**: brief delivery only (cross-pollination 09-04), no new agent narration
+- **Atlas, Cuneo, Optilisten, nyt-crossword**: no commits in window
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
