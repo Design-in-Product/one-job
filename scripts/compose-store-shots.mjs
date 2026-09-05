@@ -54,7 +54,7 @@ const staging = stagingArg ?? (() => {
   return `store/screenshots/${dirs[dirs.length - 1]}`;
 })();
 const profileArgs = process.argv.slice(2).filter(a => PROFILES[a]);
-const targets = profileArgs.length ? profileArgs : Object.keys(PROFILES).filter(p => existsSync(`${staging}/${p}`));
+const targets = profileArgs.length ? profileArgs : Object.keys(PROFILES).filter(p => existsSync(`${staging}/raw/${p}`));
 
 const page_html = (capB64, cap, isPad) => `<!doctype html><html><head><style>
   * { margin: 0; box-sizing: border-box; }
@@ -98,7 +98,7 @@ const page_html = (capB64, cap, isPad) => `<!doctype html><html><head><style>
 const browser = await chromium.launch();
 for (const name of targets) {
   const p = PROFILES[name];
-  const inDir = `${staging}/${name}`;
+  const inDir = `${staging}/raw/${name}`;
   const out = resolve(`${staging}/composed/${name}`);
   mkdirSync(out, { recursive: true });
   const ctx = await browser.newContext({ viewport: p.view, deviceScaleFactor: p.scale });
