@@ -28,8 +28,10 @@ rail, under the iOS app).
 ## 1 · Upload the screenshots
 
 Files are in the repo at
-`store/screenshots/staging-2026-09-05/composed/` — use the **composed**
-folder, not the raw one (composed have the captions and device frames).
+`store/screenshots/staging-2026-09-05/composed/` — the staging folder
+now contains only `composed/` (upload these) and `raw/` (inputs, never
+uploaded). If what you're looking at has no red gradient and no caption,
+you're in `raw/` — back out one level and open `composed/`.
 
 Three folders map to three Media Manager buckets:
 

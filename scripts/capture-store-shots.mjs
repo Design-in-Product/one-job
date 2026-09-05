@@ -75,7 +75,12 @@ const browser = await chromium.launch();
 for (const name of targets) {
   const p = PROFILES[name];
   if (!p) { console.error(`unknown profile ${name}`); continue; }
-  const out = resolve(`store/screenshots/staging-${stamp}/${name}`);
+  // Raw captures live under raw/ so the staging folder presents exactly ONE
+  // uploadable set (composed/). Raw and composed files share names and
+  // dimensions — with both at the top level, the un-composed set is one
+  // Finder mis-click from being uploaded to ASC (which happened, nearly,
+  // 2026-09-05).
+  const out = resolve(`store/screenshots/staging-${stamp}/raw/${name}`);
   mkdirSync(out, { recursive: true });
 
   const ctx = await browser.newContext({
