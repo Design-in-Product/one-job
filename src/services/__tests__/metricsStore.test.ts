@@ -14,6 +14,7 @@ import {
   isRetained,
   engagedWeeks,
   dayIndex,
+  earliestCardDay,
   type MetricsDocument,
 } from '../metricsStore';
 import { LocalTaskStore } from '../localTaskStore';
@@ -196,5 +197,123 @@ describe('export payload', () => {
 
   it('is null when nothing was ever recorded (no empty exports)', () => {
     expect(buildUsageExport(1)).toBeNull();
+  });
+});
+
+// ---- Cold start ------------------------------------------------------
+// This instrument shipped long after people started using the app. Dating
+// the user from the day the instrument arrived makes a long-time daily
+// user read as brand new — wrong, and plausible enough that nobody checks.
+// (Cross-pollination brief 2026-09-05, Piper Morgan: "when you say
+// 'never,' check whether you mean 'not since I was installed.'")
+describe('cold start: firstUse is derived from the deck, not from install day', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.useRealTimers();
+  });
+
+  const deckWith = (...days: string[]) =>
+    JSON.stringify({
+      schemaVersion: 3,
+      decks: [{ cards: days.map(d => ({ createdAt: `${d}T12:00:00.000Z` })) }],
+    });
+
+  it('finds the earliest card across every deck', () => {
+    expect(earliestCardDay(deckWith('2026-03-04', '2026-01-09'))).toBe('2026-01-09');
+    expect(
+      earliestCardDay(
+        JSON.stringify({
+          schemaVersion: 3,
+          decks: [
+            { cards: [{ createdAt: '2026-05-01T00:00:00.000Z' }] },
+            { cards: [{ createdAt: '2026-02-02T00:00:00.000Z' }] },
+          ],
+        }),
+      ),
+    ).toBe('2026-02-02');
+  });
+
+  it('returns null rather than throwing on anything unreadable', () => {
+    expect(earliestCardDay(null)).toBeNull();
+    expect(earliestCardDay('not json {{{')).toBeNull();
+    expect(earliestCardDay('{}')).toBeNull();
+    expect(earliestCardDay(JSON.stringify({ decks: [{ cards: [{}] }] }))).toBeNull();
+    expect(
+      earliestCardDay(JSON.stringify({ decks: [{ cards: [{ createdAt: 'whenever' }] }] })),
+    ).toBeNull();
+  });
+
+  it('accepts the pre-v3 bare-array shape', () => {
+    expect(earliestCardDay(JSON.stringify([{ createdAt: '2025-12-25T00:00:00.000Z' }]))).toBe(
+      '2025-12-25',
+    );
+  });
+
+  it('backdates a NEW metrics document to the deck it finds', () => {
+    localStorage.setItem('oneJobTasks', deckWith('2026-01-09'));
+    recordCardCreated();
+    const m = getMetrics()!;
+    expect(m.firstUse).toBe('2026-01-09');
+    expect(m.firstUseSource).toBe('derived');
+  });
+
+  it('repairs an EXISTING document that predates the fix', () => {
+    localStorage.setItem('oneJobTasks', deckWith('2026-01-09'));
+    const stale: MetricsDocument = {
+      v: 1,
+      installId: 'x',
+      firstUse: '2026-09-01', // the day the instrument arrived
+      activeDays: ['2026-09-01'],
+      completionDays: [],
+      totals: { created: 0, completed: 0, deferred: 0, interiorsOpened: 0 },
+      deferralDepth: { max: 0, histogram: {} },
+    };
+    localStorage.setItem('oneJobMetrics', JSON.stringify(stale));
+
+    const m = getMetrics()!;
+    expect(m.firstUse).toBe('2026-01-09');
+    expect(m.firstUseSource).toBe('derived');
+    // and the repair persists, so it happens once
+    expect(JSON.parse(localStorage.getItem('oneJobMetrics')!).firstUse).toBe('2026-01-09');
+  });
+
+  it('NEVER moves firstUse later — a newer deck cannot shorten history', () => {
+    localStorage.setItem('oneJobTasks', deckWith('2026-08-20'));
+    const stale: MetricsDocument = {
+      v: 1,
+      installId: 'x',
+      firstUse: '2026-02-02',
+      activeDays: [],
+      completionDays: [],
+      totals: { created: 0, completed: 0, deferred: 0, interiorsOpened: 0 },
+      deferralDepth: { max: 0, histogram: {} },
+    };
+    localStorage.setItem('oneJobMetrics', JSON.stringify(stale));
+    const m = getMetrics()!;
+    expect(m.firstUse).toBe('2026-02-02');
+    expect(m.firstUseSource).toBe('observed');
+  });
+
+  it('does not re-derive once a source is recorded', () => {
+    localStorage.setItem('oneJobTasks', deckWith('2026-01-09'));
+    const doc: MetricsDocument = {
+      v: 1,
+      installId: 'x',
+      firstUse: '2026-06-06',
+      firstUseSource: 'observed',
+      activeDays: [],
+      completionDays: [],
+      totals: { created: 0, completed: 0, deferred: 0, interiorsOpened: 0 },
+      deferralDepth: { max: 0, histogram: {} },
+    };
+    localStorage.setItem('oneJobMetrics', JSON.stringify(doc));
+    expect(getMetrics()!.firstUse).toBe('2026-06-06');
+  });
+
+  it('leaves the task document untouched', () => {
+    const deck = deckWith('2026-01-09');
+    localStorage.setItem('oneJobTasks', deck);
+    recordCardCreated();
+    expect(localStorage.getItem('oneJobTasks')).toBe(deck);
   });
 });
