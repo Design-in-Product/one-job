@@ -13,7 +13,7 @@
 
 import { describe, it, expect } from 'vitest';
 // @ts-expect-error — plain .mjs script, no types; importing the pure part.
-import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS } from '../../../scripts/fleet-probe.mjs';
+import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays} from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
   it('ranks the three open markers, blocking first', () => {
@@ -62,6 +62,7 @@ describe('fleet probe ask extraction', () => {
     expect(parseAsk(body)).toEqual({
       ask: 'Ship 1.0 now? Say go and I prep everything you need.',
       rec: 'Go. Nothing about the white screen should delay the store.',
+      since: null, // absent here on purpose — the **Since:** guard is what catches it
     });
   });
 
@@ -78,5 +79,29 @@ describe('fleet probe ask extraction', () => {
     const r = parseAsk('**Ask:** Do the thing?');
     expect(r.ask).toBe('Do the thing?');
     expect(r.rec).toBeNull();
+  });
+});
+
+// Third structural guard (2026-09-05). An "open" marker is a present-tense
+// boolean: it cannot separate an ask raised yesterday from one waiting five
+// weeks, and both deal onto an identical card. That is the staleness Xian
+// reported after living in the first deck. **Since:** makes it a timestamp,
+// and like the status and Ask guards it is enforced by the script refusing
+// to run, not by my remembering.
+describe('age (the **Since:** guard)', () => {
+  it('measures the wait in whole days', () => {
+    expect(ageInDays('2026-07-28', '2026-09-05')).toBe(39);
+    expect(ageInDays('2026-09-05', '2026-09-05')).toBe(0);
+  });
+
+  it('is null for a missing or malformed date, so the guard can fire', () => {
+    expect(ageInDays(undefined, '2026-09-05')).toBeNull();
+    expect(ageInDays('last Tuesday', '2026-09-05')).toBeNull();
+    expect(ageInDays('2026-13-45', '2026-09-05')).toBeNull();
+  });
+
+  it('survives a month boundary and a leap day', () => {
+    expect(ageInDays('2026-08-31', '2026-09-05')).toBe(5);
+    expect(ageInDays('2024-02-28', '2024-03-01')).toBe(2);
   });
 });
