@@ -142,8 +142,11 @@ Used the web app. Feedback pasted into the session by Xian.
 ## Open gaps this record exposes
 
 - **No one has yet used the native (TestFlight) build and reported
-  back.** Both data points are web. Ted's invite is pending and he is
-  an iPad user — the surface verified least.
+  back.** Both data points are web. As of 2026-09-05 two invites are
+  out: **Ted** (sent — iPad, the surface verified least) and **Austin
+  Wood** (developer, ex-OptiListen team; unsolicited "geeky hello"
+  invite, so no obligation to respond — if he does, he'd be the first
+  tester with no product-friendship tie to Xian's immediate circle).
 - **No one outside Xian's immediate circle has used it at all.** Both
   are friends with product backgrounds. The 50-user cohort exists to
   fix exactly this.

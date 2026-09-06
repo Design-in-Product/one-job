@@ -6,21 +6,6 @@ in one sentence — and a **Rec:** line with my recommendation. The fleet
 probe REFUSES to deal a deck if any open item lacks an Ask, so a card
 can never arrive without saying what it wants.*
 
-### 🟡 29. Ted Nadeau is a live beta user as of today — send him the TestFlight invite
-Themis relayed (2026-09-02): Ted has **no iPhone but does have an
-iPad**, and TestFlight works there. On the call he opened the web app
-and read the empty state aloud — *"One, you're all caught up. What a
-wonderful feeling to have no pending tasks."* He already has the URL in
-your shared doc and understands the local-storage model. An articulate,
-technically fluent, genuinely non-average tester arriving the same week
-as 1.0 ships is worth not losing to a forgotten invite.
-
-**Since:** 2026-09-02
-**Ask:** Send Ted the TestFlight invite — it only takes your ASC login.
-**Rec:** Do it alongside the submission steps; same session, same
-login. Build 33 is already processed and available to testers. Worth
-noting he is an iPad user, which is the surface we have visually
-verified least and where the honest-column decision actually lands.
 
 ### 🔴 26. Ship 1.0 — the last steps are yours, in App Store Connect
 Everything upstream is done: build 33 (rc.33) is uploaded and
@@ -120,6 +105,14 @@ which runs on Amber during native builds and never ships.
 ---
 
 ## Settled
+
+### ✅ 29. Ted Nadeau TestFlight invite — SENT 2026-09-05
+Xian sent it during the submission session, and also added **Austin
+Wood** (developer, ex-OptiListen team) to the test group as a geeky
+hello. Two native-build testers now exist where there were zero — and
+Ted is the iPad user, the surface verified least. Watch for first
+native-build feedback; both are recorded in docs/USER-FEEDBACK.md.
+
 
 *(2026-09-04) Purge copy — keep it.* Xian's call: "Delete forever"
 stays as written. Across sessions and in backups it is simply true, and
