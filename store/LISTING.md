@@ -22,7 +22,21 @@ Shared across App Store and Play Store unless noted. Screenshots live in
 > Listing copy approved by Xian 2026-07-02. Localization of the app and
 > then the listings is on the post-1.0 roadmap.
 
-## App Store subtitle (30 chars max)
+## As entered in ASC, 2026-09-05 (Xian's live wording — supersedes drafts below where they differ)
+
+- **Name**: One Job - One Task at a Time
+- **Subtitle**: Pick one job and do it!
+  (The approved draft "One task at a time. Really." became redundant
+  once the name itself carried "One Task at a Time".)
+- **Promotional text**: "Your to-do list is a deck of cards. Pick one,
+  do it, and swipe it away. / Everything else waits its turn — face
+  down, out of mind." — Xian's edit of the draft's "Flip one over";
+  Coral flagged the pick-one/do-it echo against the new subtitle at
+  proofread time, resolution his.
+- **Copyright**: 2026 Christian Crumlish
+- Description, keywords, URLs, review notes: as drafted below, verbatim.
+
+## App Store subtitle (30 chars max) — superseded by the ASC block above
 
 > One task at a time. Really.
 
