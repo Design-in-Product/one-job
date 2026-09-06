@@ -7,31 +7,6 @@ probe REFUSES to deal a deck if any open item lacks an Ask, so a card
 can never arrive without saying what it wants.*
 
 
-### 🔴 26. Ship 1.0 — the last steps are yours, in App Store Connect
-Everything upstream is done: build 33 (rc.33) is uploaded and
-processed, listing copy and captions are approved and applied, Media
-Manager dimensions confirmed, native pipeline proven three times.
-Screenshots against the current build are mine to generate and I will
-have them ready; uploading them, writing the release notes, selecting
-build 33, and pressing Submit are ASC actions only you can do.
-
-**Since:** 2026-08-31
-**Ask:** Ready to do the ASC steps? Everything else is already done.
-**Rec:** Yes. Both halves of the prep are now real, not promised:
-18 screenshots captured against rc.34 and verified at exact Media
-Manager dimensions (`store/screenshots/staging-2026-09-05/composed/`),
-and a numbered walkthrough written
-(`docs/ASC-SUBMISSION-WALKTHROUGH.md`). What needs you is ~15 minutes
-in ASC: upload the images, select build 33, paste the review notes,
-submit. The white-screen bug cannot
-occur in the native build (verified structurally in `vite.config.ts`),
-so nothing about it should delay the store.
-
-*Misfiling caught 2026-09-01 (cross-pollination brief, "misfiled is not
-deferred"): this item previously read "say go and I prep everything,"
-which filed MY unblocked screenshot work behind HIS decision. Nothing
-was waiting on him for that half. Prep now proceeds independently; only
-the ASC actions — which genuinely require his login — remain his.*
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -59,6 +34,13 @@ patched only what my work touched rather than re-baselining it.
 change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
+
+### Watching: App Review verdict on 1.0 (build 37)
+Submitted 2026-09-05. Typical turnaround 24–48h. If approved: status
+goes Pending Developer Release — the release button is Xian's, and
+that WILL become an ask. If rejected: resolution-center message comes
+to me for a same-day fix. Until either, nothing is waiting on him.
+
 
 *Added 2026-09-01. These were in the Open list with an Ask of
 "nothing," which put no-op cards in Xian's deck and diluted a surface
@@ -105,6 +87,15 @@ which runs on Amber during native builds and never ships.
 ---
 
 ## Settled
+
+### ✅ 26. Ship 1.0 — SUBMITTED TO APP REVIEW 2026-09-05
+Xian completed every ASC step the same day: screenshots (composed set,
+all three profiles), full listing copy (his wording recorded in
+store/LISTING.md), build 37 selected, content rights + age rating +
+category, manual release, submitted. 🍾 Five days in Open, closed in
+one sitting. What remains — watching the review outcome — is my watch,
+not his ask; it lives in "What I'm carrying."
+
 
 ### ✅ 29. Ted Nadeau TestFlight invite — SENT 2026-09-05
 Xian sent it during the submission session, and also added **Austin
