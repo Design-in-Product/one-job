@@ -450,10 +450,24 @@ export class LocalTaskStore implements TaskStore {
     return sortTasks([...this.tasks]);
   }
 
+  /** Invariant: a card always has a non-empty title — enforced here at
+      the store, where every writer passes through, not in the forms
+      (which guard as a courtesy). The update path had no guard at all
+      until 2026-09-07: TaskForm blocked empty titles at create, but
+      updateTask was a bare Object.assign, so editing a title to
+      whitespace stored it and the deck rendered a blank card face.
+      Create-guarded-but-not-update is a known systematic gap (see the
+      title-invariant tests); if you add a writer, call this. */
+  private requireTitle(title: string): string {
+    const t = title.trim();
+    if (!t) throw new Error('A card needs a title — add one or cancel the edit');
+    return t;
+  }
+
   async createTask(title: string, description?: string): Promise<Task> {
     const newTask: Task = {
       id: uuidv4(),
-      title,
+      title: this.requireTitle(title),
       description,
       completed: false,
       status: 'todo',
@@ -470,7 +484,11 @@ export class LocalTaskStore implements TaskStore {
 
   async updateTask(id: string, updates: { title?: string; description?: string }): Promise<Task> {
     const task = this.findTask(id);
-    Object.assign(task, updates);
+    // Validate BEFORE assigning — a refused update must leave the card
+    // untouched, not half-written.
+    const next = { ...updates };
+    if (next.title !== undefined) next.title = this.requireTitle(next.title);
+    Object.assign(task, next);
     this.saveTasks();
     return task;
   }
@@ -616,7 +634,7 @@ export class LocalTaskStore implements TaskStore {
     if (owner?.completed) throw new Error('Cannot add a card to a completed card — un-complete it first');
     const newCard: Task = {
       id: uuidv4(),
-      title,
+      title: this.requireTitle(title),
       description,
       completed: false,
       createdAt: new Date(),

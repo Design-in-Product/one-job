@@ -82,7 +82,10 @@ export async function importFromSource(
     known.add(e.externalId); // grow as we go — see the note on `known`
     fresh.push({
       id: uuidv4(), // LOCAL identity — never the upstream id
-      title: e.title,
+      // External data can be anything; the store's title invariant would
+      // reject an empty one and kill the whole batch. Fall back to a
+      // name that keeps the entry traceable to its source instead.
+      title: e.title?.trim() || `(untitled ${adapter.service} item ${e.externalId})`,
       description: e.description,
       completed: e.completed,
       createdAt: e.createdAt ?? new Date(),
