@@ -53,7 +53,12 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const flushPendingEdits = () => {
     if (!isEditing || !task) return;
     if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
-      onUpdateTask?.(task.id, { title: editedTitle, description: editedDescription });
+      // A title blanked out reverts to the original rather than saving —
+      // the store refuses empty titles (its invariant), and autosave-on-
+      // navigation is the wrong moment to surface an error the user
+      // can't act on. Deleting a title is not a way to delete a card.
+      const title = editedTitle.trim() || task.title;
+      onUpdateTask?.(task.id, { title, description: editedDescription });
     }
   };
 
@@ -73,7 +78,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
     // Only send update if title or description have actually changed
     if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
       onUpdateTask?.(task.id, {
-        title: editedTitle,
+        title: editedTitle.trim() || task.title, // blank reverts — see flushPendingEdits
         description: editedDescription
       });
     }
