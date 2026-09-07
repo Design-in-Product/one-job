@@ -1361,3 +1361,45 @@ describe('redo (Xian 2026-08-06: "especially if undoing too fast")', () => {
     expect(await store.redoLast()).toBe(false);
   });
 });
+
+// The UPDATE-route invariant gap (cross-pollination brief 2026-09-07,
+// from Klatch round 165): "an enumeration of all writers that
+// grep-scopes to insert paths can pass cleanly while an update path
+// violates the invariant silently." Ours was exactly that: TaskForm
+// guards empty titles at create (TaskForm.tsx:36), but updateTask was a
+// bare Object.assign — edit any card's title to whitespace and save,
+// and the deck renders a blank card face. The invariant "a card always
+// has a title" is enforced HERE, at the store, where every writer
+// passes through — UI guards are courtesy, not enforcement.
+describe('title invariant: a card always has a non-empty title', () => {
+  let store: LocalTaskStore;
+  beforeEach(() => {
+    localStorage.clear();
+    store = new LocalTaskStore('test-titles');
+  });
+
+  it('updateTask refuses an empty or whitespace title', async () => {
+    const t = await store.createTask('Real title');
+    await expect(store.updateTask(t.id, { title: '' })).rejects.toThrow(/title/i);
+    await expect(store.updateTask(t.id, { title: '   ' })).rejects.toThrow(/title/i);
+    // and the card is untouched, not half-assigned
+    const after = (await store.getAllTasks()).find(x => x.id === t.id)!;
+    expect(after.title).toBe('Real title');
+  });
+
+  it('updateTask trims and accepts a real title; omitting title stays legal', async () => {
+    const t = await store.createTask('Old');
+    await store.updateTask(t.id, { title: '  New  ' });
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.title).toBe('New');
+    await store.updateTask(t.id, { description: 'just the description' });
+    expect((await store.getAllTasks()).find(x => x.id === t.id)!.title).toBe('New');
+  });
+
+  it('createTask and addSubstackTask enforce the same invariant (all writers, not just update)', async () => {
+    await expect(store.createTask('')).rejects.toThrow(/title/i);
+    await expect(store.createTask('  ')).rejects.toThrow(/title/i);
+    const host = await store.createTask('Host');
+    const sub = await store.createSubstack(host.id, 'inner');
+    await expect(store.addSubstackTask(sub.id, '')).rejects.toThrow(/title/i);
+  });
+});
