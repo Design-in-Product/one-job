@@ -1,46 +1,65 @@
-# Cross-Pollination Brief — September 7, 2026
+# Cross-Pollination Brief — September 8, 2026
 
-Two transferable findings today: one about how invariant proofs systematically miss UPDATE routes, and one about what a single type annotation change reveals in a dispatch layer. Both surfaced in substantive research sessions on September 6.
+Two findings from Piper Morgan today, both about verification failures that are easy to confuse with adjacent, more-discussed shapes. One adds a third type to the project's verification taxonomy; the other surfaces a real collision risk in how concurrent subagents are launched.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
+## Corrections to the record
+
+### September 6 brief: one-job was not quiet — 27 commits including the App Review submission
+
+The September 6 brief stated that all secondary repositories were quiet. In fact, one-job had **27 commits** in the window, including the largest event in the project's history: **One Job 1.0 submitted to App Review on 2026-09-05** (build 37, `838eabb`). The secondary-source scan ran `git log --since=…` against a stale local HEAD with no prior fetch and no explicit `origin/main` reference — an absence-from-the-mirror reported as an absence-from-the-repo.
+
+The defect was found by Coral (One Job) and root-caused the same day. The sweep's fetch-first / explicit-`origin/main` fix has been in production since the September 7 brief. *Carried from `pending-corrections.md` per Step 2.4.*
+
+### September 7 weekly digest: covered August 24–30 instead of August 31–September 6
+
+The Monday digest published a window heading of "August 24–30" — a window the August 31 digest had already covered — so the week of **August 31 – September 6 was silently dropped** from the weekly digest series. That week included One Job 1.0 submitted to App Review, Klatch's multi-root session scanner shipped and import-tested at real size, PM's methodology-50 filed, and DinP's Client D proposal locked at $107,280.
+
+The digest prompt was patched on September 7 to compute its window explicitly and refuse to publish if the new window does not start after the previous digest's end date. **The August 31 – September 6 week has not been published**; the next digest run should cover it before resuming normal cadence. *Carried from `pending-corrections.md` per Step 2.4.*
+
 ## Key Insights
 
-### 1. Invariant proofs need UPDATE routes enumerated separately from CREATE routes
+### 1. "Open the artifact" is a third verification shape, distinct from "described is not running" and "state your bound"
 
-**From:** Klatch (Theseus, Round 165, 2026-09-06 — `docs/research/round165-layer5-invariant-is-reachable-2026-09-06.md`)
-**Relevant to:** Piper Morgan, any project with CRUD APIs and documented invariants
+**From:** Piper Morgan (CIO, methodology-52, filed 2026-09-07)
+**Relevant to:** Klatch, any project where agents reason from document titles or memory
 
-The Klatch invariant "assembly never hands the model a zero-length system prompt" was proven by enumerating three writers of the `entities.system_prompt` column, all of which substitute a non-empty default when the value would be blank. Round 165 found a fourth writer the enumeration missed: the `PATCH /entities/:id` update route (`routes/entities.ts:125`), which passes `systemPrompt: body.systemPrompt?.trim()` with no `|| DEFAULT` fallback — unlike the create route twelve lines above at `:87` that has one. The DB query at `queries.ts:409` uses `??` coalesce, which treats `''` as a value rather than an absence, so an empty-string PATCH stores empty and the invariant is violated. The bug is reachable from the UI in two gestures on the default agent.
+Piper Morgan's methodology corpus now distinguishes three closely related verification failures:
 
-The underlying pattern: **UPDATE routes are a systematic gap in invariant proofs.** They're almost always written separately from CREATE routes, often later, and often without the substitution fallbacks the create paths carry. An enumeration of "all writers" that grep-scopes to insert paths can pass cleanly while an update path violates the invariant silently.
+- **m-49 ("Described Is Not Running")**: a mechanism is documented or believed to exist, but isn't actually live. Fix: add a live check or a behavioral test.
+- **m-51 ("A Bounded Search Is Not a Total")**: a result was scoped (first N, a time window) but the scope went unstated. Fix: state the bound at the moment of the claim.
+- **m-52 ("Open It — A Summary Is Not Its Contents")**: the artifact is static, present, and readable — no runtime state to check, no tool to run — but the agent reasons from its title, memory, or a summary instead of opening it. Fix: open the artifact.
 
-Theseus noted the fix belongs at the writers (two one-liners in `routes/entities.ts` and `import/klatch-import.ts`), not at the assembly layer — which the prior round had correctly ruled out as the wrong fix location.
+The discriminator between m-49 and m-52: m-49 is a live-behavior failure (a runtime check is needed); m-52 is a reading failure (the artifact is sitting there; opening it is sufficient). The discriminator between m-51 and m-52: m-51 is about scope ("I searched N, not all"); m-52 is about substance ("I described the artifact's name, not its contents").
 
-**Suggested action:** When documenting an invariant that relies on "all writers substitute X," verify the enumeration includes both insert and update paths for the relevant column. Grep for the column name in update-shaped queries separately from insert-shaped ones — they often live in different files.
+Two instances arrived independently in the same week: CXO's miscitation of methodology-45 (reasoned from the pattern's name rather than reading the entry) and Exec's criterion-3 miss on issue #1386 (reasoned from criterion 3's description rather than reading the actual checklist text). The methodology corpus shrank the candidate family from five instances to two through explicit re-examination — the three that fell away were correctly reclassified into m-49 and m-51 rather than padded into a new pattern.
+
+**Suggested action:** When diagnosing an agent's verification failure, ask which shape it is. Did the mechanism not run? (m-49 — add a live check.) Was the scope unstated? (m-51 — state the bound.) Was the artifact not opened? (m-52 — read the file.) The remedies differ; applying the wrong one doesn't address the root cause.
 
 ---
 
-### 2. Typing a dispatcher's return from `Any` to a Protocol surfaces dead dispatches and unimplemented operations at build time
+### 2. Two background agents sharing a worktree without isolation is a real, previously unguarded collision risk
 
-**From:** Piper Morgan (Arch, #1723, 2026-09-06 — `mailboxes/arch/sent/shipped-arch-to-lead-cc-exec-cio-pm-github-operations-protocol-1723-...`)
-**Relevant to:** Klatch, any project with router or dispatcher patterns
+**From:** Piper Morgan (Docs, 2026-09-07 omnibus)
+**Relevant to:** Klatch, any project using the Task tool to spawn parallel subagents
 
-Piper Morgan's GitHub integration router had `_get_integration() -> Any`. A single annotation change — to `_get_integration() -> GitHubOperations`, where `GitHubOperations` is a typed Protocol — immediately made visible that 6 of 11 dispatched methods had zero external callers (deleted rather than enshrined), and that the spatial intelligence fallback in the dispatcher implemented none of the dispatched operations (replaced with an immediate `RuntimeError` rather than a deferred `AttributeError` deep in a handler). Arch described `-> Any` as "the single annotation that made #892 and #1709 possible" — the annotation had suppressed type errors for months, allowing dead dispatches to accumulate unnoticed.
+Piper Morgan's Documentation Management role launched two background agents concurrently via the Task tool to audit separate issues (#1725 and #1724). Both shared the role's live working tree without isolation. They succeeded: one detected the other editing a shared file and explicitly deferred. But mutual deference was luck, not design — no guard prevented a collision, and a collision would have meant a silent overwrite or a conflict surfacing only after one agent's work was already committed and that agent was gone.
 
-Protocol membership rule: a method qualifies for the Protocol only if it is both dispatched AND has at least one live external caller. Writing the Protocol forces a census at that moment. A ratchet test (regex over the router source) ensures new unbacked dispatches fail the build going forward, keeping the census current without relying on discipline.
+The Docs role recorded this as a standing lesson: **use `isolation: "worktree"` on Task-tool invocations whenever two concurrent agents have overlapping file scope in the same working tree.** The flag gives each agent a separate copy; writes don't cross-contaminate; merging is explicit and happens after both are done.
 
-**Suggested action:** If your project has a dispatcher or router returning `Any`, consider defining a Protocol class with a "dispatched AND live-called" membership rule. Writing the Protocol forces the census; typing the return annotation makes the type system enforce it. The deletion of dead methods is often the most valuable outcome — dead code removed is cheaper than implementing it and clarifies what the system actually does.
+**Suggested action:** Before spawning two or more concurrent Task-tool agents that write to the same directory, check whether their file scope overlaps. If it does, pass `isolation: "worktree"` to each invocation. An explicit merge afterward is a much cleaner failure mode than a silent overwrite.
 
 ---
 
 ## Sources Read
 
-**Klatch:** `docs/research/round165-layer5-invariant-is-reachable-2026-09-06.md` (Theseus, Round 165 STOP fire) — primary source for Insight 1.
+**Klatch:** `docs/logs/2026-09-07-0831-calliope-sonnet-log.md` (Calliope STOP fire, v111 rollup). Rounds 169–170 reviewed (FLOOR_REPORT constant, floor-frequency probe, worktree sandbox boundary). No brief-worthy new content found beyond what yesterday's brief already covered.
 
-**Piper Morgan:** `mailboxes/arch/sent/shipped-arch-to-lead-cc-exec-cio-pm-github-operations-protocol-1723-written-enforced-4-live-unbacked-ops-route-to-you-2026-09-06.md` (Arch, #1723 ship notice) — primary source for Insight 2.
+**Piper Morgan:** `docs/omnibus-logs/2026-09-07-omnibus-log.md` (11 sessions; methodology-52 filing and concurrent-agent worktree collision are the primary sources for both insights today).
 
-**Secondary repos** scanned against `origin/main --since="48 hours ago"`: globe, weather, one-job, nyt-crossword, mediajunkie, and cookie-monster had commits in the window; none produced brief-worthy content. Atlas, cuneo, and optilisten had no commits in the window. Full provenance in front matter.
+**Secondary repos** scanned against `origin/main --since="48 hours ago"` with `git fetch` first: globe, weather, one-job, nyt-crossword, mediajunkie, and cookie-monster had commits in the window — none brief-worthy (globe/weather/cookie-monster: brief delivery only; one-job: UPDATE-route title fix applying yesterday's Klatch insight, confirmatory not new; nyt-crossword: automated status; mediajunkie: duty-cycle logs). Atlas, cuneo, and optilisten had no commits in the window. Full provenance in front matter.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
+
