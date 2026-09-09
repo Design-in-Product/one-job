@@ -11,4 +11,10 @@ startPwaUpdateChecks();
 // before first render; on the web this resolves immediately.
 hydrateFromNativeStorage().finally(() => {
   createRoot(document.getElementById("root")!).render(<App />);
+  // Tell the boot watchdog (inline in index.html) that the bundle
+  // executed and React mounted — this line running IS the proof the
+  // white-screen failure didn't happen. See the watchdog script for
+  // why it can't live in this file: in the failure state, this file
+  // is exactly what never loaded.
+  (window as unknown as { __oneJobBooted?: () => void }).__oneJobBooted?.();
 });
