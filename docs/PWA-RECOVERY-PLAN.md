@@ -1,6 +1,17 @@
 # The white screen: diagnosis and recovery plan
 
-**By:** Coral, 2026-09-05 · **Status:** plan, awaiting Xian's approval
+**By:** Coral, 2026-09-05 · **Status:** ✅ BUILT AND VERIFIED 2026-09-09 (rc.39)
+Shipped on launch day — Themis's on-ramp caution made it urgent and the
+propagation window made it free. Verification ran the full list below:
+deliberate reproduction via Playwright against the real build (cached
+HTML + evicted asset + server 404), watchdog healed, deck survived
+byte-for-byte, loop bounded at 2 navigations in the broken window,
+false-positive check sat 10s past the timer on a healthy controlled
+boot without healing (the controller gate — an improvement over this
+plan: arm only when a SW controls the page, so slow first visits are
+structurally exempt). One defect found BY the e2e and fixed: the boot
+hook must be defined outside the gate or the post-heal clean boot never
+clears the attempt counter.
 **Gates:** the 50-user cohort. Does **not** gate the App Store — the
 native build has no service worker at all (`mode !== 'capacitor' &&
 VitePWA(...)` in vite.config.ts), so this bug structurally cannot occur

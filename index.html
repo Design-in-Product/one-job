@@ -24,6 +24,104 @@
     <!-- Matches the app's top surface (gray-50) so browser/PWA chrome blends
          into the app instead of framing it in brand coral -->
     <meta name="theme-color" content="#f9fafb">
+    <script>
+      // Boot watchdog (docs/PWA-RECOVERY-PLAN.md, built 2026-09-09).
+      //
+      // The white-screen failure: the service worker's cached HTML can
+      // outlive the hashed bundle it references (partial cache eviction,
+      // interrupted precache). The page then loads, the script 404s, and
+      // React never mounts. Any recovery code inside the bundle is
+      // unreachable in exactly that state — which is why this script is
+      // INLINE in the HTML: the white screen means the HTML ran and the
+      // bundle didn't, so this is the only code guaranteed a turn.
+      //
+      // THE HARD RULE: the heal clears Cache Storage and service-worker
+      // registrations ONLY. It must never touch localStorage (the deck,
+      // oneJobTasks) or any other storage. A "more thorough" cleanup here
+      // would destroy every task the user has, in a code path that only
+      // runs when nobody is watching. Tests assert this; do not widen it.
+      (function () {
+        if (!('serviceWorker' in navigator)) return; // native/legacy: nothing to heal
+        var KEY = 'oneJobBootHeals';
+        var MAX_HEALS = 2;        // heal, heal again, then stop honestly
+        var TIMEOUT_MS = 8000;    // slow 3G first paint is ~3-4s; 8s is failure
+        var timer = null;
+        var done = false;
+
+        // ALWAYS defined, even when the watchdog below doesn't arm: the
+        // boot that follows a heal is UNcontrolled (the heal removed the
+        // SW), and that clean boot must still clear the attempt counter —
+        // otherwise a stale count quietly shrinks the budget of the next
+        // real failure in this tab. Found by the e2e reproduction.
+        window.__oneJobBooted = function () {
+          done = true;
+          if (timer) clearTimeout(timer);
+          try { sessionStorage.removeItem(KEY); } catch (e) { /* fine */ }
+        };
+
+        // Only ARM when a service worker CONTROLS this page. The failure
+        // requires cached HTML referencing a vanished bundle — impossible
+        // without a controller. An uncontrolled page came from the network,
+        // so its bundle exists on the server and slow is just slow: arming
+        // there would heal healthy-but-slow first visits (8s on slow 3G is
+        // reachable), which is the one false positive this must never have.
+        if (!navigator.serviceWorker.controller) return;
+
+        function attempts() {
+          try { return parseInt(sessionStorage.getItem(KEY) || '0', 10) || 0; }
+          catch (e) { return 0; }
+        }
+
+        function giveUp() {
+          var root = document.getElementById('root');
+          if (!root) return;
+          root.innerHTML =
+            '<div id="boot-fallback" style="font-family:-apple-system,system-ui,sans-serif;max-width:26em;' +
+            'margin:20vh auto 0;padding:0 1.5em;color:#1f2937;line-height:1.5">' +
+            '<h1 style="font-size:1.25em;margin-bottom:0.5em">One Job couldn&rsquo;t finish loading</h1>' +
+            '<p style="margin-bottom:0.75em"><strong>Your tasks are safe on this device.</strong> ' +
+            'Nothing has been lost.</p>' +
+            '<p style="margin-bottom:0.75em">Please close the app fully and try again in a few ' +
+            'minutes &mdash; it usually recovers on its own.</p>' +
+            '<p style="color:#6b7280;font-size:0.9em">Still stuck later? Tell us at ' +
+            'github.com/Design-in-Product/one-job/issues and we&rsquo;ll help. ' +
+            'Please don&rsquo;t clear the site&rsquo;s data &mdash; that <em>would</em> ' +
+            'remove your tasks.</p></div>';
+        }
+
+        function heal() {
+          if (done) return;
+          var n = attempts();
+          if (n >= MAX_HEALS) { giveUp(); return; }
+          try { sessionStorage.setItem(KEY, String(n + 1)); } catch (e) { /* count lost; still heal once */ }
+          var work = [];
+          work.push(
+            navigator.serviceWorker.getRegistrations().then(function (rs) {
+              return Promise.all(rs.map(function (r) { return r.unregister(); }));
+            })['catch'](function () {})
+          );
+          if (window.caches && caches.keys) {
+            work.push(
+              caches.keys().then(function (ks) {
+                return Promise.all(ks.map(function (k) { return caches['delete'](k); }));
+              })['catch'](function () {})
+            );
+          }
+          Promise.all(work).then(function () { location.reload(); },
+                                 function () { location.reload(); });
+        }
+
+        // Fail fast when the bundle itself 404s or errors during load —
+        // no need to wait out the timer. Capture phase: resource errors
+        // don't bubble.
+        window.addEventListener('error', function (e) {
+          var t = e.target;
+          if (t && t.tagName === 'SCRIPT' && t.src && t.src.indexOf('/assets/') !== -1) heal();
+        }, true);
+
+        timer = setTimeout(function () { if (!done) heal(); }, TIMEOUT_MS);
+      })();
+    </script>
   </head>
 
   <body>

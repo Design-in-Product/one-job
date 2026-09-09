@@ -1,35 +1,35 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-09T03:11:12.533Z",
+  "exportedAt": "2026-09-09T22:45:14.279Z",
   "tasks": [
     {
-      "id": "8e662944-b103-4a14-a07f-26b15aab9c40",
+      "id": "6ab50fa7-7e42-4f00-a364-a6140eccb83b",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 9 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-09T03:11:12.533Z",
+      "createdAt": "2026-09-09T22:45:14.278Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "ee73bd72-1c65-4c44-a246-8b70df8bfaaf",
+      "id": "c78eda64-0265-46a7-b34a-4a99194a100c",
       "title": "Press Release tomorrow morning alongside your announcement.",
       "description": "🟢 #30 · Release 1.0 — decided: tomorrow morning, timed to an announcement\n\nCoral's rec: The store link that goes live with it: https://apps.apple.com/app/id6787158379 — usable in the announcement the moment you press the button.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 1 days (since 2026-09-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-09T03:11:12.533Z",
+      "createdAt": "2026-09-09T22:45:14.279Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "6c40e525-7939-4be1-ad75-2e7714f9dde2",
+      "id": "a47ff5c8-7fd5-409e-857e-d0bc551831c1",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 43 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-09T03:11:12.533Z",
+      "createdAt": "2026-09-09T22:45:14.279Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     }
