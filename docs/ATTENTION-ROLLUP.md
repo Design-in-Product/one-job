@@ -35,18 +35,17 @@ change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
 
-### Watching: App Review verdict on 1.0 (build 37)
-Submitted 2026-09-05. Typical turnaround 24–48h. If approved: status
-goes Pending Developer Release — the release button is Xian's, and
-that WILL become an ask. If rejected: resolution-center message comes
-to me for a same-day fix. Until either, nothing is waiting on him.
+### 🟡 30. 1.0 APPROVED — the release button is yours
+Approved 2026-09-08, day 3 of review. Build 37 goes live whenever you
+press Release. Independent of release, external TestFlight (public
+link, no org invites) is now available — and it un-gates the 50-user
+cohort without the PWA fix, since native builds have no service worker.
+**Since:** 2026-09-08
+**Ask:** Press Release now, or hold for an announcement moment?
+**Rec:** Release now unless you want choreography — nothing technical
+is pending. Say the word on the cohort link and I'll spec the exact
+TestFlight group settings (cap 50) as the recruitment mechanism.
 
-
-*Added 2026-09-01. These were in the Open list with an Ask of
-"nothing," which put no-op cards in Xian's deck and diluted a surface
-whose whole value is "what needs me." They are real work, they are
-mine, and they stay visible here — but the probe only deals from Open,
-so they no longer reach his phone as cards.*
 
 ### 🟡 22. Pro-feedback interview — one question at a time, ongoing
 Format agreed 2026-08-20: I ask per feature, you answer, I log, we
