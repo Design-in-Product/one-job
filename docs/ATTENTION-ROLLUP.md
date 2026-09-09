@@ -1,23 +1,13 @@
 ## Open
 
-### 🟡 30. 1.0 APPROVED — the release button is yours
-Approved 2026-09-08, day 3 of review. Build 37 goes live whenever you
-press Release. Independent of release, external TestFlight (public
-link, no org invites) is now available — and it un-gates the 50-user
-cohort without the PWA fix, since native builds have no service worker.
+### 🟢 30. Release 1.0 — decided: tomorrow morning, timed to an announcement
+Approved 2026-09-08; Xian is holding the button until the morning of
+2026-09-09 to pair release with an announcement. Nothing else pending.
 **Since:** 2026-09-08
-**Ask:** Press Release now, or hold for an announcement moment?
-**Rec:** Release now unless you want choreography — nothing technical
-is pending. Say the word on the cohort link and I'll spec the exact
-TestFlight group settings (cap 50) as the recruitment mechanism.
-
-
-*Convention (2026-08-31, after Xian's probe feedback): every open item
-carries an explicit **Ask:** line — the single thing needed from him,
-in one sentence — and a **Rec:** line with my recommendation. The fleet
-probe REFUSES to deal a deck if any open item lacks an Ask, so a card
-can never arrive without saying what it wants.*
-
+**Ask:** Press Release tomorrow morning alongside your announcement.
+**Rec:** The store link that goes live with it:
+https://apps.apple.com/app/id6787158379 — usable in the announcement
+the moment you press the button.
 
 
 ### 🟡 27. Probe feedback — you are living in it now

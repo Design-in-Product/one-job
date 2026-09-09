@@ -1,35 +1,35 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-09T03:09:39.220Z",
+  "exportedAt": "2026-09-09T03:11:12.533Z",
   "tasks": [
     {
-      "id": "230e3126-ee5e-4cd1-ae15-d1ac5314bf85",
-      "title": "Press Release now, or hold for an announcement moment?",
-      "description": "🟡 #30 · 1.0 APPROVED — the release button is yours\n\nCoral's rec: Release now unless you want choreography — nothing technical is pending. Say the word on the cohort link and I'll spec the exact TestFlight group settings (cap 50) as the recruitment mechanism. *Convention (2026-08-31, after Xian's probe feedback): every open item carries an explicit **Ask:** line — the single thing needed from him, in one sentence — and a **Rec:** line with my recommendation. The fleet probe REFUSES to deal a deck if any open item lacks an Ask, so a card can never arrive without saying what it wants.*\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 1 days (since 2026-09-08)",
-      "completed": false,
-      "status": "todo",
-      "createdAt": "2026-09-09T03:09:39.219Z",
-      "sortOrder": 1,
-      "source": "coral/attention-rollup"
-    },
-    {
-      "id": "1a1e2488-4049-43f4-8960-5b33192dd9cd",
+      "id": "8e662944-b103-4a14-a07f-26b15aab9c40",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 9 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-09T03:09:39.219Z",
+      "createdAt": "2026-09-09T03:11:12.533Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "ee73bd72-1c65-4c44-a246-8b70df8bfaaf",
+      "title": "Press Release tomorrow morning alongside your announcement.",
+      "description": "🟢 #30 · Release 1.0 — decided: tomorrow morning, timed to an announcement\n\nCoral's rec: The store link that goes live with it: https://apps.apple.com/app/id6787158379 — usable in the announcement the moment you press the button.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 1 days (since 2026-09-08)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-09T03:11:12.533Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "bdce7693-e50a-44e8-9f46-4836eb11d4be",
+      "id": "6c40e525-7939-4be1-ad75-2e7714f9dde2",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-09 · waiting 43 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-09T03:09:39.220Z",
+      "createdAt": "2026-09-09T03:11:12.533Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     }
