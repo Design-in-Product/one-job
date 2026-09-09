@@ -1,65 +1,61 @@
-# Cross-Pollination Brief — September 8, 2026
 
-Two findings from Piper Morgan today, both about verification failures that are easy to confuse with adjacent, more-discussed shapes. One adds a third type to the project's verification taxonomy; the other surfaces a real collision risk in how concurrent subagents are launched.
+# Cross-Pollination Brief — September 9, 2026
+
+Two insights today: a verification gap that fires specifically at the moment of dismissal — five instances across two projects, nominated for the methodology corpus — and a design principle for attaching enforcement obligations to chokepoints rather than bolt-ons, filed to Piper Morgan's methodology corpus as m-53.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
-## Corrections to the record
+## Corrections
 
-### September 6 brief: one-job was not quiet — 27 commits including the App Review submission
-
-The September 6 brief stated that all secondary repositories were quiet. In fact, one-job had **27 commits** in the window, including the largest event in the project's history: **One Job 1.0 submitted to App Review on 2026-09-05** (build 37, `838eabb`). The secondary-source scan ran `git log --since=…` against a stale local HEAD with no prior fetch and no explicit `origin/main` reference — an absence-from-the-mirror reported as an absence-from-the-repo.
-
-The defect was found by Coral (One Job) and root-caused the same day. The sweep's fetch-first / explicit-`origin/main` fix has been in production since the September 7 brief. *Carried from `pending-corrections.md` per Step 2.4.*
-
-### September 7 weekly digest: covered August 24–30 instead of August 31–September 6
-
-The Monday digest published a window heading of "August 24–30" — a window the August 31 digest had already covered — so the week of **August 31 – September 6 was silently dropped** from the weekly digest series. That week included One Job 1.0 submitted to App Review, Klatch's multi-root session scanner shipped and import-tested at real size, PM's methodology-50 filed, and DinP's Client D proposal locked at $107,280.
-
-The digest prompt was patched on September 7 to compute its window explicitly and refuse to publish if the new window does not start after the previous digest's end date. **The August 31 – September 6 week has not been published**; the next digest run should cover it before resuming normal cadence. *Carried from `pending-corrections.md` per Step 2.4.*
+**The 2026-09-08 brief's own correction was stale.** Yesterday's brief published: *"The August 31 – September 6 week has not been published; the next digest run should cover it before resuming normal cadence."* That statement was true when queued on September 7 — but Janus published the corrective run that same day (`2a73df7`, `mediajunkie/dispatch`, 11:41 PT). The brief carried the queued claim forward without re-verifying. The week IS published; the dispatch file has read *"# Current Week Intelligence Brief: August 31 – September 6, 2026"* since September 7. Step 2.4 now includes a mandatory re-verify check before any pending correction is published.
 
 ## Key Insights
 
-### 1. "Open the artifact" is a third verification shape, distinct from "described is not running" and "state your bound"
+### 1. Absence in a convenient channel is not absence in the world — the verification gap fires at the moment of dismissal, not use
 
-**From:** Piper Morgan (CIO, methodology-52, filed 2026-09-07)
-**Relevant to:** Klatch, any project where agents reason from document titles or memory
+**From:** Mediajunkie (Pard) and Design in Product (Janus) — nominated 2026-09-08, five instances across two projects
+**Relevant to:** any team that uses proxy signals (commit logs, session lists, directory listings, memory) to decide whether a resource, channel, or tool is live
 
-Piper Morgan's methodology corpus now distinguishes three closely related verification failures:
+When an agent is about to *dismiss* something — replace it, report it absent, or discount it — nobody adds a verification check. Dismissal feels costless; checking what you're about to throw away does not. The harm is quiet: a discounted live asset doesn't complain, and duplicated effort looks like new work.
 
-- **m-49 ("Described Is Not Running")**: a mechanism is documented or believed to exist, but isn't actually live. Fix: add a live check or a behavioral test.
-- **m-51 ("A Bounded Search Is Not a Total")**: a result was scoped (first N, a time window) but the scope went unstated. Fix: state the bound at the moment of the claim.
-- **m-52 ("Open It — A Summary Is Not Its Contents")**: the artifact is static, present, and readable — no runtime state to check, no tool to run — but the agent reasons from its title, memory, or a summary instead of opening it. Fix: open the artifact.
+The shared shape across five instances: **the agent read a proxy in a convenient channel and treated absence there as world-absence.** The proxy was often a real reading — `git log` is a real reading, `tmux ls` is a real reading — it just didn't answer the property that mattered.
 
-The discriminator between m-49 and m-52: m-49 is a live-behavior failure (a runtime check is needed); m-52 is a reading failure (the artifact is sitting there; opening it is sufficient). The discriminator between m-51 and m-52: m-51 is about scope ("I searched N, not all"); m-52 is about substance ("I described the artifact's name, not its contents").
+Instances (Pard, two; Janus, three):
 
-Two instances arrived independently in the same week: CXO's miscitation of methodology-45 (reasoned from the pattern's name rather than reading the entry) and Exec's criterion-3 miss on issue #1386 (reasoned from criterion 3's description rather than reading the actual checklist text). The methodology corpus shrank the candidate family from five instances to two through explicit re-examination — the three that fell away were correctly reclassified into m-49 and m-51 rather than padded into a new pattern.
+- Declared a marketing site "three-year-dead" based on commit history; the site was serving HTTP 200.
+- Counted ~47 GB of Time Machine exclusions as new savings from a directory listing, when they were already excluded.
+- The intelligence sweep's rule-set was about to report `no-commits` for a live site forever — the activity check and the liveness check are different questions.
+- Built an agent registry she believed didn't exist; `dispatch/infrastructure-registry.md` had existed since March 2026.
+- Told Pard that two Cowork agents couldn't be reached by any mechanism; mail from both had been sitting in their mailboxes for three days.
 
-**Suggested action:** When diagnosing an agent's verification failure, ask which shape it is. Did the mechanism not run? (m-49 — add a live check.) Was the scope unstated? (m-51 — state the bound.) Was the artifact not opened? (m-52 — read the file.) The remedies differ; applying the wrong one doesn't address the root cause.
+The pattern Pard named: **the trigger is "about to dismiss" — the moment nobody asks.** The distinguishing criterion from similar shapes: m-49 fires when you're about to *use* something (believed present, actually absent); this shape fires when you're about to *discard* something (believed absent, actually live). m-51 is a bounded search reported as a total; this is a proxy answering the wrong property entirely.
 
----
+The proposed remedy: **ask the property you actually care about, in the channel where that property lives.** Is this site live → ask the site. Can this agent reach me → check the mailbox. Does this already exist → search the repo, not your recollection.
 
-### 2. Two background agents sharing a worktree without isolation is a real, previously unguarded collision risk
-
-**From:** Piper Morgan (Docs, 2026-09-07 omnibus)
-**Relevant to:** Klatch, any project using the Task tool to spawn parallel subagents
-
-Piper Morgan's Documentation Management role launched two background agents concurrently via the Task tool to audit separate issues (#1725 and #1724). Both shared the role's live working tree without isolation. They succeeded: one detected the other editing a shared file and explicitly deferred. But mutual deference was luck, not design — no guard prevented a collision, and a collision would have meant a silent overwrite or a conflict surfacing only after one agent's work was already committed and that agent was gone.
-
-The Docs role recorded this as a standing lesson: **use `isolation: "worktree"` on Task-tool invocations whenever two concurrent agents have overlapping file scope in the same working tree.** The flag gives each agent a separate copy; writes don't cross-contaminate; merging is explicit and happens after both are done.
-
-**Suggested action:** Before spawning two or more concurrent Task-tool agents that write to the same directory, check whether their file scope overlaps. If it does, pass `isolation: "worktree"` to each invocation. An explicit merge afterward is a much cleaner failure mode than a silent overwrite.
+**Suggested action:** Before dismissing or replacing a resource, run the one check native to where the property actually lives. "I don't see commits" is not "the site is dead." "I don't remember building it" is not "it doesn't exist." The moment to add the check is exactly the moment nobody wants to — which is what makes this a pattern worth naming before it becomes a methodology entry.
 
 ---
+
+### 2. Enforcement obligations work reliably only when attached to a chokepoint — m-53 filed to Piper Morgan's methodology corpus
+
+**From:** Piper Morgan — filed as Methodology-53 ("Chokepoint vs. Bolt-On") by CIO, 2026-09-08, status "Proven-by-use, filed late"
+**Relevant to:** any team designing enforcement checks, required steps, mandatory fields, or process compliance gates
+
+A mechanism attached to a **chokepoint** — a step that must happen for the system to proceed, by design — cannot be bypassed. A mechanism bolted on as a supplementary check can be skipped, forgotten, or consciously stepped around under pressure.
+
+PM's CIO found this principle had shaped at least four shipped enforcement mechanisms without ever being written down — commit hooks on the only code path, validators on a required step, attestation fields that block the route if absent. The mechanisms worked; the principle had no name.
+
+The plain diagnostic: **can someone take the required action without triggering this check?** If yes, it's a bolt-on; find the chokepoint and attach there instead.
+
+HOST's same-day action is a concise demonstration: reading the methodology text, found their own carry-forward file simultaneously claiming a practice was "awaiting ratification" and "CEO-ratified" eight lines below — cut the file from 151 to 80 lines rather than note it and move on. "A real, load-bearing instance of exactly the disease this week's methodology corpus has been diagnosing, found on the file most central to that diagnosis."
+
+**Suggested action:** When designing a new enforcement mechanism, ask: is this check attached to something that gates progress by design, or is it an added step someone can choose not to run? If the latter, find the gate and move the check there.
 
 ## Sources Read
 
-**Klatch:** `docs/logs/2026-09-07-0831-calliope-sonnet-log.md` (Calliope STOP fire, v111 rollup). Rounds 169–170 reviewed (FLOOR_REPORT constant, floor-frequency probe, worktree sandbox boundary). No brief-worthy new content found beyond what yesterday's brief already covered.
-
-**Piper Morgan:** `docs/omnibus-logs/2026-09-07-omnibus-log.md` (11 sessions; methodology-52 filing and concurrent-agent worktree collision are the primary sources for both insights today).
-
-**Secondary repos** scanned against `origin/main --since="48 hours ago"` with `git fetch` first: globe, weather, one-job, nyt-crossword, mediajunkie, and cookie-monster had commits in the window — none brief-worthy (globe/weather/cookie-monster: brief delivery only; one-job: UPDATE-route title fix applying yesterday's Klatch insight, confirmatory not new; nyt-crossword: automated status; mediajunkie: duty-cycle logs). Atlas, cuneo, and optilisten had no commits in the window. Full provenance in front matter.
+- **Klatch:** Calliope session log 2026-09-08 (START/MID/SWEEP/STOP fires — Rounds 171–174, Path B built by Daedalus and driven live by Theseus, rollup v112→v114). Commit messages from `origin/main`, 35+ commits in window.
+- **Piper Morgan:** Omnibus log 2026-09-08 (12 sessions; flywheel synthesis v3, same-day test-round fix chain, m-53 filing, HOST carry-forward audit).
+- **Mediajunkie (Pard):** Session log 2026-09-08; Janus-to-Pard mail 2026-09-08 (fourth and fifth verification-shape instances, cross-project bar passed).
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
-
