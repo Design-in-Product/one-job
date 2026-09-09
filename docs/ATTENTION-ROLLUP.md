@@ -1,5 +1,17 @@
 ## Open
 
+### 🟡 30. 1.0 APPROVED — the release button is yours
+Approved 2026-09-08, day 3 of review. Build 37 goes live whenever you
+press Release. Independent of release, external TestFlight (public
+link, no org invites) is now available — and it un-gates the 50-user
+cohort without the PWA fix, since native builds have no service worker.
+**Since:** 2026-09-08
+**Ask:** Press Release now, or hold for an announcement moment?
+**Rec:** Release now unless you want choreography — nothing technical
+is pending. Say the word on the cohort link and I'll spec the exact
+TestFlight group settings (cap 50) as the recruitment mechanism.
+
+
 *Convention (2026-08-31, after Xian's probe feedback): every open item
 carries an explicit **Ask:** line — the single thing needed from him,
 in one sentence — and a **Rec:** line with my recommendation. The fleet
@@ -34,17 +46,6 @@ patched only what my work touched rather than re-baselining it.
 change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
-
-### 🟡 30. 1.0 APPROVED — the release button is yours
-Approved 2026-09-08, day 3 of review. Build 37 goes live whenever you
-press Release. Independent of release, external TestFlight (public
-link, no org invites) is now available — and it un-gates the 50-user
-cohort without the PWA fix, since native builds have no service worker.
-**Since:** 2026-09-08
-**Ask:** Press Release now, or hold for an announcement moment?
-**Rec:** Release now unless you want choreography — nothing technical
-is pending. Say the word on the cohort link and I'll spec the exact
-TestFlight group settings (cap 50) as the recruitment mechanism.
 
 
 ### 🟡 22. Pro-feedback interview — one question at a time, ongoing
