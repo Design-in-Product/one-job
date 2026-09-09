@@ -1,10 +1,16 @@
 # Release note / announcement — 1.0 (DRAFT for Xian's edit + Themis's strategy review)
 
-**Status:** drafted 2026-09-09 morning, at Themis's request relaying
-Xian's direction. Not previously drafted — Themis looked for it and it
-did not exist; this closes that gap. Xian's voice is the target; every
-claim is checkable; nothing here commits to pricing, dates, or support
-posture (see the commitments audit at the bottom).
+**Status:** drafted 2026-09-09 morning; **Themis's strategy review
+applied same day** (variant B recommended, body rewritten, newsletter
+link added, em-dash pass done). Ready for Xian's voice pass and the
+Release press.
+
+**🔴 PUBLISH GATE (Themis):** the App Store link 404s until Release is
+pressed AND propagation completes. Before any variant goes out:
+`curl -s "https://itunes.apple.com/lookup?id=6787158379"` must return
+`resultCount: 1`. A launch post whose primary link 404s is worse than
+a launch post a day late. Coral runs this check as part of the release
+sequence, before the site branch merges.
 
 Two variants, because the framing choice is the actual strategy
 decision. Themis's lens applies to choosing between them; the words
@@ -18,7 +24,7 @@ inside are Xian's to change freely.
 >
 > It's a to-do app with one idea: your tasks are a deck of cards, and
 > you see one card at a time. Do it, swipe it away, and the next one is
-> waiting. Deferring isn't failure — the card just waits its turn.
+> waiting. Deferring isn't failure. The card just waits its turn.
 >
 > It's free. There's no account and no tracking; your deck lives on
 > your device, works offline, and backs up to a file you own.
@@ -26,39 +32,51 @@ inside are Xian's to change freely.
 > 📱 App Store: https://apps.apple.com/app/id6787158379
 > 🌐 Or try it in your browser first: https://onejob.co
 >
-> I'd genuinely love to hear what you think — especially if to-do apps
+> I'd genuinely love to hear what you think, especially if to-do apps
 > have never stuck for you. That's who it's for.
 
-## Variant B — practice-story (aligns the event with the DinP narrative)
+## Variant B — practice-story ⭐ RECOMMENDED (Themis review, 2026-09-09)
 
 > **I shipped an app. My AI colleague did most of the typing.**
 >
-> One Job 1.0 is on the App Store today — a to-do app that shows you
-> one task at a time, as a card. Do it, swipe, next card. Free,
+> One Job 1.0 is on the App Store today. It's a to-do app that shows
+> you one task at a time, as a card. Do it, swipe, next card. Free,
 > no account, no tracking, everything on your device.
 >
-> It's also something else: a working demonstration of the practice I
-> write about. One Job was built in sustained collaboration with a
-> resident AI agent — design conversations, bug hunts, App Store
-> submission, this announcement. The product is real and so is the
-> process, and I think the process is the more interesting story.
+> It's also a working demonstration of the practice I write about.
+> One Job was built in sustained collaboration with a resident AI
+> agent: design conversations, bug hunts, App Store submission, this
+> announcement. The typing got cheap. The deciding didn't. What to
+> build, what to cut, what "done" meant, and when it was actually
+> ready: that's the part I do, and it turns out to be the part that
+> matters.
 >
 > 📱 https://apps.apple.com/app/id6787158379
 > 🌐 https://onejob.co
 >
-> More on how it was built in an upcoming *Now What?* — for now, go
-> swipe a card.
+> More on how it was built in *Now What?* soon:
+> https://buttondown.com/designinproduct
+>
+> For now, go swipe a card.
 
-**On the choice:** A is inert — publishable anywhere without touching
-the DinP story. B *spends* the launch on the practice narrative, which
-per Themis's lens is either exactly right (the newsletter/site describe
-a practice; this is the proof-event inside that story) or premature (it
-half-promises a newsletter issue). If B, the "upcoming Now What?" line
-is the one soft commitment — cut it if that issue isn't planned.
+**Themis's review (2026-09-09) resolved the choice: B, "and it isn't
+close."** Everything DinP sells right now is the practice; One Job is
+the only shippable artifact demonstrating the method produces things,
+and A would spend that on a to-do app announcement. The body edit above
+is Themis's ("the typing got cheap; the deciding didn't") — the
+original body listed four things the AI did and nothing Xian did,
+underselling the exact judgment he's paid for. Newsletter link added
+(launch traffic is the newsletter's audience at peak concentration;
+URL verified serving 200). "Soon," not "upcoming" — the *Now What?*
+half-promise is KEPT deliberately as the counterparty mechanism turned
+on himself, but with no implied date since #4 shipped 09-01 on a
+monthly cadence. Em-dashes removed from the publishable copy per house
+style (they read as an AI tell, worst possible tell in a post about
+working with AI).
 
 ## Short variants (either framing)
 
-- **One-liner:** One Job 1.0 is on the App Store — see one task, do one
+- **One-liner:** One Job 1.0 is on the App Store: see one task, do one
   task, feel accomplished. Free, offline, no account.
   https://apps.apple.com/app/id6787158379
 - **Reply-to-"what's new":** I make a to-do app now. One card at a
