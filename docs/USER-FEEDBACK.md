@@ -66,6 +66,28 @@ replacing it. This is why Todoist is now a 1.1 release feature.
 
 ---
 
+## Teresa Klein — 2026-09-10 (LinkedIn comment on the launch post)
+
+Context: 2nd-degree connection — **the first substantive product
+feedback from outside Xian's immediate circle**, arriving < 24h after
+the announcement. Songwriter/activist profile, technically fluent.
+
+The suggestion, verbatim: *"If you dig into App Intents and create a
+Shortcuts action for add task, I can create a shortcut so users can
+import from existing task apps."* — and she attached a screenshot of a
+**working Shortcut skeleton she already built** (Find Reminders →
+filter by list → repeat → "Add Card" with title, description,
+subtasks). She prototyped her half before asking for ours.
+
+Why it matters beyond the feature: it's convergence #3 (layer, not
+replacement) arriving from a stranger WITH an implementation
+proposal — one "Add Card" App Intent makes Shortcuts the universal
+on-ramp (Reminders, Things, Todoist, Siri) and lets the community
+build the last mile. Xian's public reply committed to the direction
+generally ("planning round trip integrations") without dates.
+Candidate roadmap item R-INTENT; sequencing vs. Todoist-1.1 is an
+open question for the next-steps conversation.
+
 ## Ted Nadeau — 2026-09-04 (email, full)
 
 Context: long-time friend of Xian's, product/architecture mind, iPad
@@ -147,6 +169,7 @@ Used the web app. Feedback pasted into the session by Xian.
   Wood** (developer, ex-OptiListen team; unsolicited "geeky hello"
   invite, so no obligation to respond — if he does, he'd be the first
   tester with no product-friendship tie to Xian's immediate circle).
-- **No one outside Xian's immediate circle has used it at all.** Both
-  are friends with product backgrounds. The 50-user cohort exists to
-  fix exactly this.
+- ~~No one outside Xian's immediate circle has used it at all.~~
+  **Closing:** Teresa Klein (2026-09-10) is the first outside voice —
+  a launch-post commenter with a prototype in hand. The cohort still
+  exists to make this systematic rather than anecdotal.

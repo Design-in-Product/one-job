@@ -331,6 +331,17 @@ recursive cards → lifecycle chain → R1 gate week) shipped in full
 across the rc series, several of them exceeded (undo became
 session-deep + redo; schema went to v3).
 
+## Candidate: R-INTENT — an "Add Card" App Intent (the universal write seam)
+
+Proposed by Teresa Klein (outside contributor!) on the launch post,
+2026-09-10, with her half already prototyped as a Shortcut. One native
+intent (title, description, optional sub-cards) → pending-queue in
+native storage → ingested on launch through the existing
+nativeStorageBridge + sourceAdapter path as cards-with-provenance.
+~a day of Yellow-zone native work + a build. Free-leaning (on-ramp).
+**Open sequencing question vs. Todoist 1.1** (broad-shallow vs.
+deep-narrow) — for the next-steps conversation, Xian's call.
+
 ## 1.1 — the first post-launch release (scoped 2026-09-04)
 
 **Todoist, done properly**, is the headline. Context that makes it
