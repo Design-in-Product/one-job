@@ -632,3 +632,11 @@
     min-height: 100dvh;
   }
 }
+
+/* Toasts vs the iOS reserved area (Xian's screenshot, 2026-09-10):
+   with viewport-fit=cover the webview extends under the status bar, and
+   sonner's top-center placement put toasts beneath the clock/battery.
+   Offset by the safe-area inset; the 1rem floor keeps web unchanged. */
+[data-sonner-toaster][data-y-position='top'] {
+  top: max(1rem, env(safe-area-inset-top)) !important;
+}
