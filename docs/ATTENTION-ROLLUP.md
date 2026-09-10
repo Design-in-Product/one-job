@@ -54,15 +54,18 @@ whatever else surfaces.
 **Rec:** Keep it opportunistic rather than scheduled; I will bring one
 when there is room.
 
-### 🟢 28. Cohort recruiting — blocked on me, not you
-The 50-user pilot (10 agent-heavy first, then 40 ordinary) needs two
-things that are mine: the PWA service-worker fix (no invitation into a
-known white-screen — the standing HARD GATE), and R1.5 instrumentation,
-which shipped 2026-08-29 in rc.34. So: one of two done.
+### 🟡 28. Cohort recruiting — UNBLOCKED: the TestFlight spec is ready for your ten minutes in ASC
+Xian said go (2026-09-10, via Themis). docs/TESTFLIGHT-COHORT-SPEC.md
+has every click and every text field: two groups (Pilot cap 10 now,
+Cohort cap 40 created-but-unshared), build 37, beta-review note, Test
+Information copy that keeps the covenant-7 ethos in the tester's first
+paragraph.
+**Since:** 2026-09-10
+**Ask:** Do the ~10 min of ASC steps in TESTFLIGHT-COHORT-SPEC.md, then send the Pilot link to your first ten.
+**Rec:** Create BOTH groups in the same sitting (zero ASC steps later
+when the forty start); pair the link with Themis's trial doc, which
+they say can ship as-is for the agent-heavy ten.
 
-**Ask:** Nothing yet — I will tell you when the gate clears.
-**Rec:** Meanwhile, if names occur to you for the agent-heavy ten, jot
-them somewhere. They are the harder half to recruit.
 
 ### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current
 Recount prompted by the Rule-14 brief (the old "4 remain" was computed
