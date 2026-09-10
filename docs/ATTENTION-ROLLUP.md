@@ -1,5 +1,17 @@
 ## Open
 
+### 🟡 22. Pro-feedback session — conversational, screen by screen, when you're ready
+Xian (2026-09-10): wants this LIVE and conversational — "if we go
+screen by screen, flow by flow, I will remember and be able to narrate
+the key things easily." He also has screenshots of minor usability
+issues to bring. Coral will have a full flow-inventory walk order
+prepared so the session is pure narration.
+**Since:** 2026-08-13
+**Ask:** Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).
+**Rec:** Do it before the roadmap/next-steps conversation — your
+narration is evidence that discussion should consume, not follow.
+
+
 ### 🟡 28. Cohort recruiting — UNBLOCKED: the TestFlight spec is ready for your ten minutes in ASC
 Xian said go (2026-09-10, via Themis). docs/TESTFLIGHT-COHORT-SPEC.md
 has every click and every text field: two groups (Pilot cap 10 now,
@@ -53,19 +65,6 @@ existing number is attached to via dnb.com or
 developer.apple.com/enroll/duns-lookup when the time comes.
 
 
-
-### 🟡 22. Pro-feedback interview — one question at a time, ongoing
-Format agreed 2026-08-20: I ask per feature, you answer, I log, we
-triage. Answered so far: multi-deck still feels like One Job (you
-choose one deck, it shows one card, the only new decision is which
-deck) — now written into VISION.md as the deep-vs-broad nudge
-principle. Still unasked: inchworm's shape, the deck delete/merge gap
-(no deck-level delete or deck-into-deck merge exists at all today), and
-whatever else surfaces.
-
-**Ask:** Nothing now — say "next question" when you want one.
-**Rec:** Keep it opportunistic rather than scheduled; I will bring one
-when there is room.
 
 
 ### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current

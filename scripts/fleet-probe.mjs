@@ -34,6 +34,46 @@ if (afterOpen === undefined) {
 }
 const open = afterOpen.split(/^## /m)[0];
 
+// Fourth structural guard (2026-09-10, after the SAME mistake twice in
+// one week): an item edited in place grows an **Ask:** line while
+// sitting in "What I'm carrying" or another non-Open section — and
+// silently never deals. An Ask outside Open is misfiled by definition:
+// asks are for Xian, and Open is the only section the probe reads.
+// Refuse rather than warn, like every other guard here.
+export const asksOutsideOpen = (fullText, openText) => {
+  const rest = fullText.replace(openText, '');
+  const hits = [];
+  const re = /^### (.+)$/gm;
+  let m, prev = null;
+  const flush = end => {
+    if (!prev) return;
+    if (/^\*\*Ask:\*\*/m.test(rest.slice(prev.end, end))) hits.push(prev.heading);
+  };
+  while ((m = re.exec(rest)) !== null) { flush(m.index); prev = { heading: m[1].trim(), end: m.index + m[0].length }; }
+  flush(rest.length);
+  // Settled items legitimately retain their historical Ask lines; only
+  // flag sections that are neither Open (excluded above) nor Settled.
+  const settledStart = rest.indexOf('## Settled');
+  return settledStart === -1 ? hits : hits.filter(h => {
+    const idx = rest.indexOf(`### ${h}`);
+    return idx !== -1 && idx < settledStart;
+  });
+};
+{
+  const misfiled = asksOutsideOpen(rollup, open);
+  if (misfiled.length) {
+    console.error(
+      `\nRefusing to deal: ${misfiled.length} item(s) carry an **Ask:** outside the Open section:\n` +
+      misfiled.map(h => `  ### ${h}`).join('\n') +
+      `\n\nAn ask that isn't in Open never becomes a card — it silently\n` +
+      `starves the deck (this exact mistake happened twice on 2026-09-10;\n` +
+      `items 30 and 28 were edited in place in "What I'm carrying").\n` +
+      `Move each item to Open, or drop its Ask line, then re-run.\n`
+    );
+    process.exit(1);
+  }
+}
+
 // Items are "### <status> <n>. <title>" headings.
 //
 // EXPLICIT CLASSIFICATION, no silent default (2026-08-31, after the
