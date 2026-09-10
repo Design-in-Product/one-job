@@ -61,6 +61,12 @@ await page.waitForTimeout(700);
 const cx = 195, cardY = 422;
 const shot = n => page.screenshot({ path: `${OUT}/${n}.png` });
 
+// screen-back — the top of the deck, card face DOWN. Xian's addition
+// (2026-09-10): "a charming part of the experience," and the moment
+// the deck-of-cards metaphor becomes legible — it's the state the app
+// actually opens in, so it's shot before anything is touched.
+await shot('screen-back');
+
 // screen-deck — one card, face up ("One card at a time")
 await page.mouse.click(cx, cardY); await page.waitForTimeout(1200);
 await shot('screen-deck');
