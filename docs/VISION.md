@@ -138,6 +138,11 @@ Asana task are the same event: a card arriving with provenance.
    the specific mechanisms (on-device storage, export only by the
    user's hand, "Data Not Collected") are its current expression and
    may evolve, but any evolution gets tested against this sentence.
+   (Xian's clarifying note, same day: a future on-device LLM parsing
+   the user's own content FOR the user, locally, would offer "magic"
+   without violating this — the ethos forbids *us* mining *their*
+   content, not the user's own tools working on their own data at
+   their own request.)
 
 ## The releases, in one line each
 
