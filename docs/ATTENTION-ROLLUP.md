@@ -1,14 +1,5 @@
 ## Open
 
-### 🟢 30. Release 1.0 — decided: tomorrow morning, timed to an announcement
-Approved 2026-09-08; Xian is holding the button until the morning of
-2026-09-09 to pair release with an announcement. Nothing else pending.
-**Since:** 2026-09-08
-**Ask:** Press Release tomorrow morning alongside your announcement.
-**Rec:** The store link that goes live with it:
-https://apps.apple.com/app/id6787158379 — usable in the announcement
-the moment you press the button.
-
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -77,6 +68,15 @@ which runs on Amber during native builds and never ships.
 ---
 
 ## Settled
+
+### ✅ 30. 1.0 RELEASED — live on the App Store 2026-09-09
+Xian pressed Release ~15:30; the listing went live ~18:30 (direct link;
+search indexing lags 24-48h and needs nothing from us). onejob.co front
+door deployed and verified: App Store primary CTA, web app as on-ramp,
+Android teaser dropped. Watchdog (rc.39) verified serving. Announcement
+cleared to post — draft with Themis's review applied is in
+docs/RELEASE-NOTE-1.0-draft.md.
+
 
 ### ✅ 26. Ship 1.0 — SUBMITTED TO APP REVIEW 2026-09-05
 Xian completed every ASC step the same day: screenshots (composed set,
