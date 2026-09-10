@@ -163,8 +163,12 @@ jobs:
   # itself, so it cannot be forgotten separately from the thing it
   # watches.
   ci-red-beacon:
+    # needs EVERY job: a beacon that only watches test+build is silent
+    # when deploy or verify fails — the same silence-shaped hole again.
+    # if: failure() fires when any needed job failed (skipped jobs, e.g.
+    # deploy on PRs, don't count as failures).
     if: failure()
-    needs: [test, build]
+    needs: [test, build, deploy, verify]
     runs-on: ubuntu-latest
     steps:
       - name: Open or update the CI-red issue
