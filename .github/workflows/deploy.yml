@@ -95,6 +95,13 @@ jobs:
           cp robots.txt deploy/ 2>/dev/null || true
           cp placeholder.svg deploy/ 2>/dev/null || true
           cp CNAME deploy/ 2>/dev/null || true
+          # Latest attention deck at a stable URL (Xian, 2026-09-10:
+          # "is there a place I can grab the latest deck?") — his phone
+          # downloads onejob.co/probe/latest.json and imports it via
+          # Settings. Newest dated file wins; absent is fine.
+          mkdir -p deploy/probe
+          latest=$(ls -t docs/probe/attention-deck-*.json 2>/dev/null | head -1)
+          [ -n "$latest" ] && cp "$latest" deploy/probe/latest.json || true
 
       - name: Record bundle hash for post-deploy verification
         id: hash
