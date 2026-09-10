@@ -77,8 +77,10 @@ regression surface, and none is reachable in shipped code (traced
 are one dev-only chain, `@capacitor/cli → xcode → nested old uuid`,
 which runs on Amber during native builds and never ships.
 
-**Ask:** FYI only — nothing needed unless you want a different posture.
-**Rec:** Hold until after 1.0, then revisit as routine hygiene.
+No ask — held posture: revisit as routine hygiene now that 1.0 has
+shipped; becomes an Open item only if the posture should change.
+(Its old line read "**Ask:** FYI only — nothing needed," which is an
+ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ---
 
