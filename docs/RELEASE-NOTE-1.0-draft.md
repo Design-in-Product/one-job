@@ -5,12 +5,14 @@ applied same day** (variant B recommended, body rewritten, newsletter
 link added, em-dash pass done). Ready for Xian's voice pass and the
 Release press.
 
-**🔴 PUBLISH GATE (Themis):** the App Store link 404s until Release is
-pressed AND propagation completes. Before any variant goes out:
-`curl -s "https://itunes.apple.com/lookup?id=6787158379"` must return
-`resultCount: 1`. A launch post whose primary link 404s is worse than
-a launch post a day late. Coral runs this check as part of the release
-sequence, before the site branch merges.
+**✅ PUBLISHED 2026-09-09.** Gate note, corrected per Themis's own
+follow-up: the iTunes Lookup API measures INDEXING, which lags the
+storefront — it still read 0 while the app was purchasable. The real
+availability check is the storefront itself:
+`curl -sL -o /dev/null -w "%{http_code}" https://apps.apple.com/us/app/id6787158379`
+(404 = not live; 200 after the id→slug redirect = live — the 404→301
+transition is the actual state change). In practice the announcement
+was cleared on exactly this signal.
 
 Two variants, because the framing choice is the actual strategy
 decision. Themis's lens applies to choosing between them; the words
