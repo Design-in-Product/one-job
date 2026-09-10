@@ -1,25 +1,25 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-10T17:14:42.086Z",
+  "exportedAt": "2026-09-10T17:18:40.972Z",
   "tasks": [
     {
-      "id": "1344b389-028d-4567-bb47-8607ae76c8e2",
+      "id": "5e72953f-8347-4295-8f33-e0d094075356",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-10 · waiting 10 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-10T17:14:42.086Z",
+      "createdAt": "2026-09-10T17:18:40.972Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "16c610dc-fb23-4ee6-bc04-2da200b31955",
+      "id": "3aa14022-daeb-45e3-ba99-704e10d6834b",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-10 · waiting 44 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-10T17:14:42.086Z",
+      "createdAt": "2026-09-10T17:18:40.972Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     }
