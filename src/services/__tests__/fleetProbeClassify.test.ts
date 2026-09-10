@@ -12,7 +12,6 @@
 // return EVERY verdict, not just the happy one.
 
 import { describe, it, expect } from 'vitest';
-// @ts-expect-error — plain .mjs script, no types; importing the pure part.
 import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays} from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
