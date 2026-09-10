@@ -14,6 +14,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  issues: write   # ci-red beacon (added 2026-09-10 after the 9-day silent freeze)
 
 concurrency:
   group: "pages"
@@ -149,3 +150,32 @@ jobs:
           done
           echo "Live site never served the expected bundle within 5 minutes" >&2
           exit 1
+
+  # Added 2026-09-10, the morning after launch day surfaced a NINE-DAY
+  # silent CI freeze (65 consecutive failures since 08-31; nothing
+  # deployed; live site served a stale build all week; found only
+  # because launch needed a deploy). Failure emails go to commit
+  # authors, and this repo's commits are authored by an agent identity
+  # with no inbox — so red runs were absence in a channel nobody reads.
+  # This job makes failure land in a channel that IS read (issues show
+  # in gh, in Coral's session-start sweep, and in Xian's GH
+  # notifications). Chokepoint-attached: it runs from the workflow
+  # itself, so it cannot be forgotten separately from the thing it
+  # watches.
+  ci-red-beacon:
+    if: failure()
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or update the CI-red issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="CI red: deploy.yml failing on main"
+          body="Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} — commit ${{ github.sha }} (${{ github.event.head_commit.message && 'push' || github.event_name }}). Nothing deploys until this is green. Auto-filed by the workflow; close when fixed."
+          existing=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "${{ github.repository }}" --body "$body"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body"
+          fi
