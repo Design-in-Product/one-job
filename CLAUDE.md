@@ -582,9 +582,16 @@ grep -r "mobile\|responsive" src/ --include="*"
 1. Review CLAUDE.md for methodology and patterns
 2. Create/update session log at development/coral-logs/YYYY-MM-DD-coral-log.md
 3. Run git status and review recent commits
-4. Create TodoWrite list for session tasks
-5. Verify development environment if implementing
-6. Check REQUIREMENTS.md for current project status
+4. CHECK CI: gh run list --workflow=deploy.yml --limit 1  — and any open
+   "CI red" issue. (Added 2026-09-10: CI was silently red for NINE DAYS
+   — 65 failures since 08-31, nothing deployed, live site stale all
+   week — because failure emails go to an agent identity with no inbox.
+   A green local suite proves nothing about the deploy; the workflow's
+   ci-red-beacon job now files an issue on failure, but the check costs
+   five seconds and the beacon could itself break.)
+5. Create TodoWrite list for session tasks
+6. Verify development environment if implementing
+7. Check REQUIREMENTS.md for current project status
 ```
 
 #### Session Log Template

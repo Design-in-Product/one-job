@@ -317,3 +317,22 @@ describe('cold start: firstUse is derived from the deck, not from install day', 
     expect(localStorage.getItem('oneJobTasks')).toBe(deck);
   });
 });
+
+// Cross-pollination 2026-09-10 (PM's AST-registry pattern, minimum
+// viable form): the 'oneJobTasks' literal necessarily appears both in
+// taskStore (which OWNS the key) and metricsStore (which reads it for
+// cold-start derivation, and must not import taskStore — cycle). If
+// either renames without the other, derivation silently degrades to
+// 'observed' — no error, wrong provenance. This test reads both
+// SOURCES, so a drift fails the build instead of degrading silently.
+describe('key-literal consistency across modules that cannot import each other', () => {
+  it('metricsStore reads the exact key taskStore owns', () => {
+    const fs = require('node:fs') as typeof import('node:fs');
+    const path = require('node:path') as typeof import('node:path');
+    const read = (f: string) => fs.readFileSync(path.resolve(__dirname, '..', f), 'utf8');
+    const owner = read('taskStore.ts').match(/new LocalTaskStore\('([^']+)'\)/);
+    const reader = read('metricsStore.ts').match(/const TASKS_KEY = '([^']+)'/);
+    expect(owner?.[1]).toBe('oneJobTasks');
+    expect(reader?.[1]).toBe(owner?.[1]);
+  });
+});

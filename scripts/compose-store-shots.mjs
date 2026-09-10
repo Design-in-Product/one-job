@@ -55,6 +55,21 @@ const staging = stagingArg ?? (() => {
 })();
 const profileArgs = process.argv.slice(2).filter(a => PROFILES[a]);
 const targets = profileArgs.length ? profileArgs : Object.keys(PROFILES).filter(p => existsSync(`${staging}/raw/${p}`));
+// Refusals (2026-09-10, cross-pollination: validating known args is not
+// rejecting unknown ones). A misspelled profile lands in the STAGING
+// slot above — 'iphone67' reads as a directory name, matches nothing,
+// and the old behavior composed zero shots at exit 0. Silence that
+// looks like success is how a store upload gets stale images.
+if (stagingArg && !existsSync(`${stagingArg}/raw`)) {
+  console.error(`Refusing: '${stagingArg}' is not a staging dir (no raw/ inside).` +
+    (stagingArg.match(/^i(phone|pad)/) ? ` Did you misspell a profile? Known: ${Object.keys(PROFILES).join(', ')}` : ''));
+  process.exit(1);
+}
+if (!targets.length) {
+  console.error(`Refusing: no profiles to compose in ${staging} (known: ${Object.keys(PROFILES).join(', ')}).`);
+  process.exit(1);
+}
+console.log(`Composing: ${targets.length} of ${Object.keys(PROFILES).length} profiles — ${targets.join(', ')}`);
 
 const page_html = (capB64, cap, isPad) => `<!doctype html><html><head><style>
   * { margin: 0; box-sizing: border-box; }
