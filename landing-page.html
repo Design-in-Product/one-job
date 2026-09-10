@@ -113,7 +113,7 @@
         .screen img { display: block; width: 100%; height: auto; }
         .screen-caption { text-align: center; font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.6rem; }
         .screens figure { margin: 0; }
-        .screens figure:nth-child(2) { transform: translateY(1.4rem); }
+        .screens figure:nth-child(even) { transform: translateY(1.4rem); }
 
         /* Sections */
         section { padding: 3.5rem 0; }
@@ -222,6 +222,10 @@
             </div>
 
             <div class="screens">
+                <figure>
+                    <div class="screen"><img src="/site/screen-back.png" alt="The top of the deck: a card face down, waiting to be revealed" loading="lazy"></div>
+                    <figcaption class="screen-caption">Face down, out of mind</figcaption>
+                </figure>
                 <figure>
                     <div class="screen"><img src="/site/screen-deck.png" alt="The deck: one task card, face up" loading="lazy"></div>
                     <figcaption class="screen-caption">One card at a time</figcaption>
