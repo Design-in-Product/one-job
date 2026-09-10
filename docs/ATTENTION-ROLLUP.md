@@ -81,6 +81,23 @@ which runs on Amber during native builds and never ships.
 
 ## Settled
 
+### ✅ Briefing answers 2026-09-10 (memo questions from the artifact)
+1. **R2 hold**: partial — "OK but wants the nuanced timing discussion."
+   His note: walk-and-chew-gum via well-governed subagent delegation is
+   allowed, but ONLY when demonstrably not diverting priority/resources
+   from primary goals. Feeds the next-steps conversation.
+2. All set. 3. **Probe scope: everything** — all three open colors deal
+   as cards (current behavior, now ratified; carrying-section items stay
+   un-dealt because a card without an Ask is the failure the format
+   exists to prevent). 4. **Covenant 7 amended** in VISION.md: spirit
+   kept, ethos articulated — "measure the shape of use, never the
+   content; we would not parse people's content even where we had
+   access."
+Also confirmed: device-pass checklist all green (that checklist was the
+pre-submission soak card from the roadmap's P0 era — moot since 1.0
+shipped, pleasant to have its confirmation on record).
+
+
 ### ✅ 30. 1.0 RELEASED — live on the App Store 2026-09-09
 Xian pressed Release ~15:30; the listing went live ~18:30 (direct link;
 search indexing lags 24-48h and needs nothing from us). onejob.co front

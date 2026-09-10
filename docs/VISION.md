@@ -129,6 +129,16 @@ Asana task are the same event: a card arriving with provenance.
    instrumentation does not violate this covenant, provided nothing it
    measures is ever surfaced as a number in the deck itself).
 
+   *The privacy ethos lives here instead* (Xian, 2026-09-10 — amended
+   at his direction, spirit kept): **use data effectively without
+   invading privacy.** The working line: we measure the *shape* of use,
+   never the *content* of it — counts, days, depths, yes; what a card
+   says, never. We would not parse people's content even where we had
+   access to it. This is an ethos, not a list of specific commitments —
+   the specific mechanisms (on-device storage, export only by the
+   user's hand, "Data Not Collected") are its current expression and
+   may evolve, but any evolution gets tested against this sentence.
+
 ## The releases, in one line each
 
 - **1.0** — Xian trusts it with a real week.
