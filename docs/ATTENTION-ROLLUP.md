@@ -1,5 +1,18 @@
 ## Open
 
+### 🟡 28. Cohort recruiting — UNBLOCKED: the TestFlight spec is ready for your ten minutes in ASC
+Xian said go (2026-09-10, via Themis). docs/TESTFLIGHT-COHORT-SPEC.md
+has every click and every text field: two groups (Pilot cap 10 now,
+Cohort cap 40 created-but-unshared), build 37, beta-review note, Test
+Information copy that keeps the covenant-7 ethos in the tester's first
+paragraph.
+**Since:** 2026-09-10
+**Ask:** Do the ~10 min of ASC steps in TESTFLIGHT-COHORT-SPEC.md, then send the Pilot link to your first ten.
+**Rec:** Create BOTH groups in the same sitting (zero ASC steps later
+when the forty start); pair the link with Themis's trial doc, which
+they say can ship as-is for the agent-heavy ten.
+
+
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -53,18 +66,6 @@ whatever else surfaces.
 **Ask:** Nothing now — say "next question" when you want one.
 **Rec:** Keep it opportunistic rather than scheduled; I will bring one
 when there is room.
-
-### 🟡 28. Cohort recruiting — UNBLOCKED: the TestFlight spec is ready for your ten minutes in ASC
-Xian said go (2026-09-10, via Themis). docs/TESTFLIGHT-COHORT-SPEC.md
-has every click and every text field: two groups (Pilot cap 10 now,
-Cohort cap 40 created-but-unshared), build 37, beta-review note, Test
-Information copy that keeps the covenant-7 ethos in the tester's first
-paragraph.
-**Since:** 2026-09-10
-**Ask:** Do the ~10 min of ASC steps in TESTFLIGHT-COHORT-SPEC.md, then send the Pilot link to your first ten.
-**Rec:** Create BOTH groups in the same sitting (zero ASC steps later
-when the forty start); pair the link with Themis's trial doc, which
-they say can ship as-is for the agent-heavy ten.
 
 
 ### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current
