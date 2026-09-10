@@ -28,6 +28,18 @@ change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
 
+### Parked: App Store developer name → "Design in Product" (behind the S corp decision)
+Listing shows "Christian Crumlish" (individual enrollment). Converting
+to an org account needs a D-U-N-S for the enrolling entity. Xian's EU
+trader (DSA) signup appears to have generated a DUNS — 2026-09-09:
+DUNS numbers are entity-scoped, not purpose-scoped, so it's reusable
+ONLY for the same entity/address it was registered to; a future S corp
+would get its own. Deliberately sequenced BEHIND the S corp decision
+(Xian, 2026-09-09) so the right entity enrolls once. Check what the
+existing number is attached to via dnb.com or
+developer.apple.com/enroll/duns-lookup when the time comes.
+
+
 
 ### 🟡 22. Pro-feedback interview — one question at a time, ongoing
 Format agreed 2026-08-20: I ask per feature, you answer, I log, we
