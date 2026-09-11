@@ -1,47 +1,36 @@
 
-# Cross-Pollination Brief — September 10, 2026
+# Cross-Pollination Brief — September 11, 2026
 
-Two enforcement patterns surfaced in yesterday's work: Klatch found that validating *known* flag values is not the same as rejecting *unknown* flags — and paid for it in a live operation. Piper Morgan independently solved the "invisible third copy" problem by making the test read the source code itself.
+Piper Morgan's CXO traced a mailbox nesting defect through three cleanups over a month — 21 files moved in August, 188 accumulated by September, and 30 more from a second independent seat that began accumulating *after* the first sweep declared the repo clean. Each cleanup was careful and well-verified. Each was also a rollback, because the behavior that misplaced the files didn't change. PPM installed a nesting invariant that night — making the defect structurally impossible, not periodically hand-repaired.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. Validating known CLI flags is not the same as rejecting unrecognized ones — and for destructive operations, the difference is the whole protection
+### 1. A cleanup that doesn't install a check is a rollback — Piper Morgan's three-month mailbox-nesting arc (#1743)
 
-**From:** Klatch (Rounds 180–181, Daedalus + Theseus)  
-**Relevant to:** Any project with a CLI for irreversible or scoped operations
+**From:** Piper Morgan (CXO finding; PPM fix; `scripts/mailbox_filename_lint.py`)
+**Relevant to:** Any system with recurring maintenance defects; automated lint pipelines
 
-Klatch's entity backfill CLI validated that `--channels` received a valid value when present. But when a user misspelled it — `--channel=`, `--chanels=`, `--Channels=`, `-channels=` — the parser returned `undefined`, the filter was silently treated as absent, and the CLI applied the operation to the full corpus at exit 0. In a live probe: 4 of 8 in-scope channels moved where 1 was approved, with no indication anything had gone wrong.
+The defect: mailbox files were landing in `mailboxes/<role>/inbox/read/` (a nested path) instead of `mailboxes/<role>/read/` (the correct path). PPM found it on 2026-08-10, swept the cohort, moved 21 files, stated the denominator ("PPM only"), and verified on `origin/main`. CXO's description of that August cleanup: "exemplary by every standard we had." The next session log shows the habit resumed the following day.
 
-Round 180 tightened empty-value rejection. Round 181 found the deeper structural gap: the parser can't protect against what it doesn't know to reject. The fix is one rule at the parse boundary — reject any flag in `argv` that isn't in the recognized set, before any validation of flag values. One rule, not one guard per flag.
+By 2026-09-10: 188 files (9× the August count), plus 30 more at PA's seat — which had begun accumulating *after* the sweep that declared "PPM only."
 
-The companion user-facing signal: the CLI now emits a `Candidates:` line that names the `--channels` filter when the filter took (`Candidates: 2 of 8 in scope`) and a bare count when it didn't (`Candidates: 8`). Reading that line before `--apply` is a check that survives every spelling and spacing variant — it's not dependent on the error path being right, only on the success path being honest about what it matched.
+CXO's diagnosis in the closing memo: **(1) a cleanup without a behavior change is a rollback**, and **(2) two independent agents reaching the same wrong path independently is a signal that the default lives in the shape of the work, not in either agent** — in PM's methodology corpus this is m-45, "when two independent observers find the same thing, audit the procedure they share." CXO also named their own sweep tonight as having the same shelf life: "if this memo is where it stops, someone finds 400 files in October."
 
-**Suggested action:** For any CLI that gates a destructive or scope-limited operation behind flags, confirm the parser rejects unrecognized flags explicitly — not only that it validates the values of recognized ones. And if there's a filter that narrows scope, make the "filter took" state visible in normal output, not only in an error message the user only reads when something goes wrong.
+PPM installed a nesting invariant in `scripts/mailbox_filename_lint.py` the same night: no directory may exist more than three levels deep under `mailboxes/`. The script already walked the whole tree for a different check; this added one more predicate whose correct return is zero — no baseline entry needed, because the correct count is known. PPM "watched it fire on live CI" before closing.
 
----
-
-### 2. An AST-parsing test can make hand-maintained copies of a registry test-visible — for when you can't centralize, only enforce
-
-**From:** Piper Morgan (Lead Dev + CXO, #1717 registry refactor)  
-**Relevant to:** Klatch and any codebase where a data structure necessarily appears in multiple code locations
-
-Piper Morgan's floor renderer had a list of "source-failed" flags that appeared in three places: the render sites (topically placed in their sections, which is structurally correct — you can't move them without breaking the format), a gating tuple, and the test's own dictionary. A new flag added to the render sites but missed in the gate would render a `FAILED` line and escape the scope directive check — exactly the report-failures-that-didn't-happen leak the gating exists to prevent. Two of the three copies were hand-maintained with no test link between them.
-
-The fix: `SOURCE_FAILED_FLAGS` is now a single ordered tuple at module level. The gate iterates it. The test derives its own dictionary and denominators from it. The render sites stay hand-placed (topical placement is required), but a new test (`test_source_failed_registry_1717.py`) parses the renderer's source using Python's `ast` module and fails if any `domain_context.get("*source_failed")` key-set or order diverges from the registry — banning any reborn literal tuple and pinning the prefix convention the denominators depend on. A drift probe verified red-then-green: an injected unregistered sixth site fails the derivation test; removed, all green.
-
-This is distinct from Protocol typing (reported here on September 7): Protocol typing surfaces dead code paths at compile time. The AST-registry approach handles the complementary case — when the data *must* appear in multiple places (centralization would break the format), but all appearances must be *consistent*. The test becomes the consistency constraint, and it runs from source, not from imports.
-
-**Suggested action:** Klatch's backfill CLI has a structurally similar property — flag validation is distributed across a few sites. When the same data (a flag list, an enum, a set of recognized values) reappears in rendering, gating, and testing, consider whether a registry + an AST-level test could make divergence structurally impossible before an error path catches it downstream.
+**Suggested action:** For any defect that has been cleaned up more than once: ask whether the behavior that produced it changed between the cleanups. If the answer is "we moved things back," the defect is still open. The structural form of the question: what would a linter catch on every commit that a one-time sweep can only catch once?
 
 ## Sources Read
 
-- `docs/logs/2026-09-09-calliope-log.md` (Klatch) — narrative rollup of Rounds 175–181; backfill CLI fixes
-- `docs/research/round181-unrecognised-flags-and-the-undo-record-validator-2026-09-09.md` (Klatch) — Round 181 probe findings
-- `git log origin/main --since="48 hours ago"` (Piper Morgan) — commit scan, ~130 commits
-- commit `3215e64e5` (Piper Morgan) — registry + AST derivation refactor commit message and diff summary
-- `src/internal/briefs/2026-09-07-brief.md`, `2026-09-08-brief.md`, `2026-09-09-brief.md` (hub) — anti-zombie orientation
+- **Klatch** (`origin/main` via fetch): 48+ commits in window. Rounds 178–187 of the backfill-CLI probe arc closed the argv-token gap and surfaced undo's target-state premise (Rounds 183–186) — not brief-worthy individually, but the arc is moving toward a substantive Klatch-side entry once the undo cross-database checks land in a wrapping log. Duty-cycle standard v1.4 proposal (Pard→Calliope): Klatch satisfies 4/5 guarantees; adopt-with-exception on continuity, with the isolation rationale on record — not brief-worthy as a new insight but worth noting the formal registration.
+- **Piper Morgan** (`origin/main` via fetch): 260 commits in window (high-coordination day). CXO's #1743 memo and PPM's nesting invariant commit anchored today's Key Insight. Also in-window: PPM's scope guard, CIO's duty-cycle-standard adopt, Docs omnibus synthesis, PA's mailbox-path batch fix.
+- **Globe, Weather, Cookie-Monster**: cross-pollination brief deliveries only.
+- **One-Job**: 39 commits — TestFlight external group spec (GO from xian), public roadmap updated ("1.0 is shipped"), rc.40 UI fixes, Pilot tester A's first outside-circle feedback with App Intents prototype. All roadmap/milestone activity; nothing brief-worthy for cross-team transfer.
+- **NYT-Crossword**: 16 commits — automated daily status pulls only, plus brief delivery.
+- **Mediajunkie (Pard)**: 43 commits — duty-cycle standard cascade work (verify-fire.sh adversarial harness; spec v1.5 promoting capability as a 5th guarantee; Klatch-wrapper fetch-status fix). Directly feeds the Klatch and PM items above; no independent brief-worthy insight distinct from those threads.
+- **Atlas, Cuneo, Optilisten**: no commits in window.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
