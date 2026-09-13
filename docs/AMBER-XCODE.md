@@ -89,6 +89,11 @@ xcodebuild -exportArchive -archivePath build/App.xcarchive \
   -allowProvisioningUpdates
 xcrun altool --upload-app -f build/export/App.ipa -t ios \
   --apiKey $KEY_ID --apiIssuer $ISSUER_ID
+# NOT OPTIONAL (standing practice 2026-09-12, from Xian's tester
+# feedback on 1.1(38): "it isn't clear what's new"): every upload ends
+# with a release note in docs/releases/<version>-<build>.md AND that
+# note pushed to TestFlight's What-to-Test field:
+node scripts/asc-whats-new.mjs <version> <build> docs/releases/<version>-<build>.md
 ```
 
 API key: `~/.appstoreconnect/private_keys/AuthKey_$KEY_ID.p8`, LIVE
