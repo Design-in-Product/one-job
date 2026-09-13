@@ -1,45 +1,45 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-13T00:14:52.553Z",
+  "exportedAt": "2026-09-13T00:17:22.816Z",
   "tasks": [
     {
-      "id": "7da0c76b-1068-43e1-86c7-943d47978632",
+      "id": "645a0ad2-eb39-4b5b-84c8-a12c1fb5f3b1",
       "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
       "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: Do it before the roadmap/next-steps conversation — your narration is evidence that discussion should consume, not follow.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-13 · waiting 31 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-13T00:14:52.553Z",
+      "createdAt": "2026-09-13T00:17:22.816Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "9ffda813-55b7-492c-8edc-d181bfb38920",
+      "id": "5deb6dc9-ea20-45d4-98db-70d4612c715a",
       "title": "Schedule the cohort planning pass (you + Themis + me), or just send your short list the link after the ASC steps — either unblocks it.",
       "description": "🟡 #28 · Cohort — re-sequenced: waiting on recruits, not your ASC minutes; partial start works\n\nCoral's rec: Do the ASC steps in an idle ten minutes anyway (they're recruit-independent); then the planning pass decides who gets the link and when.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-13 · waiting 3 days (since 2026-09-10)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-13T00:14:52.553Z",
+      "createdAt": "2026-09-13T00:17:22.816Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "08aa386e-f3b9-4cc5-aeb8-e32c9fd838de",
+      "id": "78898823-d344-4588-9ee8-c3b93d241636",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-13 · waiting 13 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-13T00:14:52.553Z",
+      "createdAt": "2026-09-13T00:17:22.816Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "8e216332-9dfb-4ce2-9ed7-9b9d953ec50b",
+      "id": "7394125f-ffb3-4ef4-8215-6133764112f1",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-13 · waiting 47 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-13T00:14:52.553Z",
+      "createdAt": "2026-09-13T00:17:22.816Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     }
