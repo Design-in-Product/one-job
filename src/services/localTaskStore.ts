@@ -464,7 +464,20 @@ export class LocalTaskStore implements TaskStore {
     return t;
   }
 
-  async createTask(title: string, description?: string): Promise<Task> {
+  async createTask(title: string, description?: string, opts?: { placement?: 'top' | 'behind-top' }): Promise<Task> {
+    // 'behind-top': external arrivals slot between the current top card
+    // and the rest — the top card is the job, and a Shortcut must not
+    // usurp it (ruling 2026-09-12; Xian observed the accidental version
+    // of this and Janus asked for it to be chosen, not defaulted).
+    let sortOrder = topSortOrder(this.tasks);
+    if (opts?.placement === 'behind-top') {
+      const active = sortTasks([...this.tasks]).filter(t => !t.completed);
+      if (active.length >= 1) {
+        const top = active[0].sortOrder ?? 0;
+        const next = active.length > 1 ? (active[1].sortOrder ?? top + 2) : top + 2;
+        sortOrder = (top + next) / 2;
+      }
+    }
     const newTask: Task = {
       id: uuidv4(),
       title: this.requireTitle(title),
@@ -472,7 +485,7 @@ export class LocalTaskStore implements TaskStore {
       completed: false,
       status: 'todo',
       createdAt: new Date(),
-      sortOrder: topSortOrder(this.tasks),
+      sortOrder,
       source: this.sourceLabel,
       decks: []
     };

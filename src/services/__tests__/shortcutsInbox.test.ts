@@ -95,3 +95,37 @@ describe('drainShortcutsInbox (through the real LocalTaskStore)', () => {
     expect(landed).toBe(2);
   });
 });
+
+describe('placement: externally-dealt cards never usurp the top (ruled 2026-09-12)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    prefs.clear();
+    resetTaskStoreForTests();
+  });
+
+  it('lands BEHIND the current top card, in arrival order', async () => {
+    const store = getTaskStore();
+    await store.createTask('My current job');   // top
+    await store.createTask('Older card');       // created later = new top
+    // "Older card" is now top (top-insertion for user-created cards).
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Arrived first' }, { title: 'Arrived second' }]));
+    await drainShortcutsInbox();
+    const titles = (await store.getAllTasks()).filter(t => !t.completed).map(t => t.title);
+    expect(titles).toEqual(['Older card', 'Arrived first', 'Arrived second', 'My current job']);
+  });
+
+  it('an empty deck has no focus to protect — the card is simply the deck', async () => {
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Only card' }]));
+    await drainShortcutsInbox();
+    const titles = (await getTaskStore().getAllTasks()).filter(t => !t.completed).map(t => t.title);
+    expect(titles).toEqual(['Only card']);
+  });
+
+  it('user-created cards still take the top (the ruling is about EXTERNAL arrivals only)', async () => {
+    const store = getTaskStore();
+    await store.createTask('First');
+    await store.createTask('I chose to add this');
+    const titles = (await store.getAllTasks()).filter(t => !t.completed).map(t => t.title);
+    expect(titles[0]).toBe('I chose to add this');
+  });
+});
