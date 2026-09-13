@@ -3,6 +3,7 @@ import App from './App.tsx'
 import './index.css'
 import './i18n'
 import { hydrateFromNativeStorage } from './services/nativeStorageBridge'
+import { startShortcutsInbox } from './services/shortcutsInbox'
 import { startPwaUpdateChecks } from './pwaUpdateCheck'
 
 startPwaUpdateChecks();
@@ -10,6 +11,9 @@ startPwaUpdateChecks();
 // On native (Capacitor) builds, restore tasks from durable app storage
 // before first render; on the web this resolves immediately.
 hydrateFromNativeStorage().finally(() => {
+  // After hydration so intent-born cards land on the restored deck,
+  // never a pre-hydration empty one (native only; no-op on web).
+  startShortcutsInbox();
   createRoot(document.getElementById("root")!).render(<App />);
   // Tell the boot watchdog (inline in index.html) that the bundle
   // executed and React mounted — this line running IS the proof the
