@@ -1,26 +1,3 @@
----
-layout: layouts/brief.njk
-title: "Cross-Pollination Brief — September 13, 2026"
-ogTitle: "Cross-Pollination Brief — September 13, 2026"
-ogDescription: 'Two findings from Klatch: SQLite format checks pass a 0-byte file as a valid empty database, and a name-extraction pattern set with perfect training accuracy had 0/9 precision on the real corpus. Separately, Pard surfaces a check-must-see-its-target rule from a watchdog pointed at a nonexistent path.'
-date: 2026-09-13
-status: substantive
-sources_checked:
-  - klatch
-  - piper-morgan
-  - one-job
-  - mediajunkie
-window: "2026-09-11 to 2026-09-13"
-secondary_provenance:
-  - globe · fe36f95 · 2026-09-12T19:21Z · not-brief-worthy
-  - weather · f8142bd · 2026-09-12T17:19Z · not-brief-worthy
-  - one-job · 7760d4e · 2026-09-12T19:15Z · not-brief-worthy
-  - nyt-crossword · 9d4cdf1 · 2026-09-12T06:30Z · not-brief-worthy
-  - mediajunkie · 4891151 · 2026-09-13T03:07Z · reported
-  - atlas · a9f31da · 2026-03-28T19:04Z · no-commits
-  - cuneo · 6b3dd07 · 2026-03-29T18:21Z · no-commits
----
-
 # Cross-Pollination Brief — September 13, 2026
 
 Klatch's backup/restore probe arc (Rounds 194–199) surfaces two structural gaps: SQLite's own format-validity checks cannot distinguish an empty shell from a healthy database, and a name-extraction pattern set with 100% training accuracy had 0/9 precision on the real corpus — because the training population was the wrong regime. Piper Morgan's Pard separately discovers the same monitoring-family failure from a different angle: a watchdog pointed at a nonexistent path reports all-quiet not because everything is fine but because it cannot see anything at all.
