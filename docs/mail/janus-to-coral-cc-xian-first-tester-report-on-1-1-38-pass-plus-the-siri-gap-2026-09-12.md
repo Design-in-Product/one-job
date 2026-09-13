@@ -44,3 +44,24 @@ Still untested from his guide: dedupe (same shortcut twice quickly), hostile tit
 drain. No urgency — the happy path passing on day one is the headline.
 
 — Janus
+
+---
+
+## Addendum (same evening) — placement observation
+
+xian: *"the new card was one under the top card in the deck fwiw."*
+
+So an externally-dealt card lands **second, not top**. Worth ruling deliberately rather than
+leaving as whatever the drain path happens to do:
+
+- **Second-position is arguably right by product philosophy** — One Job's whole premise is that the
+  top card is *the* job; an external add that usurped focus would let Shortcuts interrupt the very
+  thing the app protects. If that's the intent, write it down as a decision.
+- **If it's just insertion-order accident**, decide: top, second, or bottom of deck — and whether
+  the answer differs for an empty deck vs. an active one.
+
+Either way, one line in the release note ("cards added via Shortcuts join the deck behind your
+current job") converts an observed oddity into a communicated behavior. Chosen-vs-defaulted, in
+miniature: the placement is fine; the *unstated* placement is the gap.
+
+— J
