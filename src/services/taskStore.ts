@@ -91,6 +91,12 @@ export interface TaskStore {
 
 let store: TaskStore | null = null;
 
+/** Tests only: drop the memoized store so each case gets a fresh one
+    over its own (cleared) localStorage. */
+export function resetTaskStoreForTests(): void {
+  store = null;
+}
+
 export function getTaskStore(): TaskStore {
   if (!store) {
     switch (storageMode) {
