@@ -94,9 +94,12 @@ struct OneJobShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: AddCardIntent(),
+            // NOTE: phrases may only interpolate AppEnum/AppEntity
+            // parameters — a String param here fails the whole archive
+            // at ExtractAppIntentsMetadata (learned 2026-09-12, build
+            // 38's first archive attempt). Siri prompts for the title.
             phrases: [
                 "Add a card to \(.applicationName)",
-                "Add \(\.$cardTitle) to \(.applicationName)",
             ],
             shortTitle: "Add Card",
             systemImageName: "rectangle.stack.badge.plus"
