@@ -14,7 +14,11 @@ import { DemoService } from './demoService';
 
 export interface TaskStore {
   getAllTasks(): Promise<Task[]>;
-  createTask(title: string, description?: string): Promise<Task>;
+  /** placement 'behind-top' is for EXTERNAL arrivals (Shortcuts, and
+      someday agents): they join the deck behind the current job rather
+      than usurping it (ruled 2026-09-12 — the top card is the thing
+      the app protects). User-created cards keep taking the top. */
+  createTask(title: string, description?: string, opts?: { placement?: 'top' | 'behind-top' }): Promise<Task>;
   /** Edit title/description */
   updateTask(id: string, updates: { title?: string; description?: string }): Promise<Task>;
   completeTask(id: string): Promise<Task>;

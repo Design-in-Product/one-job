@@ -77,9 +77,13 @@ export async function drainShortcutsInbox(): Promise<number> {
     const store = getTaskStore();
     let landed = 0;
     const survivors: PendingCard[] = [];
-    for (const card of queue) {
+    // Reversed: each 'behind-top' insert lands directly behind the top,
+    // so inserting last-first leaves the batch in ARRIVAL order
+    // (first-queued closest to the top). The ruling: external cards
+    // join behind the current job, never on top of it.
+    for (const card of [...queue].reverse()) {
       try {
-        const created = await store.createTask(card.title, card.description);
+        const created = await store.createTask(card.title, card.description, { placement: 'behind-top' });
         if (card.subtasks?.length) {
           const interior = await store.createSubstack(created.id, null);
           for (const sub of card.subtasks) {
