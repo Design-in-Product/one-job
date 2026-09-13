@@ -12,18 +12,17 @@ prepared so the session is pure narration.
 narration is evidence that discussion should consume, not follow.
 
 
-### 🟡 28. Cohort recruiting — UNBLOCKED: the TestFlight spec is ready for your ten minutes in ASC
-Xian said go (2026-09-10, via Themis). docs/TESTFLIGHT-COHORT-SPEC.md
-has every click and every text field: two groups (Pilot cap 10 now,
-Cohort cap 40 created-but-unshared), build 37, beta-review note, Test
-Information copy that keeps the covenant-7 ethos in the tester's first
-paragraph.
+### 🟡 28. Cohort — re-sequenced: waiting on recruits, not your ASC minutes; partial start works
+Janus relayed (09-12): you have a short list, not ten, and want a
+planning pass with Themis + me before ASC. Good news the spec already
+contains: **rolling starts mean a partial cohort is fine** — the Pilot
+link (cap 10) admits whoever has it whenever; three people can start
+this week while seven are found. Nothing expires by starting small.
 **Since:** 2026-09-10
-**Ask:** Do the ~10 min of ASC steps in TESTFLIGHT-COHORT-SPEC.md, then send the Pilot link to your first ten.
-**Rec:** Create BOTH groups in the same sitting (zero ASC steps later
-when the forty start); pair the link with Themis's trial doc, which
-they say can ship as-is for the agent-heavy ten.
-
+**Ask:** Schedule the cohort planning pass (you + Themis + me), or just send your short list the link after the ASC steps — either unblocks it.
+**Rec:** Do the ASC steps in an idle ten minutes anyway (they're
+recruit-independent); then the planning pass decides who gets the link
+and when.
 
 
 ### 🟡 27. Probe feedback — you are living in it now
@@ -53,7 +52,12 @@ change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
 
-### Parked: App Store developer name → "Design in Product" (behind the S corp decision)
+### Settled by ruling (2026-09-12): developer name stays personal — sole proprietor for now
+Xian ruled sole-proprietor-for-now, so the DUNS/entity question
+resolves to "no change until an S-corp decision later." Historical
+detail below kept for when that day comes.
+
+### (was) Parked: App Store developer name → "Design in Product"
 Listing shows "Christian Crumlish" (individual enrollment). Converting
 to an org account needs a D-U-N-S for the enrolling entity. Xian's EU
 trader (DSA) signup appears to have generated a DUNS — 2026-09-09:
