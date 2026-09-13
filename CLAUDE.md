@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 One Job is a registered participant in the Design in Product cross-pollination network. The daily brief lands at `docs/briefs/cross-pollination/current.md` (delivered by Janus each morning) — read it at session start alongside the usual pattern-discovery pass.
 
 **Mail — sending to Janus or filing a Letter:** mail always lands in the *receiving* agent's own repo, never the sender's. Concretely:
-- **Letters to xian** (the "AI prompts human" question-box feature at the end of each cross-pollination brief): file `question-{from}-{date}-{topic}.md` to the **dispatch repo's `mail/` folder** (`mediajunkie/dispatch`), *not* anywhere in this repo. That's the only location xian and Janus both watch for these. A letter filed here (e.g., in `docs/briefs/cross-pollination/`) won't be found by anyone until someone happens to notice and relocate it.
+- **Letters to xian** (the cross-project feature): send to **Janus, in `mediajunkie/designinproduct` → `docs/mail/`**, named `question-{from}-{date}-{topic}.md` (ruled by xian 2026-09-12 — this supersedes the earlier dispatch-`mail/` instruction, which reached only Dispatch).
 - **Any other mail to Janus** (not a public Letter, just agent-to-agent): lands in the Design in Product repo's `docs/mail/` (`~/Development/designinproduct/docs/mail/`), same principle — the receiver's repo, not the sender's.
 - **Mail from Janus to Coral** lands here, in this repo's `docs/mail/` (create it if it doesn't exist yet) — check it at session start.
 
