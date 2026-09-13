@@ -52,6 +52,13 @@ change more of it before then.
 
 ## What I'm carrying (no ask — here so nothing is invisible)
 
+### Watching: 1.1 (38) processing on TestFlight — the Add Card intent
+Uploaded 2026-09-12 evening (UUID cd530600). When it's testable, the
+device check becomes an ask: install 38, open Shortcuts, confirm "Add
+Card" appears, run a quick add. Then the Teresa reply gets its "it
+exists" follow-up.
+
+
 ### Settled by ruling (2026-09-12): developer name stays personal — sole proprietor for now
 Xian ruled sole-proprietor-for-now, so the DUNS/entity question
 resolves to "no change until an S-corp decision later." Historical
