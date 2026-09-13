@@ -1403,3 +1403,55 @@ describe('title invariant: a card always has a non-empty title', () => {
     await expect(store.addSubstackTask(sub.id, '')).rejects.toThrow(/title/i);
   });
 });
+
+// Cross-pollination 2026-09-13 (Klatch round 197): SQLite passes a
+// 0-byte file as a valid empty database — "structural validity answers
+// 'is this well-formed?'; content presence answers 'did anything get
+// written?'". Our import had the identical gap: stageImport checks
+// format (app tag, arrays exist), and importTasks full-replaces. A
+// well-formed-but-empty backup — the artifact an interrupted export
+// produces — would wipe a full deck. That is the 2026-07-05 disaster
+// shape, one costume later. The store refuses it.
+describe('import content-presence gate (a valid empty backup must not wipe a full deck)', () => {
+  let store: LocalTaskStore;
+  beforeEach(() => {
+    localStorage.clear();
+    store = new LocalTaskStore('test-import-gate');
+  });
+
+  it('refuses a zero-card full replace when the current document has cards', async () => {
+    await store.createTask('Precious work');
+    await expect(store.importTasks({ decks: [] })).rejects.toThrow(/empty/i);
+    await expect(
+      store.importTasks({ decks: [{ id: 'd', name: 'hollow', createdAt: new Date(), cards: [] }] as never }),
+    ).rejects.toThrow(/empty/i);
+    // and nothing was touched
+    expect((await store.getAllTasks()).map(t => t.title)).toContain('Precious work');
+  });
+
+  it('legacy shape: an empty bare array is refused the same way', async () => {
+    await store.createTask('Still here');
+    await expect(store.importTasks([])).rejects.toThrow(/empty/i);
+    expect((await store.getAllTasks()).map(t => t.title)).toContain('Still here');
+  });
+
+  it('allows an empty import when there is nothing to lose', async () => {
+    // current doc has no cards — restoring an empty backup destroys
+    // nothing, so it proceeds (fresh device, fresh start).
+    await expect(
+      store.importTasks({ decks: [{ id: 'd', name: 'fresh', createdAt: new Date(), cards: [] }] as never }),
+    ).resolves.toBeUndefined();
+  });
+
+  it('a real backup still restores normally over existing cards', async () => {
+    await store.createTask('Will be replaced');
+    await store.importTasks({
+      decks: [{ id: 'd', name: 'restored', createdAt: new Date(), cards: [
+        { id: 'c1', title: 'From the backup', completed: false, createdAt: new Date(), sortOrder: 1 },
+      ] }] as never,
+    });
+    const titles = (await store.getAllTasks()).map(t => t.title);
+    expect(titles).toContain('From the backup');
+    expect(titles).not.toContain('Will be replaced');
+  });
+});

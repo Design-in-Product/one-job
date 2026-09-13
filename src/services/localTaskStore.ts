@@ -786,6 +786,21 @@ export class LocalTaskStore implements TaskStore {
     const doc = !Array.isArray(payload) && Array.isArray(payload?.decks)
       ? { decks: payload.decks }
       : migrateDocument(payload);
+    // Content-presence gate (2026-09-13, from Klatch's 0-byte-SQLite
+    // finding): format checks pass a well-formed-but-EMPTY backup —
+    // exactly what an interrupted export produces — and a full replace
+    // with one would wipe the deck. Structural validity and content
+    // presence are different questions; this asks the second. Only
+    // when there is something to lose: an empty import over an empty
+    // document destroys nothing and proceeds (fresh device).
+    const incomingCards = (doc.decks ?? []).reduce((n, d) => n + (d.cards?.length ?? 0), 0);
+    const currentCards = this.decks.reduce((n, d) => n + (d.cards?.length ?? 0), 0);
+    if (incomingCards === 0 && currentCards > 0) {
+      throw new Error(
+        'This backup file is empty — restoring it would erase your current cards, so nothing was changed. ' +
+        'If the export that made it reported success, that export failed silently; make a fresh one.'
+      );
+    }
     this.loadDocument(doc);
     this.saveTasks();
   }
