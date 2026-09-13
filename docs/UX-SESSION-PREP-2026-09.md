@@ -41,6 +41,14 @@ have wildly different type scales. Also visible in his shot: Done (50)
 never saw at scale. My lean: rooms cap the type scale (rooms are for
 scanning, not focus), but I'll bring measurements to the session.
 
+### 4 · Regular-user feedback channel — FOR THE SESSION (Xian, 09-13)
+His direction: freeform first, structure OFFERED not demanded. Sketch
+to react to: a "Send feedback" row in Settings opening a pre-addressed
+email whose body holds three deletable placeholder lines (What did you
+expect? / What happened instead? / Steps, if you're willing). No
+server, no form; TestFlight users also get native screenshot feedback.
+1.2-sized once discussed.
+
 ## The walk order (narrate anything; I'll capture everything)
 
 1. Cold open — deck face-down state → tap to reveal
