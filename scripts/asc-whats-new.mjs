@@ -50,12 +50,20 @@ const api = async (path, init = {}) => {
   return body;
 };
 
-// 1 · find the build (also report its processing state while we're here)
-const builds = await api(
-  `/builds?filter[app]=${APP_ID}&filter[preReleaseVersion.version]=${version}&filter[version]=${buildNumber}&limit=1`
-);
-if (!builds.data?.length) throw new Error(`build ${version} (${buildNumber}) not found — still uploading?`);
-const build = builds.data[0];
+// 1 · find the build. A fresh upload takes minutes to register in the
+// API (learned on 39: the pipeline ran this immediately after altool
+// and raced the lag), so poll rather than fail — the retry lives HERE
+// so no pipeline has to remember it.
+let build;
+for (let i = 0; i < 12; i++) {
+  const builds = await api(
+    `/builds?filter[app]=${APP_ID}&filter[preReleaseVersion.version]=${version}&filter[version]=${buildNumber}&limit=1`
+  );
+  if (builds.data?.length) { build = builds.data[0]; break; }
+  console.log(`build ${version} (${buildNumber}) not registered yet (${i + 1}/12) — waiting 60s`);
+  await new Promise(r => setTimeout(r, 60_000));
+}
+if (!build) throw new Error(`build ${version} (${buildNumber}) never registered — check the upload`);
 console.log(`build ${version} (${buildNumber}): processingState=${build.attributes.processingState}`);
 
 // 2 · its beta localization (en-US exists once processing finishes)
