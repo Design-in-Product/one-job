@@ -26,7 +26,26 @@ Rolling starts are the design (per-install day-0 anchoring — each
 tester's 28 days run on their own clock), so neither group waits for
 the other or for a cohort date.
 
-## Xian's ASC steps (App Store Connect → One Job → TestFlight)
+## ✅ DONE 2026-09-13 — groups exist, links are live
+
+Created via the ASC API (Xian's go + his scarce time; the manual steps
+below are kept as the record of what was done):
+
+| Group | Public link | Cap | Build |
+|---|---|---|---|
+| **Pilot** | **https://testflight.apple.com/join/dZ1DdUhJ** | 10 | 1.1 (39) attached |
+| **Cohort** | https://testflight.apple.com/join/DMxEqKPR | 40 | attach when the forty start |
+
+**No emails needed** — a public link is self-serve: the tester taps it,
+installs TestFlight, joins. (Email collection is the other kind of
+external tester; this design deliberately avoids it.)
+
+**Beta App Review** submits automatically when the first external
+tester joins via the link — usually hours after a store approval, and
+39's binary is already store-approved-adjacent (1.1 is in review now).
+So the first joiner may wait briefly before the build downloads.
+
+## Xian's ASC steps (App Store Connect → One Job → TestFlight) — as performed
 
 1. **External Testing → ⊕ next to "External Groups"** → name: `Pilot`.
 2. In the group: **Builds → add build 1.0 (37)**.

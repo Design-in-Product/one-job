@@ -12,17 +12,17 @@ prepared so the session is pure narration.
 narration is evidence that discussion should consume, not follow.
 
 
-### 🟡 28. Cohort — re-sequenced: waiting on recruits, not your ASC minutes; partial start works
-Janus relayed (09-12): you have a short list, not ten, and want a
-planning pass with Themis + me before ASC. Good news the spec already
-contains: **rolling starts mean a partial cohort is fine** — the Pilot
-link (cap 10) admits whoever has it whenever; three people can start
-this week while seven are found. Nothing expires by starting small.
+### 🟢 28. Cohort — links are live; all that's left is sending them
+Groups created 2026-09-13 via the API (no ASC time needed from you).
+**Pilot: https://testflight.apple.com/join/dZ1DdUhJ** (cap 10, build 39
+attached) · Cohort: https://testflight.apple.com/join/DMxEqKPR (cap 40,
+held for the forty). A public link needs no email — the tester taps,
+installs TestFlight, joins themselves.
 **Since:** 2026-09-10
-**Ask:** Schedule the cohort planning pass (you + Themis + me), or just send your short list the link after the ASC steps — either unblocks it.
-**Rec:** Do the ASC steps in an idle ten minutes anyway (they're
-recruit-independent); then the planning pass decides who gets the link
-and when.
+**Ask:** Send the Pilot link to Teresa (and anyone else on your short list) — no email collection needed.
+**Rec:** Paste it in the LinkedIn thread you already have open with
+her; she offered to set TestFlight up. Beta App Review fires
+automatically on the first join.
 
 
 ### 🟡 27. Probe feedback — you are living in it now
