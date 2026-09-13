@@ -385,9 +385,17 @@ describe('data safety net (wipe protection)', () => {
   });
 
   it('never overwrites a non-empty snapshot with an empty deck', async () => {
+    // The old vehicle here was importTasks([]) — now refused upstream
+    // by the content-presence gate (2026-09-13), which is a NEW earlier
+    // line of defense, not a replacement for this one. The snapshot
+    // guard still matters for every legitimate route to empty, so the
+    // test drives one: trash and purge the only card.
     const store = freshStore();
-    await store.createTask('Keep me');
-    await store.importTasks([]); // legitimate empty save
+    const t = await store.createTask('Keep me');
+    await store.completeTask(t.id);
+    await store.archiveTask!(t.id);
+    await store.trashTask!(t.id);
+    await store.purgeTask!(t.id); // deck now genuinely empty, by user intent
     const snaps = snapshotKeys();
     expect(snaps).toHaveLength(1);
     expect(JSON.parse(localStorage.getItem(snaps[0])!).decks[0].cards).toHaveLength(1);
