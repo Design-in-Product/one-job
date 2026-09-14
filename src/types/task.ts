@@ -35,6 +35,13 @@ export interface InteriorDeck {
       the same look on every device and in every backup. Absent = the
       brand back (deck-1 keeps full brand forever). */
   color?: { g1: string; g2: string };
+  /** Which external service this deck is the destination for (2026-09-14).
+      The BINDING KEY for source imports — deck NAMES are renameable and
+      non-unique, so they cannot be identity (Klatch round 205's
+      label-vs-key finding, found live here). Absent on user decks and on
+      source decks created before this field; those adopt it on next
+      import. */
+  source?: string;
 }
 
 /** @deprecated v1 name — use InteriorDeck. Removed once R1.1 UI lands. */
