@@ -56,9 +56,39 @@ export async function importFromSource(
   }
   const external = await adapter.fetchCards();
 
-  let deck: InteriorDeck | undefined =
-    (await store.getDecks()).find(d => d.name === adapter.service);
+  // Bind by KEY, not by label. Deck names are user-renameable and not
+  // unique, so name-matching could (a) lose the deck after a rename and
+  // re-import everything as duplicates into a fresh one, or (b) bind to
+  // a user's own deck that happens to share the name and append foreign
+  // cards into it. Both silent. (Klatch round 205 via the 2026-09-14
+  // brief: "the plan should pin the id it chose, not the label.")
+  const decks = await store.getDecks();
+  let deck: InteriorDeck | undefined = decks.find(d => d.source === adapter.service);
+  if (!deck) {
+    // One-time adoption for decks created before the key existed: a
+    // name match is accepted ONLY if the deck actually holds this
+    // service's cards (or is empty), which a coincidentally-named user
+    // deck will not.
+    const legacy = decks.find(
+      d =>
+        d.name === adapter.service &&
+        d.source === undefined &&
+        (d.cards.length === 0 || d.cards.some(c => c.source === adapter.service)),
+    );
+    if (legacy) deck = legacy;
+  }
   if (!deck) deck = await store.createDeck(adapter.service);
+  // Persist the binding through the store rather than mutating the
+  // returned object: an in-memory stamp would survive only if something
+  // else happened to save, and an import with zero new cards saves
+  // nothing. (Idempotent — a no-op when already bound.)
+  if (deck.source !== adapter.service) {
+    if (!store.bindDeckSource) {
+      throw new Error('This store cannot bind source decks');
+    }
+    await store.bindDeckSource(deck.id, adapter.service);
+    deck.source = adapter.service;
+  }
 
   // Seeded from what's already stored, then GROWN as the loop imports.
   // 2026-09-04: it used to be a pre-loop snapshot only, so two entries

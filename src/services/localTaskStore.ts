@@ -113,6 +113,16 @@ export class LocalTaskStore implements TaskStore {
     return deck;
   }
 
+  /** Stamp a deck as an external service's destination and persist. The
+      import path binds by this key, never by name (2026-09-14). */
+  async bindDeckSource(deckId: string, source: string): Promise<void> {
+    const deck = this.decks.find(d => d.id === deckId);
+    if (!deck) throw new Error('Unknown deck');
+    if (deck.source === source) return;
+    deck.source = source;
+    this.saveTasks();
+  }
+
   /** Append fully-formed cards to a root deck's bottom and persist —
       the SourceAdapter seam's write path (R3.1). Cards arrive with
       LOCAL ids and provenance already stamped; this method is dumb on

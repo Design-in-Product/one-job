@@ -73,6 +73,10 @@ export interface TaskStore {
   renameDeck?(id: string, name: string): Promise<import('@/types/task').InteriorDeck>;
   deleteDeck?(id: string): Promise<void>;
   activeDeckId?(): string;
+  /** Bind a root deck to an external service as its import destination
+      (2026-09-14). The binding is a KEY: deck names are renameable and
+      non-unique, so identity can't live in the label. */
+  bindDeckSource?(deckId: string, source: string): Promise<void>;
   /** Append prepared cards to a root deck (SourceAdapter write path). */
   addCardsToDeck?(deckId: string, cards: import('@/types/task').Task[]): Promise<void>;
   /** Move a top-level card to another root deck (stage 3). */
