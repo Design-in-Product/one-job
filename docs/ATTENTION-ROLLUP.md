@@ -1,5 +1,19 @@
 ## Open
 
+### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
+Themis's records carry the fact without the subject — their own phrase
+"one hand already raised on LinkedIn (8/29) + reactions" is the only
+trace, in two places, with no name in either. It lives in the
+reactions and comments on your 8/29 post. Recorded in the roster with
+the surfaces we searched, per the absence-claim discipline.
+**Since:** 2026-09-15
+**Ask:** Check your 8/29 LinkedIn post and name the hand-raiser for the roster.
+**Rec:** Do it next time you are in LinkedIn anyway. They raised a hand
+before the app existed publicly, which makes them a good early Pilot
+invite — and being forgotten is the worst outcome for someone who
+volunteered first.
+
+
 ### 🔴 31. Post the 1.1 LinkedIn draft — approved, and the clock is Wednesday morning
 Written, reviewed, and approved by Themis today ("ship it"). Full text
 in docs/LINKEDIN-1.1-draft.md. Themis's timing call is the reason this

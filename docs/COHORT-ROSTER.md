@@ -37,11 +37,20 @@ their own device) → **week 4** (their 28-day mark).
 | **Teresa Klein** | LinkedIn, launch post 2026-09-10 | iOS (offered to set up TestFlight) | — | — | — | — | Contributed the App Intents idea with a prototype; shipped in 1.1. First outside contributor. |
 | **Ted Nadeau** | Email/call, 2026-09-02 | **iPad only** | 2026-09-05 (internal invite, pre-Pilot) | not yet | — | — | On vacation; TestFlight is unfamiliar territory for him. Xian: not a chase. |
 | **Austin Wood** | Xian's invite, 2026-09-05 | iOS | 2026-09-05 (internal) | not yet | — | — | Unprompted "geeky hello" invite; no obligation. |
-| *(LinkedIn hand-raiser, 8/29)* | LinkedIn, pre-launch | unknown | — | — | — | — | Recorded in Themis's rollup as "one hand already raised"; identity to confirm with Xian. |
+| *(LinkedIn hand-raiser, 8/29)* | LinkedIn, pre-launch | unknown | — | — | — | — | **⚠ Name unrecoverable from our files.** Themis searched their agent directory, pulse log, and the deliverable: the only record anywhere is their own phrase "one hand already raised on LinkedIn (8/29) + reactions," with no name in either place. It lives in the reactions/comments on Xian's 8/29 post — thirty seconds for him, impossible for us. |
 
 **Xian's short list** — he has names not yet written down (noted
 2026-09-12 via Janus). Add them here as they're named; the roster is
 the place, so they stop living in his head.
+
+## The weekly question
+
+One question a week, drafted by Coral, sent by Xian. The bank lives in
+`docs/COHORT-CHECKIN-QUESTIONS.md`. **Week 1 is the disambiguator** —
+"is pushing a card usually 'not today' or 'this comes back every
+week'?" — because the deferral metric cannot separate intent from
+friction on its own, and every later number is read differently
+depending on the answer.
 
 ## Running the rolling clock
 
