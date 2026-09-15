@@ -49,6 +49,20 @@ expect? / What happened instead? / Steps, if you're willing). No
 server, no form; TestFlight users also get native screenshot feedback.
 1.2-sized once discussed.
 
+### 5 · Defer is doing double duty — recurrence has no home (Xian, 09-15)
+Reading his returned backup I called 80+ deferral counts the most
+interesting signal R1.5 had seen. His correction: "a lot of those life
+cards are recurring reminders." So defer is carrying two jobs — *not
+now* and *again next week* — and the app cannot tell them apart. Two
+consequences worth the session: (a) R1.5's deferral-depth metric
+conflates friction with function, which will mislead the cohort read
+unless we can separate them; (b) there is an unmet need here that
+users are solving with a gesture, which is usually where a real
+feature is hiding. Deliberately NOT proposing recurring-cards-as-a-
+feature yet: the covenant is one card at a time and no chrome, and a
+repeat scheduler is exactly the kind of thing that arrives as a date
+picker. Worth designing rather than adding.
+
 ## The walk order (narrate anything; I'll capture everything)
 
 1. Cold open — deck face-down state → tap to reveal

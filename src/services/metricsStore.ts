@@ -46,7 +46,17 @@ export interface MetricsDocument {
   /** Deferral-event histogram keyed by the deferral count the card
       REACHED with that defer (a card deferred to depth 3 increments
       buckets 1, 2, 3 over its lifetime — event counts, not final-state
-      counts; max carries the deepest single card). */
+      counts; max carries the deepest single card).
+
+      ⚠ INTERPRETATION CAVEAT (Xian, 2026-09-15, from his own real deck):
+      a high deferral count is NOT necessarily friction. He uses defer as
+      a RECURRENCE mechanism — a card like "pay bills" or "health" is
+      meant to come back, so counts of 80+ are the feature working, not a
+      user stuck. Deferral depth therefore measures "how often a card
+      returns," and only SOME of that is the failure mode the metric was
+      designed to surface. Do not report depth as friction without asking
+      whether the card is recurring. The honest read needs a distinction
+      the app does not yet have. */
   deferralDepth: { max: number; histogram: Record<string, number> };
 }
 
