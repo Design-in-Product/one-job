@@ -4,7 +4,7 @@
 // round-trip. When the v2 migration lands (build sequence #7), these
 // same fixtures become its inputs; this file is the "before" picture.
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { LocalTaskStore } from '@/services/localTaskStore';
 import { Task } from '@/types/task';
 import { allFixtures, substackDeck, strandedInteriorDeck, deferralDeck } from './fixtures/v1-decks';
@@ -18,18 +18,45 @@ const loadFixture = (fixture: unknown): LocalTaskStore => {
 
 beforeEach(() => localStorage.clear());
 
+// Corpus-level coverage counters. The per-fixture loops below assert
+// things about interiors, and a loop over an empty collection asserts
+// NOTHING while still passing — so without these the whole suite could
+// go green after a migration stopped producing interiors entirely
+// (cross-pollination 2026-09-15, Klatch R209: "the fix removes the
+// evidence; the assertion applauds the absence").
+//
+// Counted across the corpus, not per fixture: several fixtures
+// legitimately have no interiors, which my first version of this guard
+// got wrong — and the guard caught it on its first run.
+let corpusDecksSeen = 0;
+let corpusInteriorCardsSeen = 0;
+
 describe('v1 fixture corpus loads through the current store', () => {
+  afterAll(() => {
+    expect(corpusDecksSeen).toBeGreaterThan(0);
+    expect(corpusInteriorCardsSeen).toBeGreaterThan(0);
+  });
+
   for (const [name, fixture] of Object.entries(allFixtures)) {
     it(`${name}: loads, revives dates, and survives the backup round-trip`, async () => {
       const store = loadFixture(fixture);
       const tasks = await store.getAllTasks();
       expect(tasks).toHaveLength((fixture as unknown[]).length);
+      // Count what the loops actually inspect. Without this, a migration
+      // that stopped producing interiors would make every assertion
+      // inside the loops unreachable and the test would pass green while
+      // verifying nothing — the subject defaults to empty and the check
+      // applauds the absence (cross-pollination 2026-09-15, Klatch R209).
       for (const task of tasks) {
         expect(task.createdAt).toBeInstanceOf(Date);
         if (task.completed) expect(task.completedAt).toBeInstanceOf(Date);
         for (const deck of task.decks ?? []) {
+          corpusDecksSeen++;
           expect(deck.createdAt).toBeInstanceOf(Date);
-          for (const c of deck.cards) expect(c.createdAt).toBeInstanceOf(Date);
+          for (const c of deck.cards) {
+            corpusInteriorCardsSeen++;
+            expect(c.createdAt).toBeInstanceOf(Date);
+          }
         }
       }
 
