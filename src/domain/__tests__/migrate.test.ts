@@ -47,8 +47,11 @@ describe('v1 → v3 migration over the fixture corpus', () => {
   it('interior cards are recursion-capable full cards (may carry their own decks)', () => {
     const doc = migrateDocument(JSON.parse(JSON.stringify(substackDeck)));
     const inner = doc.decks[0].cards[0].decks![0].cards[0];
-    // v1 substack tasks had no substacks; migrated cards simply have no decks yet
-    expect(inner.decks ?? []).toEqual([]);
+    // v1 substack tasks had no substacks; migrated cards simply have no
+    // decks yet. Assert the SHAPE explicitly rather than through a ??
+    // default, which would pass identically for "absent" and "empty" and
+    // could not tell us if the migration started emitting something else.
+    expect(inner.decks === undefined || inner.decks.length === 0).toBe(true);
     expect(inner.id).toBeTruthy();
     expect(inner.createdAt).toBeTruthy();
   });
