@@ -56,3 +56,5 @@ build/
 
 # Vite dev-server scratch
 vite.config.ts.timestamp-*
+inbox/
+*.backup.json
