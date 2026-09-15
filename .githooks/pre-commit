@@ -1,0 +1,43 @@
+#!/bin/sh
+# Refuse a commit that stages deletions from a STALE clone.
+#
+# Installed 2026-09-15 after the cross-pollination brief reported Pard
+# losing 1,683 files this way: `git add -A` diffs the working tree
+# against the LOCAL index, so every file that exists on origin but not
+# in a behind clone looks like a deletion and gets staged as one. The
+# push succeeds. Nothing warns.
+#
+# This repo has concurrent committers (Janus pushes briefs, Themis
+# pushes mail, Coral pushes everything else), and `git add -A` is
+# Coral's routine habit — so the conditions are exactly present here.
+# The guard is a chokepoint: it runs on every commit rather than
+# depending on anyone remembering to fetch first.
+#
+# Enable: git config core.hooksPath .githooks   (already set on Amber)
+
+staged_deletions=$(git diff --cached --name-only --diff-filter=D | wc -l | tr -d ' ')
+[ "$staged_deletions" = "0" ] && exit 0
+
+# Only fetch when there ARE deletions — keeps normal commits offline-fast.
+git fetch -q origin 2>/dev/null || {
+  echo "pre-commit: staging $staged_deletions deletion(s) but cannot reach origin to check staleness."
+  echo "            If you are offline and intend these deletions, commit with --no-verify."
+  exit 1
+}
+
+behind=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo 0)
+[ "$behind" = "0" ] && exit 0
+
+echo
+echo "REFUSING: this commit stages $staged_deletions deletion(s) and your clone is $behind commit(s) behind origin/main."
+echo
+echo "Files added to origin since your last pull look like deletions to a stale index."
+echo "That is how 1,683 files were lost in a sibling repo on 2026-09-15."
+echo
+echo "  1. git pull --rebase origin main"
+echo "  2. re-check: git diff --cached --name-only --diff-filter=D"
+echo "  3. commit again"
+echo
+echo "If the deletions are genuinely intended, commit with --no-verify."
+echo
+exit 1
