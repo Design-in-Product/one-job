@@ -1,42 +1,76 @@
-# Cross-Pollination Brief — September 14, 2026
 
-Klatch's backfill work (Rounds 204–205) surfaced a plan/apply divergence: when both phases independently re-resolve an id from a name, and the name is not unique, they can bind different records — invisibly, because the plan reports the label and both labels match. One Job, applying Klatch's earlier 0-byte-file finding to its own import path, documented a companion discipline: when two validation layers share a test input as their vehicle, disabling one silently removes coverage of the other.
+# Cross-Pollination Brief — September 15, 2026
+
+Three projects this window hit failures rooted in unexamined defaults: a fan-out that silently inherited the dispatcher's model tier and exhausted a shared usage ceiling; a test assertion whose subject defaulted to empty when the defect was fixed, producing a vacuous green; and a stale git clone whose `git add -A` staged 1,683 deletions before anyone noticed. Klatch also landed a discipline worth carrying: retire test arms by re-aiming them at behavioral invariants rather than deleting — the arm you're about to delete may be the only integration-level observer of its path.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. A plan that records a label but re-resolves the key at apply time can silently bind the wrong record — Klatch Round 205
+### 1. In multi-agent fan-out, subagents silently inherit the dispatcher's model tier unless you set it explicitly
 
-**From:** Klatch (Theseus + Daedalus, Rounds 204–205)
-**Relevant to:** Any system with a plan/review/apply CLI for data operations
+**From:** Piper Morgan (CIO session log `dev/2026/09/14/2026-09-14-1037-cio-code-log.md`)
+**Relevant to:** Any project using multi-agent task dispatch
 
-Klatch's entity-backfill CLI has a `plan` phase that shows which entity a channel will be bound to ("MATCHED-BY-NAME → Daedalus"), and an `apply` phase that executes the binding. Both phases resolve the entity independently from a name lookup — but they use different orderings. The plan phase uses a `new Map` over an unordered `SELECT`, producing the *last* row for a given name. The apply phase calls `getAllEntities()` with `ORDER BY created_at ASC` + `.find()`, producing the *first* row.
+Lead Dev dispatched 30 subagents on Saturday without specifying the `model` parameter. Each inherited Lead's Fable tier by default. Together they exhausted the shared Fable usage ceiling — and the cost fell on Architect and Web, who dispatched nothing that day. Neither knew why their work was blocked until the CIO traced it.
 
-When two entities share the same name, the plan and apply pick opposite ends of the list. The plan sheet prints the name correctly — "Daedalus" — and so does the apply's output. But the `id` written to the database is different from the one the plan computed. The divergence is invisible from the plan output because the plan records the human-readable label, not the opaque id. Theseus drove this end-to-end through the real CLI (Round 205): `plan.targetEntityId = bbbbbbbb` (the newer entity), `--apply` writes `aaaaaaaa` (the older one). Because the undo record holds the id actually written rather than the planned label, the wrong binding is recoverable — but only because the undo was designed to record the applied id.
+PM ruling: *"dispatch tier should be stated, not inherited."* Codified in PM's `docs/CLAUDE.md` (Subagents section) and `audit-cascade` skill v1.2 (Step 1b). The guidance: Haiku for fully-specified mechanical work; Sonnet for bounded implementation; Fable only when the reasoning inside the unit genuinely warrants it. Reaching for the dispatcher's own top tier is a signal to look at the prompt first — underspecified prompts grow to fill the model they're given.
 
-**Suggested action:** In any plan/apply CLI that resolves an id from a label, the plan step should pin and pass through the exact id it chose — not just the label — so the apply phase does not need to re-resolve. This is especially load-bearing when the label space has duplicates. If the apply must re-resolve, it must use the exact same resolver as the plan.
+**Suggested action:** Audit fan-out dispatch calls. If `model` is unset, the dispatcher's tier silently applies. Pass it deliberately on every dispatch.
 
 ---
 
-### 2. Layered defenses must not share a test vehicle, or disabling one silently untests the other — One Job
+### 2. A test assertion whose subject defaults to empty passes vacuously the moment the defect is fixed
 
-**From:** One Job (Coral, 2026-09-13)
-**Relevant to:** Any codebase with multi-layer validation (import guards, restore checks, auth layers)
+**From:** Klatch (research log `docs/research/round209-…-2026-09-14.md`)
+**Relevant to:** Any project with automated testing
 
-Coral applied Klatch's Round 197 finding (SQLite structural checks pass a 0-byte file as valid) to One Job's import path: added a content-presence gate that refuses a restore if the incoming deck has zero cards and the existing deck has something to lose. A pre-existing snapshot-guard test used `importTasks([])` as its vehicle — the new gate refused that input and the test went red. The straightforward fix would have been routing the snapshot-guard test through a back channel that bypassed the new gate — but that would have entangled the two defenses. The correct fix was a separate, legitimate empty route (trash+purge) that the gate correctly allows, keeping both defenses independently tested.
+Klatch's probe suite had an assertion checking that field `notes[0]` did not contain a specific bad value. The field was only populated when the defect was present. When a fix changed the output format so the defect disappeared, `notes[0]` became absent — and the assertion's subject resolved via `notes[0] ?? ''` to an empty string. The check passed: `''` didn't contain the bad value. Vacuously green.
 
-The principle Coral extracted: *layered defenses must not share test vehicles. If removing one defense would make the other's test pass, the test was not independently verifying the other defense.*
+The R209 log marks this as distinct from the "check can't see its target" failure reported on 9/13: here the subject exists and resolves, but resolves to an empty default rather than to the meaningful value the assertion was written around. The fix removes the evidence; the assertion applauds the absence.
 
-**Suggested action:** When adding a new validation layer, check whether any existing tests use inputs the new layer would legitimately refuse. If so, give each layer its own test vehicle rather than routing one through a shared path. A test that passes only because a deeper guard accepted the input does not independently verify the layer it claims to test.
+Fix: make subject *existence* part of the assertion. Don't just check the value when present — assert the field exists and holds the expected value, or explicitly assert it is absent. An assertion that can pass vacuously is indistinguishable from one that verified something.
+
+**Suggested action:** Audit assertions that guard against "this field should not contain X." If the check can pass when the field is absent (via `?? ''`, `.length === 0`, or similar defaults), it will produce a false green whenever the fix works by removing the field. Add an existence assertion alongside the value assertion.
+
+---
+
+### 3. A stale clone plus `git add -A` stages the deletion of every file added to origin since the last pull
+
+**From:** Mediajunkie (Pard session log `logs/2026-09-15-pard-log.md`)
+**Relevant to:** Any project where multiple agents commit to shared repos
+
+Pard's clone of the dispatch repo was significantly behind `origin/main`. Running `git add -A` staged not just Pard's new files but also the deletion of 1,683 files that had been added to origin since the last pull. The push went through; 1,683 files disappeared from the main branch.
+
+The mechanics: `git add -A` diffs the working tree against the *local index*, not against `origin`. Files that exist in `origin/main` but not in the local clone appear as deletions to the local index, and `git add -A` stages them as such.
+
+Response: Pard wrote `check-clones.sh`, which detects clones behind origin where a broad add would stage deletions. The discipline: pull before broad adds, or use `git add <specific paths>` when operating in a shared repo with concurrent committers.
+
+**Suggested action:** Before any `git add -A` in a multi-agent repo, run `git fetch origin && git status` to confirm the clone is current. If behind, pull first. Treat stale-clone awareness as a pre-commit discipline, not an assumption.
+
+---
+
+### 4. Before retiring a failing test arm, verify it is not the only integration-level observer of its path
+
+**From:** Klatch (research log `docs/research/round211-…-2026-09-14.md`)
+**Relevant to:** Any project with integration or probe test suites
+
+Two of Klatch's end-to-end probe arms were failing and flagged for retirement. On inspection: both were the *only* integration-level observer of their respective operator-facing CLI paths. Deleting them would leave those paths with zero coverage at the integration layer — the 1,785 unit tests would stay green while the CLI's refusal explanation silently broke.
+
+Decision: re-aim rather than delete. Arm C1 was redirected to pin a behavioral condition (`plan.summary.apply === 0`) rather than the CLI output branch. Arm B2 was redirected to pin the underlying function (`ambiguousNameNote()`) rather than the formatted sheet. The R211 log verified by mutation: deleting the operator's refusal explanation left all 1,785 suite tests green but failed exactly arm B2, the one marked for deletion.
+
+**Suggested action:** Before deleting any failing test arm, ask whether it is the only integration-level observer of the path it covers. If so, re-aim it at a behavioral invariant (a function, a condition, a return value) that survives the output-format change that caused the original failure. Retire the old assertion; preserve the coverage.
 
 ---
 
 ## Sources Read
 
-- **Klatch:** `docs/logs/2026-09-13-1047-theseus-opus-log.md` (Round 205 section); commit `cc10370b` (Round 205 writeup + probe). Round 205 mail chain `bb951211`/`eff112f6` reviewed.
-- **Piper Morgan:** 48-hour commit log reviewed (349 commits). Items found — `db3e33b39` (STALE alert stating its own limitation) and `925833e61` (CI `needs:` chaining silencing an independent job) — did not clear the brief-worthiness bar given recent coverage of the monitoring-gap theme (09-12, 09-13 briefs).
-- **One Job:** `development/coral-logs/2026-09-13-coral-log.md`, commit `da4626e9`.
+**Primary:**
+- Piper Morgan — `dev/2026/09/14/2026-09-14-1037-cio-code-log.md`; `docs/CLAUDE.md` (Subagents section, audit-cascade skill v1.2)
+- Klatch — `docs/research/round209-a-check-whose-subject-can-be-empty-goes-green-when-the-defect-is-fixed-2026-09-14.md`; `docs/research/round211-retired-is-not-deleted-and-the-sheet-had-exactly-one-observer-2026-09-14.md`
+- Mediajunkie — `logs/2026-09-15-pard-log.md`
+
+**Secondary:** globe, weather, one-job, nyt-crossword had activity in the window; none cleared the brief-worthiness bar. cuneo and atlas had no commits in the window. See `secondary_provenance` in front matter.
 
 ---
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
