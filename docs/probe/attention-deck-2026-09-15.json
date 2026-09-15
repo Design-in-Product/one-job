@@ -1,0 +1,57 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-09-15T13:14:56.873Z",
+  "tasks": [
+    {
+      "id": "09f823f4-abfc-48c8-8bd6-475244d38aa2",
+      "title": "Post the 1.1 draft today or tomorrow, tagging Teresa Klein.",
+      "description": "🔴 #31 · Post the 1.1 LinkedIn draft — approved, and the clock is Wednesday morning\n\nCoral's rec: Paste as-is. Two applied review notes: tag her in the body (she's already public, with her own prototype attached), and keep the placement paragraph even if trimming — it's the paragraph doing the business work. No newsletter CTA, deliberately.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-15 · waiting 1 days (since 2026-09-14)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-15T13:14:56.873Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "89b1278b-5fa0-4dd4-a649-53449ac84c46",
+      "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
+      "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: Do it before the roadmap/next-steps conversation — your narration is evidence that discussion should consume, not follow.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-15 · waiting 33 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-15T13:14:56.873Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "1b5e41a3-908e-4506-a736-3afad26bcc87",
+      "title": "How did answering from the deck actually feel?",
+      "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-15 · waiting 15 days (since 2026-08-31)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-15T13:14:56.873Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "0f7d4539-fb67-4e11-a89c-a689b754dd75",
+      "title": "Send the Pilot link to Teresa (and anyone else on your short list) — no email collection needed.",
+      "description": "🟢 #28 · Cohort — links are live; all that's left is sending them\n\nCoral's rec: Paste it in the LinkedIn thread you already have open with her; she offered to set TestFlight up. Beta App Review fires automatically on the first join.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-15 · waiting 5 days (since 2026-09-10)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-15T13:14:56.873Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "3f07c024-ef9b-42ab-b442-299b84df1a1f",
+      "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
+      "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-15 · waiting 49 days (since 2026-07-28)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-15T13:14:56.873Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}
