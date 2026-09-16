@@ -7,7 +7,8 @@
       "emptyBody": "What a wonderful feeling to have no pending tasks.",
       "emptyHint": "Tasks stay on this device — back up anytime from Settings (hold anywhere).",
       "addAria": "Add a new task",
-      "revealAria": "Reveal task"
+      "revealAria": "Reveal task",
+      "staleBuildTitle": "Your tasks are safe — this app needs updating"
     },
     "cardBack": {
       "appName": "One Job",
