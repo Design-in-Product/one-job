@@ -193,7 +193,26 @@ export class LocalTaskStore implements TaskStore {
   }
 
   /** Adopt a migrated document: revive dates, guarantee a root deck. */
-  private loadDocument(doc: { decks: InteriorDeck[] }) {
+  /** The version the stored document declared, and any top-level keys this
+      build doesn't know about. Both are carried back out on save.
+
+      COVENANT 4 ("an update never costs the user their data") has a hole
+      without this. A document written by a NEWER build that still has
+      `decks` is readable, so migrateDocument passes it through — correctly.
+      But saveTasks stamped schemaVersion: CURRENT unconditionally, so the
+      first save DOWNGRADED the stored version and dropped every sibling key
+      the newer build had added. Run new build, then old build, and the old
+      one silently rewrites the document into its own older shape. That is
+      the 2026-08-04 near-wipe's mechanism, surviving inside the guard
+      written to prevent it. Found 2026-09-16 while auditing error copy. */
+  private storedVersion: number | null = null;
+  private unknownTopLevel: Record<string, unknown> = {};
+
+  private loadDocument(doc: { decks: InteriorDeck[] } & Record<string, unknown>) {
+    if (typeof doc.schemaVersion === 'number') this.storedVersion = doc.schemaVersion;
+    this.unknownTopLevel = Object.fromEntries(
+      Object.entries(doc).filter(([k]) => k !== 'decks' && k !== 'schemaVersion')
+    );
     this.decks = doc.decks.map(d => ({
       ...d,
       createdAt: new Date(d.createdAt),
@@ -320,7 +339,14 @@ export class LocalTaskStore implements TaskStore {
 
   /** Current storage document as a string (v3 envelope). */
   private serialize(): string {
-    return JSON.stringify({ schemaVersion: CURRENT_SCHEMA_VERSION, decks: this.decks });
+    // Never write a version older than the one we read, and never drop a
+    // key we didn't understand — see storedVersion's note. Our own decks
+    // always win for `decks`; everything else is carried through untouched.
+    return JSON.stringify({
+      ...this.unknownTopLevel,
+      schemaVersion: Math.max(CURRENT_SCHEMA_VERSION, this.storedVersion ?? 0),
+      decks: this.decks,
+    });
   }
 
   /**

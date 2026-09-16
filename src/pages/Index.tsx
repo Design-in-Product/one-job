@@ -31,6 +31,7 @@ import { toast } from '@/components/ui/sonner';
 import { AnimatePresence, motion, useDragControls, PanInfo } from 'framer-motion';
 import { isDemoMode } from '@/config';
 import { DemoService } from '@/services/demoService';
+import { FutureDataError } from '@/domain/migrate';
 import { getTaskStore } from '@/services/taskStore';
 import { findCardById, findParentOfCard, unfinishedDescendants, pathToUnfinished, inchwormWalk } from '@/domain/tasks';
 import { hasPro } from '@/services/entitlements';
@@ -54,7 +55,13 @@ const Index = () => {
   const [deckSheet, setDeckSheet] = useState<InteriorDeck[] | null>(null);
   // Stage 3: picking a destination deck for a top-level card
   const [deckMove, setDeckMove] = useState<{ cardId: string; decks: InteriorDeck[] } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // Error carries its KIND, not only its text. One bucket cannot serve two
+  // structurally different causes honestly (cross-pollination 2026-09-16,
+  // PM: "user-facing copy cannot be more precise than the classifier
+  // beneath it"). 'stale-build' is the app CORRECTLY refusing to read data
+  // from a newer version — nothing is wrong, nothing is lost, and saying
+  // "something went wrong" invites the reinstall that destroys the deck.
+  const [error, setError] = useState<{ kind: 'failure' | 'stale-build'; message: string } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -103,7 +110,10 @@ const Index = () => {
       setDeckCount(decks?.length ?? 1);
     } catch (err) {
       console.error("Could not fetch tasks:", err);
-      setError((err as Error).message);
+      setError({
+        kind: err instanceof FutureDataError ? 'stale-build' : 'failure',
+        message: (err as Error).message,
+      });
       setTasks([]);
     } finally {
       setLoading(false);
