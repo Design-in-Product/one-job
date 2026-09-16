@@ -4,6 +4,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { LocalTaskStore } from '../localTaskStore';
+import { FutureDataError, CURRENT_SCHEMA_VERSION } from '@/domain/migrate';
 import { Task } from '@/types/task';
 
 const KEY = 'testTasks';
@@ -1461,5 +1462,71 @@ describe('import content-presence gate (a valid empty backup must not wipe a ful
     const titles = (await store.getAllTasks()).map(t => t.title);
     expect(titles).toContain('From the backup');
     expect(titles).not.toContain('Will be replaced');
+  });
+});
+
+// Copy precision follows classifier precision (cross-pollination
+// 2026-09-16, PM): "Oops! Something went wrong" was serving two
+// structurally different causes — an unexpected failure, and the app
+// CORRECTLY refusing to read data written by a newer version. The
+// second is not a failure at all, and mislabelling it is dangerous
+// rather than merely vague: a user told something went wrong reinstalls,
+// and reinstalling is what destroyed a real deck on 2026-07-05.
+describe('future-data refusal is classifiable, not just throwable', () => {
+  it('throws a FutureDataError the UI can distinguish, when the container is unreadable', () => {
+    localStorage.clear();
+    // The refusal fires for a VERSIONED envelope we cannot structurally
+    // read. A v3+ doc that still has `decks` is read normally by design —
+    // see the downgrade tests below for what protects THAT case.
+    localStorage.setItem('futureKey', JSON.stringify({
+      schemaVersion: CURRENT_SCHEMA_VERSION + 99,
+      canvases: [{ id: 'c', decks: [] }],
+    }));
+    let caught: unknown;
+    try { new LocalTaskStore('futureKey'); } catch (e) { caught = e; }
+    expect(caught).toBeInstanceOf(FutureDataError);
+    expect((caught as Error).message).toMatch(/intact/i);
+  });
+
+  // COVENANT 4 ("an update never costs the user their data") applied to the
+  // case the refusal does NOT cover. A newer build's document that still has
+  // `decks` is readable, so we read it — but saveTasks stamped
+  // schemaVersion: CURRENT unconditionally, which DOWNGRADED the stored
+  // version and dropped every top-level key this build doesn't know about.
+  // Run a new build, then an older one, and the older one quietly rewrites
+  // the document as its own older shape. That is the 2026-08-04 near-wipe's
+  // mechanism surviving inside the guard written to prevent it.
+  it('never downgrades the stored schemaVersion when it reads a newer document', async () => {
+    localStorage.clear();
+    const future = CURRENT_SCHEMA_VERSION + 1;
+    localStorage.setItem('fwdKey', JSON.stringify({
+      schemaVersion: future,
+      decks: [{ id: 'd1', name: 'deck', cards: [], createdAt: new Date().toISOString() }],
+    }));
+    const store = new LocalTaskStore('fwdKey');
+    await store.createTask('a card, which forces a save');
+    const written = JSON.parse(localStorage.getItem('fwdKey')!);
+    expect(written.schemaVersion).toBe(future);
+  });
+
+  it('preserves top-level keys it does not understand', async () => {
+    localStorage.clear();
+    localStorage.setItem('fwdKey2', JSON.stringify({
+      schemaVersion: CURRENT_SCHEMA_VERSION + 1,
+      decks: [{ id: 'd1', name: 'deck', cards: [], createdAt: new Date().toISOString() }],
+      canvases: [{ id: 'canvas-1', name: 'a concept this build has never heard of' }],
+    }));
+    const store = new LocalTaskStore('fwdKey2');
+    await store.createTask('forces a save');
+    const written = JSON.parse(localStorage.getItem('fwdKey2')!);
+    expect(written.canvases).toEqual([{ id: 'canvas-1', name: 'a concept this build has never heard of' }]);
+  });
+
+  it('an ordinary corrupt document is NOT a FutureDataError', () => {
+    localStorage.clear();
+    localStorage.setItem('corruptKey', '{not json');
+    // corrupt data is quarantined and recovered from, never conflated
+    // with the future-data refusal
+    expect(() => new LocalTaskStore('corruptKey')).not.toThrow();
   });
 });

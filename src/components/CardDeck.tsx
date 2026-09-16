@@ -25,7 +25,7 @@ const LONG_PRESS_MS = 500;
 interface CardDeckProps {
   tasks: Task[];
   loading: boolean;
-  error: string | null;
+  error: { kind: 'failure' | 'stale-build'; message: string } | null;
   onComplete: (taskId: string) => void;
   onDefer: (taskId: string) => void;
   onCardClick: (task: Task) => void;
@@ -262,9 +262,11 @@ const CardDeck: React.FC<CardDeckProps> = ({
   if (error) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-center text-red-500 p-4">
-          <p className="font-medium mb-2">{t('deck.errorTitle')}</p>
-          <p className="text-sm text-muted-foreground">{error}</p>
+        <div className={cn('text-center p-4', error.kind === 'stale-build' ? 'text-amber-600' : 'text-red-500')}>
+          <p className="font-medium mb-2">
+            {t(error.kind === 'stale-build' ? 'deck.staleBuildTitle' : 'deck.errorTitle')}
+          </p>
+          <p className="text-sm text-muted-foreground">{error.message}</p>
         </div>
       </div>
     );

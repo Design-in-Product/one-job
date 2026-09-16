@@ -31,6 +31,11 @@ export class FutureDataError extends Error {}
 export interface StorageDocument {
   schemaVersion: number;
   decks: InteriorDeck[];
+  /** Keys a FUTURE build may have added that this one does not understand.
+      They are read, carried, and written back untouched — dropping them
+      would make an older build quietly destroy a newer build's data
+      (covenant 4). See LocalTaskStore.unknownTopLevel. */
+  [key: string]: unknown;
 }
 
 /** The v2 envelope shape, accepted on the way in forever. */
