@@ -88,6 +88,38 @@ generally ("planning round trip integrations") without dates.
 Candidate roadmap item R-INTENT; sequencing vs. Todoist-1.1 is an
 open question for the next-steps conversation.
 
+### Teresa, part two — 2026-09-17: she built on the seam
+
+**Five days after 1.1 shipped, she sent Xian a working Shortcut over
+LinkedIn connecting Reminders → One Job**
+(`icloud.com/shortcuts/9ff2f458efdf400ba7853fc12bc369d3`), unsolicited.
+
+The full loop, in eleven days: she suggests an App Intent and attaches
+a prototype built against an action that does not exist → we ship the
+action → **she uses it to build the importer she originally described.**
+Nobody asked her for any of it.
+
+**Why this outranks its own contents** (which none of us has opened —
+it needs Apple's ecosystem; Xian can, Janus and I cannot): the R-INTENT
+bet was "write one small seam and other people build the roads to it."
+That was a thesis on a roadmap five days ago. It now has exactly one
+instance, which is not proof but is the difference between an argument
+and an existence proof.
+
+**The roadmap consequence worth weighing** (Coral's read, not a
+decision): if her Shortcut does Reminders→One Job decently, then the
+single most common task app on every iPhone is already connected —
+by a user, for free, through a seam that cost a day. That is worth
+knowing BEFORE the Todoist integration gets built, because it reframes
+what integration work is actually for: not "connect each service one
+by one," but "make the seam good enough that services connect
+themselves, and spend our own effort where the seam cannot reach"
+(two-way sync, provenance, write-back).
+
+**Open, and Xian's to answer:** what does it actually do? And, if it is
+good — would she let it be linked publicly? A user-built importer,
+credited, is a better integration story than a first-party one.
+
 ## Ted Nadeau — 2026-09-04 (email, full)
 
 Context: long-time friend of Xian's, product/architecture mind, iPad

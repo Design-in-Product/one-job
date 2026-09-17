@@ -1,5 +1,20 @@
 ## Open
 
+### 🟡 33. Teresa built a Reminders → One Job Shortcut — what does it do?
+Unsolicited, via LinkedIn, 2026-09-17: `icloud.com/shortcuts/9ff2f458efdf400ba7853fc12bc369d3`.
+Second unprompted contribution from the same person, and this one uses
+the Add Card action her first suggestion produced. **None of us can
+open it** — it needs Apple's ecosystem, so this is the one evaluation
+that only you can do. Full context and the roadmap consequence are in
+docs/USER-FEEDBACK.md.
+**Since:** 2026-09-17
+**Ask:** Run Teresa's Shortcut on your phone and tell me what it actually does.
+**Rec:** Then ask whether she'd let it be linked publicly. A
+user-built, credited importer is a better integration story than a
+first-party one — and if it handles Reminders well, it reframes what
+the Todoist work is for before we build it.
+
+
 ### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
 Themis's records carry the fact without the subject — their own phrase
 "one hand already raised on LinkedIn (8/29) + reactions" is the only
