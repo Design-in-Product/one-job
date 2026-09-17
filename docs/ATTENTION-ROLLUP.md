@@ -61,18 +61,6 @@ prepared so the session is pure narration.
 narration is evidence that discussion should consume, not follow.
 
 
-### 🟢 28. Cohort — links are live; all that's left is sending them
-Groups created 2026-09-13 via the API (no ASC time needed from you).
-**Pilot: https://testflight.apple.com/join/dZ1DdUhJ** (cap 10, build 39
-attached) · Cohort: https://testflight.apple.com/join/DMxEqKPR (cap 40,
-held for the forty). A public link needs no email — the tester taps,
-installs TestFlight, joins themselves.
-**Since:** 2026-09-10
-**Ask:** Send the Pilot link to Teresa (and anyone else on your short list) — no email collection needed.
-**Rec:** Paste it in the LinkedIn thread you already have open with
-her; she offered to set TestFlight up. Beta App Review fires
-automatically on the first join.
-
 
 ### 🟡 27. Probe feedback — you are living in it now
 You imported the attention deck and started answering from it. First
@@ -145,6 +133,14 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 ---
 
 ## Settled
+
+### ✅ 28. Pilot link sent — Teresa is in (2026-09-17)
+Sent 09-14 via LinkedIn. First attempt failed: the link carried
+backticks in from my formatting and gave her a not-found error;
+resent bare on 09-16 and she was "On it!" the same day. Cohort
+mechanism proven end to end on a real outside tester. Remaining
+recruiting is names, not mechanism — roster at docs/COHORT-ROSTER.md.
+
 
 ### ✅ Briefing answers 2026-09-10 (memo questions from the artifact)
 1. **R2 hold**: partial — "OK but wants the nuanced timing discussion."

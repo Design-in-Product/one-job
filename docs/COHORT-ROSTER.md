@@ -34,7 +34,7 @@ their own device) → **week 4** (their 28-day mark).
 
 | Person | Where they raised it | Platform | Sent | Joined | Day-0 | Week 4 | Notes |
 |---|---|---|---|---|---|---|---|
-| **Teresa Klein** | LinkedIn, launch post 2026-09-10 | iOS (offered to set up TestFlight) | — | — | — | — | Contributed the App Intents idea with a prototype; shipped in 1.1. First outside contributor. |
+| **Teresa Klein** | LinkedIn, launch post 2026-09-10 | iOS | **2026-09-14** (resent 09-16 — first link broke on stray backticks) | joining 09-16 ("On it!") | — | — | Two unprompted contributions: the App Intents idea that became 1.1's Add Card, then a Reminders→One Job Shortcut built on it. Offered a call. Asked unprompted for a preferred bug-report format — TestFlight's native flow was the answer. |
 | **Ted Nadeau** | Email/call, 2026-09-02 | **iPad only** | 2026-09-05 (internal invite, pre-Pilot) | not yet | — | — | On vacation; TestFlight is unfamiliar territory for him. Xian: not a chase. |
 | **Austin Wood** | Xian's invite, 2026-09-05 | iOS | 2026-09-05 (internal) | not yet | — | — | Unprompted "geeky hello" invite; no obligation. |
 | *(LinkedIn hand-raiser, 8/29)* | LinkedIn, pre-launch | unknown | — | — | — | — | **⚠ Name unrecoverable from our files.** Themis searched their agent directory, pulse log, and the deliverable: the only record anywhere is their own phrase "one hand already raised on LinkedIn (8/29) + reactions," with no name in either place. It lives in the reactions/comments on Xian's 8/29 post — thirty seconds for him, impossible for us. |
@@ -42,6 +42,12 @@ their own device) → **week 4** (their 28-day mark).
 **Xian's short list** — he has names not yet written down (noted
 2026-09-12 via Janus). Add them here as they're named; the roster is
 the place, so they stop living in his head.
+
+**A lesson from Teresa's first link failing:** it was pasted with the
+backticks I had wrapped it in, and she got a not-found error. **Hand
+Xian anything meant for pasting as bare text**, never inside code
+formatting — the markdown that makes it readable here makes it broken
+there.
 
 ## The weekly question
 
