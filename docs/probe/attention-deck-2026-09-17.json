@@ -1,75 +1,75 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-09-17T20:32:27.367Z",
+  "exportedAt": "2026-09-17T20:42:26.548Z",
   "tasks": [
     {
-      "id": "862d5063-9f22-4732-a1a1-853bfc6b4b5f",
+      "id": "555a1938-caa4-4290-a907-1d137bfd17b0",
       "title": "Post the 1.1 draft today or tomorrow, tagging Teresa Klein.",
       "description": "🔴 #31 · Post the 1.1 LinkedIn draft — approved, and the clock is Wednesday morning\n\nCoral's rec: Paste as-is. Two applied review notes: tag her in the body (she's already public, with her own prototype attached), and keep the placement paragraph even if trimming — it's the paragraph doing the business work. No newsletter CTA, deliberately.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 3 days (since 2026-09-14)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "29947f4a-6e8d-4c7f-93df-e0c97d3ce32b",
-      "title": "Run Teresa's Shortcut on your phone and tell me what it actually does.",
-      "description": "🟡 #33 · Teresa built a Reminders → One Job Shortcut — what does it do?\n\nCoral's rec: Then ask whether she'd let it be linked publicly. A user-built, credited importer is a better integration story than a first-party one — and if it handles Reminders well, it reframes what the Todoist work is for before we build it.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 0 days (since 2026-09-17)",
+      "id": "be42257e-55d7-4ec4-911d-b23b44385487",
+      "title": "Say two Siri cards — one short, one a full sentence — and tell me exactly what you said and exactly what appeared.",
+      "description": "🟡 #33 · The Siri ALL-CAPS title — I need the exact pair to fix it safely\n\nCoral's rec: Two samples decide it. If both come back caps, normalisation belongs in the intent; if only one does, it's a dictation-mode quirk and the fix is different. (Separately, on your \"how do I add a description\": Siri only ever prompts for required parameters — that's Apple's rule. In the Shortcuts app, tap the Add Card action to expand it and description + sub-tasks are both there.)\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 0 days (since 2026-09-17)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "bdd50148-17c4-41d2-8834-530cfe23ce7d",
+      "id": "735537fb-f722-4049-bd32-d4f136973473",
       "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
       "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: Do it before the roadmap/next-steps conversation — your narration is evidence that discussion should consume, not follow.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 35 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "853bf859-975b-40be-b0e8-ecdee66123be",
+      "id": "f253ef36-a162-4f74-892f-f7aa0033cd05",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or something between — that is the whole R4.2-lite question. No rush; two weeks of real use beats an early verdict. Note friction as it happens rather than saving it up.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 17 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "dca8bcd4-42f6-4902-8ec7-fe27e33a5ede",
+      "id": "aa81b4b3-62f8-43ef-bcb0-8f36b62b44b1",
       "title": "Check your 8/29 LinkedIn post and name the hand-raiser for the roster.",
       "description": "🟢 #32 · Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us\n\nCoral's rec: Do it next time you are in LinkedIn anyway. They raised a hand before the app existed publicly, which makes them a good early Pilot invite — and being forgotten is the worst outcome for someone who volunteered first.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 2 days (since 2026-09-15)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "218223e6-a99c-4c5b-abf8-f1d31ec06566",
+      "id": "93983803-d13f-4171-a0ed-7d8c15c2fd65",
       "title": "Send the Pilot link to Teresa (and anyone else on your short list) — no email collection needed.",
       "description": "🟢 #28 · Cohort — links are live; all that's left is sending them\n\nCoral's rec: Paste it in the LinkedIn thread you already have open with her; she offered to set TestFlight up. Beta App Review fires automatically on the first join.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 7 days (since 2026-09-10)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 6,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7b606b55-215a-4dbf-83bb-a7ebd51fb8d1",
+      "id": "9dadff8b-8c86-47a4-a950-d70888b11460",
       "title": "Draft a REQUIREMENTS.md re-baseline now, or after 1.0?",
       "description": "🟢 #10 · REQUIREMENTS.md has drifted — needs your judgment, not my edit\n\nCoral's rec: After 1.0. It is doc debt, not a live risk, and the pivot may change more of it before then.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-17 · waiting 51 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-09-17T20:32:27.367Z",
+      "createdAt": "2026-09-17T20:42:26.548Z",
       "sortOrder": 7,
       "source": "coral/attention-rollup"
     }

@@ -1,18 +1,21 @@
 ## Open
 
-### 🟡 33. Teresa built a Reminders → One Job Shortcut — what does it do?
-Unsolicited, via LinkedIn, 2026-09-17: `icloud.com/shortcuts/9ff2f458efdf400ba7853fc12bc369d3`.
-Second unprompted contribution from the same person, and this one uses
-the Add Card action her first suggestion produced. **None of us can
-open it** — it needs Apple's ecosystem, so this is the one evaluation
-that only you can do. Full context and the roadmap consequence are in
-docs/USER-FEEDBACK.md.
+### 🟡 33. The Siri ALL-CAPS title — I need the exact pair to fix it safely
+You reported a Siri-made card whose title came out all caps. Ruled out
+on our side: nothing in the app uppercases a title (the only
+`uppercase` style is the deck-name chip) and the intent only trims
+whitespace — so it arrives that way from Siri. **I deliberately have
+not "fixed" it**, because auto-lowercasing input breaks "NASA" and
+"URGENT", and the right fix depends on whether Siri always does this or
+only for some phrasings.
 **Since:** 2026-09-17
-**Ask:** Run Teresa's Shortcut on your phone and tell me what it actually does.
-**Rec:** Then ask whether she'd let it be linked publicly. A
-user-built, credited importer is a better integration story than a
-first-party one — and if it handles Reminders well, it reframes what
-the Todoist work is for before we build it.
+**Ask:** Say two Siri cards — one short, one a full sentence — and tell me exactly what you said and exactly what appeared.
+**Rec:** Two samples decide it. If both come back caps, normalisation
+belongs in the intent; if only one does, it's a dictation-mode quirk
+and the fix is different. (Separately, on your "how do I add a
+description": Siri only ever prompts for required parameters — that's
+Apple's rule. In the Shortcuts app, tap the Add Card action to expand
+it and description + sub-tasks are both there.)
 
 
 ### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
