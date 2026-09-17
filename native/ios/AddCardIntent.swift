@@ -30,10 +30,19 @@ struct AddCardIntent: AppIntent {
     // The deck ingests on next open; no need to launch the app now.
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Title")
+    // capitalizationType: .sentences — fixed at the INPUT layer, not by
+    // rewriting the string afterwards (Xian, 2026-09-17: Siri returned
+    // "Buy Milk At The Store" because a field named Title invites title
+    // case; his design default is sentence case). Post-processing would
+    // have to lowercase words it cannot identify, which destroys "Call
+    // Teresa Klein" — worse than the problem. Declaring the intent of the
+    // field lets the system capitalize the way it already knows how, and
+    // proper nouns survive because the dictation engine still knows they
+    // are proper nouns.
+    @Parameter(title: "Title", inputOptions: String.IntentInputOptions(capitalizationType: .sentences))
     var cardTitle: String
 
-    @Parameter(title: "Description")
+    @Parameter(title: "Description", inputOptions: String.IntentInputOptions(capitalizationType: .sentences))
     var cardDescription: String?
 
     @Parameter(title: "Sub-tasks", description: "Each becomes a card inside this card")
