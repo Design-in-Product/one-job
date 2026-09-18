@@ -23,6 +23,27 @@ const { chromium } = require('playwright');
 
 const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4199/app/';
 const OUT = resolve('site');
+// Refuse to seed anywhere but a local server (2026-09-18, from the
+// brief's "guard the handle, not the variable"): these scripts
+// OVERWRITE the real `oneJobTasks` key with synthetic cards. Today the
+// only thing keeping that off a real deck is that Playwright contexts
+// are ephemeral and BASE_URL defaults to localhost — safety by
+// default, not by assertion. The usage line above advertises BASE_URL
+// as configurable, so `BASE_URL=https://onejob.co/app` is one typo
+// away from pointing a deck-seeding script at the live app.
+// Checked AFTER goto, against the URL actually loaded, because a
+// pre-flight check on the variable is the exact failure the brief
+// describes: a guard that cannot fail.
+const assertLocal = (url) => {
+  const host = new URL(url).hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1' && host !== '[::1]') {
+    throw new Error(
+      `REFUSING to seed cards at ${url} — these scripts overwrite the real ` +
+      `oneJobTasks key and must only ever run against a local dev server.`
+    );
+  }
+};
+
 
 const iso = d => new Date(Date.UTC(2026, 7, d, 12)).toISOString();
 // Same cast as the store set so the two surfaces tell one story.
@@ -56,6 +77,7 @@ await page.addInitScript(([s]) => {
   localStorage.setItem('oneJobQuietMode', '1'); // no frozen toasts in stills
 }, [SEED]);
 await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+assertLocal(page.url());
 await page.waitForTimeout(700);
 
 const cx = 195, cardY = 422;
