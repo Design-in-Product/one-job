@@ -129,3 +129,22 @@ describe('placement: externally-dealt cards never usurp the top (ruled 2026-09-1
     expect(titles[0]).toBe('I chose to add this');
   });
 });
+
+// Cross-language slot pairing (2026-09-19, from the brief's write-deletion
+// insight): the WRITER of the pending-cards slot is Swift
+// (AddCardIntent.swift, key "CapacitorStorage.oneJobPendingCards" in
+// UserDefaults) and the READER is TypeScript (this module, key
+// "oneJobPendingCards" through the Preferences plugin, which adds the
+// prefix). No import sweep, type check, or single-language grep can see
+// this pair — rename either side and cards queue forever, unread, with
+// every test green. This test reads BOTH SOURCES and pins the contract.
+describe('the Swift writer and TS reader name the same slot', () => {
+  it('AddCardIntent writes the key shortcutsInbox reads (modulo the plugin prefix)', () => {
+    const fs = require('node:fs') as typeof import('node:fs');
+    const path = require('node:path') as typeof import('node:path');
+    const swift = fs.readFileSync(
+      path.resolve(__dirname, '../../../native/ios/AddCardIntent.swift'), 'utf8');
+    const swiftKey = swift.match(/let key = "CapacitorStorage\.([^"]+)"/)?.[1];
+    expect(swiftKey).toBe(PENDING_KEY);
+  });
+});
