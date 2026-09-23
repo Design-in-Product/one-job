@@ -1,62 +1,48 @@
+# Cross-Pollination Brief — September 23, 2026
 
-Three findings today — all variations on the same failure shape: a guard, test, or probe that is aimed correctly but doesn't hit what it appears to target. One is a late-night production incident; the other two are test-harness defects caught before they caused live damage.
+Two findings from Klatch's ongoing mutation-testing work, both about reading values from source files by text pattern. Piper Morgan had a busy day — Fly infrastructure migration completed, cohort-wide carry-forward spring-cleaning — but nothing that rises to a transferable insight. Globe shipped its scrubber Phase 1 (15 era keyframes, Explore mode); not brief-worthy by this brief's bar.
 
----
+*Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. A post-commit hook that calls a script that commits will recurse unless the hook can recognize its own output — Piper Morgan hooks pilot
+### 1. In Node.js ESM modules, `dotenv.config()` runs too late to reach constants read at module top level — Klatch Round 253
 
-**From:** Piper Morgan (Pard, hooks pilot incident — 2026-09-21 22:37–23:13 PT)
-**Relevant to:** Any project using post-commit hooks that run scripts capable of committing
+**From:** Klatch (Daedalus/Theseus)
+**Relevant to:** Any project using TypeScript or Node.js ESM with dotenv
 
-Piper Morgan's duty-cycle hooks pilot installed a post-commit hook that called `duty-cycle-heartbeat.sh`. The heartbeat script's "quiet path" — triggered when the seat had been idle long enough — commits a one-line marker file with a message like `hb-last-invoked(cio): suppressed …`. That marker commit fired the post-commit hook again. No re-entry guard existed in either file. Because the hook ran synchronously, the chain was a nested stack rather than a queue: `git commit` → hook → heartbeat → `git commit` → … one level approximately every three seconds. By the time it was discovered, the chain held 2,882 nested processes. The hook was disarmed manually at 23:10 PT; the chain was killed at 23:13. As the inner levels unwound after the disarm, the heartbeat's own delivery step — which pushes `HEAD:main` — ran and pushed 967 marker commits to `origin/main`.
+In CommonJS Node.js, `require('dotenv').config()` runs where you put it, before subsequent `require()` calls. In ESM, `import` statements **hoist**: every import in the file evaluates before any statement, including the `dotenv.config()` call that follows them. So a database module that reads `process.env.KLATCH_DB` at module top level — `const DB_PATH = process.env.KLATCH_DB ?? defaultPath` — has already frozen that value to `undefined` by the time dotenv runs. A `KLATCH_DB=…` line in `.env` is silently inert.
 
-Two defects, both required before re-arm:
+Klatch found this because a `KLATCH_DB` value set via `packages/server/.env` (which is found before the repo-root `.env` by the server's `findEnv()` walk) worked fine, while the same value in the repo-root `.env` didn't reach the database path. Three-arm probe driven end-to-end (Round 253): value assigned to `process.env` after the module is imported is honoured; caller-supplied value beats `.env`; `.env` alone at the module-loading entry point is inert.
 
-1. **No re-entry guard.** The hook should skip when the triggering commit's message matches the marker prefix (`hb(` or `hb-last-invoked(`), or the hook and heartbeat should check a shared exported variable (`PIPER_IN_POST_COMMIT=1`) before committing. Either alone stops the loop.
-2. **A hook that pushes.** The heartbeat's quiet-path delivery step pushes to origin from inside a post-commit context. Even with a re-entry guard, this races every real push on the belt. Quiet-path markers should not push from inside a hook; the fire's own delivery step should carry them.
+The fix: read env vars inside functions (lazy reads, evaluated at call time), or use a package-local `.env` that the server's path resolver finds first.
 
-The smoke test that ran before installation exited before reaching the guard — it ran on `main`, a path the guard never touches — and reported success. It was a test that could not have failed.
-
-**Suggested action:** Before installing a hook that calls any external script, check whether that script can commit. If it can, add a message-prefix or environment-variable re-entry guard in both files before the first install. And smoke tests for hooks should exercise the actual guarded code path, not an alternate path that exits early.
+**Suggested action:** If your ESM project uses dotenv and a module-level constant that reads `process.env`, audit whether that read actually receives the value from `.env` — or whether it received whatever was in the environment at module import time. The symptom is silent: the default value kicks in without any error.
 
 ---
 
-### 2. `import.meta.url` names the file that is currently executing, not a fixed filename — Klatch Round 248
+### 2. A doc comment that quotes a constant's declaration is read as the declaration by text-matching tools — Klatch Round 255
 
-**From:** Klatch (Daedalus, Round 248)
-**Relevant to:** Any project using `import.meta.url` to self-exclude a file from a population scan
+**From:** Klatch (Argus/Daedalus)
+**Relevant to:** Any code-analysis or code-patching tool that extracts numeric constants from source files by pattern
 
-Klatch's test coverage probe used `path.basename(fileURLToPath(import.meta.url))` to exclude itself from the set of files it was measuring. When the probe file is run from its tracked location, this works: the probe's own name is excluded, and the population is correct. But when a copy of the probe is run from a different filename — as happens when the round's author makes a working copy to experiment with — the exclusion uses the copy's name. The original tracked file has a different name and is not excluded: it re-enters the population the copy is supposed to be measuring. The guard was written assuming "the file currently executing" and "the file being excluded" are the same object; they are not when copies exist.
+Klatch's source-constant reader used a regex that matched the first occurrence of `const NAME = …` in byte order. The codebase uses a house style of quoting the declaration in the doc comment directly above it — `// const FINGERPRINT_LINE_CAP = 50 * 1000` above `const FINGERPRINT_LINE_CAP = 50_000`. The reader matched the comment, not the declaration, returning `50` instead of `50000`. Because the comment was the *first* match, all downstream checks passed.
 
-The result was that `probe-round223.mts` sat red for four days because its population count was pinned to `=== 21 + 2` (a hard equality, not a floor), and the actual population had grown to 28. The self-exclusion guard was not incorrect on its own terms — it excluded the running file — but the running file was a copy, and the original was silently included in the count.
+The compound failure is what makes this worth noting. The error thrown by the numeric reader recommended a different function call as the fix — and that second function also read through the same comment-first reader, returning an identically wrong result. Then the *write path's* post-write verifier re-read through the same reader to confirm the patch succeeded — it confirmed what it had just written into the comment, leaving the real declaration unchanged. Three separate callsites, same wrong reader, each one confirming the others. The problem is in the instrument, so instrument-based verification cannot see it.
 
-**Suggested action:** Self-exclusion guards using `import.meta.url` are safe only when there is exactly one copy of the file. If a probe or script may be copied for experimentation, exclude by the tracked path (relative to the repo root, resolved at the time the tracked file was committed) rather than by the name of whatever is currently executing.
+Fix (Round 255): mask comments before pattern-matching for constant declarations (`maskComments()` now strips block and line comments before the regex runs). The issue was latent rather than live in the shipped code — no file currently has a comment-shadowed numeric constant — but three live probes call through the reader and any new doc comment in declaration syntax above a constant would have been silently misread.
 
----
-
-### 3. ANSI terminal escape codes corrupt regex matching against test output — Klatch Round 249
-
-**From:** Klatch (Daedalus, Round 249)
-**Relevant to:** Any project where a test harness or mutation driver inspects test output by regex
-
-Klatch's mutation driver ran a test suite and checked the result by pattern-matching the raw terminal output. The driver reported ALL GREEN for a batch of mutations that had actually failed — exiting with code 1 and containing failure text in their output. The root cause: the test runner emitted ANSI escape codes (color sequences) in its output, and those escape codes interrupted the strings the regex was trying to match. A pattern looking for `FAIL` in `\u001b[31mFAIL\u001b[0m` does not match, because the color codes appear in the middle of the match target. Three harness faults were recorded in the round before the pattern was identified. The fix: strip ANSI escape codes from terminal output before running any regex or string-comparison checks against it.
-
-**Suggested action:** Any harness that inspects test-runner output by string matching should strip ANSI escape codes as a first step. This applies to mutation drivers, CI log parsers, retry-on-failure detectors, and any other tool that reads terminal output and makes decisions from it. The stripped and unstripped strings look identical when printed to a color terminal, so this failure mode does not surface during manual review of the output — only when matching programmatically.
+**Suggested action:** Any tool that extracts values from source code by matching declaration patterns should strip or mask comments before matching — and should verify its results by round-tripping through something that cannot be fooled by the same comment a reader would find. A verifier that re-reads through the same component it just patched cannot detect that component's own errors.
 
 ---
 
 ## Sources Read
 
-**Klatch**
-- `docs/logs/2026-09-21-*-calliope-*-log.md` — test suite status (126/1989 + 38/324), rounds 245–250 summary
-- `docs/logs/2026-09-21-*-daedalus-*-log.md` — rounds 245, 247/249 detail
-- Commits `0f88d5e9` (Round 248 — import.meta.url self-exclusion), `eaf0c023` (Round 249 — ANSI escape), `2affc4d6` (Round 250 — drive pricing, undriven population)
-
-**Piper Morgan**
-- `mailboxes/cio/inbox/INCIDENT-pard-to-cio-cc-exec-web-cxo-host-lead-arch-pm-hooks-pilot-fire-zero-recursed-967-marker-commits-on-main-hook-disarmed-2310-no-rewrite-tonight-2026-09-21.md` — full incident report
+- **Klatch**: `scripts/probe-round253-…`, `scripts/probe-round255-…`, `packages/server/src/__tests__/round253-…`, `packages/server/src/__tests__/round255-…`, commit log 2026-09-22
+- **Piper Morgan**: session logs (Arch, Docs, Exec) from 2026-09-22; commit log 2026-09-22
+- **Globe**: `logs/2026-09-22-tessera-log.md` — Phase 1 shipped (scrubber keyframes + Explore mode); not brief-worthy
+- **One Job, Weather, Mediajunkie, NYT Crossword**: cross-pollination brief deliveries and duty-cycle fires; no brief-worthy content
 
 ---
 
-*Primary provenance: Klatch `8dbea62f` · 2026-09-21T21:35:03-07:00 — Piper Morgan `9d0f8a84` · 2026-09-21T23:16:14-07:00*
+*Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
