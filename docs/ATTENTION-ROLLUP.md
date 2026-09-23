@@ -32,23 +32,6 @@ invite — and being forgotten is the worst outcome for someone who
 volunteered first.
 
 
-### 🔴 31. Post the 1.1 LinkedIn draft — approved, and the clock is Wednesday morning
-Written, reviewed, and approved by Themis today ("ship it"). Full text
-in docs/LINKEDIN-1.1-draft.md. Themis's timing call is the reason this
-is red rather than green: **Wednesday is the Capital One call (11:35,
-Alexis Mencin + Asha Barry) plus the Product Coffee panel**, and
-whatever sits atop your feed that morning is part of how people size
-you up beforehand. A post showing someone who ships, rules on design
-in public, and attracts unpaid contributions from strangers is a
-better pre-call artifact than anything written for the purpose.
-**Since:** 2026-09-14
-**Ask:** Post the 1.1 draft today or tomorrow, tagging Teresa Klein.
-**Rec:** Paste as-is. Two applied review notes: tag her in the body
-(she's already public, with her own prototype attached), and keep the
-placement paragraph even if trimming — it's the paragraph doing the
-business work. No newsletter CTA, deliberately.
-
-
 ### 🟡 22. Pro-feedback session — conversational, screen by screen, when you're ready
 Xian (2026-09-10): wants this LIVE and conversational — "if we go
 screen by screen, flow by flow, I will remember and be able to narrate
@@ -133,6 +116,17 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 ---
 
 ## Settled
+
+### ✅ 31. Post the 1.1 LinkedIn draft — POSTED 2026-09-14 (closed 2026-09-23, three sessions late)
+Xian posted it the day it was asked, with minor edits and the Teresa
+tag — 2,076 post impressions, 460 profile views. The rollup entry
+never moved because no Coral session touched it between the post and
+now. Janus caught the staleness (2026-09-20 mail) and held it six days
+on the theory that xian should be the one to correct his own board —
+his own retraction: "the wrong call... it is a plain fact, it is mine
+to relay." Closed on arrival at the next real session (this one,
+2026-09-23), per the standing rule that an item answered elsewhere
+does not close itself.
 
 ### ✅ 28. Pilot link sent — Teresa is in (2026-09-17)
 Sent 09-14 via LinkedIn. First attempt failed: the link carried
