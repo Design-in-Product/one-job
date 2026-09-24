@@ -39,6 +39,28 @@ their own device) → **week 4** (their 28-day mark).
 | **Austin Wood** | Xian's invite, 2026-09-05 | iOS | 2026-09-05 (internal) | not yet | — | — | Unprompted "geeky hello" invite; no obligation. |
 | *(LinkedIn hand-raiser, 8/29)* | LinkedIn, pre-launch | unknown | — | — | — | — | **⚠ Name unrecoverable from our files.** Themis searched their agent directory, pulse log, and the deliverable: the only record anywhere is their own phrase "one hand already raised on LinkedIn (8/29) + reactions," with no name in either place. It lives in the reactions/comments on Xian's 8/29 post — thirty seconds for him, impossible for us. |
 
+## Candidates named 2026-09-23 — interest expressed, nothing sent yet
+
+Xian's own read as of today: **the agentic track has no solid recruit
+past himself** — the only agentic-track "participant" right now is
+Xian, via the rollup/fleet-probe card exchange with Coral, which he
+has explicitly said is too raw to extend to a stranger yet (see
+`ATTENTION-ROLLUP.md` item 27 and the 2026-09-23 coral-log). Nobody
+below has a link.
+
+| Person | Relationship | Track fit, as Xian sees it today | Notes |
+|---|---|---|---|
+| **Rich Frankel** | Friend | Agentic | Expressed interest; probably the easiest second agentic tester |
+| **Sam Spieth** | Friend's child | Agentic (tentative) | Vaguely interested, noncommittal, not reliable |
+| **Ted Nadeau** | Existing internal invite (see above, sent 09-05) | **Open question** — not really using agents yet, so may fit Regular better; but iPad-only and "an interested fellow geek" more than a typical target user, in either group | Reassignment not yet decided — recorded as a question, not a move |
+| **Teresa Klein** | Already joined via the Pilot (agentic) link, 09-16 (see above) | **Open question** — active and contributing, but Xian now isn't sure she reads as agentic vs. just an engaged regular user | Categorization uncertain; not reassigned pending discussion |
+| **Steve Portigal** | Friend, UX research background | Regular (tentative) | Willing to help; unclear if he's a good target user for either track |
+
+**Regular track (the forty)**: no active recruiting effort exists yet
+beyond the people above. Xian: "I would need a plan for actively
+recruiting this group as a separate effort" — that plan doesn't exist
+today.
+
 **Xian's short list** — he has names not yet written down (noted
 2026-09-12 via Janus). Add them here as they're named; the roster is
 the place, so they stop living in his head.
