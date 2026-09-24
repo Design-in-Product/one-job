@@ -1,5 +1,11 @@
 # User testing plan — as documented so far (summary for review)
 
+**Superseded 2026-09-23** by `USER-TESTING-PLAN-2026-09.md` — the
+working conversation this doc kicked off produced a real dependency-
+chain reframe (two independent tracks, not one sequential one). Kept
+here as the historical snapshot of pre-conversation state; the other
+file is the living plan.
+
 **Purpose of this doc:** not a new plan — a synthesis of what's already
 decided and built, spread across four files, so Xian can react to the
 whole shape at once and focus on where he actually has questions. His
