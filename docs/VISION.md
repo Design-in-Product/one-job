@@ -116,6 +116,18 @@ Asana task are the same event: a card arriving with provenance.
 2. Two gestures carry the system; new powers extend the grammar, they
    don't add chrome.
 3. The device owns the deck; everything remote is an adapter.
+
+   **The adapter connects to an endpoint the user designates and
+   owns — never a fixed destination the product ships with**
+   (Xian, 2026-09-24). Coral and Xian's own use of the one-job repo for
+   the card-exchange prototype is a founder's personal development
+   practice, dogfooding the R4 agent-deck model described in "The
+   company it keeps" — it sets no precedent for the product. If a
+   shipped feature ever pushes an export anywhere, every user supplies
+   and owns their own destination (their Dropbox, their iCloud, their
+   GitHub); there is no default, and no infrastructure Design in
+   Product operates sits in between.
+
 4. **An update never costs the user their data.**
 5. State is place. If a status flag can be a location, it must be.
 6. Simple things work before complex things are attempted (Gall's law,
