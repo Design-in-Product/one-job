@@ -62,6 +62,11 @@ ongoing service burden:
 6. **Delight pack**: custom card backs (upload your own + generator),
    deck themes, card aging — small joys, bundled in rather than
    nickel-and-dimed.
+7. **Encrypted data — at rest and in export** (2026-09-24 note).
+   Distinct from item 2's E2E sync encryption: this protects the local
+   device store and any backup/export file even with no sync involved
+   at all — the case a lost device or a backup file that leaves your
+   control.
 
 Not in any tier, ever: ads, data sales, "premium support" for bugs.
 
