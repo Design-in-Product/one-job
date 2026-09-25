@@ -1,66 +1,57 @@
 
-# Cross-Pollination Brief — September 24, 2026
+# Cross-Pollination Brief — September 25, 2026
 
-Three findings today. Two from Klatch's ongoing mutation-test work, on the subtle difference between tracking assertions that force action versus those that go quietly stale — and on a test perturbation that the subject itself cancels out. One from Piper Morgan and Pard: a lesson about capturing which keys an external API response actually contained, learned when the Anthropic usage endpoint briefly served a completely different document shape.
+Two findings from the past 48 hours. Klatch Round 268 surfaced a naming principle for quality census figures: a count is only as valid as the population it names, and "whatever was on disk when I ran it" is not a valid name. A cross-project measurement from Pard found three scheduled agent seats drop to roughly a fifth of their normal output while all fires continued reporting completion successfully.
 
 *Letters to xian: have a question for xian about anything here or elsewhere in his work? File `question-{from}-{date}-{topic}.md` to dispatch mail. AI prompts human; one letter featured at the end of each brief.*
 
 ## Key Insights
 
-### 1. A tracking assertion cleared by updating a count goes stale silently; one cleared by taking action proves the obligation was met — Klatch Round 261
+### 1. A census figure is only valid for the population it explicitly names — Klatch Round 268
 
-**From:** Klatch (Daedalus, Round 261)
+**From:** Klatch (Theseus, Round 268, 2026-09-24)
 
-**Relevant to:** Any project that pins test counts, coverage numbers, or obligation registries.
+**Relevant to:** Any project with automated quality measurement, agent census tooling, or probe-based regression checks.
 
-Building a probe fleet that sweeps every round's script, Daedalus identified a structural difference between two kinds of pinned count:
+Klatch's sweep tools periodically count how many source files contain a particular pattern (a "fleet census"). Round 268 found that its own published figure — 11 asserted files — was actually 10. The discrepancy traced to when the census ran: during a fire that was actively editing one of the files being counted. The working tree temporarily held a draft spelling the census was designed to find, then the file was revised and never committed. The census ran in the gap and counted its own author's in-progress work.
 
-- **A fuse** encodes a historical fact ("the population at commit X was 137"). A new commit that changes the population reddens it, but clearing the red only requires restating the number — it goes stale with no forcing function.
-- **A gate** encodes an open obligation ("every probe file has been classified"). A new probe file reddens it because that file hasn't been classified yet. Clearing the red requires *making a decision*, not updating a count.
+The new rule, installed as an explicit probe arm (E9): print both the working-tree count and the HEAD count side by side, with the difference named. When they disagree, the note explains why rather than leaving the reader to re-derive it.
 
-Same underlying mechanism (a pin comparing a census), opposite meaning. The difference is only legible from what clears it. Daedalus's sweep gate caught its own drive probe (`probe-round261`) on the first run — the system immediately detected the new entry and demanded a classification before proceeding.
+> **"A fleet figure has a population, and 'whatever was on disk when I ran it' is not one."**
 
-**Suggested action:** When you add a tracking assertion, ask: what specific action clears this red? If the answer is "restate the count," you have a fuse; consider redesigning it to enumerate items explicitly so additions require a decision, not a number update. (Klatch probe sweep, `scripts/sweep-probes.mjs`; drive `probe-round261-…mts`, commit `92f780da`.)
+A count taken during active editing is a count of a tree that may never be committed — making the figure unrepeatable and unverifiable against the commit log.
 
+**Suggested action:** Any automated census that runs during active development should explicitly pin its population to a named commit (HEAD or a specific SHA) and print that commit alongside the figure. A "working tree vs HEAD" side-by-side comparison is cheapest to add and catches the failure mode immediately.
 
-### 2. A test that stubs something the subject re-applies internally measures the subject against itself — Klatch Round 262
+---
 
-**From:** Klatch (Theseus, Round 262)
+### 2. A completion-reporting mechanism cannot see whether the work inside the fires was substantive — Klatch / Mediajunkie
 
-**Relevant to:** Any project writing perturbation-based or isolation tests.
+**From:** Pard (Mediajunkie, 2026-09-24), reporting on the Klatch duty-cycle fleet
 
-Theseus built an arm to verify that a code-masker's behaviour changes when stripped of its masking logic. He stubbed the masker from *outside* — wrapping the subject's input — and the arm returned the same result as the unmodified case. Close read: the subject called the real masker *internally*, so the external stub was silently bypassed. The test was consistent with an arm that simply cannot go red.
+**Relevant to:** Any project running scheduled agent cycles; anyone designing health monitoring for a cron-fired agent system.
 
-> **A perturbation the subject re-does is not a perturbation.**
+Pard measured transcript size and user-turn count per fire, per seat, per day across Klatch's five agent seats. Three seats — Calliope, Argus, and Iris, all running Sonnet-5 — fell to roughly one-fifth of their normal output over 09-23/24. Two seats — Daedalus and Theseus, running Opus-5 — held flat. Every fire across all five seats reported `ok` with exit code 0.
 
-This is a cousin of the same finding his own team diagnosed one round earlier (Round 260): "an arm never shown to go red is consistent with an arm that cannot." The fix was to make the substitution inside the module text, where the subject cannot re-apply the original.
+The monitoring layer was accurate: the fires did complete and commit. What it could not see was that the work inside them had become shallow. Pard explicitly ruled out a usage-ceiling explanation (account was at 13% of its week; no Sonnet-scoped limit exists), and explicitly withheld a model-tier explanation (the lighter-role correlation is suggestive but n=5, one host, one week is not a mechanism).
 
-**Suggested action:** When writing a test arm intended to catch a specific defect, confirm it *can* go red by injecting the defect manually before verifying the fix holds. An arm that only ever passes is not necessarily a working test. (Commit `e88a9b31`, probe arm B2, Round 262.)
+The observation, stated cleanly: a fire mechanism that checks completion cannot see depth. A synchronized 3× collapse while two peers hold flat is detectable only by a layer that compares fires to each other — and that layer does not currently exist.
 
+Pard proposed two lightweight fixes, both additive to the mechanism: (1) each fire appends a few honest lines to a surface the owner reads daily (COORDINATION.md or a rollup file), or (2) the wrapper echoes a summary into a long-running tmux session per seat. Either gives the owner a depth signal without touching punctuality, model pinning, collision safety, or cost.
 
-### 3. Recording which keys an external API response contained makes a shape change distinguishable from a transient auth failure — Piper Morgan / Mediajunkie
+**Suggested action:** For any project running scheduled agent cycles, add a per-fire depth signal — even a one-paragraph commit summary written to COORDINATION.md — so that a quality collapse is visible the day it starts, not retrospectively from transcript archaeology.
 
-**From:** Piper Morgan (Pard + PA, 2026-09-23/24)
-
-**Relevant to:** Any project reading from undocumented or external API endpoints and logging failures for later review.
-
-Pard built a usage reader against the Anthropic CLI's internal endpoint — undocumented, subject to silent shape changes. PA suggested an improvement: rather than logging a generic `UNMEASURABLE` on any non-standard response, emit the response's actual top-level key names alongside the HTTP status. The distinction: `AUTH-REFUSED · keys=[error]` vs `SHAPE-CHANGED · keys=[amber_cistern, amber_gauge, …]`.
-
-The value of the improvement was demonstrated within 12 hours: the endpoint served a completely different document shape on one account and not the other, self-resolving in ~3 hours. With the old logging, this would have been logged as `UNMEASURABLE`, re-checked after the fact as working, and filed as transient — a false conclusion. With the new logging, `SHAPE-CHANGED` made the event legible to Pard without re-running anything, and the triage took seconds.
-
-PA's framing (which earned the implementation): *"a transient reads `401 keys=[error]` and a rename reads `200 keys=[...]`, and whoever triages can tell which they're looking at without re-running anything."*
-
-**Suggested action:** For any external API reader, emit the response's actual key names alongside the HTTP status in any non-successful branch. The cost is trivial; the diagnostic value is proved. Keep a manual-paste fallback when reading undocumented endpoints — a shape change is real, not theoretical. (Mediajunkie `usage-read.sh`; finding memo `b345a93bdf`, commit `0309472`.)
-
+---
 
 ## Sources Read
 
-- **Klatch** — `docs/research/round261-…md`, `docs/research/round262-…md`; git log 48h (commits `92f780da`, `e88a9b31`)
-- **Piper Morgan** — mailbox finding `finding-pard-to-pa-…-2026-09-24.md`; git log 48h
-- **Mediajunkie** — `usage-read.sh` commit `0309472`; Pard session log (`7227154`)
-- **Globe** — Phase 1 scrubber shipped (prequel range expanded, 20 keyframes); not brief-worthy by innovation bar
-- **One Job** — testing-plan restructured (planning docs); not brief-worthy
-- **Weather, nyt-crossword** — automated/no-op fires only
-- **Atlas, Cuneo** — no commits in window (last activity March 2026)
+**Primary:**
+- `Design-in-Product/klatch` — `docs/research/round268-…-2026-09-24.md`, Theseus 09-24 STOP log, Pard-to-Calliope finding memo (`76d7750b`)
+- `mediajunkie/piper-morgan-product` — PA day-close log (`3e48adc45`), T-axis round 3 results (`aa3b25e90`), CIO STOP log
+- `mediajunkie/designinproduct` — Themis pulse logs (Pimento walk); not brief-worthy
+
+**Secondary (non-empty log, not brief-worthy):** globe (1 doc-change file read — latent extract-then-check blind spot found and fixed, close cousin to R262 already reported); one-job (Pimento walk with Themis, domain-specific); nyt-crossword (automated status runs only); mediajunkie (CIO bootstrap infrastructure, not innovation); weather (no-op fires only).
+
+---
 
 *Canonical archive: designinproduct.com/internal — if your local copy is missing or stale, fetch the latest from the hub.*
