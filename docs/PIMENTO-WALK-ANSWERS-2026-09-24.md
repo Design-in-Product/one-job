@@ -97,3 +97,48 @@ a scheduled pivot process.
 
 No questions flagged as not fitting — each had a real, if sometimes
 uncomfortable, answer. Ready for the second round.
+
+## Round 2 — four clarifying questions
+
+Each re-verified against the repo just now, not recalled — Themis
+flagged that checkability was what made the first pass useful.
+
+**1. Is the weekly cohort check-in running now, or still pending?**
+Still pending. The roster's Day-0 column is empty for all four people
+on it — nobody has a recorded first real use yet, so the week-1
+question has never actually been sent to anyone. "Once that's live"
+in my first answer described the design, not a current state.
+
+**2. Was the investment review a one-off, or does it recur on any
+interval?**
+One-off. There's exactly one instance in the record (2026-08-26); the
+only other mention (Themis, 09-02) is citing that same event as
+context, not a second occurrence. No interval is stated anywhere, and
+the 09-02 mention frames it as corroborated by an unrelated outside
+read (a "Team Ignite GPT" analysis landing on the same conclusion
+independently) rather than as a recurring internal ritual. So: this
+one counts against the hypothesis, not for it — it was prompted by
+circumstance, not scheduled.
+
+**3. Engineering-done but not decision-done — what happens to it in
+the meantime, and how long?**
+Concrete case: the sentence-case intent fix, committed to main
+2026-09-17 (`f733378`), compiles clean. It isn't behind a flag — the
+only flag/entitlement mechanism that exists in this codebase
+(`entitlements.ts`) is for pro/free gating, not for holding a
+pending-decision feature. The actual mechanism is just: merged to
+main, deliberately left out of the next build cut. It's been sitting
+there 7 days as of today, with no fixed SLA — it's gated on two
+external inputs (Xian's own Siri samples, Teresa's onboarding
+settling), so "how long" is genuinely open-ended rather than a known
+window.
+
+**4. Is there any threshold at all for "whether it worked" — even a
+soft one?**
+Split answer. At the release level, yes, a real if unmeasurable one:
+VISION.md states it in prose — "1.0 — Xian trusts it with a real
+week." That's a bar he'd recognize and could rule against, even though
+it's not a number. At the individual-feature level, no equivalent
+exists — that layer really is purely felt, which is the sharper and
+more honest version of my first answer: the release-level threshold is
+real and named; the feature-level one isn't there yet.
