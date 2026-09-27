@@ -25,6 +25,11 @@ not here.
 TestFlight, join. Anyone asking for an email address to be added is
 being handled the other way by mistake.
 
+**Day-0 blank is by design (xian, 2026-09-27):** no weekly check-ins
+until a program is declared active. An empty Day-0 column is not an
+unstarted instrument. Recruiting plan for the forty:
+`TRACK-B-RECRUITING-PLAN-2026-09.md`.
+
 ## Raised hands
 
 Status vocabulary, deliberately small:
