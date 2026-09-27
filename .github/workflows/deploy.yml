@@ -99,8 +99,11 @@ jobs:
           # "is there a place I can grab the latest deck?") — his phone
           # downloads onejob.co/probe/latest.json and imports it via
           # Settings. Newest dated file wins; absent is fine.
+          # Select by the ISO date in the NAME, never by mtime: a fresh
+          # checkout stamps every file with the same mtime, so `ls -t`
+          # picked arbitrarily and served the 08-31 deck until 2026-09-27.
           mkdir -p deploy/probe
-          latest=$(ls -t docs/probe/attention-deck-*.json 2>/dev/null | head -1)
+          latest=$(ls docs/probe/attention-deck-*.json 2>/dev/null | sort | tail -1)
           [ -n "$latest" ] && cp "$latest" deploy/probe/latest.json || true
 
       - name: Record bundle hash for post-deploy verification
