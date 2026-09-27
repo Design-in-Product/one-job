@@ -66,9 +66,9 @@ ordinary people who have no agent workflow at all.
    individual avoidant defers. (Xian, 2026-09-23 — a third failure mode
    distinct from the avoidance/recurrence split Week 1's question
    already covers.)
-2. [ ] **Build an actual recruiting plan.** This doesn't exist yet, and
-   unlike Track A it isn't blocked on anything technical — it's just
-   undone.
+2. [~] **Build an actual recruiting plan.** Drafted 2026-09-27 for
+   xian's review: `TRACK-B-RECRUITING-PLAN-2026-09.md` (waves, channels,
+   screener, gates G1–G5).
 3. [ ] Resolve open track-fit questions (below).
 4. [ ] Write the plain-framing trial doc (Themis's agent-framed draft
    belongs to Track A; the plainer revision for this track hasn't been
@@ -81,7 +81,9 @@ ordinary people who have no agent workflow at all.
 - The Cohort-40 TestFlight link exists (created, cap 40) but has never
   been shared.
 - No recruiting effort has been attempted.
-- Zero day-0s recorded — the weekly check-in machinery has never fired.
+- Zero day-0s recorded. **This is correct, not a gap**: xian, 2026-09-27,
+  said no check-ins start until a program is actually running (gate G5
+  in the recruiting plan).
 
 ---
 
@@ -105,7 +107,7 @@ ordinary people who have no agent workflow at all.
 
 - [ ] Iterate the card-exchange prototype — Track A's blocker, next
   conversation
-- [ ] Draft a Track B recruiting plan
+- [~] Draft a Track B recruiting plan (drafted 2026-09-27, awaiting xian's review)
 - [ ] Decide Tester B's and Pilot tester A's track fit (or decide not to force a
   decision yet)
 - [ ] Refine success criteria for both tracks, folding in the
