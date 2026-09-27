@@ -1,0 +1,57 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-09-27T17:48:17.549Z",
+  "tasks": [
+    {
+      "id": "7f072645-5793-4953-9484-dfa1f3706112",
+      "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
+      "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: This is the only thing One Job's turn needs from you (as I told Janus on 09-27). The test plan needs no yes/no beforehand. Read Themis's Pimento give-back *after* the session, together with 10.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-27 · waiting 45 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-27T17:48:17.549Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "9df4ac13-88e8-4e80-8643-d5ef624f1945",
+      "title": "Two Siri samples (what you said and what appeared), or say \"ship 40.\"",
+      "description": "🟡 #33 · Siri cards come out Title Case: two samples, or just ship build 40\n\nCoral's rec: Ship 40. Its build has been held 10 days, and Pilot tester A joined on 09-16. Testing the fix on 40 answers the same question the samples would. I'll tell Pilot tester A when it lands.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-27 · waiting 10 days (since 2026-09-17)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-27T17:48:17.549Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "a6fa8d85-7969-4691-946c-2f1e41d9fa1e",
+      "title": "How did answering from the deck actually feel?",
+      "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or somewhere in between. One word is enough. Friction noted as it happens beats a saved-up verdict.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-27 · waiting 27 days (since 2026-08-31)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-27T17:48:17.549Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "b7868728-93e6-45e7-ba3b-5974729cc327",
+      "title": "Check your 8/29 LinkedIn post and name the hand-raiser for the roster.",
+      "description": "🟢 #32 · Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us\n\nCoral's rec: Do it next time you're in LinkedIn. They volunteered before the app was public, which makes them a good early Pilot invite.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-27 · waiting 12 days (since 2026-09-15)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-27T17:48:17.549Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "9c23de11-d564-42fc-8324-985dc09a95a9",
+      "title": "REQUIREMENTS.md: kill it (mark it superseded) or rebaseline it?",
+      "description": "🟢 #10 · REQUIREMENTS.md is stale — kill it or rebaseline it?\n\nCoral's rec: Kill it. Put a \"superseded, see ROADMAP/VISION\" header on it and leave the file in place, which can be undone. Rebaselining 434 lines would duplicate the two docs that are already kept current.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-09-27 · waiting 61 days (since 2026-07-28)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-09-27T17:48:17.549Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}

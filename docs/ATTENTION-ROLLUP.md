@@ -1,346 +1,61 @@
+*Lean board (2026-09-27): only what needs xian. Everything settled or
+carried, including the full decision history, is in
+[`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
+The narrative is in `development/coral-logs/`.*
+
+*What changed 2026-09-27: 33 rewritten (the problem is Title Case, not
+ALL CAPS; the fix is merged; the samples gate build 40). 10 rewritten
+(1.0 shipped, so "after 1.0" is stale; Themis puts "kill it" on the
+table). 22's Rec now carries the one-sitting ask set I sent Janus.*
+
 ## Open
 
-### 🟡 33. The Siri ALL-CAPS title — I need the exact pair to fix it safely
-You reported a Siri-made card whose title came out all caps. Ruled out
-on our side: nothing in the app uppercases a title (the only
-`uppercase` style is the deck-name chip) and the intent only trims
-whitespace — so it arrives that way from Siri. **I deliberately have
-not "fixed" it**, because auto-lowercasing input breaks "NASA" and
-"URGENT", and the right fix depends on whether Siri always does this or
-only for some phrasings.
-**Since:** 2026-09-17
-**Ask:** Say two Siri cards — one short, one a full sentence — and tell me exactly what you said and exactly what appeared.
-**Rec:** Two samples decide it. If both come back caps, normalisation
-belongs in the intent; if only one does, it's a dictation-mode quirk
-and the fix is different. (Separately, on your "how do I add a
-description": Siri only ever prompts for required parameters — that's
-Apple's rule. In the Shortcuts app, tap the Add Card action to expand
-it and description + sub-tasks are both there.)
-
-
-### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
-Themis's records carry the fact without the subject — their own phrase
-"one hand already raised on LinkedIn (8/29) + reactions" is the only
-trace, in two places, with no name in either. It lives in the
-reactions and comments on your 8/29 post. Recorded in the roster with
-the surfaces we searched, per the absence-claim discipline.
-**Since:** 2026-09-15
-**Ask:** Check your 8/29 LinkedIn post and name the hand-raiser for the roster.
-**Rec:** Do it next time you are in LinkedIn anyway. They raised a hand
-before the app existed publicly, which makes them a good early Pilot
-invite — and being forgotten is the worst outcome for someone who
-volunteered first.
-
-
 ### 🟡 22. Pro-feedback session — conversational, screen by screen, when you're ready
-Xian (2026-09-10): wants this LIVE and conversational — "if we go
-screen by screen, flow by flow, I will remember and be able to narrate
-the key things easily." He also has screenshots of minor usability
-issues to bring. Coral will have a full flow-inventory walk order
-prepared so the session is pure narration.
+You want this live: "if we go screen by screen, flow by flow, I will
+remember and be able to narrate the key things easily." Bring your
+usability screenshots. I'll have the walk order ready.
 **Since:** 2026-08-13
 **Ask:** Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).
-**Rec:** Do it before the roadmap/next-steps conversation — your
-narration is evidence that discussion should consume, not follow.
+**Rec:** This is the only thing One Job's turn needs from you (as I
+told Janus on 09-27). The test plan needs no yes/no beforehand. Read
+Themis's Pimento give-back *after* the session, together with 10.
 
+### 🟡 33. Siri cards come out Title Case: two samples, or just ship build 40
+You reported that a Siri-made card came out Title Case. The fix is
+merged (`f733378`, 2026-09-17): the intent now declares sentence-case
+input, and dictation handles the capitals, so "Call Pilot tester A"
+stays right. There's no post-processing. It's in build 40, which I
+have deliberately not cut: I was waiting on your samples and on
+Pilot tester A's first days on 39.
+**Since:** 2026-09-17
+**Ask:** Two Siri samples (what you said and what appeared), or say "ship 40."
+**Rec:** Ship 40. Its build has been held 10 days, and Pilot tester A joined
+on 09-16. Testing the fix on 40 answers the same question the samples
+would. I'll tell Pilot tester A when it lands.
 
+### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
+Themis's records note "one hand already raised on LinkedIn (8/29)"
+but never name the person. The name is in the reactions and comments
+on your 8/29 post.
+**Since:** 2026-09-15
+**Ask:** Check your 8/29 LinkedIn post and name the hand-raiser for the roster.
+**Rec:** Do it next time you're in LinkedIn. They volunteered before
+the app was public, which makes them a good early Pilot invite.
 
 ### 🟡 27. Probe feedback — you are living in it now
-You imported the attention deck and started answering from it. First
-feedback already landed and already acted on: cards were dumping ledger
-prose instead of stating an ask (fixed in this very rewrite), and items
-were stale (audited, five closed). This is the R4.2-lite question
-running live — is a card a good place to answer an agent?
-
+You answer from the attention deck. Whether a card is a good place to
+answer an agent is the R4.2-lite question.
 **Since:** 2026-08-31
 **Ask:** How did answering from the deck actually feel?
-**Rec:** Relief, ceremony, or something between — that is the whole
-R4.2-lite question. No rush; two weeks of real use beats an early
-verdict. Note friction as it happens rather than saving it up.
+**Rec:** Relief, ceremony, or somewhere in between. One word is enough.
+Friction noted as it happens beats a saved-up verdict.
 
-### 🟢 10. REQUIREMENTS.md has drifted — needs your judgment, not my edit
-Dated 2026-07-04; its status line still says "concept-model rebuild
-(R1) is next" when R1 shipped long ago, and FR2 still describes
-substacks as live. Deciding what is now true across a 434-line spec is
-a product call with a lot of your judgment in it, which is why I have
-patched only what my work touched rather than re-baselining it.
-
+### 🟢 10. REQUIREMENTS.md is stale — kill it or rebaseline it?
+It's dated 2026-07-04. It still says R1 is next and still describes
+substacks as live. ROADMAP.md and VISION.md now say what's true.
+Themis's Pimento give-back names killing it as a real option.
 **Since:** 2026-07-28
-**Ask:** Draft a REQUIREMENTS.md re-baseline now, or after 1.0?
-**Rec:** After 1.0. It is doc debt, not a live risk, and the pivot may
-change more of it before then.
-
-## What I'm carrying (no ask — here so nothing is invisible)
-
-### Watching: 1.1 (38) processing on TestFlight — the Add Card intent
-Uploaded 2026-09-12 evening (UUID cd530600). When it's testable, the
-device check becomes an ask: install 38, open Shortcuts, confirm "Add
-Card" appears, run a quick add. Then the Pilot tester A reply gets its "it
-exists" follow-up.
-
-
-### Settled by ruling (2026-09-12): developer name stays personal — sole proprietor for now
-Xian ruled sole-proprietor-for-now, so the DUNS/entity question
-resolves to "no change until an S-corp decision later." Historical
-detail below kept for when that day comes.
-
-### (was) Parked: App Store developer name → "Design in Product"
-Listing shows "Christian Crumlish" (individual enrollment). Converting
-to an org account needs a D-U-N-S for the enrolling entity. Xian's EU
-trader (DSA) signup appears to have generated a DUNS — 2026-09-09:
-DUNS numbers are entity-scoped, not purpose-scoped, so it's reusable
-ONLY for the same entity/address it was registered to; a future S corp
-would get its own. Deliberately sequenced BEHIND the S corp decision
-(Xian, 2026-09-09) so the right entity enrolls once. Check what the
-existing number is attached to via dnb.com or
-developer.apple.com/enroll/duns-lookup when the time comes.
-
-
-
-
-### 🟢 1. Dependency vulnerabilities — recomputed 2026-08-29, 7 current
-Recount prompted by the Rule-14 brief (the old "4 remain" was computed
-against a tree the 08-16 lockfile surgery had since changed). Current:
-7 total, 6 moderate + 1 high. The original 4 (vite, esbuild,
-react-router ×2) are held deliberately — all need major bumps with real
-regression surface, and none is reachable in shipped code (traced
-2026-08-13: no `<Link>`, no `useNavigate`, no SSR anywhere). The 3 new
-are one dev-only chain, `@capacitor/cli → xcode → nested old uuid`,
-which runs on Amber during native builds and never ships.
-
-No ask — held posture: revisit as routine hygiene now that 1.0 has
-shipped; becomes an Open item only if the posture should change.
-(Its old line read "**Ask:** FYI only — nothing needed," which is an
-ask-shaped absence of one; the fourth guard caught it, correctly.)
-
----
-
-## Settled
-
-### ✅ 31. Post the 1.1 LinkedIn draft — POSTED 2026-09-14 (closed 2026-09-23, three sessions late)
-Xian posted it the day it was asked, with minor edits and the Pilot tester A
-tag — 2,076 post impressions, 460 profile views. The rollup entry
-never moved because no Coral session touched it between the post and
-now. Janus caught the staleness (2026-09-20 mail) and held it six days
-on the theory that xian should be the one to correct his own board —
-his own retraction: "the wrong call... it is a plain fact, it is mine
-to relay." Closed on arrival at the next real session (this one,
-2026-09-23), per the standing rule that an item answered elsewhere
-does not close itself.
-
-### ✅ 28. Pilot link sent — Pilot tester A is in (2026-09-17)
-Sent 09-14 via LinkedIn. First attempt failed: the link carried
-backticks in from my formatting and gave her a not-found error;
-resent bare on 09-16 and she was "On it!" the same day. Cohort
-mechanism proven end to end on a real outside tester. Remaining
-recruiting is names, not mechanism — roster at docs/COHORT-ROSTER.md.
-
-
-### ✅ Briefing answers 2026-09-10 (memo questions from the artifact)
-1. **R2 hold**: partial — "OK but wants the nuanced timing discussion."
-   His note: walk-and-chew-gum via well-governed subagent delegation is
-   allowed, but ONLY when demonstrably not diverting priority/resources
-   from primary goals. Feeds the next-steps conversation.
-2. All set. 3. **Probe scope: everything** — all three open colors deal
-   as cards (current behavior, now ratified; carrying-section items stay
-   un-dealt because a card without an Ask is the failure the format
-   exists to prevent). 4. **Covenant 7 amended** in VISION.md: spirit
-   kept, ethos articulated — "measure the shape of use, never the
-   content; we would not parse people's content even where we had
-   access."
-Also confirmed: device-pass checklist all green (that checklist was the
-pre-submission soak card from the roadmap's P0 era — moot since 1.0
-shipped, pleasant to have its confirmation on record).
-
-
-### ✅ 30. 1.0 RELEASED — live on the App Store 2026-09-09
-Xian pressed Release ~15:30; the listing went live ~18:30 (direct link;
-search indexing lags 24-48h and needs nothing from us). onejob.co front
-door deployed and verified: App Store primary CTA, web app as on-ramp,
-Android teaser dropped. Watchdog (rc.39) verified serving. Announcement
-cleared to post — draft with Themis's review applied is in
-docs/RELEASE-NOTE-1.0-draft.md.
-
-
-### ✅ 26. Ship 1.0 — SUBMITTED TO APP REVIEW 2026-09-05
-Xian completed every ASC step the same day: screenshots (composed set,
-all three profiles), full listing copy (his wording recorded in
-store/LISTING.md), build 37 selected, content rights + age rating +
-category, manual release, submitted. 🍾 Five days in Open, closed in
-one sitting. What remains — watching the review outcome — is my watch,
-not his ask; it lives in "What I'm carrying."
-
-
-### ✅ 29. Tester B TestFlight invite — SENT 2026-09-05
-Xian sent it during the submission session, and also added **Tester C** (developer, ex-OptiListen team) to the test group as a geeky
-hello. Two native-build testers now exist where there were zero — and
-Tester B is the iPad user, the surface verified least. Watch for first
-native-build feedback; both are recorded in docs/USER-FEEDBACK.md.
-
-
-*(2026-09-04) Purge copy — keep it.* Xian's call: "Delete forever"
-stays as written. Across sessions and in backups it is simply true, and
-overstating danger beats understating it.
-
-*(2026-09-04) Zapier export — removed, not reworded.* The open item
-asked whether to change the toast's wording. Xian asked what Zapier
-even was, which surfaced the real defect: the button said "Export
-Tasks", the toast said "Sent to Zapier", and the payload carried no
-task data. The July fix had made the message honest about transmission
-while the feature underneath still misrepresented itself. Removed in
-rc.36 along with the Asana and Todoist stubs (both collected real API
-tokens with no handler at all). Roadmap already listed push-export as
-Explicitly Retired; Todoist returns as a real 1.1 feature.
-
-*(2026-09-04) Pilot framing — the roadmap is authoritative.* Themis
-flagged two numbers circulating: "a pilot of 50 people who'd pay" (as
-Xian described it to Tester B) vs. the ratified **10 agent-heavy users
-first, then 40 ordinary**. Xian: *"the roadmap is accurate… my
-paraphrase was sloppy."* No change to the plan; the sequencing stands,
-and the two-audience design is the point — the ten test whether the
-agentic thesis holds, the forty test whether ordinary people retain.
-
-*(2026-09-02) Reconciliation audit — seven closures restored to the
-record.* Applying the day's cross-pollination brief ("restructuring a
-tracker silently drops items, and the cleaner output is why nobody
-re-audits it"), I diffed every `###` item across the 08-31/09-01
-restructures. Twelve items left the Open section; five had Settled
-entries, **seven did not** — their closures existed only in coral-logs
-and commit messages, so the rollup no longer recorded that they were
-ever decided. Restored below as terse entries. The full stories stay in
-the logs; what belongs here is that the decision happened.
-
-*(2026-08-20) Shake-to-undo removed* (was item 12) — iOS's own native
-"Undo Typing" shake gesture wins the race before our JS sees it; no
-web-exposed API can suppress it. Xian: "not cross-platform… not an MVP
-feature." Removed entirely in rc.33; menu Undo unaffected.
-
-*(2026-08-16) Multi-deck backup bug + the three-day deploy freeze* (was
-item 23) — export read `getAllTasks()` (active deck only), so
-multi-deck users' backups silently omitted every other deck; import
-flattened decks on restore. Both fixed in rc.32 with a v3 backup format
-and full v1/v2 back-compat. Investigating it surfaced that CI had been
-failing silently for three days (an npm optional-peer nondeterminism);
-fixed and verified by live bundle hash. Full account:
-`development/coral-logs/2026-08-16-coral-log.md`.
-
-*(2026-08-16) Native build pipeline proven* — first archive → export →
-upload ever completed on Amber. The ASC API key (App Manager role)
-could auto-create a Development cert/profile but NOT a Distribution
-one; that needed Xian's interactively-authenticated Admin Xcode
-session, separately for cert and profile. Now one-time; runbook in
-`docs/AMBER-XCODE.md`.
-
-*(2026-08-19) Real-PAT GitHub test* (was item 17) — superseded by real
-use rather than a scripted test. Result, in Xian's words: "it pulls in
-like every single issue… overflow the buffer. Not a really good use
-case yet." Repo-scoping or a beta flag is now a precondition for
-shipping any second source.
-
-*(2026-08-09) Relay migration* (was items 5/5a/5b) — superseded by
-events, not completed. Relay-on-kindbook was paused with honors after a
-capability map showed the git-delegation requirement couldn't be met on
-that surface at all. The ASC API key made the build pipeline the actual
-unblock these items had been reaching for.
-
-*(2026-08-08) ASC API key live* (was item 20) — `.p8` at the
-tool-canonical path, 700/600, verified by signed `GET /v1/apps` → 200.
-Made unattended archive+upload possible.
-
-*(2026-08-02) Dan enabled as tester* (was item 19) — device pass green
-on the real TestFlight artifact. His 2026-08-26 feedback later became
-the primary qualitative evidence in the investment-readiness memo.
-
-
-*(2026-08-31) Rollup staleness audit* — five items closed as overtaken
-by events, caught when Xian reported the probe deck "seemed possibly
-stale": **24** (rc.32 device pass — he called it settled; shake-undo
-removed, submission reframed), **25** (roadmap memo — all four
-questions answered 08-28/29, covenant amended, R1.5 built),
-**21** (store submission prep — device pass done, now item 26),
-**2** (Node version — `engines` declares >=22, CI runs 22 and 26, no
-live ask remains), **3** (dev-server port — 8081 is formally ours in
-Amber's registry, documented, auto-fallback works).
-
-*(2026-08-29) Instrumentation questions, all four* — week 1 + week 4
-cadence; random install UUID; Settings shows the user their own numbers
-("give value of data to users," now a recorded standing principle);
-build immediately. Shipped same day as rc.34.
-
-*(2026-08-28) Covenant 7 scope* — amended in VISION.md: a calm-UI
-principle governing what the interface renders, not a privacy
-commitment about what the app may know locally.
-
-*(2026-08-28) R2 holding* — "partial/other": R2 holds except R2.3
-(table surface) and dark mode, both approved to proceed via
-well-governed delegation once R1.5 was building cleanly (it shipped
-08-29, so the condition is met).
-
-
-*(2026-08-06) Keystore* — backed up to Xian's password manager and
-**verified by checksum: hashes identical** (bit-perfect restorable
-copy). The single-most-losable-artifact risk is closed; faoilean may
-now be repurposed without capability loss.
-
-*(2026-08-01) Trello = next source, Gall-gated* — Xian's call, with the
-taxonomy insight recorded in the roadmap first-pass (PM ≠ task
-management; GitHub serves work-tasks, his active Trello boards are the
-personal/project middle). Gate: his real-use GitHub test first. The
-board/list/card ↔ deck/card mapping question is queued for the
-planning doc.
-
-*(2026-07-29) R3.2 source = GitHub* — his call ("agreed re github");
-shipped same night. Trello noted as the natural second source.
-
-*(2026-07-29) Canvas strip* — approved from screenshots ("the strip is
-good"), so the deferred background-drag pan shipped same evening and
-the strip is DEFAULT-ON (rc.20); ?canvas=off stays as escape hatch.
-Confirmed: leftmost deck has no left peek. R2.1 complete.
-
-*(2026-07-29) Comp mechanism* — fine for now; secure + in-app when the
-paid tier faces real users. And recorded: not all new work is pro —
-free users keep getting improvements.
-
-*(2026-07-29) Item 7, blocked-completion dead end* — fixed under the
-standing default Xian didn't object to: the reveal now follows the same
-whole-subtree walk as the block. A refused completion descends the full
-path to the nearest open card, through completed intermediates, at any
-depth. E2E: the buried "grandchild under a done child" case now lands
-you looking at the blocking card itself.
-
-*(2026-07-29) Housekeeping* — Xian: 30 days. Built same day: done cards
-over 30 days old are filed to Archive at launch, every depth, witnessed
-by a quiet toast ("state is place" — no unwatched room changes). His
-note that the threshold could be a paid-tier setting is recorded in the
-decision record and PRICING notes — constant until then.
-
-*(2026-07-29) rc.12 heads-up* — Relay was already on rc.12; Xian
-confirmed the stamp call was right.
-
-*(2026-07-29) Design questions, all three* — search matches title +
-description; covenant 7 = felt in Trash (Done keeps its trophy count);
-no action-cards — instead shake-to-undo + Undo in the hold-menu over a
-session-deep history stack. Shipped same morning with the rest of the
-trash decisions (one-tap swipe delete, Empty trash, backups exclude
-trash). Full record: DESIGN-OPTIONS-2026-07-28.md § Decision Record.
-
-*(2026-07-28) Git identity* — Pard: switch to the resident-agent form,
-**`Coral (One Job) <coral@onejob.local>`**, repo-local; the network
-standardized on named-agent attribution. Visitors to another agent's
-repo override per-commit (`git -c user.name=… commit`); global stays
-unset forever. Done, and the authorship seam at 2026-07-28 is noted in
-CLAUDE.md — which was your condition. Pard also accepted the
-provisioning-checklist suggestion and is turning it into an
-`amber-agent --identity` flag, so it becomes mechanism rather than
-memory.
-
-*(2026-07-28) Port claim* — **8081 is One Job's**, in Amber's registry.
-8000 also ours. No need for 5173.
-
-*(2026-07-28) Session shape on Amber* — Pard: one long-lived session,
-repo direct, no worktrees; ff-to-main + no-PRs flow unchanged.
-
-*(2026-07-28) Amber environment questions* — Pard: node 26.5 fine,
-chromium in `~/Library/Caches/ms-playwright/`, 8000 free for FastAPI,
-git identity unaffected by the account re-point. All verified in
-practice today.
+**Ask:** REQUIREMENTS.md: kill it (mark it superseded) or rebaseline it?
+**Rec:** Kill it. Put a "superseded, see ROADMAP/VISION" header on it
+and leave the file in place, which can be undone. Rebaselining 434
+lines would duplicate the two docs that are already kept current.
