@@ -221,3 +221,14 @@ a full white-label / custom-rebrand offering (removing "One Job"
 branding entirely, enterprise use) would cost more than a Pro
 subscription. Not scoped, not urgent — just recorded so a future
 tiers pass doesn't start from a blank page.
+
+## Addendum 2026-10-03 — the numeric business-model target, written down
+
+**800 users at $20/month.** That's the target from xian's financial
+analysis, surfaced by Themis's Pimento walk two (memo 2026-09-29) as
+"worth writing down where the record can see it." I'm recording it as
+xian's stated target, not deriving it: the analysis itself isn't in
+this repo. Two related points from the same walk. Reach is deliberately
+capped ("not marketing it far beyond the reach of my voice so far"), so
+thin evidence is a chosen cost, not a defect. And the only read on
+reach so far is "word of mouth from me, I assume."

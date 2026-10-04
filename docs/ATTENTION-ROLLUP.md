@@ -3,10 +3,10 @@ carried, including the full decision history, is in
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 The narrative is in `development/coral-logs/`.*
 
-*What changed 2026-09-27: 33 rewritten (the problem is Title Case, not
-ALL CAPS; the fix is merged; the samples gate build 40). 10 rewritten
-(1.0 shipped, so "after 1.0" is stale; Themis puts "kill it" on the
-table). 22's Rec now carries the one-sitting ask set I sent Janus.*
+*What changed 2026-10-03: 32 closed. The hand-raiser is Sean S.; xian
+answered on 09-29 via Janus and has opened contact with him. 10's Rec
+now adds Themis's walk-two finding that nobody actually reads
+REQUIREMENTS.md.*
 
 ## Open
 
@@ -29,18 +29,9 @@ have deliberately not cut: I was waiting on your samples and on
 Teresa's first days on 39.
 **Since:** 2026-09-17
 **Ask:** Two Siri samples (what you said and what appeared), or say "ship 40."
-**Rec:** Ship 40. Its build has been held 10 days, and Teresa joined
+**Rec:** Ship 40. It has been held since 09-17, and Teresa joined
 on 09-16. Testing the fix on 40 answers the same question the samples
 would. I'll tell Teresa when it lands.
-
-### 🟢 32. Who raised their hand on LinkedIn on 8/29? Thirty seconds for you, impossible for us
-Themis's records note "one hand already raised on LinkedIn (8/29)"
-but never name the person. The name is in the reactions and comments
-on your 8/29 post.
-**Since:** 2026-09-15
-**Ask:** Check your 8/29 LinkedIn post and name the hand-raiser for the roster.
-**Rec:** Do it next time you're in LinkedIn. They volunteered before
-the app was public, which makes them a good early Pilot invite.
 
 ### 🟡 27. Probe feedback — you are living in it now
 You answer from the attention deck. Whether a card is a good place to
@@ -57,5 +48,6 @@ Themis's Pimento give-back names killing it as a real option.
 **Since:** 2026-07-28
 **Ask:** REQUIREMENTS.md: kill it (mark it superseded) or rebaseline it?
 **Rec:** Kill it. Put a "superseded, see ROADMAP/VISION" header on it
-and leave the file in place, which can be undone. Rebaselining 434
-lines would duplicate the two docs that are already kept current.
+and leave the file in place, which can be undone. Themis's walk two
+(09-29) found that its only potential reader is you, and you never
+open it. Rebaselining 434 lines would duplicate the two docs that are already kept current.

@@ -42,7 +42,7 @@ their own device) → **week 4** (their 28-day mark).
 | **Teresa Klein** | LinkedIn, launch post 2026-09-10 | iOS | **2026-09-14** (resent 09-16 — first link broke on stray backticks) | joining 09-16 ("On it!") | — | — | Two unprompted contributions: the App Intents idea that became 1.1's Add Card, then a Reminders→One Job Shortcut built on it. Offered a call. Asked unprompted for a preferred bug-report format — TestFlight's native flow was the answer. |
 | **Ted Nadeau** | Email/call, 2026-09-02 | **iPad only** | 2026-09-05 (internal invite, pre-Pilot) | not yet | — | — | On vacation; TestFlight is unfamiliar territory for him. Xian: not a chase. |
 | **Austin Wood** | Xian's invite, 2026-09-05 | iOS | 2026-09-05 (internal) | not yet | — | — | Unprompted "geeky hello" invite; no obligation. |
-| *(LinkedIn hand-raiser, 8/29)* | LinkedIn, pre-launch | unknown | — | — | — | — | **⚠ Name unrecoverable from our files.** Themis searched their agent directory, pulse log, and the deliverable: the only record anywhere is their own phrase "one hand already raised on LinkedIn (8/29) + reactions," with no name in either place. It lives in the reactions/comments on Xian's 8/29 post — thirty seconds for him, impossible for us. |
+| **Sean S.** | LinkedIn, xian's 8/29 research-trial post ("*raises hand*") | unknown | — | — | — | — | Named by xian 2026-09-29 via Janus: a 2nd-degree connection, "AI-Native Lead Design Engineer, Product Designer…". xian asked him on 09-29 for the best way to get in touch, so we're **waiting on Sean**. The post was about overseeing agents, so he likely fits **Track A (Pilot)**, but that's xian's call. He's the only LinkedIn hand-raiser. |
 
 ## Candidates named 2026-09-23 — interest expressed, nothing sent yet
 
