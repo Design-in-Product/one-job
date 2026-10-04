@@ -55,6 +55,17 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 32. The 8/29 LinkedIn hand-raiser is Candidate D (answered 2026-09-29, closed 2026-10-03)
+xian answered via Janus on 09-29, from a screenshot of the post. The
+person is Candidate D, a 2nd-degree connection ("AI-Native Lead Design
+Engineer…"), who commented "*raises hand*". xian replied the same day
+asking for the best way to reach him, so we're now waiting on Candidate D.
+He's the only LinkedIn hand-raiser (355 impressions, 7 reactions,
+1 comment). The item closed four days late because no Coral session
+ran between 09-27 and 10-03. The duty cycle armed on 10-03 is the
+fix. The waiting item is in the roster, not on the board, because it
+isn't waiting on xian.
+
 ### ✅ 31. Post the 1.1 LinkedIn draft — POSTED 2026-09-14 (closed 2026-09-23, three sessions late)
 Xian posted it the day it was asked, with minor edits and the Pilot tester A
 tag — 2,076 post impressions, 460 profile views. The rollup entry
