@@ -184,7 +184,10 @@ if (dateless.length) {
   process.exit(1);
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+// Local date, not UTC: toISOString() is UTC, so every run after 17:00 PT
+// (including the 17:49 duty fire) dated decks and "dealt" lines tomorrow.
+// Caught 2026-10-04 via the cross-pollination brief (Pard's UTC trap).
+const today = () => new Date().toLocaleDateString('en-CA');
 const tasks = openItems.map((item, i) => {
   // Title = the ask itself, so the face of the card is the question.
   // Number + status stay as a short prefix for provenance and triage.
