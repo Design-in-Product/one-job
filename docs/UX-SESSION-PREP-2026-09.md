@@ -5,6 +5,41 @@
 **Also carrying:** his three usability screenshots from launch week,
 with status and my initial takes for the conversation.
 
+## Refreshed 2026-10-04: what has moved since this was written (09-14)
+
+**The app's UX has not changed since 09-14.** The only code since then
+is the Siri sentence-case fix (`f733378`, not yet in a build), a
+data-downgrade guard, and tests. So items 2–5 below are still open
+exactly as written. What's new is around the app:
+
+- **Siri / Shortcuts "Add Card" shipped in 1.1** (Pilot tester A's idea). She
+  then built a Reminders → One Job shortcut on top of it. It's now
+  step 3b in the walk.
+- **Title Case from Siri:** fixed at the input layer, and it's in
+  build 40, which is held. That's item 33 on the board (🔒 "ship 40?").
+  It's a one-word answer if you want to give it in the session.
+- **Two new topics**, items 6 and 7 below: the agent's deck, and the
+  testing plan's one question that's yours.
+
+### 6 · The agent's deck — YOUR THOUGHTS (xian, 10-03)
+You said you've had a few thoughts on the "agent's deck" paradigm.
+This is the live centre of three threads. (a) The test plan's
+agent-heavy track is blocked only on the card exchange being raw.
+(b) Themis's 09-29 correction says open items should live as cards in
+your deck, each with when it opened and what would close it, and leave
+when closed, rather than in a new list. (c) VISION covenant 3: any
+export destination is one the user designates and owns. Design notes:
+`CARD-EXCHANGE-DESIGN-NOTES-2026-09.md`. **Nothing is proposed here.
+This slot is for your narration first.**
+
+### 7 · Testing the forty ordinary testers — one decision, when you're ready
+The recruiting plan is drafted (`TRACK-B-RECRUITING-PLAN-2026-09.md`).
+It has four quick calls: waves of 8/12/20? pass-it-on through friends,
+Candidate G first? communities in or out? thank-you as early pro access, not
+money? Nothing is sent until you declare the program active.
+
+ (2026-09-10, from real daily use)
+
 ## His three reports (2026-09-10, from real daily use)
 
 ### 1 · Toasts under the iOS reserved area — ✅ FIXED (rc.40)
@@ -69,6 +104,8 @@ picker. Worth designing rather than adding.
 2. The active card: swipe right (complete), swipe left (defer), tap
    (details), edit title/description, autosave on blur
 3. Add: empty-state form, arc-menu Add Task, + button
+   3b. Add from outside: Siri "Add Card" / the Shortcuts action
+   (and Pilot tester A's Reminders → One Job shortcut, if you've tried it)
 4. Into a card: sub-deck badge → interior → nested add → blocked
    completion ("finish what is inside") → back out
 5. Multi-deck: Decks… menu, switch, create, rename, move card between
@@ -79,5 +116,7 @@ picker. Worth designing rather than adding.
 8. Settings: backup export → OPEN THE FILE → import round-trip, quiet
    mode, usage panel + share summary, version line
 9. Integrations: GitHub import (repo picker, dedupe), demo labeling
-10. Anything that annoyed you this week that the list above missed —
+10. The agent's deck: your thoughts (item 6), then the attention deck
+    as you actually use it (rollup item 27)
+11. Anything that annoyed you this week that the list above missed —
     the screenshots conversation
