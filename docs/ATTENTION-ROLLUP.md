@@ -3,10 +3,9 @@ carried, including the full decision history, is in
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 The narrative is in `development/coral-logs/`.*
 
-*What changed 2026-10-05: 33's decision is answered. xian said "ship
-40" (via Janus, 15:4x). Build 1.1.1 (40) is archived and exported, but
-the upload to App Store Connect was stopped by my session's permission
-check, so 33 now asks for that approval instead.*
+*What changed 2026-10-06: build 1.1.1 (40) is uploaded and VALID, with
+What to Test set, and it's in the Internal group. 33 now asks only
+whether to give it to Pilot tester A (the Pilot group).*
 
 ## Open
 
@@ -21,21 +20,22 @@ xian, 10-03: "looking forward to finally discussing user experience this weekend
 told Janus on 09-27). The test plan needs no yes/no beforehand. Read
 Themis's Pimento give-back *after* the session, together with 10.
 
-### 🟡 33. 🔒 Build 40 is built: approve the upload
-You said "ship 40" on 10-05 (via Janus). Done on my side: version bumped
-to **1.1.1** (1.1 is live, so its version line is closed; App Store
-Connect confirms 1.1 is READY_FOR_SALE), 239/239 tests green, archive
-and export succeeded, and the release note is
-`docs/releases/1.1.1-40.md`. The upload (`xcrun altool`) was refused by
-my session's auto-mode permission check as a production deploy. That's
-a guard on your behalf, so I haven't routed around it.
-**🔒 Blocked on xian** since 2026-10-05. The choice: allow the upload,
-or run it yourself. Smallest answer: "upload it" in Coral's session.
-**Since:** 2026-10-05
-**Ask:** 🔒 Approve the build 40 upload in Coral's session (or run it yourself).
-**Rec:** Approve it in the session. It's the same command as builds
-31–39, and the What-to-Test note and Pilot tester A's heads-up follow it
-automatically.
+### 🟡 33. 🔒 Build 40 is on TestFlight (Internal): put it in Pilot tester A's Pilot group?
+Uploaded 2026-10-06 after xian added the upload permission (delivery
+a0384da7). ASC shows it **VALID**, What to Test is set from
+`docs/releases/1.1.1-40.md` (read back), and it's in the **Internal**
+group, so xian can install it now. **The Pilot group (Pilot tester A) still has
+only 39.** Attaching 40 to Pilot and submitting it for Beta App Review
+was refused by my session's permission check, because it hands a build
+to an outside tester. That's correctly a separate OK.
+**🔒 Blocked on xian** since 2026-10-06. The choice: give 40 to the Pilot
+group now, or test it yourself first. Smallest answer: "Pilot yes" or
+"me first."
+**Since:** 2026-10-06
+**Ask:** 🔒 Give build 40 to Pilot tester A's Pilot group now, or test it yourself first?
+**Rec:** Test it yourself first. It's on your phone via Internal right
+now, and two Siri cards take a minute. Then "Pilot yes", and I'll
+attach it, submit it for Beta App Review and tell Pilot tester A.
 
 ### 🟡 27. Probe feedback — you are living in it now
 You answer from the attention deck. Whether a card is a good place to
