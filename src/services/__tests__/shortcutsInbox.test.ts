@@ -19,7 +19,7 @@ vi.mock('@capacitor/preferences', () => ({
   },
 }));
 
-import { parseQueue, drainShortcutsInbox, PENDING_KEY } from '../shortcutsInbox';
+import { parseQueue, drainShortcutsInbox, PENDING_KEY, INBOX_LANDED_EVENT } from '../shortcutsInbox';
 import { getTaskStore, resetTaskStoreForTests } from '../taskStore';
 
 describe('parseQueue (hostile input is the normal case)', () => {
@@ -146,5 +146,58 @@ describe('the Swift writer and TS reader name the same slot', () => {
       path.resolve(__dirname, '../../../native/ios/AddCardIntent.swift'), 'utf8');
     const swiftKey = swift.match(/let key = "CapacitorStorage\.([^"]+)"/)?.[1];
     expect(swiftKey).toBe(PENDING_KEY);
+  });
+});
+
+// xian, 2026-10-06, testing build 40: "It requires a quit and restart for
+// the new card(s) to appear." The foreground drain DID land the cards in
+// the store; nothing told the mounted deck UI to re-read. The drain now
+// announces a landing, and Index refreshes on it.
+describe('a landing is announced so the open deck can refresh (no quit-and-restart)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    prefs.clear();
+    resetTaskStoreForTests();
+  });
+
+  it('dispatches INBOX_LANDED_EVENT with the count when cards land', async () => {
+    const seen: number[] = [];
+    const onLanded = (e: Event) => seen.push((e as CustomEvent<number>).detail);
+    window.addEventListener(INBOX_LANDED_EVENT, onLanded);
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'One' }, { title: 'Two' }]));
+    await drainShortcutsInbox();
+    window.removeEventListener(INBOX_LANDED_EVENT, onLanded);
+    expect(seen).toEqual([2]);
+  });
+
+  it('stays quiet when nothing landed (no refresh churn on every foreground)', async () => {
+    let fired = 0;
+    const onLanded = () => { fired += 1; };
+    window.addEventListener(INBOX_LANDED_EVENT, onLanded);
+    await drainShortcutsInbox();
+    window.removeEventListener(INBOX_LANDED_EVENT, onLanded);
+    expect(fired).toBe(0);
+  });
+});
+
+// xian's second caveat: with several decks, cards landed in the deck shown
+// on reopen, not the deck in focus when he added them. This pins what the
+// store does: a drain lands in whichever deck is ACTIVE at drain time.
+describe('deck targeting at drain time', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    prefs.clear();
+    resetTaskStoreForTests();
+  });
+
+  it('lands in the active deck, not deck[0], when another deck is focused', async () => {
+    const store = getTaskStore();
+    const second = await store.createDeck!('second');
+    await store.switchDeck!(second.id);
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Where do I go' }]));
+    await drainShortcutsInbox();
+    expect((await store.getAllTasks()).map(t => t.title)).toContain('Where do I go');
+    const first = (await store.getDecks()).find(d => d.id !== second.id)!;
+    expect(first.cards.map(c => c.title)).not.toContain('Where do I go');
   });
 });

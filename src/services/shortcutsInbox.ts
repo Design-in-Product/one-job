@@ -21,6 +21,11 @@ import { getTaskStore } from './taskStore';
 
 export const PENDING_KEY = 'oneJobPendingCards';
 export const SHORTCUTS_SOURCE = 'shortcuts';
+/** Fired on window after a drain lands ≥1 card (detail = count). The
+    foreground drain writes to the store while the deck UI is already
+    mounted; without this the cards sat invisible until a cold start
+    (xian, 2026-10-06, build 40: "requires a quit and restart"). */
+export const INBOX_LANDED_EVENT = 'onejob:inbox-landed';
 
 export interface PendingCard {
   title: string;
@@ -103,6 +108,11 @@ export async function drainShortcutsInbox(): Promise<number> {
       await Preferences.set({ key: PENDING_KEY, value: JSON.stringify(survivors) });
     } else {
       await Preferences.remove({ key: PENDING_KEY });
+    }
+    if (landed > 0) {
+      try {
+        window.dispatchEvent(new CustomEvent(INBOX_LANDED_EVENT, { detail: landed }));
+      } catch { /* announcing is best-effort; the cards are already safe */ }
     }
     return landed;
   } catch (err) {

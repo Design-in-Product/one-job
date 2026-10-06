@@ -17,6 +17,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import CardDeck from '@/components/CardDeck';
+import { INBOX_LANDED_EVENT } from '@/services/shortcutsInbox';
 import TaskForm from '@/components/TaskForm';
 import CompletedTasks from '@/components/CompletedTasks';
 import ChainView from '@/components/ChainView';
@@ -127,6 +128,16 @@ const Index = () => {
     // never change rooms unwatched — the quiet toast is the witnessing.
     const filed = getTaskStore().lastHousekeeping ?? 0;
     if (filed > 0) toast.info(t('toasts.housekeeping', { count: filed }));
+  }, [refreshTasks]);
+
+  // Cards dealt by Siri/Shortcuts land in the store from a foreground
+  // drain while this deck is already on screen; re-read when they do, so
+  // they appear without a quit-and-restart. Covers the boot drain too,
+  // which can finish after the first refresh.
+  useEffect(() => {
+    const onLanded = () => { refreshTasks(); };
+    window.addEventListener(INBOX_LANDED_EVENT, onLanded);
+    return () => window.removeEventListener(INBOX_LANDED_EVENT, onLanded);
   }, [refreshTasks]);
 
   // --- NEW: handleUpdateTask function to send PUT request for title/description ---
