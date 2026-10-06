@@ -55,6 +55,10 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+*(2026-10-06) Build 40 rollout order: "me first."* xian tests 40 from
+Internal before it goes to the Pilot group. That cleared the 🔒 on the
+Pilot-attach decision.
+
 *(2026-10-05) 33's decision: "ship 40."* xian, via Janus (mail
 2026-10-05 15:4x): "Please tell Coral yes, to ship 40." The fix gets
 tested on 40 itself instead of waiting for Siri samples. That cleared
