@@ -1,45 +1,45 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-06T18:49:44.665Z",
+  "exportedAt": "2026-10-06T20:11:05.631Z",
   "tasks": [
     {
-      "id": "88561d72-c8f1-4a05-9ee6-c780476e94cf",
+      "id": "076f37dd-ec70-4b0e-add7-ebc03508e75d",
       "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
       "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: This is the only thing One Job's turn needs from you (as I told Janus on 09-27). The test plan needs no yes/no beforehand. Read Themis's Pimento give-back *after* the session, together with 10.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-06 · waiting 54 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-06T18:49:44.664Z",
+      "createdAt": "2026-10-06T20:11:05.631Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "9515c43c-aa3b-4d68-8414-f3d156831264",
+      "id": "00083a21-a3ad-4549-b58c-5620dbd458fc",
       "title": "Install 40, say two Siri cards, then tell me how they came out.",
       "description": "🟡 #33 · Build 40: your Siri check, then Pilot\n\nCoral's rec: Use one short card and one full sentence with a name in it (\"call Pilot tester A about the shortcut\"). If both come out in sentence case with the name capitalised, say \"Pilot yes\". If not, send me exactly what you said and exactly what appeared.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-06 · waiting 0 days (since 2026-10-06)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-06T18:49:44.665Z",
+      "createdAt": "2026-10-06T20:11:05.631Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "ac6b8fee-c3b9-4d05-a6bf-83a7f02987dc",
+      "id": "d68c7265-77ba-48e8-af0b-234cbd627fbb",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or somewhere in between. One word is enough. Friction noted as it happens beats a saved-up verdict.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-06 · waiting 36 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-06T18:49:44.665Z",
+      "createdAt": "2026-10-06T20:11:05.631Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "44d28a02-efb4-468d-875b-0ee3508a9855",
+      "id": "c976eafa-ff6b-459c-bf14-6020fa993230",
       "title": "REQUIREMENTS.md: kill it (mark it superseded) or rebaseline it?",
       "description": "🟢 #10 · REQUIREMENTS.md is stale — kill it or rebaseline it?\n\nCoral's rec: Kill it. Put a \"superseded, see ROADMAP/VISION\" header on it and leave the file in place, which can be undone. Themis's walk two (09-29) found that its only potential reader is you, and you never open it. Rebaselining 434 lines would duplicate the two docs that are already kept current.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-06 · waiting 70 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-06T18:49:44.665Z",
+      "createdAt": "2026-10-06T20:11:05.631Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     }
