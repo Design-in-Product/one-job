@@ -3,11 +3,10 @@ carried, including the full decision history, is in
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 The narrative is in `development/coral-logs/`.*
 
-*What changed 2026-10-04: 33 is flagged 🔒, under xian's new rule
-(10-03, via Janus): it's the one item where my work actually stops
-without his decision. If it's still unanswered after 10-05, it goes to
-Janus. 22: xian said on 10-03 that the UX session is "this weekend".
-The others are "when you have time" items and stay unflagged.*
+*What changed 2026-10-05: 33's decision is answered. xian said "ship
+40" (via Janus, 15:4x). Build 1.1.1 (40) is archived and exported, but
+the upload to App Store Connect was stopped by my session's permission
+check, so 33 now asks for that approval instead.*
 
 ## Open
 
@@ -22,19 +21,21 @@ xian, 10-03: "looking forward to finally discussing user experience this weekend
 told Janus on 09-27). The test plan needs no yes/no beforehand. Read
 Themis's Pimento give-back *after* the session, together with 10.
 
-### 🟡 33. 🔒 Siri cards come out Title Case: two samples, or just ship build 40
-You reported that a Siri-made card came out Title Case. The fix is
-merged (`f733378`, 2026-09-17): the intent now declares sentence-case
-input, and dictation handles the capitals, so "Call Pilot tester A"
-stays right. There's no post-processing. It's in build 40, which I
-have deliberately not cut: I was waiting on your samples and on
-Pilot tester A's first days on 39.
-**🔒 Blocked on xian** since 2026-09-17 (flagged 2026-10-04). The choice: ship build 40 now, or wait for the samples. Smallest answer: "ship 40."
-**Since:** 2026-09-17
-**Ask:** 🔒 Ship build 40 now? (yes / wait for samples)
-**Rec:** Ship 40. It has been held since 09-17, and Pilot tester A joined
-on 09-16. Testing the fix on 40 answers the same question the samples
-would. I'll tell Pilot tester A when it lands.
+### 🟡 33. 🔒 Build 40 is built: approve the upload
+You said "ship 40" on 10-05 (via Janus). Done on my side: version bumped
+to **1.1.1** (1.1 is live, so its version line is closed; App Store
+Connect confirms 1.1 is READY_FOR_SALE), 239/239 tests green, archive
+and export succeeded, and the release note is
+`docs/releases/1.1.1-40.md`. The upload (`xcrun altool`) was refused by
+my session's auto-mode permission check as a production deploy. That's
+a guard on your behalf, so I haven't routed around it.
+**🔒 Blocked on xian** since 2026-10-05. The choice: allow the upload,
+or run it yourself. Smallest answer: "upload it" in Coral's session.
+**Since:** 2026-10-05
+**Ask:** 🔒 Approve the build 40 upload in Coral's session (or run it yourself).
+**Rec:** Approve it in the session. It's the same command as builds
+31–39, and the What-to-Test note and Pilot tester A's heads-up follow it
+automatically.
 
 ### 🟡 27. Probe feedback — you are living in it now
 You answer from the attention deck. Whether a card is a good place to

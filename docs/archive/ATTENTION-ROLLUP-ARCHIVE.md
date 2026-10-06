@@ -55,6 +55,12 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+*(2026-10-05) 33's decision: "ship 40."* xian, via Janus (mail
+2026-10-05 15:4x): "Please tell Coral yes, to ship 40." The fix gets
+tested on 40 itself instead of waiting for Siri samples. That cleared
+the 🔒 on the decision. The item stays open on the board only for the
+upload approval.
+
 ### ✅ 32. The 8/29 LinkedIn hand-raiser is Candidate D (answered 2026-09-29, closed 2026-10-03)
 xian answered via Janus on 09-29, from a screenshot of the post. The
 person is Candidate D, a 2nd-degree connection ("AI-Native Lead Design
