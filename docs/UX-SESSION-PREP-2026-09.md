@@ -40,6 +40,12 @@ money? Nothing is sent until you declare the program active.
 
  (2026-09-10, from real daily use)
 
+### 8 · Which deck do voice-added cards go to? (from xian's build-40 test, 10-06)
+With the app open, the fix in progress lands them in the deck you're
+looking at. With the app closed, they currently land in whichever deck
+you next open to. Alternatives: always the default deck, or a fixed
+Inbox deck. It's a taste call, and either is quick to build.
+
 ## His three reports (2026-09-10, from real daily use)
 
 ### 1 · Toasts under the iOS reserved area — ✅ FIXED (rc.40)
