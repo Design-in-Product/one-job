@@ -1,0 +1,47 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-10-06T00:51:18.530Z",
+  "tasks": [
+    {
+      "id": "02b97c6c-2dd8-40dd-8a13-64d051bf4381",
+      "title": "Name a time for the screen-by-screen pro-feedback session (bring your usability screenshots).",
+      "description": "🟡 #22 · Pro-feedback session — conversational, screen by screen, when you're ready\n\nCoral's rec: This is the only thing One Job's turn needs from you (as I told Janus on 09-27). The test plan needs no yes/no beforehand. Read Themis's Pimento give-back *after* the session, together with 10.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-05 · waiting 53 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-06T00:51:18.530Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "c3338c85-9538-440f-ae7d-9f9ca6688e4a",
+      "title": "🔒 Approve the build 40 upload in Coral's session (or run it yourself).",
+      "description": "🟡 #33 · 🔒 Build 40 is built: approve the upload\n\nCoral's rec: Approve it in the session. It's the same command as builds 31–39, and the What-to-Test note and Pilot tester A's heads-up follow it automatically.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-05 · waiting 0 days (since 2026-10-05)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-06T00:51:18.530Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "872ae8e8-334a-4185-a3fe-a5ccd4c46758",
+      "title": "How did answering from the deck actually feel?",
+      "description": "🟡 #27 · Probe feedback — you are living in it now\n\nCoral's rec: Relief, ceremony, or somewhere in between. One word is enough. Friction noted as it happens beats a saved-up verdict.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-05 · waiting 35 days (since 2026-08-31)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-06T00:51:18.530Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "f932c580-ee3d-4327-9531-818a8ee1ce3c",
+      "title": "REQUIREMENTS.md: kill it (mark it superseded) or rebaseline it?",
+      "description": "🟢 #10 · REQUIREMENTS.md is stale — kill it or rebaseline it?\n\nCoral's rec: Kill it. Put a \"superseded, see ROADMAP/VISION\" header on it and leave the file in place, which can be undone. Themis's walk two (09-29) found that its only potential reader is you, and you never open it. Rebaselining 434 lines would duplicate the two docs that are already kept current.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-05 · waiting 69 days (since 2026-07-28)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-06T00:51:18.530Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}
