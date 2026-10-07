@@ -43,7 +43,7 @@ problem.
 
 - The only real participant right now is **Xian himself**, via the
   rollup/fleet-probe exchange with Coral — not via TestFlight.
-- **Pilot tester A** joined the Pilot TestFlight link 09-16 and has
+- **Pilot tester A** was sent the Pilot TestFlight link 09-16 but **never joined**: no build was ever approved for outside testing (verified 2026-10-07) and has
   contributed unprompted twice (the App Intents idea behind 1.1's Add
   Card, then a Reminders→One Job Shortcut). Originally categorized
   agentic; Xian now isn't sure that's the right read of her (see below).

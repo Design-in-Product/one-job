@@ -55,6 +55,20 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+*(2026-10-07) 33: "Pilot yes."* xian gave it on 10-06. It sat unsent in
+Coral's session composer and only arrived via Janus's mail on 10-07
+(`xian-via-janus-to-coral-pilot-yes-build-40-to-pilot-tester-a-2026-10-07.md`),
+which is the record. Build 40 was attached to the Pilot group the same
+day (API 204).
+
+*(2026-10-07) CORRECTION to ✅ 28 below. Withdrawn: "Pilot tester A is in" and
+"cohort mechanism proven end to end on a real outside tester."* App
+Store Connect shows the Pilot group has had **0 testers**, and no build
+was ever submitted for outside testing (37, 38 and 39 are all
+READY_FOR_BETA_SUBMISSION). The required Test Information (Beta App
+Description, review contact) was never filled in. The link was sent;
+the mechanism was never proven. Her "On it!" was intent, not a join.
+
 *(2026-10-06) Build 40 rollout order: "me first."* xian tests 40 from
 Internal before it goes to the Pilot group. That cleared the 🔒 on the
 Pilot-attach decision.

@@ -26,6 +26,13 @@ Rolling starts are the design (per-install day-0 anchoring — each
 tester's 28 days run on their own clock), so neither group waits for
 the other or for a cohort date.
 
+## ⚠ Step 5 (Test Information) was never done — verified 2026-10-07
+The API shows no Beta App Description and empty review contact details.
+Without them Apple refuses every external review submission, so no
+build has ever been available on either public link. The groups and
+links exist; external testing has never been possible. Board item 33
+carries the fix.
+
 ## ✅ DONE 2026-09-13 — groups exist, links are live
 
 Created via the ASC API (Xian's go + his scarce time; the manual steps
