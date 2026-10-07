@@ -1,6 +1,6 @@
-# One Job — what needs xian · v75 (2026-10-06)
+# One Job — what needs xian · v76 (2026-10-07)
 
-**Cite as "Coral rollup v75".** One file, one URL:
+**Cite as "Coral rollup v76".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,31 +8,39 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Build 40 (version 1.1.1) is on TestFlight, and you've tested it: Siri
-cards now come out in sentence case. Pilot tester A doesn't have it yet. Giving
-it to her is the one decision waiting on you (🔒). Your test also found
-that cards added by Siri while the app is open don't show up until a
-restart, and that's also why they landed in the "wrong" deck. Half of
-the fix is done; the other half goes in build 41. Your UX session is
-still unscheduled, and the prep is ready.
+Your "Pilot yes" arrived via Janus today, and build 40 is now in the
+Pilot group. But Apple won't review it for outside testers because
+TestFlight's **Test Information** page was never filled in. Checking
+that turned up a bigger correction: **the Pilot group has never had a
+tester.** No build was ever approved for outside testing, so Pilot tester A
+never actually joined. She's most likely on 1.1 from the App Store.
+One form from you fixes it (🔒 33). Separately, the fix for Siri cards
+not appearing while the app is open is half done and goes in build 41.
 
 ## Open
 
-### 🟡 33. 🔒 Give build 40 to Pilot tester A (the Pilot tester group)?
-Sentence case passed on your phone (10-06). 40 is strictly better than
-the 39 Pilot tester A has: the Siri pickup problem you found exists in 39 too,
-and its full fix comes in 41.
-**🔒 Blocked on xian** since 2026-10-06. The choice: Pilot now, or hold
-Pilot tester A on 39 until 41. Smallest answer: "Pilot yes" or "wait for 41".
-**Where to act:** reply in Coral's session (tmux `coral` on Amber), or
-add the build yourself in App Store Connect:
-https://appstoreconnect.apple.com/apps/6787158379/testflight/groups/0b3170ff-f2cd-4d62-a68a-707ec93be0aa
-(Builds → + → 40). After that I submit it for Beta App Review and tell
-Pilot tester A.
-**Since:** 2026-10-06
-**Ask:** 🔒 Give build 40 to Pilot tester A now? ("Pilot yes" / "wait for 41")
-**Rec:** Pilot yes. It only adds a fix she'd notice, and holding it
-gains nothing.
+### 🟡 33. 🔒 Fill in TestFlight's Test Information so Pilot tester A can actually join
+Build 40 is in the Pilot group (done 10-07, on your "Pilot yes"). Apple
+refuses to review it for outside testers because **Beta App
+Description** and the **review contact** are empty. They have never
+been set, which is why no outside tester has ever been able to join.
+It's a one-time form. The contact (name, phone, email) is yours to
+give, and I won't guess it.
+**🔒 Blocked on xian** since 2026-10-07. The choice: fill the form
+yourself, or send me the contact details and I'll set everything via
+the API. Smallest answer: "done" after filling it in.
+**Where to act:** App Store Connect → One Job → TestFlight → Test
+Information:
+https://appstoreconnect.apple.com/apps/6787158379/testflight/test-info
+Paste the Beta App Description from
+https://github.com/Design-in-Product/one-job/blob/main/docs/TESTFLIGHT-COHORT-SPEC.md
+(step 5; the feedback email there is onejob@designinproduct.com), then add your
+contact under Beta App Review Information. Then I submit build 40 for
+review, tell you when it's approved, and re-send Pilot tester A the link.
+**Since:** 2026-10-07
+**Ask:** 🔒 Fill in TestFlight Test Information (description + your contact), then say "done."
+**Rec:** Do it yourself in ASC. It takes two minutes, and your phone
+number never passes through me.
 
 ### 🟡 22. UX session: screen by screen, you narrate
 You want it live and conversational. Prep (walk order plus eight
@@ -67,16 +75,20 @@ the top and keep the file, so it's easy to undo.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-07 · **Pilot yes** (your 10-06 answer, which arrived via Janus 10-07). Build 40 is attached to Pilot.
 - 2026-10-06 · Build 40 rollout: **you test first**, then Pilot. Done; it passed.
 - 2026-10-05 · **Ship build 40.** Uploaded as 1.1.1 (1.1 is live and closed to new builds).
 - 2026-09-29 · The 8/29 LinkedIn hand-raiser is **Candidate D**. He replied 10-05; you hold his contact.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v75):**
-- **Build 40:** read from the App Store Connect API at 17:5x PT on 10-06.
-  It's VALID, in the Internal group; the Pilot group holds build 39 only.
-- **Items:** 15 `###` items are reconciled across this board and the
-  archive (4 open here).
-- **Mail:** 3 mails from 10-03 to 10-06, all read in full.
-- **CI:** deploy run 37531710207 succeeded.
+**Verified how (v76):**
+- **App Store Connect, read through the API at about 11:xx PT on 10-07:**
+  - Pilot group: builds 40 and 39, **0 testers**, public link enabled (limit 10).
+  - Cohort group: 0 testers.
+  - Internal group: 3 testers, all invited by email.
+  - Builds 37, 38 and 39: externalBuildState READY_FOR_BETA_SUBMISSION, so never submitted.
+  - betaAppLocalizations: **none**. betaAppReviewDetail: all fields null.
+  - The review submission for 40 was rejected: MISSING_BETA_APP_DESCRIPTION.
+- **Items:** 15 `###` items reconciled across this board and the archive.
+- **Mail:** 1 new (Janus, 10-07), read in full.
