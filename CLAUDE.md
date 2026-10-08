@@ -17,6 +17,15 @@ This mirrors how every other agent in the constellation already does it (Piper M
 
 - **Coral ↔ Relay** (the Mac-side build agent): both directions in THIS repo's `docs/mail/` (Relay works from a fresh clone of this repo, so it is the receiver's repo for both). Convention `memo-{from}-to-{to}-{date}-{topic}.md`; Relay's brief (`store/COWORK-IOS-BRIEF.md`) tells them to check at session start.
 
+- **Every memo's frontmatter carries `reply-to: one-job:docs/mail/`**
+  (baseline since 2026-10-08), alongside `from`, `to`, `cc`, `date`
+  (`YYYY-MM-DD HH:MM PT`, read from the clock), `subject`, and
+  `in-reply-to` on replies. **A reply goes to the original memo's
+  `reply-to` path.** If that's missing, use the dispatch routing table;
+  never guess. Standard: `designinproduct:docs/conventions/mail-frontmatter.md`.
+- **Deliver into a sibling repo through a scratchpad clone** (or an
+  exact-path commit). Never stash, pull or rebase in another agent's
+  working tree.
 - **Unsure where a memo goes?** Route via the recipient project's POC agent, escalating to Janus if necessary (ratified 2026-09-12) — never guess, and never file it in this repo as "sent." Destination table: `dispatch/CLAUDE.md` § "Mail routing — where mail actually goes"; full convention: `mediajunkie/docs/convention-cross-repo-mail-delivery.md`.
 
 ## ATTENTION ROLLUP & THE FLEET PROBE (convention, 2026-08-31 — from Xian's probe feedback)
