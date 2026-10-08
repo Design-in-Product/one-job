@@ -55,6 +55,14 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 33. Siri sentence case → build 40 → Pilot (closed on the board 2026-10-07)
+The decision chain: "ship 40" (10-05) → "me first" (10-06; sentence
+case PASS on device) → "Pilot yes" (10-06, arrived via Janus 10-07) →
+Test Information filled in by xian (10-07). Build 40 was submitted for
+Beta App Review on 10-07 (WAITING_FOR_BETA_REVIEW). What's left is
+Coral's watch: Apple's approval, then xian re-sends Pilot tester A the link,
+then I confirm a non-zero tester count via the API.
+
 *(2026-10-07) 33: "Pilot yes."* xian gave it on 10-06. It sat unsent in
 Coral's session composer and only arrived via Janus's mail on 10-07
 (`xian-via-janus-to-coral-pilot-yes-build-40-to-pilot-tester-a-2026-10-07.md`),
