@@ -17,6 +17,7 @@
 
 import { Capacitor } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
+import { App } from '@capacitor/app';
 import { getTaskStore } from './taskStore';
 
 export const PENDING_KEY = 'oneJobPendingCards';
@@ -123,11 +124,25 @@ export async function drainShortcutsInbox(): Promise<number> {
   }
 }
 
-/** Boot + foreground wiring. Call once from main.tsx after hydration. */
+/** Boot + foreground + became-active wiring. Call once from main.tsx
+    after hydration. visibilitychange covers returning from another app;
+    appStateChange covers Siri (and Control Center, notifications), which
+    present OVER the app so the page never goes hidden; it only goes
+    inactive → active (xian, 2026-10-06, build 40: Siri cards added with
+    the app open never appeared until a restart). Concurrent drains
+    collapse to one, so overlapping triggers are harmless. */
 export function startShortcutsInbox(): void {
   if (!Capacitor.isNativePlatform()) return;
   void drainShortcutsInbox();
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') void drainShortcutsInbox();
   });
+  try {
+    void App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) void drainShortcutsInbox();
+    }).catch(err => console.error('shortcutsInbox: appStateChange listener failed:', err));
+  } catch (err) {
+    // Must never break boot (the inbox's hard rule); visibility still drains.
+    console.error('shortcutsInbox: appStateChange unavailable:', err);
+  }
 }
