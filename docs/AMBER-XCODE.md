@@ -93,7 +93,8 @@ xcrun altool --upload-app -f build/export/App.ipa -t ios \
 # feedback on 1.1(38): "it isn't clear what's new"): every upload ends
 # with a release note in docs/releases/<version>-<build>.md AND that
 # note pushed to TestFlight's What-to-Test field:
-node scripts/asc-whats-new.mjs <version> <build> docs/releases/<version>-<build>.md
+SCRATCHPAD=<this session scratchpad, with jsonwebtoken> \
+  node scripts/asc-whats-new.mjs <version> <build> docs/releases/<version>-<build>.md
 ```
 
 API key: `~/.appstoreconnect/private_keys/AuthKey_$KEY_ID.p8`, LIVE
