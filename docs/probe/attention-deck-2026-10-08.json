@@ -1,45 +1,45 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-08T13:10:23.687Z",
+  "exportedAt": "2026-10-08T14:51:44.945Z",
   "tasks": [
     {
-      "id": "5ed06dd8-96e0-4729-b9f6-9de1e35cb608",
+      "id": "bdf452af-b0f6-4b3e-a00c-8c5c00cc337e",
       "title": "Re-send Pilot tester A the Pilot link (draft on the board), then tell me it's sent.",
       "description": "🟡 #34 · Re-send Pilot tester A the Pilot link: it works now\n\nCoral's rec: Send it today, while she still remembers the shortcut she built. I'll confirm she's in by checking the group's tester count, not by her reply.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 0 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T13:10:23.687Z",
+      "createdAt": "2026-10-08T14:51:44.945Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "e9dd2f29-806d-455c-bf66-695d212c555b",
+      "id": "ffedfe95-cac6-483b-97d1-11b6950b4a97",
       "title": "Name a time for the UX session.",
       "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 56 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T13:10:23.687Z",
+      "createdAt": "2026-10-08T14:51:44.945Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7923c4e3-1739-4241-b488-93d29164bf3e",
+      "id": "3792a0a3-6f9f-430f-9384-1779b4b84fd0",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 38 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T13:10:23.687Z",
+      "createdAt": "2026-10-08T14:51:44.945Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "eed070cd-bebf-4ea4-806c-62d7c33e61d7",
+      "id": "818b110c-ced1-4dad-a58b-17d39b511147",
       "title": "REQUIREMENTS.md: retire it or rewrite it?",
       "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 72 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T13:10:23.687Z",
+      "createdAt": "2026-10-08T14:51:44.945Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     }

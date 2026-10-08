@@ -83,11 +83,67 @@ per the roster's privacy posture.
 
 | # | Gate | Owner | State |
 |---|---|---|---|
-| G1 | Success criteria refined for full-deck cycling (Track B step 1) | Coral drafts, xian rules | Open |
-| G2 | Plain-framing trial doc written (Track B step 4). Themis's agent-framed one is Track A's | Coral drafts, Themis reviews | Open |
+| G1 | Success criteria refined for full-deck cycling (Track B step 1) | Coral drafts, xian rules | **Drafted 2026-10-08** (below); waits on xian's ruling, incl. whether to build `sweeps` |
+| G2 | Plain-framing trial doc written (Track B step 4). Themis's agent-framed one is Track A's | Coral drafts, Themis reviews | **Drafted 2026-10-08** (below); waits on Themis's review |
 | G3 | A build attached to the Cohort group | Coral (ASC API) | Open. Do it when G5 is close, so the build isn't stale |
 | G4 | A synthesis owner: who reads four weeks of one-line answers, and what they produce | xian decides | Open. The test plan flags nobody owns this |
 | G5 | **xian declares the program active.** Only then do sends and weekly check-ins begin | xian | **Not active (2026-09-27)** |
+
+## Draft G1: success criteria for the forty (for xian to rule on)
+
+The existing bars stay as they are: **activated** = 5 cards created and
+2 active days; **retained** = 4 active days in days 22–28. What G1 adds
+is a way to read deferral honestly. Today's data can't separate three
+different behaviours that all show up as "lots of defers":
+
+| Behaviour | What it looks like | What it means |
+|---|---|---|
+| **Avoidance** | the same few cards deferred again and again | friction: the card or the app is failing |
+| **Recurrence** | a card deferred on a rhythm (weekly, say) | the feature working; defer standing in for "again later" (your own use) |
+| **Full-deck sweep** | deferring every card in a row, to see what's there | browsing, not avoiding any one card |
+
+The per-card deferral counts we record can't tell a sweep from N
+avoidant defers.
+
+**Proposed: one new counter, `sweeps`**: the number of times a run of
+consecutive defers, with no completion in between, reached the size of
+the deck. It counts shape only, never content (covenant 7), and it's
+about 15 lines in `metricsStore`. **Not built: it changes what the app
+measures, so it's yours to approve.**
+
+**Proposed reading rule:** a tester whose deferrals are mostly sweeps,
+or recurring per the week-1 question, is **not** counted as
+friction. Only repeated defers of the same few cards that are neither
+sweeps nor recurring are counted as friction.
+
+**Proposed track success bar, one sentence in the VISION style:**
+*"Track B succeeds if at least half of activated testers are still
+opening their deck in week 4, and fewer than one in four show
+avoidance-shaped deferral."* The numbers are placeholders for your
+ruling. The sentence's form is the point.
+
+## Draft G2: the plain-language tester description (for the Cohort group)
+
+This is the agent-free version for the forty. TestFlight's Beta App
+Description is **app-wide**, so it can't differ by group. This text is
+for the invite message and the Cohort's What to Test, not the shared
+description.
+
+> One Job is a to-do list that shows you one thing at a time. Your
+> tasks are a deck of cards: do the top one and swipe it away, or swipe
+> it to the back for later. That's the whole app.
+>
+> It's free, it works offline, and there's no account. Your list stays
+> on your phone and is never sent anywhere.
+>
+> We're asking a few people to use it for four weeks, as much or as
+> little as feels natural. Not using it tells us something too. If
+> you're willing, Settings can produce a short usage summary (counts
+> and days, never what your tasks say) that you can read before
+> choosing to send it.
+
+There's no weekly-question line: that waits for a program to be
+declared active (xian, 2026-10-07).
 
 ## What I need from xian
 
