@@ -23,7 +23,7 @@ import { mkdirSync, readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const PW_DIR = process.env.PLAYWRIGHT_DIR
-  ?? '/private/tmp/claude-501/-Users-xian-Development-one-job/e3ab1cd8-adf1-4feb-8f0d-60312181d1b0/scratchpad';
+  ?? (() => { throw new Error('Set PLAYWRIGHT_DIR to this session\'s scratchpad (where playwright@1.61.0 is installed). Session paths change on every restart, so there is no default.'); })();
 const { chromium } = createRequire(resolve(PW_DIR, 'package.json'))('playwright');
 
 // APPROVED caption copy (Xian, 2026-08-13 — his own edits, five of six

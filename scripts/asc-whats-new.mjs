@@ -15,7 +15,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(
-  (process.env.SCRATCHPAD ?? '/private/tmp/claude-501/-Users-xian-Development-one-job/e3ab1cd8-adf1-4feb-8f0d-60312181d1b0/scratchpad') + '/'
+  (process.env.SCRATCHPAD ?? (() => { throw new Error('Set SCRATCHPAD to this session\'s scratchpad (where jsonwebtoken is installed). Session paths change on every restart, so there is no default.'); })()) + '/'
 );
 const jwt = require('jsonwebtoken');
 

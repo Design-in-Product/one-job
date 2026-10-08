@@ -17,7 +17,7 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 
 const require = createRequire(
-  (process.env.PLAYWRIGHT_DIR ?? '/private/tmp/claude-501/-Users-xian-Development-one-job/e3ab1cd8-adf1-4feb-8f0d-60312181d1b0/scratchpad') + '/'
+  (process.env.PLAYWRIGHT_DIR ?? (() => { throw new Error('Set PLAYWRIGHT_DIR to this session\'s scratchpad (where playwright@1.61.0 is installed). Session paths change on every restart, so there is no default.'); })()) + '/'
 );
 const { chromium } = require('playwright');
 

@@ -31,7 +31,7 @@ import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const PW_DIR = process.env.PLAYWRIGHT_DIR
-  ?? '/private/tmp/claude-501/-Users-xian-Development-one-job/e3ab1cd8-adf1-4feb-8f0d-60312181d1b0/scratchpad';
+  ?? (() => { throw new Error('Set PLAYWRIGHT_DIR to this session\'s scratchpad (where playwright@1.61.0 is installed). Session paths change on every restart, so there is no default.'); })();
 const BASE_URL = process.env.BASE_URL ?? 'http://localhost:8081';
 // Refuse to seed anywhere but a local server (2026-09-18, from the
 // brief's "guard the handle, not the variable"): these scripts
