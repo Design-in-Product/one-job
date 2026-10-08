@@ -26,7 +26,13 @@ Rolling starts are the design (per-install day-0 anchoring — each
 tester's 28 days run on their own clock), so neither group waits for
 the other or for a cohort date.
 
-## ⚠ Step 5 (Test Information) was never done — verified 2026-10-07
+## Step 5 (Test Information): filled in by xian 2026-10-07
+"Once a week we'll ask you one question" was **cut** from the
+description (xian, 2026-10-07). No check-ins until a program is
+declared active, so the tester copy doesn't promise one. Add it back
+when that happens.
+
+## ⚠ Before 2026-10-07: step 5 had never been done
 The API shows no Beta App Description and empty review contact details.
 Without them Apple refuses every external review submission, so no
 build has ever been available on either public link. The groups and
@@ -74,8 +80,7 @@ So the first joiner may wait briefly before the build downloads.
    > deck lives on your device and is never sent anywhere.
    >
    > You're joining a small four-week pilot. There's nothing special
-   > you have to do — just use it (or don't; that's data too). Once a
-   > week we'll ask you one question. If you choose to, you can share
+   > you have to do — just use it (or don't; that's data too). If you choose to, you can share
    > your usage summary from Settings — it's a file you can read
    > yourself before sending, and it contains counts and days, never
    > the text of your tasks.
