@@ -84,7 +84,7 @@ per the roster's privacy posture.
 | # | Gate | Owner | State |
 |---|---|---|---|
 | G1 | Success criteria refined for full-deck cycling (Track B step 1) | Coral drafts, xian rules | **Drafted 2026-10-08** (below); waits on xian's ruling, incl. whether to build `sweeps` |
-| G2 | Plain-framing trial doc written (Track B step 4). Themis's agent-framed one is Track A's | Coral drafts, Themis reviews | **Drafted 2026-10-08** (below); waits on Themis's review |
+| G2 | Plain-framing trial doc written (Track B step 4). Themis's agent-framed one is Track A's | Coral drafts, Themis reviews | **Done 2026-10-08**: Themis approved, edits applied, TestFlight data check done (below) |
 | G3 | A build attached to the Cohort group | Coral (ASC API) | Open. Do it when G5 is close, so the build isn't stale |
 | G4 | A synthesis owner: who reads four weeks of one-line answers, and what they produce | xian decides | Open. The test plan flags nobody owns this |
 | G5 | **xian declares the program active.** Only then do sends and weekly check-ins begin | xian | **Not active (2026-09-27)** |
@@ -133,17 +133,30 @@ description.
 > tasks are a deck of cards: do the top one and swipe it away, or swipe
 > it to the back for later. That's the whole app.
 >
-> It's free, it works offline, and there's no account. Your list stays
-> on your phone and is never sent anywhere.
+> It's free, it works offline, and there's no account. Your tasks stay
+> on your phone and are never sent anywhere. (TestFlight itself sends
+> us Apple's standard beta information: crash reports, installs and
+> sessions, and your name and email. None of it includes your tasks.)
 >
 > We're asking a few people to use it for four weeks, as much or as
 > little as feels natural. Not using it tells us something too. If
 > you're willing, Settings can produce a short usage summary (counts
 > and days, never what your tasks say) that you can read before
-> choosing to send it.
+> choosing to send it. You can stop at any time by deleting the app.
 
 There's no weekly-question line: that waits for a program to be
 declared active (xian, 2026-10-07).
+
+**Reviewed by Themis 2026-10-08: approved with two edits, both applied**
+("Your list" → "Your tasks", plus the exit line). **Themis's TestFlight
+check is done:** Apple's TestFlight privacy page says TestFlight sends
+crash logs, the tester's name and email, usage information and any
+feedback to the developer, and crash reports are shared regardless of
+the device's diagnostics setting
+(apple.com/legal/privacy/data/en/test-flight/; App Store Connect help,
+"View build status and metrics"). None of it is task content, so the
+claim holds. The clause in parentheses names what *does* flow, so
+"never sent anywhere" stays literally true.
 
 ## What I need from xian
 

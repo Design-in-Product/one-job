@@ -1,6 +1,6 @@
-# One Job — what needs xian · v78 (2026-10-08)
+# One Job — what needs xian · v79 (2026-10-08)
 
-**Cite as "Coral rollup v78".** One file, one URL:
+**Cite as "Coral rollup v79".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -10,13 +10,33 @@ The narrative is in `development/coral-logs/`.
 
 **Apple approved build 40 for outside testers this morning (10-08,
 06:10).** It's the first One Job build ever approved for outside
-testing, so the Pilot link works for the first time. One small step
-from you: re-send Pilot tester A the link (item 34; a message is drafted
-below). The fix for Siri cards not appearing while the app is open
+testing, so the Pilot link works for the first time. Two small steps
+from you: add one clause to the tester description, so it's literally
+true under TestFlight (item 35), then re-send Pilot tester A the link (item 34;
+a message is drafted below). The fix for Siri cards not appearing while the app is open
 goes in build 41. The UX session is still unscheduled, and the prep is
 ready.
 
 ## Open
+
+### 🟡 35. Add one clause to the TestFlight description, so "never sent" stays true
+Your 10-07 Beta App Description says the deck "is never sent
+anywhere." But TestFlight itself sends us crash reports, the tester's
+name and email, and usage information, automatically and regardless
+of device settings (Apple's TestFlight privacy page). None of that is
+task content, but a tester would call it "sent". Themis's review of
+the Track B text raised the check, and that text now carries the
+clause.
+**Where to act:** https://appstoreconnect.apple.com/apps/6787158379/testflight/test-info
+→ Beta App Description. After "…is never sent anywhere." add:
+
+(TestFlight itself sends us Apple's standard beta information: crash reports, installs and sessions, and your name and email. None of it includes your tasks.)
+
+Or say "set it" and I'll update it through the API.
+**Since:** 2026-10-08
+**Ask:** Add the TestFlight clause to the Beta App Description (or say "set it").
+**Rec:** Do it before re-sending Pilot tester A the link (34), so the first
+real tester reads a description that's literally true.
 
 ### 🟡 34. Re-send Pilot tester A the Pilot link: it works now
 Your 09-14 and 09-16 links reached her, but nothing could be installed:
@@ -83,5 +103,6 @@ the top and keep the file, so it's easy to undo.
   poller saw it change, and a direct read confirmed it). The Pilot
   group has builds 40 and 39, 0 testers so far, and the public link is
   enabled.
-- **Items:** 16 `###` items reconciled across this board and the
-  archive (new: 34).
+- **Items:** 17 `###` items reconciled across this board and the
+  archive (new: 34, 35).
+- **TestFlight data flows:** Apple's TestFlight privacy page and App Store Connect help ("View build status and metrics"), read 10-08.
