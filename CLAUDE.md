@@ -545,6 +545,28 @@ grep -r "mobile\|responsive" src/ --include="*"
 
 ## SESSION MANAGEMENT
 
+### DUTY FIRES: THE FIRE IS A WAKE, NOT A TIME-BOX (xian, 2026-10-08)
+
+A duty-cycle fire (the 17:49 LaunchAgent) wakes me. It does not set
+my agenda. After the fire's checklist (sync, mail, push, log):
+
+1. **Drain.** List every unblocked item: mail, asks, my own queued
+   work, commitments I made. Do each one now.
+2. **Re-check mail**, and repeat. Go idle only after **two consecutive
+   checks find nothing new and nothing unblocked**.
+3. **No deadlines on unblocked work.** "Next fire", "tomorrow" and
+   "working session" are not reasons. Defer only with a **named
+   blocker**: a person who owes an input, a missing artifact, or an
+   external event.
+4. **Every fire entry carries a `Drain:` line** saying what was done
+   and each deferral with its blocker. `Drain: nothing unblocked after
+   two checks` is valid. The pre-commit hook enforces it
+   (`scripts/check-log-drain.mjs`; tests in
+   `src/services/__tests__/checkLogDrain.test.ts`).
+
+Canonical text: `mediajunkie/designinproduct` →
+`docs/conventions/duty-cycle-drain.md`.
+
 ### Session Logging Protocol
 
 **MANDATORY**: Every session MUST begin with creating or updating a session log. This ensures continuity across sessions and captures valuable insights.
