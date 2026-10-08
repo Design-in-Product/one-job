@@ -1,6 +1,6 @@
-# One Job — what needs xian · v77 (2026-10-07)
+# One Job — what needs xian · v78 (2026-10-08)
 
-**Cite as "Coral rollup v77".** One file, one URL:
+**Cite as "Coral rollup v78".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,15 +8,32 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Nothing is blocked on you right now. You filled in TestFlight's Test
-Information (10-07), and build 40 went to Apple's beta review the same
-evening. It's the first One Job build ever submitted for outside
-testers. When Apple approves it, I'll tell you, and you re-send Pilot tester A
-the Pilot link. That will be her first real chance to join. The fix for
-Siri cards not appearing while the app is open is half done and goes
-in build 41. The UX session is still unscheduled, and the prep is ready.
+**Apple approved build 40 for outside testers this morning (10-08,
+06:10).** It's the first One Job build ever approved for outside
+testing, so the Pilot link works for the first time. One small step
+from you: re-send Pilot tester A the link (item 34; a message is drafted
+below). The fix for Siri cards not appearing while the app is open
+goes in build 41. The UX session is still unscheduled, and the prep is
+ready.
 
 ## Open
+
+### 🟡 34. Re-send Pilot tester A the Pilot link: it works now
+Your 09-14 and 09-16 links reached her, but nothing could be installed:
+no build had ever been approved for outside testers. Build 40 is now
+approved (10-08) and attached to the Pilot group.
+**Where to act:** your LinkedIn thread with Pilot tester A. Paste as plain
+text. Last time, formatting around the link broke it. Draft:
+
+Good news: the TestFlight link works now (sorry, it couldn't have
+worked before; that was on our side). https://testflight.apple.com/join/dZ1DdUhJ
+This build makes Siri cards come out in sentence case.
+
+**Since:** 2026-10-08
+**Ask:** Re-send Pilot tester A the Pilot link (draft on the board), then tell me it's sent.
+**Rec:** Send it today, while she still remembers the shortcut she
+built. I'll confirm she's in by checking the group's tester count, not
+by her reply.
 
 ### 🟡 22. UX session: screen by screen, you narrate
 You want it live and conversational. Prep (walk order plus eight
@@ -51,6 +68,7 @@ the top and keep the file, so it's easy to undo.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-08 · **Build 40 approved for outside testers** (BETA_APPROVED, 06:10). The Pilot link now works.
 - 2026-10-07 · **Test Information filled in** by you. The weekly-question line was cut, to be added back when a program is active. Build 40 submitted for beta review (WAITING_FOR_BETA_REVIEW).
 - 2026-10-07 · **Pilot yes** (your 10-06 answer, which arrived via Janus 10-07). Build 40 is attached to Pilot.
 - 2026-10-06 · Build 40 rollout: **you test first**, then Pilot. Done; it passed.
@@ -59,14 +77,11 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v77):**
-- **App Store Connect, read through the API on 10-07 evening:**
-  - betaAppLocalizations en-US: description of 539 chars, without the
-    weekly-question line; feedback email and privacy URL set.
-  - Review contact: all four fields set (values not recorded here).
-  - Build 40 review submission: 201, and externalBuildState is
-    WAITING_FOR_BETA_REVIEW.
-  - Pilot group still has 0 testers. That's expected until Apple
-    approves the build and Pilot tester A re-joins.
-- **Items:** 15 `###` items reconciled across this board and the
-  archive (3 open here).
+**Verified how (v78):**
+- **App Store Connect, read through the API at 06:10 PT on 10-08:**
+  build 40's externalBuildState is BETA_APPROVED (the background
+  poller saw it change, and a direct read confirmed it). The Pilot
+  group has builds 40 and 39, 0 testers so far, and the public link is
+  enabled.
+- **Items:** 16 `###` items reconciled across this board and the
+  archive (new: 34).
