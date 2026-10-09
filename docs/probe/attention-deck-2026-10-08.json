@@ -1,55 +1,55 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-08T18:30:40.182Z",
+  "exportedAt": "2026-10-09T00:17:26.744Z",
   "tasks": [
     {
-      "id": "fa10f537-4bde-478e-98e3-f39ef6d49c40",
-      "title": "Add the TestFlight clause to the Beta App Description (or say \"set it\").",
-      "description": "🟡 #35 · Add one clause to the TestFlight description, so \"never sent\" stays true\n\nCoral's rec: Do it before re-sending Pilot tester A the link (34), so the first real tester reads a description that's literally true.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 0 days (since 2026-10-08)",
+      "id": "38fe41ca-1c32-41cf-bd4f-15f830b6461d",
+      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to Pilot tester A's group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 0 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T18:30:40.182Z",
+      "createdAt": "2026-10-09T00:17:26.744Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "256ed33d-a40e-40f3-adc2-7508b0734f6e",
-      "title": "Re-send Pilot tester A the Pilot link (draft on the board), then tell me it's sent.",
-      "description": "🟡 #34 · Re-send Pilot tester A the Pilot link: it works now\n\nCoral's rec: Send it today, while she still remembers the shortcut she built. I'll confirm she's in by checking the group's tester count, not by her reply.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 0 days (since 2026-10-08)",
+      "id": "36088018-46df-48ae-8c19-738d75d9c3a4",
+      "title": "Add the TestFlight clause to the Beta App Description (or say \"set it\").",
+      "description": "🟡 #35 · Add one clause to the TestFlight description, so \"never sent\" stays true\n\nCoral's rec: Soon. Pilot tester A has the link now and may be reading this text.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 0 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T18:30:40.182Z",
+      "createdAt": "2026-10-09T00:17:26.744Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "21448077-0a76-4256-959d-d430840562fd",
+      "id": "d1b880a7-461c-452e-9869-5609181dbc9a",
       "title": "Name a time for the UX session.",
       "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 56 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T18:30:40.182Z",
+      "createdAt": "2026-10-09T00:17:26.744Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "84a83d72-0e90-4385-afda-422902796801",
+      "id": "6f22b994-885d-4508-91df-88ff9161b62e",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 38 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T18:30:40.182Z",
+      "createdAt": "2026-10-09T00:17:26.744Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "844353d1-b350-4996-b555-231f2817a699",
+      "id": "40af4646-e315-49d6-938e-c278b4bb18b2",
       "title": "REQUIREMENTS.md: retire it or rewrite it?",
       "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-08 · waiting 72 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-08T18:30:40.182Z",
+      "createdAt": "2026-10-09T00:17:26.744Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     }
