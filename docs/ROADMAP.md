@@ -218,6 +218,44 @@ make."
 Gate: an agent-dealt card is indistinguishable in feel from a
 hand-written one, and no agent can ever reorder your deck.
 
+## Holding pen: candidate ideas, not scheduled (xian's design, 2026-09-25)
+
+xian's rule: **"Nothing should live outside the roadmap and be treated
+as canonical."** Ideas that surface in logs, mail or sessions are
+contingent until captured here. One list, no ranking: an idea **leaves**
+when it's chosen and scheduled into a stage above, or when it's
+dropped. The fun and premium shelves below are older holding pens of
+the same shape. Gathered 2026-10-08 from outside the roadmap. Each line
+names its source.
+
+- **Recurrence has no home: defer is doing double duty.** xian 09-15:
+  "a lot of those life cards are recurring reminders." Deliberately a
+  design conversation, not a feature yet. (UX prep item 5)
+- **Which deck gets voice-added cards when the app is closed?** The
+  deck you next open (today), the default deck, or a fixed Inbox.
+  (xian's build-40 test, 10-06; UX prep item 8)
+- **Siri asks for a description after the title** ("Any details?").
+  Today voice captures a title only, which is Apple's
+  optional-parameter rule. It's a design call because it adds a
+  question to every voice card. (10-06 session)
+- **Empty deck design:** deck name plus colour wash, or an always-present
+  blank card. (xian 09-10; UX prep item 2)
+- **Rooms type scale:** cap title auto-sizing in Done/Archive/Trash.
+  (xian 09-10; UX prep item 3)
+- **Regular-user feedback channel:** a Settings row that opens a
+  pre-addressed email with optional prompts. (xian 09-13; UX prep item 4)
+- **Open items as cards in the One Job deck,** each with the date it
+  opened and what would close it, leaving when closed. It generalises
+  the attention deck. (Themis, Pimento walk-two corrections, 09-29)
+- **A `sweeps` metric** to tell full-deck browsing from avoidance.
+  Content-free. (Track B plan, draft G1, 10-08; waits on xian's ruling)
+- **Todoist import vs. Reminders via a user-built shortcut:** an
+  ordinary feature question, not a pivot. Many sources is settled
+  intent. (xian via Themis, 09-29; Pilot tester A's shortcut, 09-17)
+- **Card-exchange daily cadence:** single-deck export and
+  habit-anchoring options. Offered, none chosen.
+  (`CARD-EXCHANGE-DESIGN-NOTES-2026-09.md`)
+
 ## The fun shelf (no stage, pull when joy demands)
 
 - Custom card backs: upload-your-own (discreet watermark) + playing-card
