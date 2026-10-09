@@ -1,6 +1,6 @@
-# One Job — what needs xian · v80 (2026-10-08)
+# One Job — what needs xian · v81 (2026-10-08)
 
-**Cite as "Coral rollup v80".** One file, one URL:
+**Cite as "Coral rollup v81".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -11,9 +11,8 @@ The narrative is in `development/coral-logs/`.
 You re-sent Pilot tester A the Pilot link (10-08). The Pilot group doesn't
 show her yet, and I'll confirm when it does. **Build 41** (the fix for
 Siri cards while the app is open) is on TestFlight in your Internal
-group, ready for you to test. Still open: one clause in the TestFlight
-description so "never sent" is literally true (35). The UX session is
-still unscheduled.
+group, ready for you to test. The TestFlight description is now literally true
+(you added the clause, 10-08). The UX session is still unscheduled.
 
 ## Open
 
@@ -26,24 +25,6 @@ on, with no restart. What to Test lists three checks.
 **Ask:** Install 41 and try Siri with the app open. Did the card appear in that deck?
 **Rec:** If yes, say "Pilot 41" and I'll attach it to Pilot tester A's group.
 If no, tell me exactly what you saw.
-
-### 🟡 35. Add one clause to the TestFlight description, so "never sent" stays true
-Your 10-07 Beta App Description says the deck "is never sent
-anywhere." But TestFlight itself sends us crash reports, the tester's
-name and email, and usage information, automatically and regardless
-of device settings (Apple's TestFlight privacy page). None of that is
-task content, but a tester would call it "sent". Themis's review of
-the Track B text raised the check, and that text now carries the
-clause.
-**Where to act:** https://appstoreconnect.apple.com/apps/6787158379/testflight/test-info
-→ Beta App Description. After "…is never sent anywhere." add:
-
-(TestFlight itself sends us Apple's standard beta information: crash reports, installs and sessions, and your name and email. None of it includes your tasks.)
-
-Or say "set it" and I'll update it through the API.
-**Since:** 2026-10-08
-**Ask:** Add the TestFlight clause to the Beta App Description (or say "set it").
-**Rec:** Soon. Pilot tester A has the link now and may be reading this text.
 
 ### 🟡 22. UX session: screen by screen, you narrate
 You want it live and conversational. Prep (walk order plus eight
@@ -78,6 +59,7 @@ the top and keep the file, so it's easy to undo.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
 - 2026-10-08 · **Pilot tester A re-sent the Pilot link** (by you). I'll call her "in" when the Pilot tester count shows her.
 - 2026-10-08 · **Go for build 41.** Uploaded and VALID, in Internal.
 - 2026-10-08 · **Build 40 approved for outside testers** (BETA_APPROVED, 06:10). The Pilot link now works.
@@ -89,7 +71,8 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v80):**
+**Verified how (v81):**
+- **Beta App Description:** read through the API after your edit. It's 699 chars, contains the TestFlight clause, and has no weekly-question line.
 - **App Store Connect, read through the API at 17:2x PT on 10-08:**
   - Build 41 is VALID, and its What to Test reads back
     ("1.1.1 (41) — Siri cards show up while the app is open").
@@ -99,4 +82,4 @@ the top and keep the file, so it's easy to undo.
 - **Build 41:** 250/250 tests and tsc clean before the archive. The
   archive's Info.plist reads 1.1.1 / 41. Delivery cf7f2dd2.
 - **Items:** 18 `###` items reconciled across this board and the
-  archive (34 settled; 36 new).
+  archive (34 and 35 settled; 36 new).
