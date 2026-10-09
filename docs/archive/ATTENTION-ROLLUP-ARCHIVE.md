@@ -55,6 +55,11 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 34. Re-send Pilot tester A the Pilot link (done by xian 2026-10-08)
+xian re-sent it after build 40's beta approval. "Pilot tester A is in" is
+claimed only when the Pilot group's tester count, read via the API,
+shows her. At settlement it read 0.
+
 ### ✅ 33. Siri sentence case → build 40 → Pilot (closed on the board 2026-10-07)
 The decision chain: "ship 40" (10-05) → "me first" (10-06; sentence
 case PASS on device) → "Pilot yes" (10-06, arrived via Janus 10-07) →
