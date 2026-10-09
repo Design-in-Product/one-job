@@ -55,6 +55,13 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 35. TestFlight clause in the Beta App Description (done by xian 2026-10-08)
+xian added: "(TestFlight itself sends us Apple's standard beta
+information: crash reports, installs and sessions, and your name and
+email. None of it includes your tasks.)" I verified it through the API
+(the description is 699 chars and contains the clause). "Never sent
+anywhere" is now literally true under TestFlight, per Themis's G2 check.
+
 ### ✅ 34. Re-send Pilot tester A the Pilot link (done by xian 2026-10-08)
 xian re-sent it after build 40's beta approval. "Pilot tester A is in" is
 claimed only when the Pilot group's tester count, read via the API,
