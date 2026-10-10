@@ -1,55 +1,55 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-10T00:50:55.468Z",
+  "exportedAt": "2026-10-10T01:12:49.537Z",
   "tasks": [
     {
-      "id": "078df031-6690-457b-9640-6ac6f8d99564",
-      "title": "Repo is public: leave tester names and your email, move them to a private repo, or make one-job private?",
-      "description": "🟡 #37 · This repo is public: keep tester names and your email here, or move them?\n\nCoral's rec: Move the roster to a private repo, and keep tester names out of this one from now on. **Don't make one-job private as a quick fix.** The org is on GitHub's free plan, and onejob.co is served by GitHub Pages from this repo, so going private would take the live site down unless the org upgrades. Your email: your call; it's your address.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 0 days (since 2026-10-09)",
+      "id": "4efd1a72-6260-4c30-bc09-40e341e6bdbf",
+      "title": "🔒 Scrub one-job history: A (roster + your email) or B (every tester name)?",
+      "description": "🟡 #37 · 🔒 Scrub one-job's history: narrow (A) or wide (B)?\n\nCoral's rec: B. It's what \"to be more secure\" means here: with A, the people are still named in about 77 files.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 0 days (since 2026-10-09)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T00:50:55.468Z",
+      "createdAt": "2026-10-10T01:12:49.537Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "f4ba9cb9-47bf-4ad9-8132-2fd56687d0f0",
+      "id": "a267c754-4596-4816-8eb0-0bb4fa227028",
       "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
       "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to Pilot tester A's group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 1 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T00:50:55.468Z",
+      "createdAt": "2026-10-10T01:12:49.537Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "43624215-434e-4b40-afe8-ec98980dfdce",
+      "id": "7f9de49a-8f34-4c7a-a92b-3d5b3c306564",
       "title": "Name a time for the UX session.",
       "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 57 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T00:50:55.468Z",
+      "createdAt": "2026-10-10T01:12:49.537Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7405cbad-a82e-4012-98b2-11bdd5a53b7b",
+      "id": "dc3c70c5-5a7c-4dba-be40-a1a180d7d979",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 39 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T00:50:55.468Z",
+      "createdAt": "2026-10-10T01:12:49.537Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "4260d119-70e8-4dda-b26b-95d810f08685",
+      "id": "be15fe4c-e888-490a-b4ce-508e90621945",
       "title": "REQUIREMENTS.md: retire it or rewrite it?",
       "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 73 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T00:50:55.468Z",
+      "createdAt": "2026-10-10T01:12:49.537Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     }

@@ -1,6 +1,6 @@
-# One Job — what needs xian · v82 (2026-10-09)
+# One Job — what needs xian · v83 (2026-10-09)
 
-**Cite as "Coral rollup v82".** One file, one URL:
+**Cite as "Coral rollup v83".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,37 +8,38 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**New, worth a look: this repo is public** (37). The tester roster names
-real people, and your personal email is in two files. Making the repo
-private would take onejob.co down on the free plan, so the fix is
-probably to move the roster out. Pilot tester A hasn't joined the Pilot yet,
+**Item 37 is moving.** The private repo `one-job-private` exists, the
+confidential files are moved into it, and the full public history is
+backed up there. One choice from you: how wide to scrub one-job's
+history (A or B, below). The first Pilot tester hasn't joined yet,
 though the link is verified live. Build 41 is waiting for your Siri
 test (36). The UX session is still unscheduled.
 
 ## Open
 
-### 🟡 37. This repo is public: keep tester names and your email here, or move them?
-`Design-in-Product/one-job` is **PUBLIC** (checked 10-09). The
-cross-pollination brief moved to a private repo for that reason. What
-here is publicly readable:
-- `docs/COHORT-ROSTER.md` names real testers and candidates (Pilot tester A, Candidate D, Tester B, Tester C, Candidate E, Candidate F,
-  Candidate G) and where each raised a hand.
-- Your personal address appears in `docs/TESTFLIGHT-COHORT-SPEC.md`
-  and the 10-07 coral-log.
+### 🟡 37. 🔒 Scrub one-job's history: narrow (A) or wide (B)?
+Done on your ruling (10-09): the private repo
+`Design-in-Product/one-job-private` exists. The roster, the tester
+feedback file and one call transcript have moved there (copies verified
+byte for byte). The **entire** public history is backed up there (every
+branch and tag), so the scrub can't lose anything.
 
-Nobody's contact details are stored (no tester emails or phones, by
-design). Moving files out wouldn't erase git history; only a history
-rewrite or making the repo private would.
-**Where to act:** reply in Coral's session or to Janus. Or change
-visibility at https://github.com/Design-in-Product/one-job/settings
-(Danger Zone).
+Still public: testers' names appear in about 78 files across history
+(logs, mail, briefs, decks), and your personal email in two.
+- **A:** remove only the roster file from history, and replace your
+  email. The names stay elsewhere.
+- **B:** also remove the feedback file and the transcript, and replace
+  every tester name in all history with a role label ("Pilot tester A"
+  and so on). Then force-push, and file a GitHub Support purge.
+
+The full plan (tool, verification, freeze window, costs) is in my mail
+to Janus.
+**🔒 Blocked on xian** since 2026-10-09. Smallest answer: "A" or "B".
+**Where to act:** reply in Coral's session or to Janus.
 **Since:** 2026-10-09
-**Ask:** Repo is public: leave tester names and your email, move them to a private repo, or make one-job private?
-**Rec:** Move the roster to a private repo, and keep tester names out
-of this one from now on. **Don't make one-job private as a quick fix.**
-The org is on GitHub's free plan, and onejob.co is served by GitHub
-Pages from this repo, so going private would take the live site down
-unless the org upgrades. Your email: your call; it's your address.
+**Ask:** 🔒 Scrub one-job history: A (roster + your email) or B (every tester name)?
+**Rec:** B. It's what "to be more secure" means here: with A, the people
+are still named in about 77 files.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -95,7 +96,8 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v82):**
+**Verified how (v83):**
+- **one-job-private:** PRIVATE (gh); main holds 3 confidential files (sha-matched to their one-job originals); pre-scrub refs: 4 branches + 20 tags, each verified against origin.
 - **Repo visibility:** `gh repo view` → PUBLIC. Org plan: **free**. Pages: workflow build, cname onejob.co (`gh api`, 10-09 17:5x).
 - **Beta App Description:** read through the API after your edit. It's 699 chars, contains the TestFlight clause, and has no weekly-question line.
 - **App Store Connect, read through the API at 17:2x PT on 10-08:**
