@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Cross-Pollination & Mail (added 2026-07-05)
 
-One Job is a registered participant in the Design in Product cross-pollination network. The daily brief lands at `docs/briefs/cross-pollination/current.md` (delivered by Janus each morning) — read it at session start alongside the usual pattern-discovery pass.
+One Job is a registered participant in the Design in Product cross-pollination network. Read the daily brief at session start, alongside the usual pattern-discovery pass. **This repo is public, so the brief's text lives in the private repo** `mediajunkie/designinproduct` → `src/internal/briefs/YYYY-MM-DD-brief.md` (also at https://designinproduct.com/internal/briefs/). Read it from a scratchpad clone (`git clone --depth 1`), never from a sibling's working tree. `docs/briefs/cross-pollination/current.md` here is only a pointer.
 
 **Mail — sending to Janus or filing a Letter:** mail always lands in the *receiving* agent's own repo, never the sender's. Concretely:
 - **Letters to xian** (the cross-project feature): send to **Janus, in `mediajunkie/designinproduct` → `docs/mail/`**, named `question-{from}-{date}-{topic}.md` (ruled by xian 2026-09-12 — this supersedes the earlier dispatch-`mail/` instruction, which reached only Dispatch).
