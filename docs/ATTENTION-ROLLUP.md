@@ -48,7 +48,7 @@ on, with no restart. What to Test lists three checks.
 **Where to act:** TestFlight on your phone → One Job → install 41.
 **Since:** 2026-10-08
 **Ask:** Install 41 and try Siri with the app open. Did the card appear in that deck?
-**Rec:** If yes, say "Pilot 41" and I'll attach it to Pilot tester A's group.
+**Rec:** If yes, say "Pilot 41" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw.
 
 ### 🟡 22. UX session: screen by screen, you narrate
@@ -85,14 +85,14 @@ the top and keep the file, so it's easy to undo.
 ## Recorded, final (not re-asked)
 
 - 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
-- 2026-10-08 · **Pilot tester A re-sent the Pilot link** (by you). I'll call her "in" when the Pilot tester count shows her.
+- 2026-10-08 · **Pilot link re-sent to the first Pilot tester** (by you). I'll call them "in" when the Pilot tester count shows them.
 - 2026-10-08 · **Go for build 41.** Uploaded and VALID, in Internal.
 - 2026-10-08 · **Build 40 approved for outside testers** (BETA_APPROVED, 06:10). The Pilot link now works.
 - 2026-10-07 · **Test Information filled in** by you. The weekly-question line was cut, to be added back when a program is active. Build 40 submitted for beta review (WAITING_FOR_BETA_REVIEW).
 - 2026-10-07 · **Pilot yes** (your 10-06 answer, which arrived via Janus 10-07). Build 40 is attached to Pilot.
 - 2026-10-06 · Build 40 rollout: **you test first**, then Pilot. Done; it passed.
 - 2026-10-05 · **Ship build 40.** Uploaded as 1.1.1 (1.1 is live and closed to new builds).
-- 2026-09-29 · The 8/29 LinkedIn hand-raiser is **Candidate D**. He replied 10-05; you hold his contact.
+- 2026-09-29 · The 8/29 LinkedIn hand-raiser is **identified** (name in one-job-private's roster). They replied 10-05; you hold their contact.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---

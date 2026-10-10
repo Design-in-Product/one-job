@@ -1,55 +1,55 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-10T01:12:49.537Z",
+  "exportedAt": "2026-10-10T01:13:02.469Z",
   "tasks": [
     {
-      "id": "4efd1a72-6260-4c30-bc09-40e341e6bdbf",
+      "id": "2d83321d-95c5-404c-a415-3b9c40321000",
       "title": "🔒 Scrub one-job history: A (roster + your email) or B (every tester name)?",
       "description": "🟡 #37 · 🔒 Scrub one-job's history: narrow (A) or wide (B)?\n\nCoral's rec: B. It's what \"to be more secure\" means here: with A, the people are still named in about 77 files.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 0 days (since 2026-10-09)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T01:12:49.537Z",
+      "createdAt": "2026-10-10T01:13:02.468Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "a267c754-4596-4816-8eb0-0bb4fa227028",
+      "id": "38e2a651-cdd0-4778-b4e8-0f9ec06b945e",
       "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
-      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to Pilot tester A's group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 1 days (since 2026-10-08)",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 1 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T01:12:49.537Z",
+      "createdAt": "2026-10-10T01:13:02.468Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7f9de49a-8f34-4c7a-a92b-3d5b3c306564",
+      "id": "4d1b3e6c-7163-4df5-95fb-82dda2dccfe1",
       "title": "Name a time for the UX session.",
       "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 57 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T01:12:49.537Z",
+      "createdAt": "2026-10-10T01:13:02.468Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "dc3c70c5-5a7c-4dba-be40-a1a180d7d979",
+      "id": "e2620f69-d4fd-44b7-ae1e-e884ac09a689",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 39 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T01:12:49.537Z",
+      "createdAt": "2026-10-10T01:13:02.468Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "be15fe4c-e888-490a-b4ce-508e90621945",
+      "id": "21d1f8db-cdfa-4773-af68-398cee6d87a4",
       "title": "REQUIREMENTS.md: retire it or rewrite it?",
       "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 73 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-10T01:12:49.537Z",
+      "createdAt": "2026-10-10T01:13:02.468Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     }
