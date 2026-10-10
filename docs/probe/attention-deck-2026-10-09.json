@@ -1,0 +1,57 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-10-10T00:50:38.883Z",
+  "tasks": [
+    {
+      "id": "115fc920-ed32-4e9c-adc0-793e297ed2c6",
+      "title": "Repo is public: leave tester names and your email, move them to a private repo, or make one-job private?",
+      "description": "🟡 #37 · This repo is public: keep tester names and your email here, or move them?\n\nCoral's rec: Move the roster to a private repo, and keep tester names out of this one from now on. **Don't make one-job private as a quick fix.** The org is on GitHub's free plan, and onejob.co is served by GitHub Pages from this repo, so going private would take the live site down unless the org upgrades. Your email: your call; it's your address.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 0 days (since 2026-10-09)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-10T00:50:38.883Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "dc444938-8c00-466d-8bb7-44c3bd4bb7a4",
+      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to Pilot tester A's group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 1 days (since 2026-10-08)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-10T00:50:38.883Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "eaeae9dd-d391-4799-912f-67647648219d",
+      "title": "Name a time for the UX session.",
+      "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 57 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-10T00:50:38.883Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "679caf87-09c5-4a30-a6bc-2749571e5c24",
+      "title": "How did answering from the deck actually feel?",
+      "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 39 days (since 2026-08-31)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-10T00:50:38.883Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "09144a76-4937-4fab-baa4-f79832c834be",
+      "title": "REQUIREMENTS.md: retire it or rewrite it?",
+      "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-09 · waiting 73 days (since 2026-07-28)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-10T00:50:38.883Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}
