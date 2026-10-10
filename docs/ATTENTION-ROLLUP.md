@@ -8,11 +8,12 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-You re-sent Pilot tester A the Pilot link (10-08). The Pilot group doesn't
-show her yet, and I'll confirm when it does. **Build 41** (the fix for
-Siri cards while the app is open) is on TestFlight in your Internal
-group, ready for you to test. The TestFlight description is now literally true
-(you added the clause, 10-08). The UX session is still unscheduled.
+**New, worth a look: this repo is public** (37). The tester roster names
+real people, and your personal email is in two files. Making the repo
+private would take onejob.co down on the free plan, so the fix is
+probably to move the roster out. Pilot tester A hasn't joined the Pilot yet,
+though the link is verified live. Build 41 is waiting for your Siri
+test (36). The UX session is still unscheduled.
 
 ## Open
 
