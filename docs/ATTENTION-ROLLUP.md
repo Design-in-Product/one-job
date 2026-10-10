@@ -1,6 +1,6 @@
-# One Job — what needs xian · v81 (2026-10-08)
+# One Job — what needs xian · v82 (2026-10-09)
 
-**Cite as "Coral rollup v81".** One file, one URL:
+**Cite as "Coral rollup v82".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -15,6 +15,29 @@ group, ready for you to test. The TestFlight description is now literally true
 (you added the clause, 10-08). The UX session is still unscheduled.
 
 ## Open
+
+### 🟡 37. This repo is public: keep tester names and your email here, or move them?
+`Design-in-Product/one-job` is **PUBLIC** (checked 10-09). The
+cross-pollination brief moved to a private repo for that reason. What
+here is publicly readable:
+- `docs/COHORT-ROSTER.md` names real testers and candidates (Pilot tester A, Candidate D, Tester B, Tester C, Candidate E, Candidate F,
+  Candidate G) and where each raised a hand.
+- Your personal address appears in `docs/TESTFLIGHT-COHORT-SPEC.md`
+  and the 10-07 coral-log.
+
+Nobody's contact details are stored (no tester emails or phones, by
+design). Moving files out wouldn't erase git history; only a history
+rewrite or making the repo private would.
+**Where to act:** reply in Coral's session or to Janus. Or change
+visibility at https://github.com/Design-in-Product/one-job/settings
+(Danger Zone).
+**Since:** 2026-10-09
+**Ask:** Repo is public: leave tester names and your email, move them to a private repo, or make one-job private?
+**Rec:** Move the roster to a private repo, and keep tester names out
+of this one from now on. **Don't make one-job private as a quick fix.**
+The org is on GitHub's free plan, and onejob.co is served by GitHub
+Pages from this repo, so going private would take the live site down
+unless the org upgrades. Your email: your call; it's your address.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -71,7 +94,8 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v81):**
+**Verified how (v82):**
+- **Repo visibility:** `gh repo view` → PUBLIC. Org plan: **free**. Pages: workflow build, cname onejob.co (`gh api`, 10-09 17:5x).
 - **Beta App Description:** read through the API after your edit. It's 699 chars, contains the TestFlight clause, and has no weekly-question line.
 - **App Store Connect, read through the API at 17:2x PT on 10-08:**
   - Build 41 is VALID, and its What to Test reads back
@@ -81,5 +105,5 @@ the top and keep the file, so it's easy to undo.
   - Cohort group: empty.
 - **Build 41:** 250/250 tests and tsc clean before the archive. The
   archive's Info.plist reads 1.1.1 / 41. Delivery cf7f2dd2.
-- **Items:** 18 `###` items reconciled across this board and the
-  archive (34 and 35 settled; 36 new).
+- **Items:** 19 `###` items reconciled across this board and the
+  archive (34 and 35 settled; 36 and 37 new).
