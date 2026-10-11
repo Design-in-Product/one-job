@@ -1,6 +1,6 @@
-# One Job — what needs xian · v87 (2026-10-11)
+# One Job — what needs xian · v88 (2026-10-11)
 
-**Cite as "Coral rollup v87".** One file, one URL:
+**Cite as "Coral rollup v88".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -14,7 +14,8 @@ old commit can still be opened by its exact link; I check that link at
 every fire and will tell you when it's gone. The first Pilot tester still hasn't
 joined, two days after you re-sent the link (the link works; a nudge
 is yours to judge). Build 41 is waiting for your Siri test (36). The
-UX session is still unscheduled.
+UX session is still unscheduled (22), and your agent's-deck insight
+now has its own card (40) so it can be told on its own.
 
 ## Open
 
@@ -55,6 +56,22 @@ your usability screenshots.
 **Rec:** Do it before any roadmap talk. Your narration is the evidence
 that conversation should use.
 
+### 🟡 40. Your agent's-deck insight: tell me, so I can map it to the roadmap
+You said (10-11) you've had an insight about the agent's deck and how
+to offer it using mechanisms the roadmap already plans. On 10-05 you
+also mentioned a thought on the agentic use case, integrations and
+syncing. Neither is written down anywhere yet, and it can be told
+separately from the UX session.
+**Where to act:** Coral's session, or dictate it to Janus. Rough notes
+are fine. Background, if useful:
+https://github.com/Design-in-Product/one-job/blob/main/docs/UX-SESSION-PREP-2026-09.md
+(item 6).
+**Since:** 2026-10-03
+**Ask:** Tell me your agent's-deck insight, in whatever form is quickest.
+**Rec:** A few sentences is enough. I'll write it up against the
+roadmap items it would use and send it back for you to correct. I
+won't build anything from it without your go.
+
 ### 🟡 27. How does answering from the attention deck feel?
 You get these items as cards in One Job (download
 https://onejob.co/probe/latest.json, then Settings → bring in as a new
@@ -91,7 +108,7 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v87):**
+**Verified how (v88):**
 - **Purge request (10-11, 14:1x PT):** xian's screenshot of the
   Virtual Assistant shows "Ticket created, we'll update you once we've
   clear the cached views." The old head of `main` still returned 200
@@ -100,5 +117,5 @@ the top and keep the file, so it's easy to undo.
   files; 250/250 tests; 24 of 24 refs; deploy run 38104798466 green).
 - **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
   Not re-checked today.
-- **Items:** 21 `###` items across this board and the archive (39
-  moved to the archive today).
+- **Items:** 22 `###` items across this board and the archive (39
+  moved to the archive today; 40 is new).
