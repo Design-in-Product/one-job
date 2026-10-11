@@ -85,3 +85,38 @@ Verification now includes driving the app with Playwright
 3. Update frontend to use production API
 4. Test full end-to-end functionality
 5. Plan integration roadmap (Asana, Todoist, etc.)
+
+---
+
+## Superseded 2026-10-10 (role-document drift audit, from the 10-10 brief)
+
+Statements removed from CLAUDE.md because they had stopped being true.
+Kept here verbatim.
+
+- Header: "**Agent:** Coral — One Job's resident agent (runs on Fable 5)."
+  (The seat moved to Claude Opus 5.5 on 2026-09-27.)
+- Hierarchical Task Organization: "**Main Tasks**: Persisted to backend
+  via API · **Substacks**: Named containers within tasks · **Substack
+  Tasks**: Currently local-only (not persisted to backend)". (The app
+  has been local-first since 2026-07-02.)
+- Integration Points: "**Current**: Demo integration, Zapier webhook
+  export · **Planned**: Asana (Personal Access Token), Todoist (API
+  Token), Linear, Jira · **Local-Only**: Substack tasks, imported tasks
+  (until user interaction) · **Persisted**: Main tasks, substacks, task
+  state changes". (Zapier and the Asana/Todoist stubs were removed in
+  rc.36.)
+- "## CURRENT DEVELOPMENT FOCUS — Based on recent commits and project
+  status: **MVP Complete**: Core task management with swipe gestures
+  working · **Integration Phase**: External service integration
+  framework in progress · **Beta Testing**: Mobile device testing and
+  user feedback collection · **Backend Strategy**: Determining
+  persistence strategy for substack tasks"
+- "### Success Metrics Achieved — **Mobile UX**: Swipe gestures work
+  reliably on touch devices · **API Integration**: Frontend-backend
+  contracts are consistent · **Task Management**: Complete task
+  lifecycle (create → defer → complete) · **Hierarchical
+  Organization**: Substacks enable task breakdown · **Documentation**:
+  Comprehensive requirements and architecture docs. **Key Insight**:
+  The verification-first methodology prevented the deferral bug from
+  becoming a multi-hour debugging session. Systematic pattern discovery
+  is the foundation of our velocity."

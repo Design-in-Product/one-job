@@ -1,56 +1,66 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-11T00:19:59.540Z",
+  "exportedAt": "2026-10-11T00:51:05.817Z",
   "tasks": [
     {
-      "id": "69f69411-80a5-43aa-8d0e-8559db327f66",
+      "id": "26fd7ba2-1e07-4b85-a8b6-36766ebab32e",
       "title": "🔒 Approve the one-job history scrub in Coral's session (\"run the scrub\").",
       "description": "🟡 #37 · 🔒 Approve the history scrub in Coral's session\n\nCoral's rec: Approve it there, where I can run all three checks before the push and the site check after. It takes about 20 minutes, with a short push freeze for the other agents.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 0 days (since 2026-10-10)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T00:19:59.539Z",
+      "createdAt": "2026-10-11T00:51:05.817Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "f63bc553-2329-4e32-a4f2-4c55538e2199",
+      "id": "9e893480-1cd2-42a8-ba1a-9242162823c9",
       "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
       "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 2 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T00:19:59.539Z",
+      "createdAt": "2026-10-11T00:51:05.817Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "f3691bb0-0c6a-4da8-8825-dbfe44f94789",
+      "id": "7694b72b-2bec-47ed-a034-4925d4c7df70",
       "title": "Name a time for the UX session.",
       "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 58 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T00:19:59.539Z",
+      "createdAt": "2026-10-11T00:51:05.817Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7b9d4ffe-c190-4815-a759-30e4f27d781e",
+      "id": "16c1a047-067e-40aa-9f21-840972910e16",
       "title": "How did answering from the deck actually feel?",
       "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 40 days (since 2026-08-31)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T00:19:59.539Z",
+      "createdAt": "2026-10-11T00:51:05.817Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "e0b46e37-e749-49a9-8fa1-d75c77d74b05",
+      "id": "2535f0d3-dacf-4739-af7d-8da8eb3f683f",
+      "title": "CLAUDE.md's backend-first methodology text: update it to local-first, or leave it?",
+      "description": "🟢 #38 · CLAUDE.md still describes a backend-first app: update your methodology text?\n\nCoral's rec: Update it. I'd keep \"verify first\" and the contract checks, scope them to `?remote` mode, and state the local-first rule plainly. The old text would go to the archive, per the living-doc rule.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 0 days (since 2026-10-10)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T00:51:05.817Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "dc898ae6-5542-4378-aaf4-a8340135ccb0",
       "title": "REQUIREMENTS.md: retire it or rewrite it?",
       "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-10 · waiting 74 days (since 2026-07-28)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T00:19:59.540Z",
-      "sortOrder": 5,
+      "createdAt": "2026-10-11T00:51:05.817Z",
+      "sortOrder": 6,
       "source": "coral/attention-rollup"
     }
   ]

@@ -2,7 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Agent:** Coral — One Job's resident agent (runs on Fable 5).
+**Agent:** Coral — One Job's resident agent (on Claude Opus 5.5 since 2026-09-27).
+
+**This repository is PUBLIC** (onejob.co is served from it). No tester
+names, contact details or personal emails go here; refer to testers by
+role. Confidential material lives in `Design-in-Product/one-job-private`.
 
 ## Cross-Pollination & Mail (added 2026-07-05)
 
@@ -310,9 +314,11 @@ find . -name "requirements.txt" -o -name "package.json" | xargs cat
    - **SubstackView / TaskStack**: Nested navigation, built on the same SwipeableCard + TaskCard pieces
 
 4. **Hierarchical Task Organization**:
-   - **Main Tasks**: Persisted to backend via API
-   - **Substacks**: Named containers within tasks
-   - **Substack Tasks**: Currently local-only (not persisted to backend)
+   - **Everything lives on the device** (LocalTaskStore, localStorage).
+     The FastAPI backend is used only in `?remote` mode. See "1.0
+     direction: local-first PWA" near the end of this file.
+   - **Decks** hold cards. A card can hold an interior deck of sub-cards
+     (the older code calls these "substacks").
 
 ### Key Components
 
@@ -341,10 +347,14 @@ Frontend (src, Vite — asks for 8080, lands on 8081 on Amber):
 
 ### Integration Points
 
-- **Current**: Demo integration, Zapier webhook export
-- **Planned**: Asana (Personal Access Token), Todoist (API Token), Linear, Jira
-- **Local-Only**: Substack tasks, imported tasks (until user interaction)
-- **Persisted**: Main tasks, substacks, task state changes
+- **Current**: GitHub issue import (`src/services/githubAdapter.ts`, a
+  token the user supplies), the Siri / Shortcuts "Add Card" intent
+  (`native/ios/AddCardIntent.swift` → `src/services/shortcutsInbox.ts`),
+  and demo mode.
+- **Retired**: the Zapier export and the Asana and Todoist stubs
+  (removed in rc.36).
+- **Candidates**: see ROADMAP.md, including its holding pen. Nothing
+  outside the roadmap is canonical.
 
 ## FRONTEND-BACKEND CONTRACT VERIFICATION
 
@@ -624,7 +634,7 @@ Canonical text: `mediajunkie/designinproduct` →
    five seconds and the beacon could itself break.)
 5. Create TodoWrite list for session tasks
 6. Verify development environment if implementing
-7. Check REQUIREMENTS.md for current project status
+7. Check docs/ROADMAP.md and the board for current status (REQUIREMENTS.md is stale)
 ```
 
 #### Session Log Template
@@ -635,7 +645,7 @@ Canonical text: `mediajunkie/designinproduct` →
 ## Session Start: HH:MM AM/PM PST
 
 ### Context
-- Environment: Claude Code (Opus 4)
+- Environment: Claude Code (model: read it from the session, do not assume)
 - Project: One Job
 - Git Status: [clean/modified]
 - Recent Commits: [list 3-5]
@@ -807,7 +817,7 @@ repo, which this paragraph is.
 
 Before starting ANY implementation:
 
-1. **Read REQUIREMENTS.md** - Understand current project status and features
+1. **Read docs/ROADMAP.md** - Understand current status (REQUIREMENTS.md is stale; see board item 10)
 2. **Check git status** - Know what's been modified recently
 3. **Verify backend/frontend are running** - Ensure development environment works
 4. **Review API contracts** - Check existing frontend-backend integration patterns
@@ -817,7 +827,7 @@ Before starting ANY implementation:
 
 Always check these files when starting work:
 
-- `REQUIREMENTS.md` - Current project status and roadmap
+- `docs/ROADMAP.md` - Current project status and roadmap (REQUIREMENTS.md is stale)
 - `backend/main.py` - API endpoints and database models  
 - `src/pages/Index.tsx` - Main application logic and API integration
 - `src/types/task.ts` - Frontend type definitions
@@ -910,22 +920,19 @@ flow model live in docs/PRICING.md (2026-07-29 addendum).
 
 ## CURRENT DEVELOPMENT FOCUS
 
-Based on recent commits and project status:
+This section points to where the current state lives, so it can't go
+stale here:
 
-- **MVP Complete**: Core task management with swipe gestures working
-- **Integration Phase**: External service integration framework in progress
-- **Beta Testing**: Mobile device testing and user feedback collection
-- **Backend Strategy**: Determining persistence strategy for substack tasks
+- **What's shipped and what's next:** `docs/ROADMAP.md`. As of
+  2026-10-10, 1.0 and 1.1 are live on the App Store, and 1.1.1 is on
+  TestFlight.
+- **What's waiting on xian:** `docs/ATTENTION-ROLLUP.md` (the board).
+- **What happened, day by day:** `development/coral-logs/`.
+- **Product principles:** `docs/VISION.md`.
+- `REQUIREMENTS.md` is **known stale** (dated 2026-07-04). Don't treat
+  it as current status. Whether to retire it is board item 10.
 
-### Success Metrics Achieved
-
-- **Mobile UX**: Swipe gestures work reliably on touch devices
-- **API Integration**: Frontend-backend contracts are consistent  
-- **Task Management**: Complete task lifecycle (create → defer → complete)
-- **Hierarchical Organization**: Substacks enable task breakdown
-- **Documentation**: Comprehensive requirements and architecture docs
-
-**Key Insight**: The verification-first methodology prevented the deferral bug from becoming a multi-hour debugging session. Systematic pattern discovery is the foundation of our velocity.
+The earlier text of this section is in `docs/archive/CLAUDE-MD-HISTORY.md`.
 
 ## CURRENT SESSION STATUS (Updated 2026-07-02)
 
