@@ -1,0 +1,57 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-10-11T21:16:18.493Z",
+  "tasks": [
+    {
+      "id": "6e820839-eb5c-4717-9313-5031331380bf",
+      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 3 days (since 2026-10-08)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T21:16:18.493Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "dc5e3c64-7986-41bd-a863-ff8ca3116c82",
+      "title": "Name a time for the UX session.",
+      "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T21:16:18.493Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "bfe4e368-adf9-4d58-b0c6-32298dea3180",
+      "title": "How did answering from the deck actually feel?",
+      "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 41 days (since 2026-08-31)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T21:16:18.493Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "b37c6e49-ce6d-4049-b5be-a921f2805b01",
+      "title": "CLAUDE.md's backend-first methodology text: update it to local-first, or leave it?",
+      "description": "🟢 #38 · CLAUDE.md still describes a backend-first app: update your methodology text?\n\nCoral's rec: Update it. I'd keep \"verify first\" and the contract checks, scope them to `?remote` mode, and state the local-first rule plainly. The old text would go to the archive, per the living-doc rule.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 1 days (since 2026-10-10)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T21:16:18.493Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "c5888deb-d293-45f3-a7db-32f0c35c727f",
+      "title": "REQUIREMENTS.md: retire it or rewrite it?",
+      "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 75 days (since 2026-07-28)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-11T21:16:18.493Z",
+      "sortOrder": 5,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}

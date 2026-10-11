@@ -55,6 +55,20 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 39. Send GitHub the purge request (sent by xian 2026-10-11)
+The ask was to send GitHub Support the request to remove the old,
+unreachable commits after the scrub. xian sent it on 10-11 in Coral's
+session, through GitHub's Virtual Assistant ("Clear cached views").
+- He gave the old head of `main` as the example link, answered "not in
+  a pull request", and wrote that about 780 old commits are unreachable
+  and all of them should be garbage-collected.
+- The assistant replied "Ticket created". The general support form was
+  not sent, because the ticket carries the whole-repository request.
+- Lesson: the form's "Deletes" category deletes a whole repository. I
+  suggested it first and withdrew it when the next screen showed that.
+- What's left is GitHub's action. Coral checks the old commit link at
+  every fire; a 404 means it's done.
+
 ### ✅ 37. One-job is public: private repo, confidential files moved, history scrubbed (done 2026-10-10)
 xian's rulings (via Janus, 10-09 and 10-10): set up a private repo for
 confidential One Job business; keep one-job public for the product and

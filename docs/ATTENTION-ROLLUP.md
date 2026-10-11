@@ -1,6 +1,6 @@
-# One Job — what needs xian · v86 (2026-10-10)
+# One Job — what needs xian · v87 (2026-10-11)
 
-**Cite as "Coral rollup v86".** One file, one URL:
+**Cite as "Coral rollup v87".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,10 +8,10 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**The history scrub is done (10-10).** No tester's name or your
-personal email is anywhere in one-job's history now, and onejob.co is
-up. One step is left for you: send GitHub the purge request (39; the
-text is ready). The first Pilot tester still hasn't
+**The history scrub is done (10-10), and you sent GitHub the purge
+request (10-11).** That part now waits on GitHub. Until they act, an
+old commit can still be opened by its exact link; I check that link at
+every fire and will tell you when it's gone. The first Pilot tester still hasn't
 joined, two days after you re-sent the link (the link works; a nudge
 is yours to judge). Build 41 is waiting for your Siri test (36). The
 UX session is still unscheduled.
@@ -33,20 +33,6 @@ https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md
 **Rec:** Update it. I'd keep "verify first" and the contract checks,
 scope them to `?remote` mode, and state the local-first rule plainly.
 The old text would go to the archive, per the living-doc rule.
-
-### 🟡 39. Send GitHub the purge request, so old commits can't be opened by link
-The scrub is done (10-10). One gap only GitHub can close: until it
-garbage-collects, an old commit can still be opened by anyone who has
-its exact URL. The request is written and filled in.
-**Where to act:** https://support.github.com/contact, signed in as an
-owner of Design-in-Product. Paste the text from
-https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-SUPPORT-REQUEST-draft.md
-(everything below its line).
-**Since:** 2026-10-10
-**Ask:** Send the GitHub Support purge request (text is ready to paste).
-**Rec:** Send it this week. The exposure is small, since someone would
-need an old commit URL, and those appear only in private repos. But
-it's the last step of "scrub the history".
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -91,6 +77,7 @@ the top and keep the file, so it's easy to undo.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-11 · **GitHub purge request sent** by you, through GitHub's Virtual Assistant ("Ticket created"). It asks for all unreachable commits to be garbage-collected. Waiting on GitHub; I check the old commit link at every fire.
 - 2026-10-10 · **History scrub done** (option B, on your go in Coral's session). main is `9a50a7a`. The old history lives only in one-job-private.
 - 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
 - 2026-10-08 · **Pilot link re-sent to the first Pilot tester** (by you). I'll call them "in" when the Pilot tester count shows them.
@@ -104,17 +91,14 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v86):**
-- **Scrub (10-10, 19:2x–19:4x PT):**
-  - `verify.sh` exit 0: 0 matches in contents, messages and paths, and
-    the removed files are gone.
-  - Independent tree check: 790 of 790 files, 0 mismatches.
-  - npm ci, 250/250 tests, tsc and build pass on the rewritten main.
-  - After the push: 24 of 24 remote refs equal the rewritten mirror;
-    deploy run 38104798466 succeeded, including its verify job;
-    onejob.co, /app/ and /probe/latest.json return 200.
-- **TestFlight notes (ASC API):** builds 38–41 and the Beta App
-  Description contain no tester names.
+**Verified how (v87):**
+- **Purge request (10-11, 14:1x PT):** xian's screenshot of the
+  Virtual Assistant shows "Ticket created, we'll update you once we've
+  clear the cached views." The old head of `main` still returned 200
+  by direct link at 14:0x, as expected before GitHub acts.
+- **Scrub (10-10):** unchanged from v86 (verify exit 0; 790 of 790
+  files; 250/250 tests; 24 of 24 refs; deploy run 38104798466 green).
 - **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
-- **Items:** 21 `###` items across this board and the archive (37
-  settled; 39 new).
+  Not re-checked today.
+- **Items:** 21 `###` items across this board and the archive (39
+  moved to the archive today).
