@@ -55,6 +55,30 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 27. How does answering from the attention deck feel? (answered 2026-10-11)
+xian, in Coral's session: "Answering from the deck feels ambiguous.
+The deck is for me completing tasks. I can't swipe it till I answer
+and I can't answer directly from the deck. Cards tell me what to do
+but are not currently actionable unless the description contains a
+link or affordance."
+- Neither relief nor ceremony: the card is a good reminder and a poor
+  place to reply.
+- Carried into `UX-SESSION-PREP-2026-09.md` and into
+  `AGENT-DECK-VIA-INTEGRATIONS-2026-10.md` (point 3, answering).
+- Open since 2026-08-31.
+
+### ✅ 10. Retire REQUIREMENTS.md, or rewrite it? (retired 2026-10-11)
+xian, in Coral's session: "let's revise it, or if we retire it let's
+be clear about what has superseded it and how we will maintain that in
+the future." Coral retired it on those terms.
+- A box at the top of `docs/REQUIREMENTS.md` maps each part to its
+  replacement (VISION, DOMAIN-MODEL, ROADMAP, release notes, the test
+  suite, CLAUDE.md, the board) and says how each is kept current.
+- CLAUDE.md now says ROADMAP.md is updated in the same commit as each
+  release note.
+- The file is kept. To undo, delete the box.
+- Open since 2026-07-28.
+
 ### ✅ 39. Send GitHub the purge request (sent by xian 2026-10-11)
 The ask was to send GitHub Support the request to remove the old,
 unreachable commits after the scrub. xian sent it on 10-11 in Coral's
@@ -90,6 +114,10 @@ approvals.
   onejob.co returns 200.
 - TestFlight's live notes for builds 39 and 40 were also made name-free.
 - What's left is item 39: GitHub Support's purge of cached old commits.
+- **Correction, 2026-10-11:** the scrub missed one tester, the first
+  outside tester, who was never on the roster its list was built
+  from. "Every tester name" above is true only of the names on that
+  list. A second pass is board item 41.
 
 ### ✅ 35. TestFlight clause in the Beta App Description (done by xian 2026-10-08)
 xian added: "(TestFlight itself sends us Apple's standard beta

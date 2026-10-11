@@ -1,66 +1,56 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-11T21:22:24.147Z",
+  "exportedAt": "2026-10-11T21:41:37.471Z",
   "tasks": [
     {
-      "id": "6c9ac95d-3765-46e8-90fc-290e202b1488",
-      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
-      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 3 days (since 2026-10-08)",
+      "id": "b12670ea-8438-42ee-be7a-7b7f2d0e5687",
+      "title": "Go for a second scrub pass, to remove the one missed tester's name?",
+      "description": "🔴 #41 · The scrub missed one tester's name: go for a second pass?\n\nCoral's rec: Yes, and soon. GitHub's cleanup removes only what is unreachable when they run it, so the second pass should land first. The name would become a role label, as the others did.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
+      "createdAt": "2026-10-11T21:41:37.471Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "3fb430aa-97f5-440a-a9ff-fd87042bafd1",
-      "title": "Name a time for the UX session.",
-      "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it before any roadmap talk. Your narration is the evidence that conversation should use.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
+      "id": "d223f98f-5888-49cb-89ee-d7107838f196",
+      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 3 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
+      "createdAt": "2026-10-11T21:41:37.471Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "5d391b27-0a07-47e7-b3f1-05a8f26d4caf",
-      "title": "Tell me your agent's-deck insight, in whatever form is quickest.",
-      "description": "🟡 #40 · Your agent's-deck insight: tell me, so I can map it to the roadmap\n\nCoral's rec: A few sentences is enough. I'll write it up against the roadmap items it would use and send it back for you to correct. I won't build anything from it without your go.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 8 days (since 2026-10-03)",
+      "id": "54f5d2c3-466d-4f4d-8799-7de8f6a104f6",
+      "title": "Start the UX session when you have 20 minutes (today or tomorrow).",
+      "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it in pieces. I'm here whenever you open the session, so there's no time to agree in advance.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
+      "createdAt": "2026-10-11T21:41:37.471Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "cfffc0ab-4fe9-4d1b-b186-a8b224cf52f9",
-      "title": "How did answering from the deck actually feel?",
-      "description": "🟡 #27 · How does answering from the attention deck feel?\n\nCoral's rec: Relief, ceremony, or in between. One word is enough.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 41 days (since 2026-08-31)",
+      "id": "7faba42c-7e79-4b29-9f3d-d8033f86fea7",
+      "title": "Read my write-up of your agent's-deck insight. What did I get wrong?",
+      "description": "🟡 #40 · Your agent's-deck insight: is my write-up right?\n\nCoral's rec: I think the idea holds. The two calls it most needs from you are whether the deck follows Todoist's order, and whether \"complete it\" is enough of an answer at first. Nothing gets built without your go.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 8 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
+      "createdAt": "2026-10-11T21:41:37.471Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "45369dc8-aa56-40f6-a21b-a5c8c9098239",
-      "title": "CLAUDE.md's backend-first methodology text: update it to local-first, or leave it?",
-      "description": "🟢 #38 · CLAUDE.md still describes a backend-first app: update your methodology text?\n\nCoral's rec: Update it. I'd keep \"verify first\" and the contract checks, scope them to `?remote` mode, and state the local-first rule plainly. The old text would go to the archive, per the living-doc rule.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 1 days (since 2026-10-10)",
+      "id": "4e5a9518-8b35-4aab-a315-ec1aed202a5c",
+      "title": "CLAUDE.md's backend-first sections: add a short note, rewrite them, or leave them?",
+      "description": "🟢 #38 · CLAUDE.md tells me the app is backend-first: add a short note, rewrite, or leave?\n\nCoral's rec: Add the note. It removes the contradiction in five minutes and changes none of your words. (I recommended a rewrite before; the note gets most of the benefit.)\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 1 days (since 2026-10-10)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
+      "createdAt": "2026-10-11T21:41:37.471Z",
       "sortOrder": 5,
-      "source": "coral/attention-rollup"
-    },
-    {
-      "id": "3517e1e7-6ced-4799-909a-254653ee94fc",
-      "title": "REQUIREMENTS.md: retire it or rewrite it?",
-      "description": "🟢 #10 · Retire REQUIREMENTS.md, or rewrite it?\n\nCoral's rec: Retire it. I'd add a \"superseded, see ROADMAP/VISION\" note at the top and keep the file, so it's easy to undo.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 75 days (since 2026-07-28)",
-      "completed": false,
-      "status": "todo",
-      "createdAt": "2026-10-11T21:22:24.147Z",
-      "sortOrder": 6,
       "source": "coral/attention-rollup"
     }
   ]

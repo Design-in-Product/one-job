@@ -634,7 +634,7 @@ Canonical text: `mediajunkie/designinproduct` →
    five seconds and the beacon could itself break.)
 5. Create TodoWrite list for session tasks
 6. Verify development environment if implementing
-7. Check docs/ROADMAP.md and the board for current status (REQUIREMENTS.md is stale)
+7. Check docs/ROADMAP.md and the board for current status (REQUIREMENTS.md is retired)
 ```
 
 #### Session Log Template
@@ -817,7 +817,7 @@ repo, which this paragraph is.
 
 Before starting ANY implementation:
 
-1. **Read docs/ROADMAP.md** - Understand current status (REQUIREMENTS.md is stale; see board item 10)
+1. **Read docs/ROADMAP.md** - Understand current status (REQUIREMENTS.md is retired)
 2. **Check git status** - Know what's been modified recently
 3. **Verify backend/frontend are running** - Ensure development environment works
 4. **Review API contracts** - Check existing frontend-backend integration patterns
@@ -827,7 +827,7 @@ Before starting ANY implementation:
 
 Always check these files when starting work:
 
-- `docs/ROADMAP.md` - Current project status and roadmap (REQUIREMENTS.md is stale)
+- `docs/ROADMAP.md` - Current project status and roadmap (REQUIREMENTS.md is retired)
 - `backend/main.py` - API endpoints and database models  
 - `src/pages/Index.tsx` - Main application logic and API integration
 - `src/types/task.ts` - Frontend type definitions
@@ -929,8 +929,10 @@ stale here:
 - **What's waiting on xian:** `docs/ATTENTION-ROLLUP.md` (the board).
 - **What happened, day by day:** `development/coral-logs/`.
 - **Product principles:** `docs/VISION.md`.
-- `REQUIREMENTS.md` is **known stale** (dated 2026-07-04). Don't treat
-  it as current status. Whether to retire it is board item 10.
+- `REQUIREMENTS.md` was **retired on 2026-10-11** (on xian's terms). The
+  box at its top says what replaced each part and how each
+  replacement is kept current. Keep ROADMAP.md current in the same
+  commit as each release note.
 
 The earlier text of this section is in `docs/archive/CLAUDE-MD-HISTORY.md`.
 

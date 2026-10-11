@@ -1,5 +1,23 @@
 # One Job - Requirements Specification
 
+> ## RETIRED 2026-10-11 — do not use this file as current status
+>
+> xian (2026-10-11): revise it, or if it's retired, be clear about
+> what superseded it and how that is maintained. Coral retired it on
+> those terms. This file is kept as the July 2026 record. Nothing below this box has been updated since 2026-07-04.
+>
+> | What this file used to say | Where it lives now | How it's kept current |
+> |---|---|---|
+> | What the product is for, and its promises (the covenants) | `docs/VISION.md` | Changes only on xian's ruling, with the date. |
+> | The concepts: decks, cards, interiors | `docs/DOMAIN-MODEL.md` | Changed when the model changes, before the code. |
+> | What has shipped and what is next | `docs/ROADMAP.md` | Updated in the same commit as each release note. |
+> | What each release does | `docs/releases/` | One file per build, written before upload. |
+> | How the app must behave | The test suite (`npm test`) | A behaviour change comes with its test. CI runs it on every push. |
+> | The stack and how to work on it | `CLAUDE.md` | Corrected when found wrong; old text goes to `docs/archive/`. |
+> | What is waiting on xian | `docs/ATTENTION-ROLLUP.md` | Every session. |
+>
+> To undo this, delete the box.
+
 > **Document Version**: 2.0 (re-baselined against the converged vision)  
 > **Last Updated**: 2026-07-04  
 > **Status**: 1.0-rc shipped local-first; concept-model rebuild (R1) is next  

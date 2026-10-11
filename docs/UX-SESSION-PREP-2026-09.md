@@ -22,6 +22,12 @@ exactly as written. What's new is around the app:
   testing plan's one question that's yours.
 
 ### 6 · The agent's deck — YOUR THOUGHTS (xian, 10-03)
+**Update 10-11:** xian told the insight; it's written up in
+`AGENT-DECK-VIA-INTEGRATIONS-2026-10.md`. He also answered the
+attention-deck question: answering from the deck "feels ambiguous".
+The deck is for completing tasks; he can't swipe a card until he has
+answered, and he can't answer from the card. Worth walking on screen.
+
 You said you've had a few thoughts on the "agent's deck" paradigm.
 This is the live centre of three threads. (a) The test plan's
 agent-heavy track is blocked only on the card exchange being raw.
