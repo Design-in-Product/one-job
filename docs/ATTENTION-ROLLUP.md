@@ -1,6 +1,6 @@
-# One Job — what needs xian · v89 (2026-10-11)
+# One Job — what needs xian · v90 (2026-10-11)
 
-**Cite as "Coral rollup v89".** One file, one URL:
+**Cite as "Coral rollup v90".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,56 +8,31 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**The scrub missed one tester, and I was wrong to say it hadn't.** The
-first outside tester (July) was never on the roster the scrub's list
-was built from, so their name is still in this public repo: the full
-name in 11 files, and the first name in about 34. Fixing it takes a
-second pass, which needs your go (41). Everything else moved today:
-you sent GitHub the purge request, told me your agent's-deck insight
-(my write-up is ready for you to correct, 40), answered the deck-feel
-question, and settled REQUIREMENTS.md. You'll retest Siri today (36).
-The UX session could be later today or tomorrow (22).
+**The second scrub pass is done (10-11, 15:10).** The one tester's
+name the first pass missed is now gone from one-job's files and
+history, and onejob.co is up. GitHub needs telling once more, because
+the second pass left a new set of old commits (42; the text is ready).
+CLAUDE.md's methodology is rewritten as you asked. The UX walk has
+started in the form you chose: one step at a time, alongside other
+work (22). You'll retest Siri today (36).
 
 ## Open
 
-### 🔴 41. The scrub missed one tester's name: go for a second pass?
-The 10-10 scrub removed every name on the roster. The first outside
-tester, from July, was never on the roster, so the scrub's list didn't
-include them. Their full name is in 11 current files, their first name
-in about 34, and both are in the history. I found it on 10-11 while
-writing up your notes. I checked every name in the private files
-against this repo, and this is the only one left.
-**Where to act:** say "second pass" in Coral's session. It's the same
-procedure as 10-10: backup, rewrite, three checks, one protected push.
-Then I'd draft a one-line reply for you to add to the GitHub ticket.
+### 🟡 42. Tell GitHub about the second rewrite (add to your ticket)
+Your ticket asks GitHub to remove the commits left behind by the
+10-10 rewrite. The second pass left 624 more. If GitHub cleans
+up before it hears of them, the newer ones are still covered (their
+cleanup removes everything unreachable when it runs), but the ticket
+names only the first example, so it's safer to say so.
+**Where to act:** reply to GitHub's ticket email, or open the ticket
+at https://support.github.com/tickets and add a comment. Paste the
+text from
+https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-TICKET-ADDITION-2026-10-11.md
 **Since:** 2026-10-11
-**Ask:** Go for a second scrub pass, to remove the one missed tester's name?
-**Rec:** Yes, and soon. GitHub's cleanup removes only what is
-unreachable when they run it, so the second pass should land first.
-The name would become a role label, as the others did.
-
-### 🟢 38. CLAUDE.md tells me the app is backend-first: add a short note, rewrite, or leave?
-You said (10-11) you can't weigh this yet, so here it is plainly.
-CLAUDE.md is the file every new session of me reads first. Its
-methodology sections say task logic belongs in the backend and that I
-should check the frontend against the backend API before any change.
-The shipped app has no backend: everything is on the device.
-- **Leave it.** No effort and no risk to your text. But the file
-  contradicts itself, and each new session has to work out which half
-  is true. On 09-27 I did, from a note near the end.
-- **Rewrite it.** The file would be true throughout. But it's your
-  methodology, about an hour of my work plus your review, and the
-  backend text becomes useful again if a server ever returns.
-- **Add a three-line note** above those sections: "these apply only in
-  `?remote` mode; the shipped app is local-first". Your text stays
-  untouched.
-**Where to act:** one word, in Coral's session or to Janus. File:
-https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md
-**Since:** 2026-10-10
-**Ask:** CLAUDE.md's backend-first sections: add a short note, rewrite them, or leave them?
-**Rec:** Add the note. It removes the contradiction in five minutes
-and changes none of your words. (I recommended a rewrite before; the
-note gets most of the benefit.)
+**Ask:** Add the short note about the second rewrite to your GitHub ticket.
+**Rec:** Reply to the existing ticket, so GitHub has one request to
+handle. If you can't find it, the "Clear cached views" assistant
+works again, with the new example link in that file.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -69,37 +44,40 @@ on, with no restart. What to Test lists three checks.
 **Rec:** If yes, say "Pilot 41" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw.
 
-### 🟡 22. UX session: screen by screen, you narrate
-You want it live and conversational. Prep (walk order plus eight
-design questions) is in
-https://github.com/Design-in-Product/one-job/blob/main/docs/UX-SESSION-PREP-2026-09.md
-You said (10-11) later today or tomorrow, and that long sits are hard
-right now. It doesn't need one: the prep is ordered so we can stop
-after any screen, and 20 minutes covers the first three.
-**Where to act:** just start in Coral's session when you have 20
-minutes. Bring your usability screenshots.
+### 🟡 22. UX walk: step 1 of 11 is open (the cold open)
+You chose the form on 10-11: a conversational walk, the B-topic of
+whatever else is going on, one step at a time until it's exhausted.
+Notes are kept in
+https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
+**Where to act:** Coral's session, a sentence or a screenshot at a
+time.
 **Since:** 2026-08-13
-**Ask:** Start the UX session when you have 20 minutes (today or tomorrow).
-**Rec:** Do it in pieces. I'm here whenever you open the session, so
-there's no time to agree in advance.
+**Ask:** UX walk, step 1: open One Job cold. What do you see, and what do you make of it?
+**Rec:** No hurry and no order within a step. Say what you notice,
+and I'll record your words and ask one follow-up at a time.
 
-### 🟡 40. Your agent's-deck insight: is my write-up right?
-You told me the insight on 10-11: build nothing special for agent
-decks and no syncing of our own; extend the Todoist integration, so
-you and your agents both work through Todoist and One Job is the lens.
-I've written it up against the roadmap, with seven places I'd check
-the claim and four questions for you.
-**Where to act:** read
+### 🟡 40. Agent's deck: does the deck follow the list's order, or keep its own?
+Your insight is written up, with your 10-11 correction in: the only
+sync is the planned two-way sync with the back end, and One Job has
+no concept of "agent". That leaves one thing the model can't settle
+by itself. Anyone with access to the Todoist list can reorder it, and
+One Job can't tell an agent from you. The roadmap says no agent can
+ever reorder your deck.
+**Where to act:** Coral's session or through Janus. Write-up:
 https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
-and correct it in Coral's session or through Janus.
 **Since:** 2026-10-03
-**Ask:** Read my write-up of your agent's-deck insight. What did I get wrong?
-**Rec:** I think the idea holds. The two calls it most needs from you
-are whether the deck follows Todoist's order, and whether "complete
-it" is enough of an answer at first. Nothing gets built without your go.
+**Ask:** In the Todoist model, does your deck follow the list's order, or keep its own?
+**Rec:** Keep its own. The top card is what the app protects, and
+"Later" has to mean something. New tasks would join behind the top
+card, as Siri's do. Two smaller questions are in the write-up
+(answering from a card; whether this replaces R4.1 and R4.3).
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-11 · **Second scrub pass done** (41), on your "second pass, yes". main went from `a8e94ec` to `ada8298`. The missed tester is "Tester H" throughout.
+- 2026-10-11 · **CLAUDE.md methodology rewritten** (38), on your "update it to reflect how the paradigm has evolved and what is stable about it". The old text is in the archive, verbatim.
+- 2026-10-11 · **Sync, corrected by you:** the only sync is the planned two-way sync to an existing back end. One Job hosts no sync of its own and doesn't distinguish an agent from a person.
+- 2026-10-11 · **UX session form:** a conversational walk, one step at a time, alongside other work.
 - 2026-10-11 · **Answering from the attention deck feels ambiguous** (your answer to 27). The deck is for completing tasks; you can't swipe a card until you've answered, and you can't answer from the card. Cards aren't actionable unless the description has a link. Carried into the UX session and the agent's-deck write-up.
 - 2026-10-11 · **REQUIREMENTS.md retired** on your terms (10): a box at its top says what replaced each part and how each replacement is kept current. To undo, delete the box.
 - 2026-10-11 · **Agent's-deck insight told** (40). Written up for your correction.
@@ -117,16 +95,24 @@ it" is enough of an answer at first. Nothing gets built without your go.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v89):**
-- **Scrub miss (10-11, 15:0x PT):** `git grep` for the missed tester's
-  surname finds 12 lines in 11 files; the first name as a whole word,
-  about 57 lines in 34 files, every one of them this tester. Every
-  name-like phrase in one-job-private's roster, feedback file and
-  transcript was checked against this repo; no other tester's name
-  was found. The 10-10 checks were correct for the names on their list.
-- **Purge request (10-11, 14:1x PT):** xian's screenshot shows "Ticket
-  created". The old head of `main` still returned 200 at 14:0x.
+**Verified how (v90):**
+- **Second pass (10-11, 15:10 PT):**
+  - Backup first: 24 of 24 refs verified in one-job-private under
+    `pre-scrub-2/`.
+  - `verify.sh` exit 0 on the rewritten copy, and again on a fresh
+    copy cloned from GitHub after the push: 0 matches in contents,
+    messages and paths. The new independent sweep found nothing.
+  - Independent file check: 795 of 795 files, 34 changed, 0 mismatches.
+  - The surname in any letter case, across all history: 0.
+  - Four unrelated library authors who share the first name were left
+    alone (14 lines kept, 0 relabelled).
+  - npm ci, 250/250 tests, tsc and build pass on the rewritten main.
+  - Push: all-or-nothing and lease-protected; 24 of 24 remote refs
+    equal the rewritten copy. Deploy run 38179394441 succeeded;
+    onejob.co, /app/ and /probe/latest.json return 200.
+  - The pre-rewrite head still opens by direct link (200), which is
+    what item 42 is for.
 - **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
   Not re-checked today.
-- **Items:** 23 `###` items across this board and the archive (27 and
-  10 moved to the archive today; 41 is new).
+- **Items:** 24 `###` items across this board and the archive (41 and
+  38 moved to the archive; 42 is new).

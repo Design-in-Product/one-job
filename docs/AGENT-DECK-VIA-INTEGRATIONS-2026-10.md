@@ -1,7 +1,18 @@
 # The agent's deck, through integrations — xian's insight (2026-10-11)
 
-**Status:** a write-up of what xian said, for him to correct. Nothing
-here is decided or built. Board item 40.
+**Status:** a write-up of what xian said, corrected by him once
+(2026-10-11, below). Nothing here is decided or built. Board item 40.
+
+## xian's correction (2026-10-11)
+
+- **Syncing will happen, but only the kind already planned:** two-way
+  sync to an existing back end (ROADMAP R3.4). What is ruled out is
+  One Job brokering and hosting its own direct sync pathway.
+- **One Job does not know what an agent is.** It doesn't distinguish
+  an agent from a person, on either deck. That distinction lives in
+  convention and in how each party works with the back-end service.
+  What an agent may do is a matter of how the user already works with
+  their agent, not a One Job permission.
 
 ## What xian said
 
@@ -32,7 +43,8 @@ carries three notes: "Get for free w/ integrations!", "Pro", and
 ## In one sentence
 
 The agent's deck is a second Todoist list, and One Job is the lens on
-both lists. The agent never talks to One Job at all.
+both lists. The agent never talks to One Job at all, and One Job has
+no concept of "agent": to the app, both are just lists.
 
 ## The roadmap items this would use
 
@@ -58,15 +70,17 @@ All of these are already in `ROADMAP.md`.
 
 ## Where I'd check the claim (keeping it honest)
 
-1. **"No syncing" is nearly true, not fully.** We'd build no sync
-   service of our own and run no server. But One Job and Todoist
-   still have to agree: a card swiped Done offline must reach Todoist
-   later, and a task the agent closed must leave the deck. That is
-   R3.4, and it is real work, though far smaller than our own sync.
-2. **Order.** Todoist has one order that the agent can change. One
-   Job's "Later" moves a card to the bottom, and the roadmap's R4 gate
-   says no agent can ever reorder your deck. Does the deck follow
-   Todoist's order, or keep its own? This needs a ruling.
+1. **Syncing: settled by xian's correction.** The only sync is the
+   planned two-way sync with the back end (R3.4). A card swiped Done
+   offline must reach Todoist later, and a task closed there must
+   leave the deck. One Job runs no sync service and no server.
+2. **Order.** Todoist has one order, and anyone with access can
+   change it. One Job's "Later" moves a card to the bottom. The
+   roadmap's R4 gate says no agent can ever reorder your deck, but in
+   this model One Job can't tell an agent from you, so the gate can't
+   be enforced by the app. It becomes a convention, or it becomes
+   "the deck keeps its own order whatever the list does". This needs
+   a ruling.
 3. **Answering.** xian's finding on the attention deck (same day): a
    card says what to do, but he can't answer from it, and he can't
    swipe it until he has answered. Todoist offers two ways to answer:
@@ -95,7 +109,7 @@ agent's deck needs) is Pro. That is a flag, not a fork.
 
 ## Questions for xian
 
-1. Is this write-up right? What did I get wrong or leave out?
+1. Is this write-up right now, with your correction in?
 2. Order: does the deck follow Todoist's order, or keep its own?
 3. Answering: is "complete it" enough at first, or do you need to
    write a reply from the card?

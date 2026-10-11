@@ -55,6 +55,38 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 41. The scrub missed one tester: second pass (done 2026-10-11)
+The 10-10 scrub's list was built from the roster. The first outside
+tester (July) was never on the roster, so their name stayed: 11
+current files by full name, about 34 by first name, and the history.
+Coral found it on 10-11 when xian named them and no role label
+existed. xian: "Second pass, yes."
+- Backup first, verified: 24 refs in one-job-private, `pre-scrub-2/`.
+- The name became "Tester H" in contents and commit messages.
+- A first trial showed the first-name rule would also have relabelled
+  four unrelated library authors in old vendored files. The rule was
+  tightened before anything was pushed.
+- Verified: zero matches (also in a fresh clone from GitHub); 795 of
+  795 files, 0 mismatches; 250 tests, tsc and build pass.
+- Push 15:10 PT, atomic and lease-protected. `main` went from
+  `a8e94ec` to `ada8298`. Deploy run 38179394441 green.
+- **Lesson:** zero matches for your own list proves the tool worked,
+  not that the list was complete. `verify.sh` now also sweeps the
+  public tree for every name-like phrase in the private files.
+- What's left is item 42: telling GitHub about the second rewrite.
+
+### ✅ 38. CLAUDE.md's backend-first methodology (rewritten 2026-10-11)
+xian: "update it to reflect how the paradigm has evolved and what is
+stable about it."
+- Stable, and kept: verify first, fix at the right layer, mobile-first
+  testing, docs with the change, the three TDD zones, monitor-first
+  debugging.
+- Evolved, and rewritten: the layers are domain → store → UI; the
+  contract to verify is the `TaskStore` interface and the saved-data
+  schema; the FastAPI contract is a short `?remote`-only section.
+- Seven replaced sections are in `CLAUDE-MD-HISTORY.md`, verbatim.
+- Open since 2026-10-10.
+
 ### ✅ 27. How does answering from the attention deck feel? (answered 2026-10-11)
 xian, in Coral's session: "Answering from the deck feels ambiguous.
 The deck is for me completing tasks. I can't swipe it till I answer

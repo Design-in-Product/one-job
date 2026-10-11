@@ -5,6 +5,13 @@
 **Also carrying:** his three usability screenshots from launch week,
 with status and my initial takes for the conversation.
 
+## How we're doing it (xian, 2026-10-11): a conversational walk
+
+Not one sitting. It runs as the B-topic of whatever else is going on:
+we take step 1 until it's exhausted, in as many turns as it takes,
+then step 2, and so on. It will take days, and that's fine. Notes are
+kept in `UX-WALK-NOTES-2026-10.md`.
+
 ## Refreshed 2026-10-04: what has moved since this was written (09-14)
 
 **The app's UX has not changed since 09-14.** The only code since then
@@ -44,7 +51,6 @@ It has four quick calls: waves of 8/12/20? pass-it-on through friends,
 Candidate G first? communities in or out? thank-you as early pro access, not
 money? Nothing is sent until you declare the program active.
 
- (2026-09-10, from real daily use)
 
 ### 8 · Which deck do voice-added cards go to? (from xian's build-40 test, 10-06)
 With the app open, the fix in progress lands them in the deck you're

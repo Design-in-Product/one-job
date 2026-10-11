@@ -1,56 +1,46 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-11T21:41:37.471Z",
+  "exportedAt": "2026-10-11T22:15:03.438Z",
   "tasks": [
     {
-      "id": "b12670ea-8438-42ee-be7a-7b7f2d0e5687",
-      "title": "Go for a second scrub pass, to remove the one missed tester's name?",
-      "description": "🔴 #41 · The scrub missed one tester's name: go for a second pass?\n\nCoral's rec: Yes, and soon. GitHub's cleanup removes only what is unreachable when they run it, so the second pass should land first. The name would become a role label, as the others did.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
+      "id": "242241cf-1b9e-4120-b088-ec3721f53b9b",
+      "title": "Add the short note about the second rewrite to your GitHub ticket.",
+      "description": "🟡 #42 · Tell GitHub about the second rewrite (add to your ticket)\n\nCoral's rec: Reply to the existing ticket, so GitHub has one request to handle. If you can't find it, the \"Clear cached views\" assistant works again, with the new example link in that file.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:41:37.471Z",
+      "createdAt": "2026-10-11T22:15:03.438Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "d223f98f-5888-49cb-89ee-d7107838f196",
+      "id": "115804bd-d056-485e-91f7-94159b739183",
       "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
       "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 3 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:41:37.471Z",
+      "createdAt": "2026-10-11T22:15:03.438Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "54f5d2c3-466d-4f4d-8799-7de8f6a104f6",
-      "title": "Start the UX session when you have 20 minutes (today or tomorrow).",
-      "description": "🟡 #22 · UX session: screen by screen, you narrate\n\nCoral's rec: Do it in pieces. I'm here whenever you open the session, so there's no time to agree in advance.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
+      "id": "7a9ddda1-f9de-4e19-bd04-1583c0b409b5",
+      "title": "UX walk, step 1: open One Job cold. What do you see, and what do you make of it?",
+      "description": "🟡 #22 · UX walk: step 1 of 11 is open (the cold open)\n\nCoral's rec: No hurry and no order within a step. Say what you notice, and I'll record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:41:37.471Z",
+      "createdAt": "2026-10-11T22:15:03.438Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "7faba42c-7e79-4b29-9f3d-d8033f86fea7",
-      "title": "Read my write-up of your agent's-deck insight. What did I get wrong?",
-      "description": "🟡 #40 · Your agent's-deck insight: is my write-up right?\n\nCoral's rec: I think the idea holds. The two calls it most needs from you are whether the deck follows Todoist's order, and whether \"complete it\" is enough of an answer at first. Nothing gets built without your go.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 8 days (since 2026-10-03)",
+      "id": "e764dd04-9f46-453a-9086-c810c4464df7",
+      "title": "In the Todoist model, does your deck follow the list's order, or keep its own?",
+      "description": "🟡 #40 · Agent's deck: does the deck follow the list's order, or keep its own?\n\nCoral's rec: Keep its own. The top card is what the app protects, and \"Later\" has to mean something. New tasks would join behind the top card, as Siri's do. Two smaller questions are in the write-up (answering from a card; whether this replaces R4.1 and R4.3).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 8 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-11T21:41:37.471Z",
+      "createdAt": "2026-10-11T22:15:03.438Z",
       "sortOrder": 4,
-      "source": "coral/attention-rollup"
-    },
-    {
-      "id": "4e5a9518-8b35-4aab-a315-ec1aed202a5c",
-      "title": "CLAUDE.md's backend-first sections: add a short note, rewrite them, or leave them?",
-      "description": "🟢 #38 · CLAUDE.md tells me the app is backend-first: add a short note, rewrite, or leave?\n\nCoral's rec: Add the note. It removes the contradiction in five minutes and changes none of your words. (I recommended a rewrite before; the note gets most of the benefit.)\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 1 days (since 2026-10-10)",
-      "completed": false,
-      "status": "todo",
-      "createdAt": "2026-10-11T21:41:37.471Z",
-      "sortOrder": 5,
       "source": "coral/attention-rollup"
     }
   ]
