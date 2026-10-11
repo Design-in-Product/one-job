@@ -35,7 +35,7 @@ struct AddCardIntent: AppIntent {
     // "Buy Milk At The Store" because a field named Title invites title
     // case; his design default is sentence case). Post-processing would
     // have to lowercase words it cannot identify, which destroys "Call
-    // Pilot tester A" — worse than the problem. Declaring the intent of the
+    // Maria Lopez" — worse than the problem. Declaring the intent of the
     // field lets the system capitalize the way it already knows how, and
     // proper nouns survive because the dictation engine still knows they
     // are proper nouns.

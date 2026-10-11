@@ -1,6 +1,6 @@
-# One Job — what needs xian · v85 (2026-10-10)
+# One Job — what needs xian · v86 (2026-10-10)
 
-**Cite as "Coral rollup v85".** One file, one URL:
+**Cite as "Coral rollup v86".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,11 +8,10 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**The history scrub (37) is ready but stopped at a permission check.**
-You said "do B" (10-10). After the reboot I did the fresh rewrite on a
-scratch copy, and then my session's permission check refused the rest
-as "Git Destructive". Nothing was pushed, and one-job is untouched. It
-needs your OK in my session. The first Pilot tester still hasn't
+**The history scrub is done (10-10).** No tester's name or your
+personal email is anywhere in one-job's history now, and onejob.co is
+up. One step is left for you: send GitHub the purge request (39; the
+text is ready). The first Pilot tester still hasn't
 joined, two days after you re-sent the link (the link works; a nudge
 is yours to judge). Build 41 is waiting for your Siri test (36). The
 UX session is still unscheduled.
@@ -35,28 +34,19 @@ https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md
 scope them to `?remote` mode, and state the local-first rule plainly.
 The old text would go to the archive, per the living-doc rule.
 
-### 🟡 37. 🔒 Approve the history scrub in Coral's session
-You ruled **option B** on 10-10 (via Janus): remove three confidential
-files from all history, and replace every tester name with a role
-label. Ready and verified in trial: zero name matches, nothing else
-changed, and tests and build pass. The full public history is backed
-up in `Design-in-Product/one-job-private` (current to `198e24b`, every
-branch and tag verified).
-
-My session's auto-mode check refuses the verification and the
-force-push as "Git Destructive". That's a guard on your behalf, so I
-didn't route around it. Your "do B" through Janus doesn't count as
-approval inside this session.
-**🔒 Blocked on xian** since 2026-10-10. Smallest answer: say "run the
-scrub" in Coral's session and approve the prompts, or add an allow
-rule for it.
-**Where to act:** Coral's session (tmux `coral` on Amber). The runbook
-is `scrub/PUSH.md` in one-job-private.
+### 🟡 39. Send GitHub the purge request, so old commits can't be opened by link
+The scrub is done (10-10). One gap only GitHub can close: until it
+garbage-collects, an old commit can still be opened by anyone who has
+its exact URL. The request is written and filled in.
+**Where to act:** https://support.github.com/contact, signed in as an
+owner of Design-in-Product. Paste the text from
+https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-SUPPORT-REQUEST-draft.md
+(everything below its line).
 **Since:** 2026-10-10
-**Ask:** 🔒 Approve the one-job history scrub in Coral's session ("run the scrub").
-**Rec:** Approve it there, where I can run all three checks before the
-push and the site check after. It takes about 20 minutes, with a short
-push freeze for the other agents.
+**Ask:** Send the GitHub Support purge request (text is ready to paste).
+**Rec:** Send it this week. The exposure is small, since someone would
+need an old commit URL, and those appear only in private repos. But
+it's the last step of "scrub the history".
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -101,6 +91,7 @@ the top and keep the file, so it's easy to undo.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-10 · **History scrub done** (option B, on your go in Coral's session). main is `9a50a7a`. The old history lives only in one-job-private.
 - 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
 - 2026-10-08 · **Pilot link re-sent to the first Pilot tester** (by you). I'll call them "in" when the Pilot tester count shows them.
 - 2026-10-08 · **Go for build 41.** Uploaded and VALID, in Internal.
@@ -113,19 +104,17 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v85):**
-- **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers. Internal: builds 41–37, 3 testers.
-- **Scrub state (10-10 17:2x):** one-job origin/main untouched at `198e24b` (no force-push made); private backup refs re-verified against origin after the reboot; fresh scratch rewrite 774 → 771 commits, its verification NOT run (refused).
-- **one-job-private:** PRIVATE (gh); main holds 3 confidential files (sha-matched to their one-job originals); pre-scrub refs: 4 branches + 20 tags, each verified against origin.
-- **Repo visibility:** `gh repo view` → PUBLIC. Org plan: **free**. Pages: workflow build, cname onejob.co (`gh api`, 10-09 17:5x).
-- **Beta App Description:** read through the API after your edit. It's 699 chars, contains the TestFlight clause, and has no weekly-question line.
-- **App Store Connect, read through the API at 17:2x PT on 10-08:**
-  - Build 41 is VALID, and its What to Test reads back
-    ("1.1.1 (41) — Siri cards show up while the app is open").
-  - Internal group: builds 41–37, 3 testers.
-  - Pilot group: builds 40 and 39, **0 testers**.
-  - Cohort group: empty.
-- **Build 41:** 250/250 tests and tsc clean before the archive. The
-  archive's Info.plist reads 1.1.1 / 41. Delivery cf7f2dd2.
-- **Items:** 19 `###` items reconciled across this board and the
-  archive (34 and 35 settled; 36 and 37 new).
+**Verified how (v86):**
+- **Scrub (10-10, 19:2x–19:4x PT):**
+  - `verify.sh` exit 0: 0 matches in contents, messages and paths, and
+    the removed files are gone.
+  - Independent tree check: 790 of 790 files, 0 mismatches.
+  - npm ci, 250/250 tests, tsc and build pass on the rewritten main.
+  - After the push: 24 of 24 remote refs equal the rewritten mirror;
+    deploy run 38104798466 succeeded, including its verify job;
+    onejob.co, /app/ and /probe/latest.json return 200.
+- **TestFlight notes (ASC API):** builds 38–41 and the Beta App
+  Description contain no tester names.
+- **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
+- **Items:** 21 `###` items across this board and the archive (37
+  settled; 39 new).
