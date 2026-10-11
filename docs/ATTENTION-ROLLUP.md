@@ -1,6 +1,6 @@
-# One Job — what needs xian · v84 (2026-10-10)
+# One Job — what needs xian · v85 (2026-10-10)
 
-**Cite as "Coral rollup v84".** One file, one URL:
+**Cite as "Coral rollup v85".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -12,11 +12,28 @@ The narrative is in `development/coral-logs/`.
 You said "do B" (10-10). After the reboot I did the fresh rewrite on a
 scratch copy, and then my session's permission check refused the rest
 as "Git Destructive". Nothing was pushed, and one-job is untouched. It
-needs your OK in my session. The first Pilot tester hasn't joined yet.
-Build 41 is waiting for your Siri test (36). The UX session is still
-unscheduled.
+needs your OK in my session. The first Pilot tester still hasn't
+joined, two days after you re-sent the link (the link works; a nudge
+is yours to judge). Build 41 is waiting for your Siri test (36). The
+UX session is still unscheduled.
 
 ## Open
+
+### 🟢 38. CLAUDE.md still describes a backend-first app: update your methodology text?
+I fixed CLAUDE.md's plain errors on 10-10 (the model, retired
+integrations, "tasks persist to the backend", the stale status
+section). One drift is left in the methodology sections you wrote:
+"API-First Architecture: Frontend → Backend API → Database" and "Task
+state logic belongs in backend", plus the contract-verification
+sections built on them. The app has been local-first since July, and
+the backend runs only in `?remote` mode.
+**Where to act:** one word, in Coral's session or to Janus. File:
+https://github.com/Design-in-Product/one-job/blob/main/CLAUDE.md
+**Since:** 2026-10-10
+**Ask:** CLAUDE.md's backend-first methodology text: update it to local-first, or leave it?
+**Rec:** Update it. I'd keep "verify first" and the contract checks,
+scope them to `?remote` mode, and state the local-first rule plainly.
+The old text would go to the archive, per the living-doc rule.
 
 ### 🟡 37. 🔒 Approve the history scrub in Coral's session
 You ruled **option B** on 10-10 (via Janus): remove three confidential
@@ -96,7 +113,8 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v84):**
+**Verified how (v85):**
+- **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers. Internal: builds 41–37, 3 testers.
 - **Scrub state (10-10 17:2x):** one-job origin/main untouched at `198e24b` (no force-push made); private backup refs re-verified against origin after the reboot; fresh scratch rewrite 774 → 771 commits, its verification NOT run (refused).
 - **one-job-private:** PRIVATE (gh); main holds 3 confidential files (sha-matched to their one-job originals); pre-scrub refs: 4 branches + 20 tags, each verified against origin.
 - **Repo visibility:** `gh repo view` → PUBLIC. Org plan: **free**. Pages: workflow build, cname onejob.co (`gh api`, 10-09 17:5x).
