@@ -1,6 +1,6 @@
-# One Job — what needs xian · v90 (2026-10-11)
+# One Job — what needs xian · v91 (2026-10-11)
 
-**Cite as "Coral rollup v90".** One file, one URL:
+**Cite as "Coral rollup v91".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -14,9 +14,33 @@ history, and onejob.co is up. GitHub needs telling once more, because
 the second pass left a new set of old commits (42; the text is ready).
 CLAUDE.md's methodology is rewritten as you asked. The UX walk has
 started in the form you chose: one step at a time, alongside other
-work (22). You'll retest Siri today (36).
+work (22). You'll retest Siri today (36). Janus's independent check
+found no tester names, but it did find other private people named
+here; whether they go too is yours to call (43).
 
 ## Open
+
+### 🟡 43. Non-tester people are named in this public repo: remove them too?
+Both scrubs covered testers only. Janus swept the repo without my
+list (10-11) and found people who aren't testers, and I confirmed it
+and found more with a name-dictionary sweep:
+- Two people from a private call of yours in August (one surname is
+  in a mail filename), in a Janus memo and one of my logs.
+- A client company and two named contacts there, from your calendar,
+  in a LinkedIn draft and a Themis memo.
+- A client contact by first name, in a Janus memo and a brief.
+- Smaller: the name of one of your own decks, in a log of mine.
+Authors you cite and a musician in the vision docs are public
+figures, and I'd leave them.
+**Where to act:** one word in Coral's session: "third pass", or
+"leave them".
+**Since:** 2026-10-11
+**Ask:** Remove non-tester people and the client's name from this repo's history too?
+**Rec:** Yes, as one last pass. They are private people named from
+private calls, which is what the public-repo rule is for. I'd show
+you the full list first (in the private repo), so the list is yours
+to complete before I run anything. One mail filename would change, so
+Pard would hear first.
 
 ### 🟡 42. Tell GitHub about the second rewrite (add to your ticket)
 Your ticket asks GitHub to remove the commits left behind by the
@@ -95,7 +119,7 @@ card, as Siri's do. Two smaller questions are in the write-up
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v90):**
+**Verified how (v91):**
 - **Second pass (10-11, 15:10 PT):**
   - Backup first: 24 of 24 refs verified in one-job-private under
     `pre-scrub-2/`.
@@ -114,5 +138,10 @@ card, as Siri's do. Two smaller questions are in the write-up
     what item 42 is for.
 - **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
   Not re-checked today.
-- **Items:** 24 `###` items across this board and the archive (41 and
-  38 moved to the archive; 42 is new).
+- **Non-tester names (10-11, 15:3x PT):** Janus's sweep (80 first
+  names across the tree, and all commit messages) plus mine (the
+  system's list of given names against docs, logs, store and source).
+  Neither found a tester's name. Old file versions in history were
+  not swept for non-testers.
+- **Items:** 25 `###` items across this board and the archive (41 and
+  38 moved to the archive; 42 and 43 are new).
