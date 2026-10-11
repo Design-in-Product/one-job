@@ -55,6 +55,28 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 37. One-job is public: private repo, confidential files moved, history scrubbed (done 2026-10-10)
+xian's rulings (via Janus, 10-09 and 10-10): set up a private repo for
+confidential One Job business; keep one-job public for the product and
+site; scrub the history with **option B**. He approved the scrub
+directly in Coral's session on 10-10 ("yes, please go ahead" / "run the
+scrub"), after the session's permission check had refused it on relayed
+approvals.
+- `Design-in-Product/one-job-private` holds the roster, the tester
+  feedback file, one call transcript, the scrub kit, and the complete
+  pre-scrub history (`pre-scrub/*`: 4 branches and 20 tags).
+- The scrub removed three files from all history, and replaced every
+  tester and candidate name with a role label, in contents, commit
+  messages and file paths. It replaced xian's personal email with the
+  tester-facing address.
+- Verified before the push: zero matches; 790 of 790 files identical
+  to expected; npm ci, 250 tests, tsc and build pass.
+- The push was atomic and lease-protected: 24 refs. `main` went from
+  `af334df` to `9a50a7a`. Deploy run 38104798466 was green, and
+  onejob.co returns 200.
+- TestFlight's live notes for builds 39 and 40 were also made name-free.
+- What's left is item 39: GitHub Support's purge of cached old commits.
+
 ### ✅ 35. TestFlight clause in the Beta App Description (done by xian 2026-10-08)
 xian added: "(TestFlight itself sends us Apple's standard beta
 information: crash reports, installs and sessions, and your name and

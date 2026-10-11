@@ -9,7 +9,12 @@ in `development/coral-logs/` and on the board (`docs/ATTENTION-ROLLUP.md`).
 ever. Refer to testers by role. Confidential material lives in
 `Design-in-Product/one-job-private`.
 
-## THE ONE MID-FLIGHT THING: the history scrub (item 37, option B)
+## UPDATE 2026-10-10 19:4x PT: THE SCRUB IS DONE
+It was pushed and verified on xian's in-session go. main is `9a50a7a`.
+The section below is history. What's left is board item 39 (xian
+sends the GitHub Support purge request).
+
+## (was) THE ONE MID-FLIGHT THING: the history scrub (item 37, option B)
 
 xian ruled "do B" on 2026-10-10 (mail
 `xian-via-janus-to-coral-scrub-option-b-go-2026-10-10.md`). The status:
