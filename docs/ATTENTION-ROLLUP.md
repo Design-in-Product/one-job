@@ -1,6 +1,6 @@
-# One Job — what needs xian · v83 (2026-10-09)
+# One Job — what needs xian · v84 (2026-10-10)
 
-**Cite as "Coral rollup v83".** One file, one URL:
+**Cite as "Coral rollup v84".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,38 +8,38 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**Item 37 is moving.** The private repo `one-job-private` exists, the
-confidential files are moved into it, and the full public history is
-backed up there. One choice from you: how wide to scrub one-job's
-history (A or B, below). The first Pilot tester hasn't joined yet,
-though the link is verified live. Build 41 is waiting for your Siri
-test (36). The UX session is still unscheduled.
+**The history scrub (37) is ready but stopped at a permission check.**
+You said "do B" (10-10). After the reboot I did the fresh rewrite on a
+scratch copy, and then my session's permission check refused the rest
+as "Git Destructive". Nothing was pushed, and one-job is untouched. It
+needs your OK in my session. The first Pilot tester hasn't joined yet.
+Build 41 is waiting for your Siri test (36). The UX session is still
+unscheduled.
 
 ## Open
 
-### 🟡 37. 🔒 Scrub one-job's history: narrow (A) or wide (B)?
-Done on your ruling (10-09): the private repo
-`Design-in-Product/one-job-private` exists. The roster, the tester
-feedback file and one call transcript have moved there (copies verified
-byte for byte). The **entire** public history is backed up there (every
-branch and tag), so the scrub can't lose anything.
+### 🟡 37. 🔒 Approve the history scrub in Coral's session
+You ruled **option B** on 10-10 (via Janus): remove three confidential
+files from all history, and replace every tester name with a role
+label. Ready and verified in trial: zero name matches, nothing else
+changed, and tests and build pass. The full public history is backed
+up in `Design-in-Product/one-job-private` (current to `198e24b`, every
+branch and tag verified).
 
-Still public: testers' names appear in about 78 files across history
-(logs, mail, briefs, decks), and your personal email in two.
-- **A:** remove only the roster file from history, and replace your
-  email. The names stay elsewhere.
-- **B:** also remove the feedback file and the transcript, and replace
-  every tester name in all history with a role label ("Pilot tester A"
-  and so on). Then force-push, and file a GitHub Support purge.
-
-The full plan (tool, verification, freeze window, costs) is in my mail
-to Janus.
-**🔒 Blocked on xian** since 2026-10-09. Smallest answer: "A" or "B".
-**Where to act:** reply in Coral's session or to Janus.
-**Since:** 2026-10-09
-**Ask:** 🔒 Scrub one-job history: A (roster + your email) or B (every tester name)?
-**Rec:** B. It's what "to be more secure" means here: with A, the people
-are still named in about 77 files.
+My session's auto-mode check refuses the verification and the
+force-push as "Git Destructive". That's a guard on your behalf, so I
+didn't route around it. Your "do B" through Janus doesn't count as
+approval inside this session.
+**🔒 Blocked on xian** since 2026-10-10. Smallest answer: say "run the
+scrub" in Coral's session and approve the prompts, or add an allow
+rule for it.
+**Where to act:** Coral's session (tmux `coral` on Amber). The runbook
+is `scrub/PUSH.md` in one-job-private.
+**Since:** 2026-10-10
+**Ask:** 🔒 Approve the one-job history scrub in Coral's session ("run the scrub").
+**Rec:** Approve it there, where I can run all three checks before the
+push and the site check after. It takes about 20 minutes, with a short
+push freeze for the other agents.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -96,7 +96,8 @@ the top and keep the file, so it's easy to undo.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v83):**
+**Verified how (v84):**
+- **Scrub state (10-10 17:2x):** one-job origin/main untouched at `198e24b` (no force-push made); private backup refs re-verified against origin after the reboot; fresh scratch rewrite 774 → 771 commits, its verification NOT run (refused).
 - **one-job-private:** PRIVATE (gh); main holds 3 confidential files (sha-matched to their one-job originals); pre-scrub refs: 4 branches + 20 tags, each verified against origin.
 - **Repo visibility:** `gh repo view` → PUBLIC. Org plan: **free**. Pages: workflow build, cname onejob.co (`gh api`, 10-09 17:5x).
 - **Beta App Description:** read through the API after your edit. It's 699 chars, contains the TestFlight clause, and has no weekly-question line.
