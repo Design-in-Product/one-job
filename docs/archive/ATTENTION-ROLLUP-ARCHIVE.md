@@ -55,6 +55,20 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 42. Tell GitHub about the second rewrite (not needed; GitHub cleaned up, seen 2026-10-12)
+The ask was to add a note to xian's ticket, because the second pass
+left 624 more old commits than the ticket described. On 10-12 at
+11:45 PT Coral found GitHub had already removed them.
+- Checked: seven old commit links (the five ref heads sampled from
+  before the first pass, and `main`'s head from before the second
+  pass) return 404 on the website; the API says "No commit found".
+  The current head returns 200.
+- They returned 200 at 17:49 PT on 10-11, so the cleanup ran between
+  those two checks.
+- Not known: whether xian added the note before GitHub acted. Not
+  checked: every one of the old commits, only the seven.
+- A third pass, if xian orders one (43), would need a new request.
+
 ### ✅ 41. The scrub missed one tester: second pass (done 2026-10-11)
 The 10-10 scrub's list was built from the roster. The first outside
 tester (July) was never on the roster, so their name stayed: 11

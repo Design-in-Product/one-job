@@ -1,6 +1,6 @@
-# One Job — what needs xian · v93 (2026-10-11)
+# One Job — what needs xian · v94 (2026-10-12)
 
-**Cite as "Coral rollup v93".** One file, one URL:
+**Cite as "Coral rollup v94".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,18 +8,19 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**The second scrub pass is done (10-11, 15:10).** The one tester's
-name the first pass missed is now gone from one-job's files and
-history, and onejob.co is up. GitHub needs telling once more, because
-the second pass left a new set of old commits (42; the text is ready).
-CLAUDE.md's methodology is rewritten as you asked. The UX walk has
-started in the form you chose: one step at a time, alongside other
-work (22). You'll retest Siri today (36). Janus's independent check
-found no tester names, but it did find other private people named
-here; whether they go too is yours to call (43). At the 17:49 fire I
-swept every file version in history by pattern, and the full list is
-in the private repo for you to mark. Pilot still has no testers, and
-the old commit links still open, so GitHub hasn't acted yet.
+**GitHub has removed the old commits from both rewrites (seen
+10-12, 11:45).** The old links now return "not found", including the
+head from before the second pass, so no note to GitHub is needed (42
+is settled). No tester's name is in one-job's files or history.
+
+What's left of the scrub is your call on item 43: other private
+people, a client, and some details about you are named here. The
+full list is in the private repo for you to mark. The old daily
+briefs are settled: they stay (your answer on 10-12).
+
+Also open: the Siri retest on build 41 (36), the UX walk at step 1
+(22), and the deck-order question (40). Pilot had no testers at the
+last check (10-11).
 
 ## Open
 
@@ -43,13 +44,10 @@ handles and domains), not by a list of known names. It added:
   company name and domain that appears about 40 times, and a few of
   your own addresses.
 - One phrase beside a tester's label that could point back to them.
-- **A bigger question: about 95 daily briefs from before 10-09 are
-  still public in full.** They report on your other projects by name.
-  I found no record that leaving them was decided. **Janus sized it
-  (18:10): the same briefs are in seven public repos and load on the
-  public website without a login**, so removing them here alone
-  wouldn't make them private. It's one decision across all of those,
-  and it's on Janus's card, not part of this pass.
+- The old daily briefs (about 95, public in full) were a question on
+  10-11. **Closed 10-12: they stay as they are** (your answer, relayed
+  by Janus: the one outside person named in them is fine with being
+  named). Not part of this pass.
 - Old history holds no new names beyond these.
 Not covered: 177 images and screenshots (they need eyes), and a match
 against your calendar and call notes (needs your yes).
@@ -60,28 +58,11 @@ session: "third pass", or "leave them".
 **Since:** 2026-10-11
 **Ask:** Mark the third-pass list, then say "third pass" or "leave them".
 **Rec:** Third pass, once, after you've marked the list. Section A
-(private people and a client) I'd remove. Section B (details about you) is yours to judge.
-The old briefs (section D) are a separate, wider decision that Janus
-is carrying. Say yes to the
+(private people and a client) I'd remove. Section B (details about you) is yours to judge. Say yes to the
 calendar match if you want the strongest check against a fourth pass.
-One mail filename would change, so Pard would hear first. Hold the
-GitHub note (42) until this is settled, so GitHub gets one update.
-
-### 🟡 42. Tell GitHub about the second rewrite (add to your ticket)
-Your ticket asks GitHub to remove the commits left behind by the
-10-10 rewrite. The second pass left 624 more. If GitHub cleans
-up before it hears of them, the newer ones are still covered (their
-cleanup removes everything unreachable when it runs), but the ticket
-names only the first example, so it's safer to say so.
-**Where to act:** reply to GitHub's ticket email, or open the ticket
-at https://support.github.com/tickets and add a comment. Paste the
-text from
-https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-TICKET-ADDITION-2026-10-11.md
-**Since:** 2026-10-11
-**Ask:** Add the short note about the second rewrite to your GitHub ticket.
-**Rec:** Reply to the existing ticket, so GitHub has one request to
-handle. If you can't find it, the "Clear cached views" assistant
-works again, with the new example link in that file.
+One mail filename would change, so Pard would hear first. A third
+pass would leave a new set of old commits, so it would need one more
+request to GitHub afterwards.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
