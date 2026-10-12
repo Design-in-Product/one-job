@@ -1,6 +1,6 @@
-# One Job — what needs xian · v95 (2026-10-12)
+# One Job — what needs xian · v96 (2026-10-12)
 
-**Cite as "Coral rollup v95".** One file, one URL:
+**Cite as "Coral rollup v96".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -16,11 +16,32 @@ GitHub needs one more cleanup request, because this pass left a new
 set of old commits that still open by exact link (44; the text is
 ready). GitHub already cleaned up after the first two passes.
 
+New on 10-12: one other person in the GitHub organisation can read
+the private repo (45). Is that intended?
+
 Also open: the Siri retest on build 41 (36), the UX walk at step 1
 (22), and the deck-order question (40). Pilot had no testers at the
 last check (10-11).
 
 ## Open
+
+### 🟡 45. One other person can read the private repo: intended?
+The private repo holds the tester roster, tester feedback and the
+list of people and clients you marked. GitHub shows two accounts with
+access: yours (admin) and the organisation's one other human member
+(read). Nobody was added to the repo directly; the read access comes
+from the organisation's default for members. I found this on 10-12
+while answering Themis, and I have changed nothing.
+**Where to act:** tell Coral "intended" or "restrict it". To change
+it yourself: github.com → the Design-in-Product organisation →
+Settings → Member privileges → Base permissions.
+**Since:** 2026-10-12
+**Ask:** Should the org's other member be able to read one-job-private?
+**Rec:** Restrict it unless you meant it. That member is one of the
+people the roster describes. Setting base permissions to "No
+permission" affects every repo in the organisation, so check what
+else they need first; the narrower fix is to move the private repo
+to your personal account.
 
 ### 🟡 44. Send GitHub one more cleanup request (third rewrite)
 The third pass left 492 old commits that still open by exact link.

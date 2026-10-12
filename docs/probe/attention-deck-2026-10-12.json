@@ -1,46 +1,56 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-12T22:31:56.844Z",
+  "exportedAt": "2026-10-12T23:08:07.350Z",
   "tasks": [
     {
-      "id": "65e09b71-f14f-4665-8db3-20bf65a68d8c",
-      "title": "Send GitHub the third cleanup request (text is ready to paste).",
-      "description": "🟡 #44 · Send GitHub one more cleanup request (third rewrite)\n\nCoral's rec: Do it the same way as on 10-11; it took a few minutes. I check the old link at each fire and close this when it stops opening.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 0 days (since 2026-10-12)",
+      "id": "1b79c419-5f04-4a47-ab3a-17feea243b03",
+      "title": "Should the org's other member be able to read one-job-private?",
+      "description": "🟡 #45 · One other person can read the private repo: intended?\n\nCoral's rec: Restrict it unless you meant it. That member is one of the people the roster describes. Setting base permissions to \"No permission\" affects every repo in the organisation, so check what else they need first; the narrower fix is to move the private repo to your personal account.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 0 days (since 2026-10-12)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T22:31:56.844Z",
+      "createdAt": "2026-10-12T23:08:07.350Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "1d4da197-5b28-4fe9-b785-1c53e1f26333",
-      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
-      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
+      "id": "60aaa2f2-a6a1-4a23-b34f-5e17393b714c",
+      "title": "Send GitHub the third cleanup request (text is ready to paste).",
+      "description": "🟡 #44 · Send GitHub one more cleanup request (third rewrite)\n\nCoral's rec: Do it the same way as on 10-11; it took a few minutes. I check the old link at each fire and close this when it stops opening.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 0 days (since 2026-10-12)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T22:31:56.844Z",
+      "createdAt": "2026-10-12T23:08:07.350Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "e266b963-b5b6-4e65-b619-fd20865b31f3",
-      "title": "UX walk, step 1: open One Job cold. What do you see, and what do you make of it?",
-      "description": "🟡 #22 · UX walk: step 1 of 11 is open (the cold open)\n\nCoral's rec: No hurry and no order within a step. Say what you notice, and I'll record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "id": "6c6bbca3-dac6-4a3d-936d-c05da9ce641b",
+      "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
+      "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T22:31:56.844Z",
+      "createdAt": "2026-10-12T23:08:07.350Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "068ee454-19a4-46c6-899d-f5e3c77432c2",
+      "id": "bf16fec4-3a99-4a49-b286-7cf0f2331cf2",
+      "title": "UX walk, step 1: open One Job cold. What do you see, and what do you make of it?",
+      "description": "🟡 #22 · UX walk: step 1 of 11 is open (the cold open)\n\nCoral's rec: No hurry and no order within a step. Say what you notice, and I'll record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-12T23:08:07.350Z",
+      "sortOrder": 4,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "d55c85b0-19c0-4234-ae69-6acc9c5e0b0d",
       "title": "In the Todoist model, does your deck follow the list's order, or keep its own?",
       "description": "🟡 #40 · Agent's deck: does the deck follow the list's order, or keep its own?\n\nCoral's rec: Keep its own. The top card is what the app protects, and \"Later\" has to mean something. New tasks would join behind the top card, as Siri's do. Two smaller questions are in the write-up (answering from a card; whether this replaces R4.1 and R4.3).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T22:31:56.844Z",
-      "sortOrder": 4,
+      "createdAt": "2026-10-12T23:08:07.350Z",
+      "sortOrder": 5,
       "source": "coral/attention-rollup"
     }
   ]
