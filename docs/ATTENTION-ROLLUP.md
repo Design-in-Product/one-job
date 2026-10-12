@@ -1,6 +1,6 @@
-# One Job — what needs xian · v91 (2026-10-11)
+# One Job — what needs xian · v92 (2026-10-11)
 
-**Cite as "Coral rollup v91".** One file, one URL:
+**Cite as "Coral rollup v92".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -16,7 +16,10 @@ CLAUDE.md's methodology is rewritten as you asked. The UX walk has
 started in the form you chose: one step at a time, alongside other
 work (22). You'll retest Siri today (36). Janus's independent check
 found no tester names, but it did find other private people named
-here; whether they go too is yours to call (43).
+here; whether they go too is yours to call (43). At the 17:49 fire I
+swept every file version in history by pattern, and the full list is
+in the private repo for you to mark. Pilot still has no testers, and
+the old commit links still open, so GitHub hasn't acted yet.
 
 ## Open
 
@@ -32,15 +35,32 @@ and found more with a name-dictionary sweep:
 - Smaller: the name of one of your own decks, in a log of mine.
 Authors you cite and a musician in the vision docs are public
 figures, and I'd leave them.
-**Where to act:** one word in Coral's session: "third pass", or
-"leave them".
+
+**The full list is ready (10-11, 17:49 fire).** I swept every file
+version in all history by pattern (anything name-shaped, plus emails,
+handles and domains), not by a list of known names. It added:
+- Details about you: your phone's device name, a holiday location, a
+  company name and domain that appears about 40 times, and a few of
+  your own addresses.
+- One phrase beside a tester's label that could point back to them.
+- **A bigger question: about 95 daily briefs from before 10-09 are
+  still public in full.** They report on your other projects by name.
+  I found no record that leaving them was decided.
+- Old history holds no new names beyond these.
+Not covered: 177 images and screenshots (they need eyes), and a match
+against your calendar and call notes (needs your yes).
+**Where to act:** mark the list at
+https://github.com/Design-in-Product/one-job-private/blob/main/scrub/THIRD-PASS-CANDIDATES-2026-10-11.md
+(remove or keep, and add what's missing). Then one word in Coral's
+session: "third pass", or "leave them".
 **Since:** 2026-10-11
-**Ask:** Remove non-tester people and the client's name from this repo's history too?
-**Rec:** Yes, as one last pass. They are private people named from
-private calls, which is what the public-repo rule is for. I'd show
-you the full list first (in the private repo), so the list is yours
-to complete before I run anything. One mail filename would change, so
-Pard would hear first.
+**Ask:** Mark the third-pass list, then say "third pass" or "leave them".
+**Rec:** Third pass, once, after you've marked the list. Section A
+(private people and a client) I'd remove. Sections B and D (details
+about you, and the old briefs) are yours to judge. Say yes to the
+calendar match if you want the strongest check against a fourth pass.
+One mail filename would change, so Pard would hear first. Hold the
+GitHub note (42) until this is settled, so GitHub gets one update.
 
 ### 🟡 42. Tell GitHub about the second rewrite (add to your ticket)
 Your ticket asks GitHub to remove the commits left behind by the
