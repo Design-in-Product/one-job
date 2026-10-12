@@ -1,55 +1,55 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-12T00:55:01.419Z",
+  "exportedAt": "2026-10-12T01:06:13.077Z",
   "tasks": [
     {
-      "id": "4cc8365b-dea5-44b4-9c28-7bbb81423dd4",
+      "id": "63972b8d-be13-4ee1-a3c2-82f9f06036f8",
       "title": "Mark the third-pass list, then say \"third pass\" or \"leave them\".",
-      "description": "🟡 #43 · Non-tester people are named in this public repo: remove them too?\n\nCoral's rec: Third pass, once, after you've marked the list. Section A (private people and a client) I'd remove. Sections B and D (details about you, and the old briefs) are yours to judge. Say yes to the calendar match if you want the strongest check against a fourth pass. One mail filename would change, so Pard would hear first. Hold the GitHub note (42) until this is settled, so GitHub gets one update.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
+      "description": "🟡 #43 · Non-tester people are named in this public repo: remove them too?\n\nCoral's rec: Third pass, once, after you've marked the list. Section A (private people and a client) I'd remove. Section B (details about you) is yours to judge. The old briefs (section D) are a separate, wider decision that Janus is carrying. Say yes to the calendar match if you want the strongest check against a fourth pass. One mail filename would change, so Pard would hear first. Hold the GitHub note (42) until this is settled, so GitHub gets one update.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T00:55:01.419Z",
+      "createdAt": "2026-10-12T01:06:13.077Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "aeb68acb-09cd-4666-a5ca-0558d969f3fa",
+      "id": "4d51d021-fbd6-497b-a4f7-8eef148c38f2",
       "title": "Add the short note about the second rewrite to your GitHub ticket.",
       "description": "🟡 #42 · Tell GitHub about the second rewrite (add to your ticket)\n\nCoral's rec: Reply to the existing ticket, so GitHub has one request to handle. If you can't find it, the \"Clear cached views\" assistant works again, with the new example link in that file.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 0 days (since 2026-10-11)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T00:55:01.419Z",
+      "createdAt": "2026-10-12T01:06:13.077Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "6426e37c-82b9-4b3d-9f84-531e8bdf3994",
+      "id": "38ec239a-e2fc-4d9f-8d30-5dd6062c10c6",
       "title": "Install 41 and try Siri with the app open. Did the card appear in that deck?",
       "description": "🟡 #36 · Test build 41: Siri with the app open\n\nCoral's rec: If yes, say \"Pilot 41\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 3 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T00:55:01.419Z",
+      "createdAt": "2026-10-12T01:06:13.077Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "42d795f6-d81b-47b3-8812-e5f6b887b64e",
+      "id": "bb631ed4-507f-4639-acc5-7a401e14a9a0",
       "title": "UX walk, step 1: open One Job cold. What do you see, and what do you make of it?",
       "description": "🟡 #22 · UX walk: step 1 of 11 is open (the cold open)\n\nCoral's rec: No hurry and no order within a step. Say what you notice, and I'll record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 59 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T00:55:01.419Z",
+      "createdAt": "2026-10-12T01:06:13.077Z",
       "sortOrder": 4,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "86a17a4e-87ba-41ee-983e-6d7978c45b92",
+      "id": "29be4bdc-6b4b-4077-ac32-812d770c1dc2",
       "title": "In the Todoist model, does your deck follow the list's order, or keep its own?",
       "description": "🟡 #40 · Agent's deck: does the deck follow the list's order, or keep its own?\n\nCoral's rec: Keep its own. The top card is what the app protects, and \"Later\" has to mean something. New tasks would join behind the top card, as Siri's do. Two smaller questions are in the write-up (answering from a card; whether this replaces R4.1 and R4.3).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-11 · waiting 8 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-12T00:55:01.419Z",
+      "createdAt": "2026-10-12T01:06:13.077Z",
       "sortOrder": 5,
       "source": "coral/attention-rollup"
     }

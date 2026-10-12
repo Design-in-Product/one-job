@@ -1,6 +1,6 @@
-# One Job — what needs xian · v92 (2026-10-11)
+# One Job — what needs xian · v93 (2026-10-11)
 
-**Cite as "Coral rollup v92".** One file, one URL:
+**Cite as "Coral rollup v93".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -45,7 +45,11 @@ handles and domains), not by a list of known names. It added:
 - One phrase beside a tester's label that could point back to them.
 - **A bigger question: about 95 daily briefs from before 10-09 are
   still public in full.** They report on your other projects by name.
-  I found no record that leaving them was decided.
+  I found no record that leaving them was decided. **Janus sized it
+  (18:10): the same briefs are in seven public repos and load on the
+  public website without a login**, so removing them here alone
+  wouldn't make them private. It's one decision across all of those,
+  and it's on Janus's card, not part of this pass.
 - Old history holds no new names beyond these.
 Not covered: 177 images and screenshots (they need eyes), and a match
 against your calendar and call notes (needs your yes).
@@ -56,8 +60,9 @@ session: "third pass", or "leave them".
 **Since:** 2026-10-11
 **Ask:** Mark the third-pass list, then say "third pass" or "leave them".
 **Rec:** Third pass, once, after you've marked the list. Section A
-(private people and a client) I'd remove. Sections B and D (details
-about you, and the old briefs) are yours to judge. Say yes to the
+(private people and a client) I'd remove. Section B (details about you) is yours to judge.
+The old briefs (section D) are a separate, wider decision that Janus
+is carrying. Say yes to the
 calendar match if you want the strongest check against a fourth pass.
 One mail filename would change, so Pard would hear first. Hold the
 GitHub note (42) until this is settled, so GitHub gets one update.
