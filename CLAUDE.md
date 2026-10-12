@@ -8,6 +8,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 names, contact details or personal emails go here; refer to testers by
 role. Confidential material lives in `Design-in-Product/one-job-private`.
 
+**Outside people's details stay out** (xian's rule for every seat,
+2026-10-12). Don't write an outside person's name, address, employer
+or words into this repo: not in files, filenames, commit messages,
+mail, logs or the board. Use a role label ("a pilot tester", "the
+client contact"). An outside person is anyone who is not xian and not
+one of his agents; client organisations get labels too. When the
+detail matters, write it in a private repo and leave a name-free
+pointer here. Public figures in their public role are not covered.
+Any other exception is xian's to give. An old mention is not yours to
+remove on finding it: report it, because removing it from history is
+a rewrite and that is xian's call. Full text:
+`designinproduct:docs/conventions/people-details-stay-private.md`.
+
 ## Cross-Pollination & Mail (added 2026-07-05)
 
 One Job is a registered participant in the Design in Product cross-pollination network. Read the daily brief at session start, alongside the usual pattern-discovery pass. **This repo is public, so the brief's text lives in the private repo** `mediajunkie/designinproduct` → `src/internal/briefs/YYYY-MM-DD-brief.md` (also at https://designinproduct.com/internal/briefs/). Read it from a scratchpad clone (`git clone --depth 1`), never from a sibling's working tree. `docs/briefs/cross-pollination/current.md` here is only a pointer.

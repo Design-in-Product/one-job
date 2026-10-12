@@ -1,6 +1,6 @@
-# One Job — what needs xian · v94 (2026-10-12)
+# One Job — what needs xian · v95 (2026-10-12)
 
-**Cite as "Coral rollup v94".** One file, one URL:
+**Cite as "Coral rollup v95".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,15 +8,13 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**GitHub has removed the old commits from both rewrites (seen
-10-12, 11:45).** The old links now return "not found", including the
-head from before the second pass, so no note to GitHub is needed (42
-is settled). No tester's name is in one-job's files or history.
-
-What's left of the scrub is your call on item 43: other private
-people, a client, and some details about you are named here. The
-full list is in the private repo for you to mark. The old daily
-briefs are settled: they stay (your answer on 10-12).
+**The third scrub pass is done (10-12, 15:28).** You marked the list
+and said "please proceed" in my session. The outside people, the
+client names and the two details about you that you marked are now
+role labels in one-job's files and history, and onejob.co is up.
+GitHub needs one more cleanup request, because this pass left a new
+set of old commits that still open by exact link (44; the text is
+ready). GitHub already cleaned up after the first two passes.
 
 Also open: the Siri retest on build 41 (36), the UX walk at step 1
 (22), and the deck-order question (40). Pilot had no testers at the
@@ -24,45 +22,17 @@ last check (10-11).
 
 ## Open
 
-### 🟡 43. Non-tester people are named in this public repo: remove them too?
-Both scrubs covered testers only. Janus swept the repo without my
-list (10-11) and found people who aren't testers, and I confirmed it
-and found more with a name-dictionary sweep:
-- Two people from a private call of yours in August (one surname is
-  in a mail filename), in a Janus memo and one of my logs.
-- A client company and two named contacts there, from your calendar,
-  in a LinkedIn draft and a Themis memo.
-- A client contact by first name, in a Janus memo and a brief.
-- Smaller: the name of one of your own decks, in a log of mine.
-Authors you cite and a musician in the vision docs are public
-figures, and I'd leave them.
-
-**The full list is ready (10-11, 17:49 fire).** I swept every file
-version in all history by pattern (anything name-shaped, plus emails,
-handles and domains), not by a list of known names. It added:
-- Details about you: your phone's device name, a holiday location, a
-  company name and domain that appears about 40 times, and a few of
-  your own addresses.
-- One phrase beside a tester's label that could point back to them.
-- The old daily briefs (about 95, public in full) were a question on
-  10-11. **Closed 10-12: they stay as they are** (your answer, relayed
-  by Janus: the one outside person named in them is fine with being
-  named). Not part of this pass.
-- Old history holds no new names beyond these.
-Not covered: 177 images and screenshots (they need eyes), and a match
-against your calendar and call notes (needs your yes).
-**Where to act:** mark the list at
-https://github.com/Design-in-Product/one-job-private/blob/main/scrub/THIRD-PASS-CANDIDATES-2026-10-11.md
-(remove or keep, and add what's missing). Then one word in Coral's
-session: "third pass", or "leave them".
-**Since:** 2026-10-11
-**Ask:** Mark the third-pass list, then say "third pass" or "leave them".
-**Rec:** Third pass, once, after you've marked the list. Section A
-(private people and a client) I'd remove. Section B (details about you) is yours to judge. Say yes to the
-calendar match if you want the strongest check against a fourth pass.
-One mail filename would change, so Pard would hear first. A third
-pass would leave a new set of old commits, so it would need one more
-request to GitHub afterwards.
+### 🟡 44. Send GitHub one more cleanup request (third rewrite)
+The third pass left 492 old commits that still open by exact link.
+GitHub removed the earlier ones within a day of your first request.
+**Where to act:** https://support.github.com, the same "Clear cached
+views" assistant as on 10-11. The example link and the text to paste
+(under 500 characters) are at
+https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-REQUEST-3-2026-10-12.md
+**Since:** 2026-10-12
+**Ask:** Send GitHub the third cleanup request (text is ready to paste).
+**Rec:** Do it the same way as on 10-11; it took a few minutes. I
+check the old link at each fire and close this when it stops opening.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,

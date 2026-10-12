@@ -55,6 +55,41 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 43. Non-tester people named in this public repo: third pass (done 2026-10-12)
+Both earlier scrubs covered testers only. Janus's independent sweep
+(10-11) found other private people named here, and Coral's pattern
+sweep of all history added clients and details about xian. The list
+went to xian in the private repo. He marked it on 10-12 and said in
+Coral's session: "I marked the third pass list. Please proceed."
+Asked about three more organisations in the same files, he chose
+"Remove all three".
+- Replaced with role labels: two outside contacts, four client
+  organisations, two client contacts, one first name, xian's phone's
+  device name, a holiday town, one local address. One mail file was
+  renamed.
+- Left public by xian's choice (unmarked): one of his deck names, a
+  company name and domain, his work addresses, a D&B reference, commit
+  author fields, and one phrase beside a tester's label.
+- One listed row was a false alarm: an address that looked like a
+  username was a database library's documentation example.
+- The old daily briefs stay (xian, 10-12, via Janus), apart from one
+  label each in two of them.
+- Freeze mailed first. Backup: 24 of 24 refs in one-job-private under
+  `pre-scrub-3/`. Rewrite on a fresh mirror; nothing deleted; 798
+  commits before and after.
+- Checks: every file on the old main compared with the new by a
+  second tool (805 files, 14 changed, 0 mismatches); 0 matches for
+  every marked term in all history, messages and paths, on the mirror
+  and on a fresh clone from GitHub; the earlier passes' checks still
+  pass; 250 tests, typecheck and build pass. Coral looked at all 134
+  screenshots in history: demo data only.
+- Push 15:28 PT, all-or-nothing and lease-protected. `main` `7bd0be8`
+  → `5ec87fd`. 24 of 24 remote refs equal the mirror.
+- Not covered: a match against xian's calendar and call notes (he
+  didn't say yes); names with no capital letter or only initials;
+  what remains around the labels (job titles, one proposal amount).
+- Follow-up: item 44, a new cleanup request to GitHub.
+
 ### ✅ 42. Tell GitHub about the second rewrite (not needed; GitHub cleaned up, seen 2026-10-12)
 The ask was to add a note to xian's ticket, because the second pass
 left 624 more old commits than the ticket described. On 10-12 at
