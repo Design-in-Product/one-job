@@ -99,11 +99,11 @@ Anything more on tap and edit from the phone goes here too.
 
 ---
 **Verified how (v110, 10-13):**
-- **Build 43 (05:5x PT):** VALID; in Internal (3 testers). Checked
+- **Build 43 (05:53 PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269
   tests, tsc and build pass. What to Test set from the release note.
-- **Todoist sync (06:5x):** 297 tests pass. Walked at phone size
+- **Todoist sync (about 06:35):** 297 tests pass. Walked at phone size
   against the test account: new task on top, closed task to Done,
   nothing removed, disconnect leaves the deck. The app sent Todoist
   no request other than reads.
@@ -113,11 +113,11 @@ Anything more on tap and edit from the phone goes here too.
 - **Pilot group (ASC API, 05:53):** builds 40 and 39, 0 testers.
 - **Private repo (10-12, 17:49):** GitHub lists one account with
   access.
-- **Detach (07:4x):** 304 tests pass. Walked at phone size against
+- **Detach (about 07:05):** 304 tests pass. Walked at phone size against
   the test account: cancel changed nothing; delete removed the deck
   and its 7 cards and no other deck; keep left the 5 cards in an
   ordinary deck that a reload did not sync.
-- **Deck actions (07:5x):** 316 tests pass. Walked at phone size: a
+- **Deck actions (07:2x):** 316 tests pass. Walked at phone size: a
   deck into an existing card and into a new card on top (every card
   kept, done ones too); all cards moved to another deck, on top and
   in order; the emptied deck deleted; Undo brought it back.
