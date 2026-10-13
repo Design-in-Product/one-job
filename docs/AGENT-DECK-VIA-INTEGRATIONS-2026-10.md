@@ -14,6 +14,31 @@
   What an agent may do is a matter of how the user already works with
   their agent, not a One Job permission.
 
+## xian's ruling on order (2026-10-12)
+
+His words: "40 needs a smart default to make sure that the spectrum
+from xian's personal preferences to one job's ethos to todoist's own
+native paradigms to the user's own personal preferences and customs
+tell me that when adding an integration the user should be asked if
+they want the deck order to be updated by the integrated service
+during sync or if they want the order to be maintained. Either way
+One Job would keep its own sense of the order, and you and I can
+discuss what the default for the app should be (probably One Job's
+deck order retained) and also whether a user can set a general
+"don't ask me again" preference."
+
+Decided:
+
+- When the user adds an integration, One Job asks: should the service
+  update the deck's order during sync, or should the deck's order be
+  maintained?
+- Either way, One Job keeps its own sense of the order.
+
+Still to discuss (xian and Coral):
+
+- The app's default. xian's lean: One Job's order retained.
+- Whether there is a general "don't ask me again" preference.
+
 ## What xian said
 
 His notes, 2026-10-11, lightly tidied:
@@ -79,8 +104,8 @@ All of these are already in `ROADMAP.md`.
    roadmap's R4 gate says no agent can ever reorder your deck, but in
    this model One Job can't tell an agent from you, so the gate can't
    be enforced by the app. It becomes a convention, or it becomes
-   "the deck keeps its own order whatever the list does". This needs
-   a ruling.
+   "the deck keeps its own order whatever the list does". **Ruled
+   10-12:** the user chooses when adding the integration (above).
 3. **Answering.** xian's finding on the attention deck (same day): a
    card says what to do, but he can't answer from it, and he can't
    swipe it until he has answered. Todoist offers two ways to answer:
@@ -110,7 +135,7 @@ agent's deck needs) is Pro. That is a flag, not a fork.
 ## Questions for xian
 
 1. Is this write-up right now, with your correction in?
-2. Order: does the deck follow Todoist's order, or keep its own?
+2. ~~Order: does the deck follow Todoist's order, or keep its own?~~ Ruled 10-12: the user is asked. Open: the default, and "don't ask me again".
 3. Answering: is "complete it" enough at first, or do you need to
    write a reply from the card?
 4. Does this replace R4.1 and R4.3 on the roadmap, or sit beside them?

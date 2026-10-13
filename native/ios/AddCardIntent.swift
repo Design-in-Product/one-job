@@ -26,8 +26,9 @@ import Foundation
 struct AddCardIntent: AppIntent {
     static var title: LocalizedStringResource = "Add Card"
     static var description = IntentDescription(
-        "Adds a card to your One Job deck. The card appears the next time you open the app.")
-    // The deck ingests on next open; no need to launch the app now.
+        "Adds a card to your One Job deck.")
+    // The app takes the card in by itself (at once if it is open,
+    // otherwise when it next opens); no need to launch it now.
     static var openAppWhenRun: Bool = false
 
     // capitalizationType: .sentences — fixed at the INPUT layer, not by
@@ -93,8 +94,8 @@ struct AddCardIntent: AppIntent {
 
         let n = queue.count
         return .result(dialog: n == 1
-            ? "Added. It'll be in your deck next time you open One Job."
-            : "Added — \(n) cards waiting for your next open.")
+            ? "Added to your One Job deck."
+            : "Added. \(n) new cards are waiting for your deck.")
     }
 }
 
