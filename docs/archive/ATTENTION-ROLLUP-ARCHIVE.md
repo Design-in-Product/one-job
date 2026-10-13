@@ -55,6 +55,27 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 40. The agent's deck, through Todoist (design settled 2026-10-12)
+Opened 10-03 as the agent's-deck question. xian's insight (10-11): no
+special agent deck; the agent's deck is a second list in a back-end
+service, and One Job is the lens on both. Settled on 10-12, all in
+Coral's session:
+- When adding an integration the user is asked whether the service
+  updates the deck's order or the deck's order is maintained. Default:
+  One Job's order. No general "don't ask me again".
+- The GitHub import stays behind its beta flag. Todoist is the first
+  real integration.
+- Mapping is "loose but simple": a deck is one project or one
+  section; sub-tasks go inside their card.
+- A new task lands on top. A task closed in Todoist goes to Done.
+- One-way for the first week; write-back after that.
+- The token stays on the device for now; OAuth likely later.
+- Tier: not decided ("let's not decide this yet").
+- Coral may write to the One Job project in his Todoist test account.
+Design and build log: `docs/TODOIST-INTEGRATION-DESIGN-2026-10.md`.
+Still open in the write-up, not asked now: answering from a card, and
+whether this replaces R4.1 and R4.3.
+
 ### ✅ 44. Send GitHub a second cleanup request, for the third rewrite (sent 2026-10-12)
 xian sent it at about 17:40 PT through GitHub's Virtual Assistant:
 option 2 ("help removing cached commits"), the old head of `main` as

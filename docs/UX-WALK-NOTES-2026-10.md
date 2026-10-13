@@ -6,7 +6,7 @@ step is exhausted, then the next. The rails are in
 `UX-SESSION-PREP-2026-09.md` ("The walk order"). xian's words are the
 data; Coral's notes are marked as Coral's.
 
-**Where we are:** step 2, opened 2026-10-12. xian has spoken on swipes and on the open card. One follow-up is out: card shape or whole screen.
+**Where we are:** step 2, opened 2026-10-12. xian has spoken on swipes and on the open card. Card shape agreed. Waiting for xian to say whether step 2 is exhausted.
 
 | Step | Topic | State |
 |---|---|---|
@@ -124,3 +124,7 @@ This has been my feedback for some time so it's good to get to it!"
   real card shape or the whole screen, not the sheet in between.
   Nothing is built yet.
 - *Follow-up asked (10-12):* card shape or whole screen.
+- **xian, 2026-10-12, answering:** "yes meant Created" and "card
+  shape agreed".
+- *Asked next:* anything more on tapping and editing, or is step 2
+  done.

@@ -98,6 +98,8 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
    *Coral's note:* the second half is write-back (R3.4), which the
    roadmap puts after a proven week of read-only. Built in that
    order unless he says otherwise.
+   **xian, same day:** "ok to keep things one way in the initial
+   week (gall's law approach)".
 3. **Tier: not decided.** "let's not decide this yet. it may be that
    any integration at all is what costs money or maybe it's the
    second list as you say."

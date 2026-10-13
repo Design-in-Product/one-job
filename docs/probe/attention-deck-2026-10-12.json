@@ -1,36 +1,26 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T03:28:26.151Z",
+  "exportedAt": "2026-10-13T03:36:59.579Z",
   "tasks": [
     {
-      "id": "a2e29174-1a9a-44cd-95ac-4526c6e39bc4",
+      "id": "13302712-71d6-4606-9dbd-b009c571f3ab",
       "title": "Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?",
       "description": "🟡 #36 · Test build 42: does a Siri card land on top?\n\nCoral's rec: If yes, say \"Pilot 42\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Build 41 stays out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:28:26.151Z",
+      "createdAt": "2026-10-13T03:36:59.579Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "aee87317-2b5d-4136-bb79-327b21af85ce",
-      "title": "UX walk, step 2: should an open card be card-shaped, or take the whole screen?",
-      "description": "🟡 #22 · UX walk, step 2: open card as a card, or the whole screen?\n\nCoral's rec: Card-shaped. Tapping a card would then turn it over and bring it forward, and the deck stays the only place you are. A whole screen is a second place. Say which, and whether to build it now or after the walk.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "id": "63877d60-47da-4a6f-ad4b-8b15907f629f",
+      "title": "UX walk: anything more on tapping and editing a card, or is step 2 done?",
+      "description": "🟡 #22 · UX walk, step 2: anything more on tapping and editing?\n\nCoral's rec: If it's done, say so and I'll open step 3: adding a card.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:28:26.151Z",
+      "createdAt": "2026-10-13T03:36:59.579Z",
       "sortOrder": 2,
-      "source": "coral/attention-rollup"
-    },
-    {
-      "id": "4876eb83-5c2d-420b-be57-065363ea933c",
-      "title": "Todoist: does a Done swipe close the task from day one, or after a read-only week?",
-      "description": "🟡 #40 · Todoist: is completion write-back after a proven week, or from the start?\n\nCoral's rec: After the week, as the roadmap says. Reading can't damage your list; writing can. I build reading first either way, so this doesn't hold anything up yet. Tier stays undecided, as you asked.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
-      "completed": false,
-      "status": "todo",
-      "createdAt": "2026-10-13T03:28:26.151Z",
-      "sortOrder": 3,
       "source": "coral/attention-rollup"
     }
   ]
