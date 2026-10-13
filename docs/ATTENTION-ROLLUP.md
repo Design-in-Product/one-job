@@ -1,6 +1,6 @@
-# One Job — what needs xian · v109 (2026-10-13)
+# One Job — what needs xian · v110 (2026-10-13)
 
-**Cite as "Coral rollup v109".** One file, one URL:
+**Cite as "Coral rollup v110".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,7 +8,7 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Four things are open for you:
+Two things are open for you:
 
 - **Build 43 (36):** 1.1.1 (43) is in your Internal group, on your
   "go for build 43". It has the Siri change and the rebuilt open
@@ -16,10 +16,11 @@ Four things are open for you:
 - **UX walk (22):** step 3, adding a card. You said the rebuilt open
   card "feels good" on 10-13, which closed step 2.
 
-- **Removing a deck (46):** you raised it on 10-13 with three
-  possible fates for the cards. I need your choice.
-- **A deck into a card (47):** not possible today. I have a proposal
-  and need your go.
+Answered and built on 10-13 (46, 47, archived): a deck is deleted
+only when empty; "Move all cards to another deck…" empties it; and
+"Move this deck into a card…" puts a whole deck inside an existing
+card or a new one. All three are in the long-press menu of the web
+app when you have more than one deck. The phone app needs a build.
 
 In progress, mine, nothing needed from you:
 
@@ -65,37 +66,10 @@ session.
 **Rec:** Do it while you test build 43, since you'll have the app open.
 Anything more on tap and edit from the phone goes here too.
 
-### 🟡 46. Removing a deck: what happens to its cards?
-You raised this on 10-13 and named three options: the cards are
-deleted too, they move to the default deck, or a deck can't be removed
-until its cards are all completed or moved. Today the store already
-follows the third (only an empty deck can be deleted), but no menu
-offers it. A deck attached to Todoist is the one exception, built on
-your word: detaching can delete it with its cards, after a
-confirmation that names the count.
-**Where to act:** Coral's session.
-**Since:** 2026-10-13
-**Ask:** Removing a deck: delete its cards, move them to another deck, or only when empty?
-**Rec:** Only when empty, plus a "move all cards to…" step that asks
-which deck. No card is deleted by removing a deck, and none lands in
-a deck you didn't choose. I'd add "Delete deck" to the long-press
-menu, shown when the deck is empty.
-
-### 🟡 47. Move a whole deck into a card: build it this way?
-You asked for this on 10-13 so decks don't pile up. It isn't possible
-today: a card can move to another deck or into another card, but a
-deck can't. The pieces exist, since a card can already hold more than
-one deck.
-**Where to act:** Coral's session.
-**Since:** 2026-10-13
-**Ask:** Deck into a card: into an existing card, a new card, or both?
-**Rec:** Both, from one menu entry, "Move this deck into a card": pick
-a deck, then either one of its cards or "a new card on top". The deck
-keeps its name and its cards. This is also your 10-12 idea for bulk
-arrivals (a deck inside one new card).
-
 ## Recorded, final (not re-asked)
 
+- 2026-10-13 · **A deck is removed only when empty, with a "move all cards" option** (46). Your words, given in Janus's session and relayed: "only when empty with a "move all cards" option". Built the same day.
+- 2026-10-13 · **A whole deck can move into a card, from one menu entry** (47). Your words, relayed by Janus: "one menu entry yes". Built as both an existing card and a new card on top; "both" is Janus's reading of your yes, not your word. Say if you meant one.
 - 2026-10-13 · **Detaching an integration offers two outcomes:** "an offer to delete the attached deck -or- to leave it detached as an ordinary deck (no ability to re-attach implied)". Built the same day.
 - 2026-10-13 · **Why you had three Todoist decks:** you connected the project first to see if it would make a deck per section. It made one deck with every task, so you connected each section too.
 - 2026-10-13 · **GitHub removed the old commits** (44). The pre-rewrite head of the third pass returns 404 by direct link and "No commit found" from the API (checked 05:53 PT).
@@ -124,7 +98,7 @@ arrivals (a deck inside one new card).
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v109, 10-13):**
+**Verified how (v110, 10-13):**
 - **Build 43 (05:5x PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269
@@ -143,5 +117,9 @@ arrivals (a deck inside one new card).
   the test account: cancel changed nothing; delete removed the deck
   and its 7 cards and no other deck; keep left the 5 cards in an
   ordinary deck that a reload did not sync.
-- **Items:** 29 `###` items across this board (4) and the archive
-  (25). Two new on 10-13 (46, 47).
+- **Deck actions (07:5x):** 316 tests pass. Walked at phone size: a
+  deck into an existing card and into a new card on top (every card
+  kept, done ones too); all cards moved to another deck, on top and
+  in order; the emptied deck deleted; Undo brought it back.
+- **Items:** 29 `###` items across this board (2) and the archive
+  (27). 46 and 47 were opened and archived on 10-13.

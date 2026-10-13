@@ -90,6 +90,15 @@ export interface TaskStore {
   syncSourceDeck?(deckId: string, plan: import('@/domain/sourceSync').SourceSyncPlan): Promise<import('@/domain/sourceSync').SourceSyncOutcome>;
   /** Move a top-level card to another root deck (stage 3). */
   moveCardToDeck?(cardId: string, deckId: string): Promise<import('@/types/task').Task>;
+  /** Empty a root deck into another the user chose; every card moves,
+      the open ones landing on top in their order. Returns the count. */
+  moveAllCardsToDeck?(fromDeckId: string, toDeckId: string): Promise<number>;
+  /** Move a whole root deck into an existing card, or into a new card
+      on top of a chosen deck. Returns the card that now holds it. */
+  moveDeckIntoCard?(
+    deckId: string,
+    target: { cardId: string } | { newCardInDeckId: string },
+  ): Promise<Task>;
   /** Session-deep undo: restore the state before the last mutation. */
   undoLast?(): Promise<boolean>;
   canUndo?(): boolean;

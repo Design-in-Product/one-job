@@ -310,6 +310,74 @@ const Index = () => {
     }
   };
 
+  // ---- Whole-deck actions (xian, 2026-10-13, items 46 and 47) --------
+  // A deck is removed only when empty; "move all cards" is how it gets
+  // empty, into a deck the user picks. And a whole deck can move into a
+  // card (an existing one, or a new one on top) so decks don't pile up.
+  type DeckRef = { id: string; name: string | null; cards: Task[] };
+  const [moveAll, setMoveAll] = useState<DeckRef[] | null>(null);
+  const [deckInto, setDeckInto] = useState<{ decks: DeckRef[] } | { deck: DeckRef } | null>(null);
+  const [activeAttached, setActiveAttached] = useState(false);
+  useEffect(() => {
+    const store = getTaskStore();
+    store.getDecks?.().then(ds => setActiveAttached(!!ds.find(d => d.id === store.activeDeckId?.())?.source));
+  }, [deckCount, tasks]);
+  const otherDecks = async (): Promise<DeckRef[]> => {
+    const store = getTaskStore();
+    return ((await store.getDecks?.()) ?? []).filter(d => d.id !== store.activeDeckId?.());
+  };
+  const leaveForDeck = async () => {
+    setSubstackStack([]);
+    setCurrentView('main');
+    await refreshTasks();
+  };
+  const handleMoveAllCards = async (to: DeckRef) => {
+    setMoveAll(null);
+    const store = getTaskStore();
+    try {
+      const count = await store.moveAllCardsToDeck!(store.activeDeckId!(), to.id);
+      toast.success(t('toasts.allCardsMoved', { count, deck: to.name ?? t('decks.unnamed') }));
+      await refreshAll();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+  const handleDeleteDeck = async () => {
+    const store = getTaskStore();
+    try {
+      await store.deleteDeck!(store.activeDeckId!());
+      toast.success(t('toasts.deckDeleted'));
+      await leaveForDeck();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+  const handleDeckIntoCard = async (target: { cardId: string } | { newCardInDeckId: string }) => {
+    setDeckInto(null);
+    const store = getTaskStore();
+    try {
+      const card = await store.moveDeckIntoCard!(store.activeDeckId!(), target);
+      toast.success(t('toasts.deckMovedIntoCard', { title: card.title }));
+      await leaveForDeck();
+    } catch (err) {
+      toast.error(t('toasts.moveFailed', { message: (err as Error).message }));
+    }
+  };
+  const deckActions = (() => {
+    const store = getTaskStore();
+    if (deckCount < 2) return undefined;
+    const actions: { key: string; label: string; onClick: () => void; destructive?: boolean }[] = [];
+    if (store.moveDeckIntoCard && !activeAttached)
+      actions.push({ key: 'deckintocard', label: t('menu.deckIntoCard'),
+        onClick: async () => setDeckInto({ decks: await otherDecks() }) });
+    if (store.moveAllCardsToDeck && tasks.length > 0)
+      actions.push({ key: 'moveallcards', label: t('menu.moveAllCards'),
+        onClick: async () => setMoveAll(await otherDecks()) });
+    if (store.deleteDeck && tasks.length === 0)
+      actions.push({ key: 'deletedeck', label: t('menu.deleteDeck'), destructive: true, onClick: handleDeleteDeck });
+    return actions;
+  })();
+
   // ---- Canvas strip (R2.1 stage 4, PREVIEW — ?canvas=on) --------------
   // Paged, my recorded lean: decks left to right in store order, the
   // afterlife (rooms) at the FAR RIGHT — "the afterlife is to the right"
@@ -766,6 +834,35 @@ const Index = () => {
         onClose={() => setDeckMove(null)}
       />
 
+      {/* Items 46 and 47: empty this deck into another; move it into a card */}
+      <ActionSheet
+        open={moveAll !== null}
+        title={t('decks.moveAllTitle')}
+        actions={(moveAll ?? []).map(d => ({
+          key: d.id, label: d.name ?? t('decks.unnamed'), onClick: () => handleMoveAllCards(d),
+        }))}
+        onClose={() => setMoveAll(null)}
+      />
+      <ActionSheet
+        open={deckInto !== null && 'decks' in deckInto}
+        title={t('decks.intoCardWhichDeck')}
+        actions={(deckInto && 'decks' in deckInto ? deckInto.decks : []).map(d => ({
+          key: d.id, label: d.name ?? t('decks.unnamed'), onClick: () => setDeckInto({ deck: d }),
+        }))}
+        onClose={() => setDeckInto(null)}
+      />
+      <ActionSheet
+        open={deckInto !== null && 'deck' in deckInto}
+        title={t('decks.intoCardWhichCard')}
+        actions={deckInto && 'deck' in deckInto ? [
+          { key: 'new', label: t('decks.intoNewCard'), onClick: () => handleDeckIntoCard({ newCardInDeckId: deckInto.deck.id }) },
+          ...deckInto.deck.cards.filter(c => !c.completed && !c.trashedAt && !c.archivedAt).map(c => ({
+            key: c.id, label: c.title, onClick: () => handleDeckIntoCard({ cardId: c.id }),
+          })),
+        ] : []}
+        onClose={() => setDeckInto(null)}
+      />
+
       {/* Rename the active deck (first UI for store.renameDeck) */}
       {renameOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-4 pt-[max(6rem,env(safe-area-inset-top))]"
@@ -906,6 +1003,7 @@ const Index = () => {
                   onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                   onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                   onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
+                  deckActions={deckActions}
                   onInchworm={inchwormAvailable ? toggleInchworm : undefined}
                   inchwormOn={inchworm && inchwormAvailable}
                   deckIdentity={activeDeckIdentity}
@@ -931,6 +1029,7 @@ const Index = () => {
                 onRedo={getTaskStore().canRedo?.() ? handleRedoLast : undefined}
                 onDecks={decksEntryVisible && getTaskStore().getDecks ? openDecksSheet : undefined}
                 onRenameDeck={deckCount > 1 && getTaskStore().renameDeck ? openRename : undefined}
+                deckActions={deckActions}
                 onInchworm={inchwormAvailable ? toggleInchworm : undefined}
                 inchwormOn={inchworm && inchwormAvailable}
                 deckIdentity={activeDeckIdentity}

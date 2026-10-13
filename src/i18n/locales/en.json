@@ -32,7 +32,10 @@
       "decks": "Decks…",
       "inchworm": "Inchworm walk",
       "redo": "Redo",
-      "renameDeck": "Rename deck…"
+      "renameDeck": "Rename deck…",
+      "deckIntoCard": "Move this deck into a card…",
+      "moveAllCards": "Move all cards to another deck…",
+      "deleteDeck": "Delete this empty deck"
     },
     "form": {
       "addNew": "Add New Task",
@@ -227,7 +230,11 @@
       "movedToDeck": "\"{{title}}\" moved to {{deck}} — top of that deck",
       "redone": "Redone.",
       "nothingToRedo": "Nothing to redo.",
-      "deckRenamed": "Deck renamed to \"{{name}}\""
+      "deckRenamed": "Deck renamed to \"{{name}}\"",
+      "allCardsMoved_one": "{{count}} card moved to \"{{deck}}\". This deck is empty and can be deleted.",
+      "allCardsMoved_other": "{{count}} cards moved to \"{{deck}}\". This deck is empty and can be deleted.",
+      "deckDeleted": "Deck deleted",
+      "deckMovedIntoCard": "The deck is now inside \"{{title}}\""
     },
     "integration": {
       "selectServiceFirst": "Please select a service first",
@@ -282,7 +289,11 @@
       "unnamed": "Unnamed deck",
       "moveTitle": "Move to which deck?",
       "renameTitle": "Rename this deck",
-      "renameSave": "Save"
+      "renameSave": "Save",
+      "moveAllTitle": "Move all of this deck's cards to which deck?",
+      "intoCardWhichDeck": "Move this deck into a card in which deck?",
+      "intoCardWhichCard": "Into which card?",
+      "intoNewCard": "+ A new card on top"
     },
     "canvas": {
       "afterlife": "Done, Archive & Trash"

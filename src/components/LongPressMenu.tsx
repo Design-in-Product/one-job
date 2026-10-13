@@ -18,6 +18,9 @@ interface LongPressMenuProps {
       create) more than one deck: no cruft till it's needed. */
   onDecks?: () => void;
   onRenameDeck?: () => void;
+  /** Whole-deck actions for the deck in view (move its cards, delete
+      it when empty, move it into a card). Shown after Rename. */
+  deckActions?: SheetAction[];
   /** Inchworm walk (R2.7) — label carries the on/off state. */
   onInchworm?: () => void;
   inchwormOn?: boolean;
@@ -34,6 +37,7 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
   onRedo,
   onDecks,
   onRenameDeck,
+  deckActions,
   onInchworm,
   inchwormOn,
   onViewCompleted,
@@ -48,6 +52,7 @@ const LongPressMenu: React.FC<LongPressMenuProps> = ({
     { key: 'add', label: t('menu.addTask'), onClick: onAddTask },
     ...(onDecks ? [{ key: 'decks', label: t('menu.decks'), onClick: onDecks }] : []),
     ...(onRenameDeck ? [{ key: 'renamedeck', label: t('menu.renameDeck'), onClick: onRenameDeck }] : []),
+    ...(deckActions ?? []),
     ...(onInchworm ? [{ key: 'inchworm',
       label: (inchwormOn ? '✓ ' : '') + t('menu.inchworm'), onClick: onInchworm }] : []),
     { key: 'completed', label: t('menu.completed'), onClick: onViewCompleted },

@@ -203,6 +203,91 @@ export class LocalTaskStore implements TaskStore {
     return card;
   }
 
+  /** A root deck's cards, top first: open ones by sortOrder (position
+      breaks ties), then the finished ones in the order stored. */
+  private inDeckOrder(cards: Task[]): Task[] {
+    const at = new Map(cards.map((c, i) => [c, i]));
+    const open = cards.filter(c => !c.completed)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || at.get(a)! - at.get(b)!);
+    return [...open, ...cards.filter(c => c.completed)];
+  }
+
+  private leaveDeckIfActive(deckId: string): void {
+    if (this.activeDeckId() !== deckId) return;
+    this.activeId = this.decks.find(d => d.id !== deckId)!.id;
+    try { localStorage.setItem(this.activeDeckPrefKey(), this.activeId); } catch { /* pref only */ }
+  }
+
+  /** Empty a deck into another one the user chose (xian, 2026-10-13,
+      item 46): every card moves, finished ones too; the open ones land
+      on top in the order they had. The emptied deck stays until it is
+      deleted. Returns how many cards moved. One save. */
+  async moveAllCardsToDeck(fromDeckId: string, toDeckId: string): Promise<number> {
+    const from = this.decks.find(d => d.id === fromDeckId);
+    const to = this.decks.find(d => d.id === toDeckId);
+    if (!from || !to) throw new Error('Unknown deck');
+    if (from.id === to.id) throw new Error('The cards are already in that deck');
+    const moving = this.inDeckOrder(from.cards);
+    if (moving.length === 0) return 0;
+    const open = moving.filter(c => !c.completed);
+    const top = topSortOrder(to.cards);
+    open.forEach((c, i) => { c.sortOrder = top - (open.length - 1) + i; });
+    from.cards = [];
+    to.cards.push(...moving);
+    this.saveTasks();
+    return moving.length;
+  }
+
+  /** Move a whole root deck into a card (xian, 2026-10-13, item 47):
+      into an existing card, or into a new card on top of a chosen
+      deck, named for the deck. The deck keeps its name and every card.
+      Returns the card that now holds it. One save. */
+  async moveDeckIntoCard(
+    deckId: string,
+    target: { cardId: string } | { newCardInDeckId: string },
+  ): Promise<Task> {
+    const index = this.decks.findIndex(d => d.id === deckId);
+    if (index === -1) throw new Error('Unknown deck');
+    const deck = this.decks[index];
+    if (deck.source !== undefined) {
+      throw new Error('This deck is attached to a service — detach it first (Integrations)');
+    }
+    if (this.decks.length === 1) throw new Error('The last deck cannot be moved into a card');
+
+    let card: Task;
+    let home: InteriorDeck | undefined;
+    if ('cardId' in target) {
+      if (findCardById(deck.cards, target.cardId)) {
+        throw new Error('That card is inside the deck being moved');
+      }
+      const found = findCardById(this.decks.flatMap(d => d.cards), target.cardId);
+      if (!found) throw new Error('Task not found');
+      if (found.completed) throw new Error('That card is finished — pick an open card');
+      card = found;
+    } else {
+      home = this.decks.find(d => d.id === target.newCardInDeckId);
+      if (!home) throw new Error('Unknown deck');
+      if (home.id === deck.id) throw new Error('A deck cannot move into itself');
+      const now = new Date();
+      card = {
+        id: uuidv4(),
+        title: deck.name?.trim() || 'Deck',
+        completed: false,
+        createdAt: now,
+        sortOrder: topSortOrder(home.cards),
+      };
+    }
+
+    // Interior decks are ordered by position, so fix the order now.
+    const interior: InteriorDeck = { ...deck, cards: this.inDeckOrder(deck.cards) };
+    card.decks = [...(card.decks ?? []), interior];
+    if (home) home.cards.push(card);
+    this.leaveDeckIfActive(deck.id);
+    this.decks.splice(index, 1);
+    this.saveTasks();
+    return card;
+  }
+
   /** Empty decks only — a deck holding cards can't be deleted (the
       sealed-card lesson generalized: no operation may bury or discard
       cards as a side effect). Never the last deck. */

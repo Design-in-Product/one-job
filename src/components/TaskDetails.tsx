@@ -214,7 +214,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 </span>
               </div>
             </div>
-            <span className="text-xs text-gray-500">{t('details.subtasks')}</span>
+            <span className="text-xs text-gray-500">{task.decks[0].name ?? t('details.subtasks')}</span>
           </button>
         ) : onAddSubtasks ? (
           /* Ghost deck: same shape, dashed. The way to start one. */

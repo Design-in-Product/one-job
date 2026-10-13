@@ -341,6 +341,13 @@ architecture.
    (`src/services/sourceAdapter.ts`), read-only until write access is
    earned (ROADMAP R3.4).
 
+   **Removing a deck never removes a card** (xian, 2026-10-13). A
+   deck is deleted only when empty; `moveAllCardsToDeck` empties it
+   into a deck the user picks, and `moveDeckIntoCard` puts a whole
+   deck inside a card. The one exception is `deleteSourceDeck`: a
+   deck attached to a service may be deleted with its cards when the
+   user detaches it, behind a confirmation that names the count.
+
 4. **Mobile-Optimized Component Hierarchy (Card Deck Experience)**:
 
    - **CardDeck**: Main interface — deck underlay, active card, long-press arc menu

@@ -399,6 +399,12 @@ user's order rule), disconnect. Build log and known limits:
 `TODOIST-INTEGRATION-DESIGN-2026-10.md`. Write-back (R3.4) is next,
 on xian's word after a week.
 
+*Decks, 2026-10-13 (xian, items 46 and 47):* a deck is deleted only
+when empty; "Move all cards to another deck…" empties it into a deck
+the user picks; "Move this deck into a card…" puts a whole deck
+inside an existing card or a new card on top. Live in the web app;
+in the phone app from the next build.
+
 *GitHub import, 2026-10-12 (xian):* "not release-ready yet because
 importing all the issues at once is really just not ever a good
 idea." It stays hidden behind its flag and Todoist becomes the first

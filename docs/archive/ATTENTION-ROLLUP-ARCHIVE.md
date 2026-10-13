@@ -76,6 +76,25 @@ Design and build log: `docs/TODOIST-INTEGRATION-DESIGN-2026-10.md`.
 Still open in the write-up, not asked now: answering from a card, and
 whether this replaces R4.1 and R4.3.
 
+### ✅ 46. Removing a deck: what happens to its cards? (answered and built 2026-10-13)
+xian raised it in session with three options. Coral recommended the
+third with a helper. His answer, given in Janus's session and relayed
+the same morning: "only when empty with a "move all cards" option".
+Built: "Delete this empty deck" and "Move all cards to another
+deck…" in the long-press menu. Every card moves, finished ones too;
+the open ones land on top of the chosen deck in their order. No card
+is deleted by removing a deck. The one exception stays a Todoist
+detach, which can delete an attached deck with its cards after a
+confirmation.
+
+### ✅ 47. Move a whole deck into a card (answered and built 2026-10-13)
+xian asked for it so decks don't pile up. His answer, relayed by
+Janus: "one menu entry yes". Built: "Move this deck into a card…":
+pick a deck, then one of its open cards or "a new card on top". The
+deck keeps its name and every card. A deck attached to a service
+must be detached first. Janus noted that xian did not separately say
+"both" (existing card and new card); both were built as recommended.
+
 ### ✅ 44. Send GitHub a second cleanup request, for the third rewrite (sent 2026-10-12, done 10-13)
 xian sent it at about 17:40 PT through GitHub's Virtual Assistant:
 option 2 ("help removing cached commits"), the old head of `main` as
