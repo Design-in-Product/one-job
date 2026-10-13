@@ -299,6 +299,26 @@
     },
     "inchworm": {
       "trail": "in {{trail}}"
+    },
+    "todoist": {
+      "title": "Todoist (read-only)",
+      "hint": "One list from Todoist becomes a deck here. One Job only reads; it changes nothing in Todoist. Your token is in Todoist under Settings, Integrations, Developer. It stays on this device.",
+      "tokenPlaceholder": "Todoist API token",
+      "tokenMissing": "Paste a Todoist token first",
+      "showLists": "Show my lists",
+      "loadingLists": "Asking Todoist…",
+      "listsFailed": "Couldn't read your lists: {{message}}",
+      "noLists": "Todoist returned no projects for this token.",
+      "pickList": "Pick one project or one section",
+      "connected": "connected",
+      "orderQuestion": "When the order here and in Todoist differ, which one wins?",
+      "orderOneJob": "Keep One Job's order",
+      "orderTodoist": "Let Todoist update the order",
+      "import": "Bring in \"{{name}}\"",
+      "importing": "Bringing it in…",
+      "imported": "Todoist: {{imported}} new cards in the \"{{name}}\" deck ({{skipped}} already there)",
+      "importFailed": "Todoist import failed: {{message}}",
+      "connectedLists": "Connected lists"
     }
   }
 }

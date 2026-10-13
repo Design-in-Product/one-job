@@ -119,8 +119,19 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
   the real test account, read-only: both sections came back as decks
   of four cards. Sub-task nesting is covered by tests only; the test
   account has no open sub-tasks at the moment.
-- **Next, slice 2:** the Integrations screen: token, pick a list, the
-  order question, import. Nothing in the app shows Todoist yet.
+- **2026-10-13, slice 2 (done):** the Todoist section of the
+  Integrations screen (`src/components/TodoistIntegration.tsx`),
+  shown only at stage `alpha`: paste a token, "Show my lists", pick
+  one project or section, answer the order question (One Job's order
+  selected), bring it in. Connected lists and their order rule are
+  kept on the device (`src/services/todoistLinks.ts`, 7 tests); the
+  rule can be changed there afterwards. A token is kept only once
+  Todoist has accepted it. Walked at phone size against the real test
+  account: a wrong token was refused and not kept; the section came
+  in as a deck of five cards in Todoist's order; bringing it in again
+  added nothing and kept the changed order rule (a bug the walk
+  found and fixed); no request to Todoist was anything but a read.
+  The order rule is recorded but nothing acts on it until slice 3.
 - **Then, slice 3:** sync. New tasks land on top; a task closed in
   Todoist goes to Done; the order rule. Red zone.
 - **Later:** completion write-back (R3.4), when xian says.

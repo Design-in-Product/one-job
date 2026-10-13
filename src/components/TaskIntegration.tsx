@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { featureOn } from '@/services/featureStages';
 import { getTaskStore } from '@/services/taskStore';
 import { importFromSource } from '@/services/sourceAdapter';
+import TodoistIntegration from '@/components/TodoistIntegration';
 import { GitHubSourceAdapter, getGitHubToken, setGitHubToken } from '@/services/githubAdapter';
 
 interface TaskIntegrationProps {
@@ -126,6 +127,8 @@ const TaskIntegration: React.FC<TaskIntegrationProps> = ({ onImportTasks, onSour
           (Xian, 2026-09-04): read-only, one designated list, riding the
           same R3.1 seam the GitHub import uses. */}
       <h3 className="text-lg font-medium">Integrate with Task Services</h3>
+
+      {featureOn('todoist') && <TodoistIntegration onImported={onSourceImported} />}
 
       {featureOn('githubImport') && (
         <div className="space-y-2 border rounded-md p-3">

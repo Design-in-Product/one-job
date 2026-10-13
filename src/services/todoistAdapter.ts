@@ -67,6 +67,10 @@ export interface TodoistTarget {
   name: string;
 }
 
+/** A list's binding key: its ID, never its name (names change). */
+export const serviceKeyFor = (target: Pick<TodoistTarget, 'projectId' | 'sectionId'>): string =>
+  target.sectionId ? `todoist:section:${target.sectionId}` : `todoist:project:${target.projectId}`;
+
 /** Every page of a list endpoint. Fails loudly and namedly: a silent
     empty result would look like an empty list. */
 async function fetchAll<T>(token: string, path: string): Promise<T[]> {
@@ -112,9 +116,7 @@ export class TodoistSourceAdapter implements SourceAdapter {
   readonly deckName: string;
 
   constructor(private token: string, private target: TodoistTarget) {
-    this.service = target.sectionId
-      ? `todoist:section:${target.sectionId}`
-      : `todoist:project:${target.projectId}`;
+    this.service = serviceKeyFor(target);
     this.deckName = target.name;
   }
 
