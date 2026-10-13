@@ -1,6 +1,6 @@
 # One Job — what needs xian · v96 (2026-10-12)
 
-**Cite as "Coral rollup v101".** One file, one URL:
+**Cite as "Coral rollup v102".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -24,8 +24,9 @@ yours is the only account with access (45, archived).
 Build 1.1.1 (42) is in your Internal group (10-12): a Siri card now
 lands on top, on your reversal of the 09-12 ruling, and Siri's wording
 is corrected (36). The UX walk is on step 2, tap and edit (22).
-Todoist is the first real integration and waits on a test token from
-you; the GitHub import stays behind its beta flag (40). Pilot had no testers at the last check
+Todoist is the first real integration: you gave a test token, and I
+need a few test tasks to exist before I can build against them; the
+GitHub import stays behind its beta flag (40). Pilot had no testers at the last check
 (10-12).
 
 ## Open
@@ -53,21 +54,22 @@ time.
 **Rec:** In any order, as it comes. I record your words and ask one
 follow-up at a time.
 
-### 🟡 40. Todoist: a test token, when you have an account
-You ruled on 10-12: the GitHub import stays hidden behind its flag
-and Todoist is the first real integration. The flag was already
-there (beta since 08-06: Pro plus the Settings beta switch), so
-nothing changed in the app. Todoist (read-only, one designated list,
-with the deck-order question) now waits on one thing: a token I can
-test against, once you have set up or reclaimed an account.
-**Where to act:** Todoist → Settings → Integrations → Developer, then
-give the token in Coral's session, not in mail or on the board.
+### 🟡 40. Todoist: add a few test tasks, or let Coral add them
+You gave a test token on 10-12 (kept on this machine, outside the
+repo). Your account has a project, "One Job", with two sections and
+no tasks. I have read the project and its sections, and confirmed
+the app can call Todoist from the web and from the phone. I can't see
+what a task looks like until one exists, and I said I would only
+read.
+**Where to act:** the Todoist app, or say "you add them" in Coral's
+session.
 **Since:** 2026-10-03
-**Ask:** Set up or reclaim a Todoist account and give Coral a test token.
-**Rec:** A free account is enough. Put a few tasks in one project so
-there is a list to designate. The token stays on this machine,
-outside the repo. Two smaller questions remain in the write-up
-(answering from a card; whether this replaces R4.1 and R4.3):
+**Ask:** Add 3 test tasks in Todoist, or tell Coral "you add them".
+**Rec:** "You add them" is quicker, and it is the thing the agent's
+deck is for. I'd add three to the One Job project only: one in each
+section, one with a description and a sub-task. Two smaller questions
+remain in the write-up (answering from a card; whether this replaces
+R4.1 and R4.3):
 https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
 
 ## Recorded, final (not re-asked)
