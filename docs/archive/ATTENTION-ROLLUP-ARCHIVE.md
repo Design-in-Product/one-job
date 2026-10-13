@@ -506,3 +506,16 @@ repo direct, no worktrees; ff-to-main + no-PRs flow unchanged.
 chromium in `~/Library/Caches/ms-playwright/`, 8000 free for FastAPI,
 git identity unaffected by the account re-point. All verified in
 practice today.
+
+## Recorded, final: older lines moved from the board on 2026-10-12
+
+- 2026-10-10 · **History scrub done** (option B, on your go in Coral's session). main is `9a50a7a`. The old history lives only in one-job-private.
+- 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
+- 2026-10-08 · **Pilot link re-sent to the first Pilot tester** (by you). I'll call them "in" when the Pilot tester count shows them.
+- 2026-10-08 · **Go for build 41.** Uploaded and VALID, in Internal.
+- 2026-10-08 · **Build 40 approved for outside testers** (BETA_APPROVED, 06:10). The Pilot link now works.
+- 2026-10-07 · **Test Information filled in** by you. The weekly-question line was cut, to be added back when a program is active. Build 40 submitted for beta review (WAITING_FOR_BETA_REVIEW).
+- 2026-10-07 · **Pilot yes** (your 10-06 answer, which arrived via Janus 10-07). Build 40 is attached to Pilot.
+- 2026-10-06 · Build 40 rollout: **you test first**, then Pilot. Done; it passed.
+- 2026-10-05 · **Ship build 40.** Uploaded as 1.1.1 (1.1 is live and closed to new builds).
+- 2026-09-29 · The 8/29 LinkedIn hand-raiser is **identified** (name in one-job-private's roster). They replied 10-05; you hold their contact.

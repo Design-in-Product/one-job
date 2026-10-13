@@ -1,6 +1,6 @@
-# One Job — what needs xian · v96 (2026-10-12)
+# One Job — what needs xian · v103 (2026-10-12)
 
-**Cite as "Coral rollup v102".** One file, one URL:
+**Cite as "Coral rollup v103".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,26 +8,23 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-**The third scrub pass is done (10-12, 15:28).** You marked the list
-and said "please proceed" in my session. The outside people, the
-client names and the two details about you that you marked are now
-role labels in one-job's files and history, and onejob.co is up.
-You sent GitHub the cleanup request for this pass on 10-12 at about
-17:40 ("Ticket created"). Until GitHub acts, the old commits still
-open by exact link; I check at each fire.
-GitHub already cleaned up after the first two passes.
+Three things are open, and each has a next step that is yours:
 
-Closed on 10-12: one other organisation member could read the
-private repo. On your word they are now an outside collaborator and
-yours is the only account with access (45, archived).
+- **Siri (36):** build 1.1.1 (42) is in your Internal group. A Siri
+  card now lands on top and Siri's wording is corrected. You test it,
+  then say "Pilot 42".
+- **UX walk (22):** step 2. Both swipes are release-ready in your
+  words. Tapping and editing are next, in your own time.
+- **Todoist (40):** the design is written and has five questions for
+  you. The first to answer is whether I may write to your Todoist
+  project, because this session's permission check refused it.
 
-Build 1.1.1 (42) is in your Internal group (10-12): a Siri card now
-lands on top, on your reversal of the 09-12 ruling, and Siri's wording
-is corrected (36). The UX walk is on step 2, tap and edit (22).
-Todoist is the first real integration: you gave a test token, and I
-need a few test tasks to exist before I can build against them; the
-GitHub import stays behind its beta flag (40). Pilot had no testers at the last check
-(10-12).
+Waiting on others, not on you: GitHub has your second cleanup request
+(sent 10-12, about 17:40). Until they act, the old commits from the
+third scrub pass still open by exact link.
+
+Closed on 10-12: the third scrub pass; the private repo is readable
+by your account only. Pilot has no testers.
 
 ## Open
 
@@ -54,23 +51,23 @@ time.
 **Rec:** In any order, as it comes. I record your words and ask one
 follow-up at a time.
 
-### 🟡 40. Todoist: add a few test tasks, or let Coral add them
-You gave a test token on 10-12 (kept on this machine, outside the
-repo). Your account has a project, "One Job", with two sections and
-no tasks. I have read the project and its sections, and confirmed
-the app can call Todoist from the web and from the phone. I can't see
-what a task looks like until one exists, and I said I would only
-read.
-**Where to act:** the Todoist app, or say "you add them" in Coral's
-session.
+### 🟡 40. Todoist: may Coral write to your project? Plus four design questions
+You added seven tasks on 10-12, three of them for me: ask the next
+walk question, design the integration, and update this rollup,
+including a task on your Todoist list for each thing you need to do.
+The design is written, with your "loose but simple" mapping in. The
+rollup is updated. When I tried to add the first task to Todoist,
+this session's permission check refused, because the instruction was
+in Todoist and not in the session.
+**Where to act:** Coral's session. Design:
+https://github.com/Design-in-Product/one-job/blob/main/docs/TODOIST-INTEGRATION-DESIGN-2026-10.md
 **Since:** 2026-10-03
-**Ask:** Add 3 test tasks in Todoist, or tell Coral "you add them".
-**Rec:** "You add them" is quicker, and it is the thing the agent's
-deck is for. I'd add three to the One Job project only: one in each
-section, one with a description and a sub-task. Two smaller questions
-remain in the write-up (answering from a card; whether this replaces
-R4.1 and R4.3):
-https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
+**Ask:** Say "you may write to the One Job project in Todoist", then answer the design's questions.
+**Rec:** Yes to writing, in that project only: I add tasks to both
+sections and close only my own. On the design: a new task lands on
+top; a task closed in Todoist goes to Done here; one tied list is
+free and more are Pro; the token stays on the device for alpha and
+beta. I build nothing until you answer.
 
 ## Recorded, final (not re-asked)
 
@@ -91,42 +88,24 @@ https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEG
 - 2026-10-11 · **REQUIREMENTS.md retired** on your terms (10): a box at its top says what replaced each part and how each replacement is kept current. To undo, delete the box.
 - 2026-10-11 · **Agent's-deck insight told** (40). Written up for your correction.
 - 2026-10-11 · **GitHub purge request sent** by you, through GitHub's Virtual Assistant ("Ticket created"). It asks for all unreachable commits to be garbage-collected. Waiting on GitHub; I check the old commit link at every fire.
-- 2026-10-10 · **History scrub done** (option B, on your go in Coral's session). main is `9a50a7a`. The old history lives only in one-job-private.
-- 2026-10-08 · **TestFlight clause added** by you. The description now names what TestFlight sends.
-- 2026-10-08 · **Pilot link re-sent to the first Pilot tester** (by you). I'll call them "in" when the Pilot tester count shows them.
-- 2026-10-08 · **Go for build 41.** Uploaded and VALID, in Internal.
-- 2026-10-08 · **Build 40 approved for outside testers** (BETA_APPROVED, 06:10). The Pilot link now works.
-- 2026-10-07 · **Test Information filled in** by you. The weekly-question line was cut, to be added back when a program is active. Build 40 submitted for beta review (WAITING_FOR_BETA_REVIEW).
-- 2026-10-07 · **Pilot yes** (your 10-06 answer, which arrived via Janus 10-07). Build 40 is attached to Pilot.
-- 2026-10-06 · Build 40 rollout: **you test first**, then Pilot. Done; it passed.
-- 2026-10-05 · **Ship build 40.** Uploaded as 1.1.1 (1.1 is live and closed to new builds).
-- 2026-09-29 · The 8/29 LinkedIn hand-raiser is **identified** (name in one-job-private's roster). They replied 10-05; you hold their contact.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v91):**
-- **Second pass (10-11, 15:10 PT):**
-  - Backup first: 24 of 24 refs verified in one-job-private under
-    `pre-scrub-2/`.
-  - `verify.sh` exit 0 on the rewritten copy, and again on a fresh
-    copy cloned from GitHub after the push: 0 matches in contents,
-    messages and paths. The new independent sweep found nothing.
-  - Independent file check: 795 of 795 files, 34 changed, 0 mismatches.
-  - The surname in any letter case, across all history: 0.
-  - Four unrelated library authors who share the first name were left
-    alone (14 lines kept, 0 relabelled).
-  - npm ci, 250/250 tests, tsc and build pass on the rewritten main.
-  - Push: all-or-nothing and lease-protected; 24 of 24 remote refs
-    equal the rewritten copy. Deploy run 38179394441 succeeded;
-    onejob.co, /app/ and /probe/latest.json return 200.
-  - The pre-rewrite head still opens by direct link (200), which is
-    what item 42 is for.
-- **Pilot group (ASC API, 10-10 17:5x):** builds 40 and 39, 0 testers.
-  Not re-checked today.
-- **Non-tester names (10-11, 15:3x PT):** Janus's sweep (80 first
-  names across the tree, and all commit messages) plus mine (the
-  system's list of given names against docs, logs, store and source).
-  Neither found a tester's name. Old file versions in history were
-  not swept for non-testers.
-- **Items:** 25 `###` items across this board and the archive (41 and
-  38 moved to the archive; 42 and 43 are new).
+**Verified how (v103, 10-12):**
+- **Third pass (15:28 PT):** backup 24 of 24 refs in one-job-private
+  under `pre-scrub-3/`; 798 commits before and after; 805 files
+  checked, 14 changed, 0 mismatches; 0 matches for every marked term
+  in contents, messages and paths, on the rewritten copy and on a
+  fresh clone from GitHub; 250 tests, tsc and build pass.
+- **Old commits (20:03):** the pre-rewrite head still opens by direct
+  link (200). Expected until GitHub acts on the ticket.
+- **Private repo (17:49):** GitHub lists one account with access.
+- **Build 42 (18:2x):** VALID; in Internal (3 testers). Checked inside
+  the archive before upload: version 1.1.1 (42), old Siri wording
+  absent, new wording present. 251 tests pass.
+- **Pilot group (ASC API, 18:2x):** builds 40 and 39, 0 testers.
+- **Todoist (20:03):** read with the test token: 1 project, 2
+  sections, 7 tasks. No write has been made.
+- **Items:** 27 `###` items across this board (3) and the archive
+  (24). Recorded lines from 10-10 and earlier moved to the archive
+  on 10-12 (10 lines).

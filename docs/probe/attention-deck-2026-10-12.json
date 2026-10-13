@@ -1,35 +1,35 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T02:36:20.656Z",
+  "exportedAt": "2026-10-13T03:04:53.200Z",
   "tasks": [
     {
-      "id": "928962c1-0367-4681-8469-022bed1144e2",
+      "id": "2b2dd00a-d106-4bd1-bd51-47ee5d022798",
       "title": "Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?",
       "description": "🟡 #36 · Test build 42: does a Siri card land on top?\n\nCoral's rec: If yes, say \"Pilot 42\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Build 41 stays out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T02:36:20.655Z",
+      "createdAt": "2026-10-13T03:04:53.199Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "bbb1a71a-7978-4b49-905c-cd636e7ae664",
+      "id": "74c8112c-b2d5-458e-856d-ceaba904e0f3",
       "title": "UX walk, step 2: walk me through what's wrong with tapping and editing a card.",
       "description": "🟡 #22 · UX walk: step 2 of 11, tap and edit (your walk-through to come)\n\nCoral's rec: In any order, as it comes. I record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T02:36:20.656Z",
+      "createdAt": "2026-10-13T03:04:53.200Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "bc33dc83-801c-4fee-b568-dd1cc03f9f39",
-      "title": "Add 3 test tasks in Todoist, or tell Coral \"you add them\".",
-      "description": "🟡 #40 · Todoist: add a few test tasks, or let Coral add them\n\nCoral's rec: \"You add them\" is quicker, and it is the thing the agent's deck is for. I'd add three to the One Job project only: one in each section, one with a description and a sub-task. Two smaller questions remain in the write-up (answering from a card; whether this replaces R4.1 and R4.3): https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
+      "id": "801c6c3b-bdf4-45b3-9723-7250add85660",
+      "title": "Say \"you may write to the One Job project in Todoist\", then answer the design's questions.",
+      "description": "🟡 #40 · Todoist: may Coral write to your project? Plus four design questions\n\nCoral's rec: Yes to writing, in that project only: I add tasks to both sections and close only my own. On the design: a new task lands on top; a task closed in Todoist goes to Done here; one tied list is free and more are Pro; the token stays on the device for alpha and beta. I build nothing until you answer.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T02:36:20.656Z",
+      "createdAt": "2026-10-13T03:04:53.200Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     }
