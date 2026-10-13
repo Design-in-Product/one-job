@@ -55,6 +55,16 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 44. Send GitHub a second cleanup request, for the third rewrite (sent 2026-10-12)
+xian sent it at about 17:40 PT through GitHub's Virtual Assistant:
+option 2 ("help removing cached commits"), the old head of `main` as
+the example link, not in a pull request (the repo has none), and the
+prepared text. The assistant answered "Ticket created". It was his
+second request; the first covered the first two rewrites. Waiting on
+GitHub: the example link returned 200 at 17:18 and returns 404 when
+they have acted. Coral checks at each fire and records the result in
+the log.
+
 ### ✅ 45. One other person could read the private repo (closed 2026-10-12)
 The organisation's default permission for members is "read", so its
 one other human member could read all 12 private repos, including

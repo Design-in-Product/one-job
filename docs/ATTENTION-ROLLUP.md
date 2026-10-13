@@ -1,6 +1,6 @@
 # One Job — what needs xian · v96 (2026-10-12)
 
-**Cite as "Coral rollup v97".** One file, one URL:
+**Cite as "Coral rollup v98".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -12,9 +12,10 @@ The narrative is in `development/coral-logs/`.
 and said "please proceed" in my session. The outside people, the
 client names and the two details about you that you marked are now
 role labels in one-job's files and history, and onejob.co is up.
-GitHub needs one more cleanup request, because this pass left a new
-set of old commits that still open by exact link (44; the text is
-ready). GitHub already cleaned up after the first two passes.
+You sent GitHub the cleanup request for this pass on 10-12 at about
+17:40 ("Ticket created"). Until GitHub acts, the old commits still
+open by exact link; I check at each fire.
+GitHub already cleaned up after the first two passes.
 
 Closed on 10-12: one other organisation member could read the
 private repo. On your word they are now an outside collaborator and
@@ -25,18 +26,6 @@ Also open: the Siri retest on build 41 (36), the UX walk at step 1
 last check (10-11).
 
 ## Open
-
-### 🟡 44. Send GitHub a second cleanup request (for the third rewrite)
-The third pass left 492 old commits that still open by exact link.
-GitHub removed the earlier ones within a day of your first request.
-**Where to act:** https://support.github.com, the same "Clear cached
-views" assistant as on 10-11. The example link and the text to paste
-(under 500 characters) are at
-https://github.com/Design-in-Product/one-job-private/blob/main/scrub/GITHUB-REQUEST-3-2026-10-12.md
-**Since:** 2026-10-12
-**Ask:** Send GitHub the second cleanup request (text is ready to paste).
-**Rec:** Do it the same way as on 10-11; it took a few minutes. I
-check the old link at each fire and close this when it stops opening.
 
 ### 🟡 36. Test build 41: Siri with the app open
 Build 1.1.1 (41) is in your Internal group (10-08). With One Job open,
@@ -78,6 +67,8 @@ card, as Siri's do. Two smaller questions are in the write-up
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-12 · **Second GitHub cleanup request sent** by you (44), through the Virtual Assistant ("Ticket created"), for the 492 old commits the third pass left. Waiting on GitHub; I check the old commit link at every fire.
+- 2026-10-12 · **Private repo access closed** (45), on your word: the organisation's other member is now an outside collaborator.
 - 2026-10-11 · **Second scrub pass done** (41), on your "second pass, yes". main went from `a8e94ec` to `ada8298`. The missed tester is "Tester H" throughout.
 - 2026-10-11 · **CLAUDE.md methodology rewritten** (38), on your "update it to reflect how the paradigm has evolved and what is stable about it". The old text is in the archive, verbatim.
 - 2026-10-11 · **Sync, corrected by you:** the only sync is the planned two-way sync to an existing back end. One Job hosts no sync of its own and doesn't distinguish an agent from a person.
