@@ -124,6 +124,39 @@ export class LocalTaskStore implements TaskStore {
     this.saveTasks();
   }
 
+  /** Detach, keeping the deck: it becomes an ordinary deck. Its cards
+      stay, and a later import of the same list makes a new deck
+      (xian, 2026-10-13: "no ability to re-attach implied"). */
+  async unbindDeckSource(deckId: string): Promise<void> {
+    const deck = this.decks.find(d => d.id === deckId);
+    if (!deck) throw new Error('Unknown deck');
+    if (deck.source === undefined) return;
+    deck.source = undefined;
+    this.saveTasks();
+  }
+
+  /** Detach, deleting the deck WITH its cards; returns how many cards
+      went. Only for a deck attached to a service, and only behind a
+      confirmation that names the count: its cards came from the
+      service, which still has them. The user's own decks keep
+      deleteDeck's empty-only rule. One save, so Undo brings it back. */
+  async deleteSourceDeck(deckId: string): Promise<number> {
+    const index = this.decks.findIndex(d => d.id === deckId);
+    if (index === -1) throw new Error('Unknown deck');
+    if (this.decks[index].source === undefined) {
+      throw new Error('This deck is not attached to a service — only an attached deck can be deleted with its cards');
+    }
+    if (this.decks.length === 1) throw new Error('The last deck cannot be deleted');
+    const wasActive = this.activeDeckId() === deckId;
+    const [gone] = this.decks.splice(index, 1);
+    if (wasActive) {
+      this.activeId = this.decks[0].id;
+      try { localStorage.setItem(this.activeDeckPrefKey(), this.activeId); } catch { /* pref only */ }
+    }
+    this.saveTasks();
+    return gone.cards.length;
+  }
+
   /** Append fully-formed cards to a root deck's bottom and persist —
       the SourceAdapter seam's write path (R3.1). Cards arrive with
       LOCAL ids and provenance already stamped; this method is dumb on

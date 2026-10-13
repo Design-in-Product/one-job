@@ -76,6 +76,12 @@ export interface TaskStore {
       (2026-09-14). The binding is a KEY: deck names are renameable and
       non-unique, so identity can't live in the label. */
   bindDeckSource?(deckId: string, source: string): Promise<void>;
+  /** Detach a deck from its service and keep it as an ordinary deck. */
+  unbindDeckSource?(deckId: string): Promise<void>;
+  /** Detach by deleting an ATTACHED deck with its cards; returns the
+      number of cards removed. Refuses a deck with no service. The UI
+      confirms first, naming the count. */
+  deleteSourceDeck?(deckId: string): Promise<number>;
   /** Append prepared cards to a root deck (SourceAdapter write path). */
   addCardsToDeck?(deckId: string, cards: import('@/types/task').Task[]): Promise<void>;
   /** Apply a source sync to a root deck in one save: new cards on top,

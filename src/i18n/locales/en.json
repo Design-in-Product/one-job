@@ -319,14 +319,23 @@
       "imported": "Todoist: {{imported}} new cards in the \"{{name}}\" deck ({{skipped}} already there)",
       "importFailed": "Todoist import failed: {{message}}",
       "connectedLists": "Connected lists",
-      "connectedHint": "These catch up when you open One Job. Disconnecting stops that; the deck and its cards stay.",
+      "connectedHint": "These catch up when you open One Job.",
       "syncNow": "Sync now",
       "syncing": "Syncing…",
       "synced": "\"{{name}}\": {{added}} new, {{completed}} done in Todoist",
       "syncedHeld": "\"{{name}}\": {{added}} new, {{completed}} done in Todoist. {{held}} left open because of unfinished cards inside.",
       "syncFailed": "Sync failed: {{message}}",
-      "disconnect": "Disconnect",
-      "disconnected": "\"{{name}}\" is disconnected. Its deck and cards are still here."
+      "disconnect": "Detach",
+      "detachTitle": "Detach \"{{name}}\"?",
+      "detachBody": "One Job will stop following this list. Nothing changes in Todoist either way. What should happen to the deck here?",
+      "detachKeep": "Keep it as an ordinary deck",
+      "detachDelete_one": "Delete the deck and its {{count}} card",
+      "detachDelete_other": "Delete the deck and its {{count}} cards",
+      "detachCancel": "Cancel, stay attached",
+      "detachedKept": "\"{{name}}\" is detached. Its deck is now an ordinary deck.",
+      "detachedDeleted_one": "\"{{name}}\" is detached. The deck and its {{count}} card are deleted.",
+      "detachedDeleted_other": "\"{{name}}\" is detached. The deck and its {{count}} cards are deleted.",
+      "detachFailed": "Couldn't detach: {{message}}"
     }
   }
 }

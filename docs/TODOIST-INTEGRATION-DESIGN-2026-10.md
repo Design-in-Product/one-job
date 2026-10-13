@@ -152,13 +152,24 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
     "Sync now": the new one on top, the closed one in Done, nothing
     removed. A second one closed upstream, then a reload: Done
     without being asked. Requests from the app other than reads: 0.
-- **2026-10-13, disconnect (done), on xian's feedback** ("it generall
-  works. I think we need a way to undo an integration / detach it
-  though?"): each connected list has "Disconnect". It stops the sync
-  and nothing else; the deck and its cards stay. The deck keeps its
-  binding, so connecting the same list again resumes with the same
-  deck. *Open question for xian:* should detaching also offer to
-  remove the deck and its cards?
+- **2026-10-13, detach (done), on xian's feedback.** First: "it
+  generall works. I think we need a way to undo an integration /
+  detach it though?" Then, the ruling: "I think there should be an
+  offer to delete the attached deck -or- to leave it detached as an
+  ordinary deck (no ability to re-attach implied)."
+  - Each connected list has "Detach". It asks every time: keep it as
+    an ordinary deck, delete the deck and its N cards, or cancel.
+  - Keep: the binding is cleared (`unbindDeckSource`). Connecting the
+    same list later makes a new deck. The cards keep their "todoist"
+    chip.
+  - Delete: `deleteSourceDeck`, which refuses any deck that is not
+    attached to a service, and the last deck. One save, so Undo in
+    the same session brings it back. Nothing changes in Todoist.
+  - Why he needed it: he connected the project to see whether it
+    would make one deck per section. It made one deck with all the
+    tasks, so he connected each section and wanted the first gone.
+  - Walked at phone size against the test account: both outcomes and
+    cancel.
 - **Also 10-13:** a card's source chip says "todoist", not the
   binding key (his screenshot showed `todoist:section:6hj…`).
 - **Known limits, from his screenshots and the walk:**

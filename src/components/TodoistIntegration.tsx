@@ -3,6 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 import { toast } from '@/components/ui/sonner';
 import { useTranslation } from 'react-i18next';
 import { getTaskStore } from '@/services/taskStore';
@@ -35,6 +39,7 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
   const [order, setOrder] = useState<TodoistOrder>(DEFAULT_ORDER);
   const [busy, setBusy] = useState<'lists' | 'import' | 'sync' | null>(null);
   const [links, setLinks] = useState(getTodoistLinks());
+  const [detaching, setDetaching] = useState<{ link: TodoistLink; cards: number; deckId?: string } | null>(null);
 
   const connected = (target: Pick<TodoistTarget, 'projectId' | 'sectionId'>) =>
     links.some(l => l.service === serviceKeyFor(target));
@@ -108,12 +113,35 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
     }
   };
 
-  // Disconnecting stops the sync and nothing else: the deck and its
-  // cards stay (no operation may discard cards as a side effect).
-  const handleDisconnect = (link: TodoistLink) => {
-    removeTodoistLink(link.service);
-    setLinks(getTodoistLinks());
-    toast.success(t('todoist.disconnected', { name: link.name }));
+  // Detaching (xian, 2026-10-13): "an offer to delete the attached deck
+  // -or- to leave it detached as an ordinary deck (no ability to
+  // re-attach implied)". Asked every time; the delete names its count.
+  const askDetach = async (link: TodoistLink) => {
+    const deck = (await getTaskStore().getDecks?.())?.find(d => d.source === link.service);
+    setDetaching({ link, cards: deck?.cards.length ?? 0, deckId: deck?.id });
+  };
+
+  const detach = async (how: 'keep' | 'delete') => {
+    if (!detaching) return;
+    const { link, deckId } = detaching;
+    const store = getTaskStore();
+    try {
+      if (how === 'delete' && deckId) {
+        const removed = await store.deleteSourceDeck!(deckId);
+        toast.success(t('todoist.detachedDeleted', { name: link.name, count: removed }));
+      } else {
+        if (deckId) await store.unbindDeckSource?.(deckId);
+        toast.success(t('todoist.detachedKept', { name: link.name }));
+      }
+      // The link goes only after the deck step worked.
+      removeTodoistLink(link.service);
+      setLinks(getTodoistLinks());
+      onImported?.();
+    } catch (err) {
+      toast.error(t('todoist.detachFailed', { message: (err as Error).message }));
+    } finally {
+      setDetaching(null);
+    }
   };
 
   const pick = (target: TodoistTarget) => (
@@ -200,7 +228,7 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
                 <Button onClick={() => handleSync(l)} disabled={busy !== null} variant="outline" size="sm" className="flex-1">
                   {busy === 'sync' ? t('todoist.syncing') : t('todoist.syncNow')}
                 </Button>
-                <Button onClick={() => handleDisconnect(l)} disabled={busy !== null} variant="ghost" size="sm">
+                <Button onClick={() => askDetach(l)} disabled={busy !== null} variant="ghost" size="sm">
                   {t('todoist.disconnect')}
                 </Button>
               </div>
@@ -208,6 +236,24 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
           ))}
         </div>
       )}
+
+      <AlertDialog open={detaching !== null} onOpenChange={open => { if (!open) setDetaching(null); }}>
+        <AlertDialogContent data-testid="todoist-detach">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('todoist.detachTitle', { name: detaching?.link.name })}</AlertDialogTitle>
+            <AlertDialogDescription>{t('todoist.detachBody')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col sm:space-x-0">
+            <Button onClick={() => detach('keep')}>{t('todoist.detachKeep')}</Button>
+            {detaching?.deckId && getTaskStore().deleteSourceDeck && (
+              <Button variant="destructive" onClick={() => detach('delete')}>
+                {t('todoist.detachDelete', { count: detaching.cards })}
+              </Button>
+            )}
+            <AlertDialogCancel className="mt-0">{t('todoist.detachCancel')}</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -1,26 +1,46 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T13:34:09.050Z",
+  "exportedAt": "2026-10-13T13:43:50.167Z",
   "tasks": [
     {
-      "id": "c8b37cc7-5196-4d44-b343-4b31060861ce",
+      "id": "b05fc637-bfed-45d6-a65c-c77c841977e4",
       "title": "Install 43. Is a Siri card on top, and does the open card work on the phone?",
       "description": "🟡 #36 · Test build 43: Siri card on top, and the open card\n\nCoral's rec: If yes, say \"Pilot 43\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Builds 41 and 42 stay out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 5 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T13:34:09.050Z",
+      "createdAt": "2026-10-13T13:43:50.167Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "d52af2d0-78c8-499c-9309-628ec83760a1",
+      "id": "9bc5af0b-0b5d-4115-a14d-b7e7eb4a3978",
       "title": "UX walk, step 3: add a card or two. What feels right and what doesn't?",
       "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Do it while you test build 43, since you'll have the app open. Anything more on tap and edit from the phone goes here too.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 61 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T13:34:09.050Z",
+      "createdAt": "2026-10-13T13:43:50.167Z",
       "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "0fc4c925-6e69-4d8a-a59e-a14e790128fb",
+      "title": "Removing a deck: delete its cards, move them to another deck, or only when empty?",
+      "description": "🟡 #46 · Removing a deck: what happens to its cards?\n\nCoral's rec: Only when empty, plus a \"move all cards to…\" step that asks which deck. No card is deleted by removing a deck, and none lands in a deck you didn't choose. I'd add \"Delete deck\" to the long-press menu, shown when the deck is empty.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 0 days (since 2026-10-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-13T13:43:50.167Z",
+      "sortOrder": 3,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "55601a4d-b199-41b0-9872-3280ecd759d3",
+      "title": "Deck into a card: into an existing card, a new card, or both?",
+      "description": "🟡 #47 · Move a whole deck into a card: build it this way?\n\nCoral's rec: Both, from one menu entry, \"Move this deck into a card\": pick a deck, then either one of its cards or \"a new card on top\". The deck keeps its name and its cards. This is also your 10-12 idea for bulk arrivals (a deck inside one new card).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 0 days (since 2026-10-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-13T13:43:50.167Z",
+      "sortOrder": 4,
       "source": "coral/attention-rollup"
     }
   ]

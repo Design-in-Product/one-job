@@ -1,6 +1,6 @@
-# One Job — what needs xian · v108 (2026-10-13)
+# One Job — what needs xian · v109 (2026-10-13)
 
-**Cite as "Coral rollup v108".** One file, one URL:
+**Cite as "Coral rollup v109".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,7 +8,7 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Two things are open for you:
+Four things are open for you:
 
 - **Build 43 (36):** 1.1.1 (43) is in your Internal group, on your
   "go for build 43". It has the Siri change and the rebuilt open
@@ -16,12 +16,18 @@ Two things are open for you:
 - **UX walk (22):** step 3, adding a card. You said the rebuilt open
   card "feels good" on 10-13, which closed step 2.
 
+- **Removing a deck (46):** you raised it on 10-13 with three
+  possible fates for the cards. I need your choice.
+- **A deck into a card (47):** not possible today. I have a proposal
+  and need your go.
+
 In progress, mine, nothing needed from you:
 
 - **Todoist:** built to the end of the one-way design, at the alpha
   stage (https://onejob.co/app/?alpha=on): connect a list, sync
   (new tasks on top, closed tasks to Done, the order rule), and
-  disconnect, which you asked for on 10-13. You are trying it on the
+  detach, which asks whether to keep the deck as an ordinary deck or
+  delete it with its cards (your words, 10-13). You are trying it on the
   web app. Known limits are listed in the design doc. Write-back
   waits for your word after the first week.
 
@@ -59,8 +65,39 @@ session.
 **Rec:** Do it while you test build 43, since you'll have the app open.
 Anything more on tap and edit from the phone goes here too.
 
+### 🟡 46. Removing a deck: what happens to its cards?
+You raised this on 10-13 and named three options: the cards are
+deleted too, they move to the default deck, or a deck can't be removed
+until its cards are all completed or moved. Today the store already
+follows the third (only an empty deck can be deleted), but no menu
+offers it. A deck attached to Todoist is the one exception, built on
+your word: detaching can delete it with its cards, after a
+confirmation that names the count.
+**Where to act:** Coral's session.
+**Since:** 2026-10-13
+**Ask:** Removing a deck: delete its cards, move them to another deck, or only when empty?
+**Rec:** Only when empty, plus a "move all cards to…" step that asks
+which deck. No card is deleted by removing a deck, and none lands in
+a deck you didn't choose. I'd add "Delete deck" to the long-press
+menu, shown when the deck is empty.
+
+### 🟡 47. Move a whole deck into a card: build it this way?
+You asked for this on 10-13 so decks don't pile up. It isn't possible
+today: a card can move to another deck or into another card, but a
+deck can't. The pieces exist, since a card can already hold more than
+one deck.
+**Where to act:** Coral's session.
+**Since:** 2026-10-13
+**Ask:** Deck into a card: into an existing card, a new card, or both?
+**Rec:** Both, from one menu entry, "Move this deck into a card": pick
+a deck, then either one of its cards or "a new card on top". The deck
+keeps its name and its cards. This is also your 10-12 idea for bulk
+arrivals (a deck inside one new card).
+
 ## Recorded, final (not re-asked)
 
+- 2026-10-13 · **Detaching an integration offers two outcomes:** "an offer to delete the attached deck -or- to leave it detached as an ordinary deck (no ability to re-attach implied)". Built the same day.
+- 2026-10-13 · **Why you had three Todoist decks:** you connected the project first to see if it would make a deck per section. It made one deck with every task, so you connected each section too.
 - 2026-10-13 · **GitHub removed the old commits** (44). The pre-rewrite head of the third pass returns 404 by direct link and "No commit found" from the API (checked 05:53 PT).
 - 2026-10-13 · **UX walk step 2 closed:** "rebuild card feels good". Build 43 made on your "go for build 43"; you'll test the Siri change there. Build 42 skipped.
 - 2026-10-12 · **Todoist stays one-way for the first week** ("gall's law approach"): One Job reads; a Done swipe does not close the task in Todoist until after that.
@@ -87,7 +124,7 @@ Anything more on tap and edit from the phone goes here too.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v108, 10-13):**
+**Verified how (v109, 10-13):**
 - **Build 43 (05:5x PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269
@@ -102,5 +139,9 @@ Anything more on tap and edit from the phone goes here too.
 - **Pilot group (ASC API, 05:53):** builds 40 and 39, 0 testers.
 - **Private repo (10-12, 17:49):** GitHub lists one account with
   access.
-- **Items:** 27 `###` items across this board (2) and the archive
-  (25).
+- **Detach (07:4x):** 304 tests pass. Walked at phone size against
+  the test account: cancel changed nothing; delete removed the deck
+  and its 7 cards and no other deck; keep left the 5 cards in an
+  ordinary deck that a reload did not sync.
+- **Items:** 29 `###` items across this board (4) and the archive
+  (25). Two new on 10-13 (46, 47).
