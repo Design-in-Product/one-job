@@ -55,6 +55,20 @@ ask-shaped absence of one; the fourth guard caught it, correctly.)
 
 ## Settled
 
+### ✅ 45. One other person could read the private repo (closed 2026-10-12)
+The organisation's default permission for members is "read", so its
+one other human member could read all 12 private repos, including
+the private repo with the tester roster. Nobody had added them.
+xian's ruling in session, 17:26 PT: make that member an outside
+collaborator. Coral did it at 17:26. Checked afterwards: xian's is
+the only member account; the private repo lists one account (xian's,
+admin); the five private repos sampled list only xian's; the former
+member keeps the one direct grant they already had, on a public
+repo. Before the change they had no direct or team access to any
+private repo and no commits in one. This stops future access; it
+cannot undo anything already read. The organisation's default stays
+"read", so any future member would get the same access.
+
 ### ✅ 43. Non-tester people named in this public repo: third pass (done 2026-10-12)
 Both earlier scrubs covered testers only. Janus's independent sweep
 (10-11) found other private people named here, and Coral's pattern
