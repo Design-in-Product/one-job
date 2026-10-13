@@ -1,6 +1,6 @@
 # One Job — what needs xian · v96 (2026-10-12)
 
-**Cite as "Coral rollup v100".** One file, one URL:
+**Cite as "Coral rollup v101".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -23,9 +23,9 @@ yours is the only account with access (45, archived).
 
 Build 1.1.1 (42) is in your Internal group (10-12): a Siri card now
 lands on top, on your reversal of the 09-12 ruling, and Siri's wording
-is corrected (36). The UX walk's step 1 is narrated (22). You said go
-on the integration order prompt, and Todoist needs two things from
-you before I build it (40). Pilot had no testers at the last check
+is corrected (36). The UX walk is on step 2, tap and edit (22).
+Todoist is the first real integration and waits on a test token from
+you; the GitHub import stays behind its beta flag (40). Pilot had no testers at the last check
 (10-12).
 
 ## Open
@@ -41,40 +41,39 @@ What to Test lists three checks.
 **Rec:** If yes, say "Pilot 42" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw. Build 41 stays out of Pilot.
 
-### 🟡 22. UX walk: is step 1 (the cold open) done?
-You gave step 1 on 10-12: returning to the last deck, its colour, and
-knowing the other decks are there all work for you, and revealing the
-first card "feels fun". Your words are in
+### 🟡 22. UX walk: step 2 of 11, tap and edit (your walk-through to come)
+Step 1 is narrated. On step 2 you said on 10-12 that swipe right and
+swipe left are release-ready, and that tapping and editing have a lot
+left to be desired, which you'll walk through next. Notes:
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
 **Where to act:** Coral's session, a sentence or a screenshot at a
 time.
 **Since:** 2026-08-13
-**Ask:** UX walk: anything more on the cold open, or is step 1 done?
-**Rec:** Say "step 1 is done" and I'll open step 2, the active card:
-swipes, tap and edit.
+**Ask:** UX walk, step 2: walk me through what's wrong with tapping and editing a card.
+**Rec:** In any order, as it comes. I record your words and ask one
+follow-up at a time.
 
-### 🟡 40. Todoist: scope the GitHub import or hide it first? And a test token
-You said go on 10-12. Decided: the user is asked about deck order
-when adding an integration, the default is One Job's order, and there
-is no general "don't ask me again". Building Todoist (read-only, one
-designated list) needs two things from you first. The roadmap makes
-fixing the GitHub import a precondition, because it takes in every
-issue assigned to you. And I can't check the adapter against the
-real service without a Todoist API token.
-**Where to act:** Coral's session. Give the token there, not in mail
-or on the board.
+### 🟡 40. Todoist: a test token, when you have an account
+You ruled on 10-12: the GitHub import stays hidden behind its flag
+and Todoist is the first real integration. The flag was already
+there (beta since 08-06: Pro plus the Settings beta switch), so
+nothing changed in the app. Todoist (read-only, one designated list,
+with the deck-order question) now waits on one thing: a token I can
+test against, once you have set up or reclaimed an account.
+**Where to act:** Todoist → Settings → Integrations → Developer, then
+give the token in Coral's session, not in mail or on the board.
 **Since:** 2026-10-03
-**Ask:** Before Todoist: scope GitHub's import to one repo, or hide it? And a test token.
-**Rec:** Scope it to one repo the user picks. Todoist needs the same
-"pick one list" step, so the two share a screen, and hiding would
-take a feature away from people who have 1.1. The token: Todoist →
-Settings → Integrations → Developer. It stays on this machine,
+**Ask:** Set up or reclaim a Todoist account and give Coral a test token.
+**Rec:** A free account is enough. Put a few tasks in one project so
+there is a list to designate. The token stays on this machine,
 outside the repo. Two smaller questions remain in the write-up
 (answering from a card; whether this replaces R4.1 and R4.3):
 https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-12 · **GitHub import stays hidden behind its flag; Todoist is the first real integration.** The model may be extended back to GitHub later. (The flag is the existing beta stage; no change was needed.)
+- 2026-10-12 · **Swipe right and swipe left are release-ready** (your words, UX walk step 2).
 - 2026-10-12 · **Ruling reversed: a new card takes the top, whoever adds it.** Siri and Shortcut cards land on top like typed ones ("optional complexity"; "now that it's instant there is no need"). Supersedes 2026-09-12. In build 42.
 - 2026-10-12 · **Bulk arrivals, your idea, not decided:** they come in as a deck inside one new card that sits on top until sorted. Today an import lands in a deck of its own, named for the service.
 - 2026-10-12 · **Deck order default: One Job's order. No general "don't ask me again"** (your "40 - go").

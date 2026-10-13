@@ -6,12 +6,12 @@ step is exhausted, then the next. The rails are in
 `UX-SESSION-PREP-2026-09.md` ("The walk order"). xian's words are the
 data; Coral's notes are marked as Coral's.
 
-**Where we are:** step 1, narrated 2026-10-12, with one follow-up answered. Waiting for xian to say whether it is exhausted. Step 3b also has narration, given with the build 41 retest.
+**Where we are:** step 2, opened 2026-10-12. xian has spoken on swipes and said tap and edit come in his next message.
 
 | Step | Topic | State |
 |---|---|---|
-| 1 | Cold open: deck face-down, tap to reveal | **Open** |
-| 2 | The active card: swipes, tap, edit | Not started |
+| 1 | Cold open: deck face-down, tap to reveal | Narrated 10-12; xian moved on to step 2 |
+| 2 | The active card: swipes, tap, edit | **Open**: swipes given 10-12; tap and edit to come |
 | 3 | Add (and 3b, add from outside) | Partly given 10-12 (see below) |
 | 4 | Into a card: the interior deck | Not started |
 | 5 | Multi-deck | Not started |
@@ -83,3 +83,16 @@ if I never did that in the first place)."
 - **xian, 2026-10-12, on that follow-up:** "the moment of revealing
   the first card feels "fun"".
 - *Asked next:* whether step 1 is exhausted.
+
+## Step 2 · The active card
+
+**xian, 2026-10-12:** "Feedback on swiping, tapping, and editing a
+card is going to be involved. The swipes are pretty good. The swipe
+to the right and swipe to the left are definitely release-ready from
+my point of view. Tapping and editing have a lot of things that need
+to be desired and I'm going to walk through that in my next response
+to you on this thread"
+
+- *Coral's notes:* swipe right and swipe left are release-ready in
+  his view. Tap and edit are where the work is; his walk-through is
+  to come. No follow-up asked; waiting for it.

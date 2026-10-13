@@ -387,6 +387,15 @@ Shortcut now lands on top, like one typed in. xian reversed the
 a deck inside one new card that sits on top until sorted. Today an
 import lands in a deck of its own, named for the service.
 
+*GitHub import, 2026-10-12 (xian):* "not release-ready yet because
+importing all the issues at once is really just not ever a good
+idea." It stays hidden behind its flag and Todoist becomes the first
+real integration; the model may be extended back to GitHub later.
+The flag already exists: `githubImport` has been at stage `beta` in
+`src/services/featureStages.ts` since 2026-08-06, so only a Pro
+device with the Settings beta switch on sees it. That meets P3's
+precondition. Todoist now waits only on a test token from xian.
+
 *Deck order with an integration, 2026-10-12 (xian's go):* when the
 user adds an integration, One Job asks whether the service updates
 the deck's order during sync or the deck's order is maintained. The
