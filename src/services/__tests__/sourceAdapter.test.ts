@@ -193,3 +193,53 @@ describe('source binding survives export → import', () => {
     void store;
   });
 });
+
+// 2026-10-12, for Todoist: a deck is named after the list it mirrors
+// while staying bound by the list's id, and sub-tasks land inside
+// their card.
+describe('SourceAdapter seam: deck name and sub-cards', () => {
+  const adapterWith = (cards: import('../sourceAdapter').ExternalCard[]) => ({
+    service: 'todoist:section:s1',
+    deckName: 'My list',
+    fetchCards: async () => cards,
+  });
+
+  it('names the deck from deckName and binds it by the service key', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore(KEY);
+    await importFromSource(store, adapterWith([{ externalId: 'a', title: 'A', completed: false }]));
+    const deck = (await store.getDecks()).find(d => d.source === 'todoist:section:s1');
+    expect(deck?.name).toBe('My list');
+  });
+
+  it('finds the same deck again after the user renames it', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore(KEY);
+    const first = await importFromSource(store, adapterWith([{ externalId: 'a', title: 'A', completed: false }]));
+    await store.renameDeck!(first.deckId, 'Renamed by me');
+    const second = await importFromSource(store, adapterWith([
+      { externalId: 'a', title: 'A', completed: false },
+      { externalId: 'b', title: 'B', completed: false },
+    ]));
+    expect(second.deckId).toBe(first.deckId);
+    expect(second).toMatchObject({ imported: 1, skipped: 1 });
+  });
+
+  it('puts sub-cards in the card\'s interior deck, wearing provenance', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore(KEY);
+    await importFromSource(store, adapterWith([{
+      externalId: 'p', title: 'Parent', completed: false,
+      subcards: [
+        { externalId: 'c1', title: 'Child one', completed: false },
+        { externalId: 'c2', title: 'Child two', completed: false },
+      ],
+    }]));
+    const deck = (await store.getDecks()).find(d => d.source === 'todoist:section:s1')!;
+    const parent = deck.cards.find(c => c.externalId === 'p')!;
+    expect(parent.decks).toHaveLength(1);
+    expect(parent.decks![0].cards.map(c => c.title)).toEqual(['Child one', 'Child two']);
+    expect(parent.decks![0].cards[0]).toMatchObject({ source: 'todoist:section:s1', externalId: 'c1' });
+    expect(parent.decks![0].cards[0].id).not.toBe('c1');
+  });
+});

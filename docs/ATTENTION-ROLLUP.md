@@ -1,6 +1,6 @@
-# One Job — what needs xian · v103 (2026-10-12)
+# One Job — what needs xian · v104 (2026-10-12)
 
-**Cite as "Coral rollup v103".** One file, one URL:
+**Cite as "Coral rollup v104".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -13,11 +13,11 @@ Three things are open, and each has a next step that is yours:
 - **Siri (36):** build 1.1.1 (42) is in your Internal group. A Siri
   card now lands on top and Siri's wording is corrected. You test it,
   then say "Pilot 42".
-- **UX walk (22):** step 2. Both swipes are release-ready in your
-  words. Tapping and editing are next, in your own time.
-- **Todoist (40):** the design is written and has five questions for
-  you. The first to answer is whether I may write to your Todoist
-  project, because this session's permission check refused it.
+- **UX walk (22):** step 2. You gave five changes to the open card.
+  One question: a card shape, or the whole screen?
+- **Todoist (40):** you answered the design and I am building it,
+  read-only first. One question on when write-back starts. Your asks
+  are now also tasks on your list in the Todoist test project.
 
 Waiting on others, not on you: GitHub has your second cleanup request
 (sent 10-12, about 17:40). Until they act, the old commits from the
@@ -39,38 +39,39 @@ What to Test lists three checks.
 **Rec:** If yes, say "Pilot 42" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw. Build 41 stays out of Pilot.
 
-### 🟡 22. UX walk: step 2 of 11, tap and edit (your walk-through to come)
-Step 1 is narrated. On step 2 you said on 10-12 that swipe right and
-swipe left are release-ready, and that tapping and editing have a lot
-left to be desired, which you'll walk through next. Notes:
+### 🟡 22. UX walk, step 2: open card as a card, or the whole screen?
+On 10-12 you called the open card too fussy: remove Status and
+Created, make the sub-deck much bigger and in its parent deck's
+colour, drop the Edit button so tapping any element edits it, and
+make it either a real card shape or the whole screen. Your words:
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
 **Where to act:** Coral's session, a sentence or a screenshot at a
 time.
 **Since:** 2026-08-13
-**Ask:** UX walk, step 2: walk me through what's wrong with tapping and editing a card.
-**Rec:** In any order, as it comes. I record your words and ask one
-follow-up at a time.
+**Ask:** UX walk, step 2: should an open card be card-shaped, or take the whole screen?
+**Rec:** Card-shaped. Tapping a card would then turn it over and
+bring it forward, and the deck stays the only place you are. A whole
+screen is a second place. Say which, and whether to build it now or
+after the walk.
 
-### 🟡 40. Todoist: may Coral write to your project? Plus four design questions
-You added seven tasks on 10-12, three of them for me: ask the next
-walk question, design the integration, and update this rollup,
-including a task on your Todoist list for each thing you need to do.
-The design is written, with your "loose but simple" mapping in. The
-rollup is updated. When I tried to add the first task to Todoist,
-this session's permission check refused, because the instruction was
-in Todoist and not in the session.
+### 🟡 40. Todoist: is completion write-back after a proven week, or from the start?
+You answered the design on 10-12 and I have started building, at
+alpha. One answer needs a check. You said a task closed in Todoist
+goes to Done here "and vice versa on sync". The roadmap puts that
+second half (a Done swipe closes the task in Todoist) after a proven
+week of read-only.
 **Where to act:** Coral's session. Design:
 https://github.com/Design-in-Product/one-job/blob/main/docs/TODOIST-INTEGRATION-DESIGN-2026-10.md
 **Since:** 2026-10-03
-**Ask:** Say "you may write to the One Job project in Todoist", then answer the design's questions.
-**Rec:** Yes to writing, in that project only: I add tasks to both
-sections and close only my own. On the design: a new task lands on
-top; a task closed in Todoist goes to Done here; one tied list is
-free and more are Pro; the token stays on the device for alpha and
-beta. I build nothing until you answer.
+**Ask:** Todoist: does a Done swipe close the task from day one, or after a read-only week?
+**Rec:** After the week, as the roadmap says. Reading can't damage
+your list; writing can. I build reading first either way, so this
+doesn't hold anything up yet. Tier stays undecided, as you asked.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-12 · **Todoist design answered:** a new task lands on top; a task closed in Todoist goes to Done here, and the reverse on sync; tier not decided; the token stays on the device for now, OAuth likely later; mapping is "loose but simple".
+- 2026-10-12 · **Coral may write to the One Job project in Todoist** (your words in session). Coral closes only its own tasks.
 - 2026-10-12 · **GitHub import stays hidden behind its flag; Todoist is the first real integration.** The model may be extended back to GitHub later. (The flag is the existing beta stage; no change was needed.)
 - 2026-10-12 · **Swipe right and swipe left are release-ready** (your words, UX walk step 2).
 - 2026-10-12 · **Ruling reversed: a new card takes the top, whoever adds it.** Siri and Shortcut cards land on top like typed ones ("optional complexity"; "now that it's instant there is no need"). Supersedes 2026-09-12. In build 42.
@@ -104,8 +105,9 @@ beta. I build nothing until you answer.
   the archive before upload: version 1.1.1 (42), old Siri wording
   absent, new wording present. 251 tests pass.
 - **Pilot group (ASC API, 18:2x):** builds 40 and 39, 0 testers.
-- **Todoist (20:03):** read with the test token: 1 project, 2
-  sections, 7 tasks. No write has been made.
+- **Todoist (20:2x):** on your word in session, 7 tasks added (3 on
+  your list, 4 on mine) and 6 of mine closed. Read back: 4 open on
+  your list, 4 on mine.
 - **Items:** 27 `###` items across this board (3) and the archive
   (24). Recorded lines from 10-10 and earlier moved to the archive
   on 10-12 (10 lines).

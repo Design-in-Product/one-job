@@ -6,12 +6,12 @@ step is exhausted, then the next. The rails are in
 `UX-SESSION-PREP-2026-09.md` ("The walk order"). xian's words are the
 data; Coral's notes are marked as Coral's.
 
-**Where we are:** step 2, opened 2026-10-12. xian has spoken on swipes and said tap and edit come in his next message.
+**Where we are:** step 2, opened 2026-10-12. xian has spoken on swipes and on the open card. One follow-up is out: card shape or whole screen.
 
 | Step | Topic | State |
 |---|---|---|
 | 1 | Cold open: deck face-down, tap to reveal | Narrated 10-12; xian moved on to step 2 |
-| 2 | The active card: swipes, tap, edit | **Open**: swipes given 10-12; tap and edit to come |
+| 2 | The active card: swipes, tap, edit | **Open**: swipes, and the open card, given 10-12; one follow-up out |
 | 3 | Add (and 3b, add from outside) | Partly given 10-12 (see below) |
 | 4 | Into a card: the interior deck | Not started |
 | 5 | Multi-deck | Not started |
@@ -96,3 +96,31 @@ to you on this thread"
 - *Coral's notes:* swipe right and swipe left are release-ready in
   his view. Tap and edit are where the work is; his walk-through is
   to come. No follow-up asked; waiting for it.
+
+**xian, 2026-10-12, with a screenshot of an open card** (title, a
+"Description" heading and text, a "Status" heading with an "Active"
+pill, a "Created" heading with "about 2 hours ago", a small sub-deck
+tile labelled "Sub-tasks", then full-width Edit and Close buttons, in
+a white sheet over a dimmed deck):
+
+"The layout is too fussy. Status isn't really a thing I need to see —
+it feels redundant, same with creative… i'd remove those. the subdeck
+should be much bigger and it should inherit the color of its parent
+deck.
+
+The edit button feels redundant. It should be like a wiki where
+tapping on any element makes it editable.
+
+Also I still want it to feel like a card or a card shape, or it
+should take over the whole screen but right now is it's in between
+those two feels.
+
+This has been my feedback for some time so it's good to get to it!"
+
+- *Coral's notes:* I read "creative" as "Created", the heading under
+  Status in his screenshot. Five asks: (1) remove Status; (2) remove
+  Created; (3) the sub-deck much bigger, in its parent deck's colour;
+  (4) no Edit button, tap any element to edit it in place; (5) a
+  real card shape or the whole screen, not the sheet in between.
+  Nothing is built yet.
+- *Follow-up asked (10-12):* card shape or whole screen.

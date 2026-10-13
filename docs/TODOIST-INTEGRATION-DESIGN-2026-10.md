@@ -1,7 +1,7 @@
 # Todoist integration: design (2026-10-12)
 
-**Status:** design for xian's review. Nothing here is built. Board
-item 40. Background: `AGENT-DECK-VIA-INTEGRATIONS-2026-10.md`.
+**Status:** xian answered the questions on 2026-10-12 (below). Build
+started the same day, at stage `alpha`. Board item 40. Background: `AGENT-DECK-VIA-INTEGRATIONS-2026-10.md`.
 
 ## What is decided
 
@@ -89,26 +89,36 @@ order rule. Yellow zone: the adapter and the picker.
 Starts at `alpha` in `featureStages.ts`, like any new feature, then
 `beta`. Tier is question 3.
 
-## Questions for xian
+## xian's answers (2026-10-12)
 
-1. **Where does a new task land in a deck that keeps One Job's
-   order?** *Rec: on top.* It is the same rule as everywhere else
-   since 10-12: a new card takes the top. In your attention deck that
-   is what you want from an agent's ask. The cost: five new tasks
-   push your current top card down five places.
-2. **When a task is closed in Todoist, does its card go to Done in
-   One Job?** *Rec: yes.* The app reads that; it writes nothing. If
-   not, the deck fills with cards that are already finished.
-3. **Tier: one tied list free, more than one Pro?** *Rec: yes.* It is
-   a flag, not a fork, and an agent's deck is what needs the second
-   list.
-4. **May Coral write to your Todoist project?** You asked for it in
-   the tasks you added (put a task on your list for each thing you
-   need to do; add my own to my section). This session's permission
-   check refused the first write, so I need your word here. *Rec:
-   yes, in the One Job project only: add tasks to both sections, and
-   close only tasks in my own section.*
-5. **The token on the device.** It sits in the app's storage, as the
-   GitHub token does. That is part of the threat-model question you
-   haven't answered. *Rec: accept it for alpha and beta, and settle
-   it before release.*
+1. **A new task lands on top.** "yes this is ok because the
+   integration is going to a deck for that purpose."
+2. **A task closed in Todoist goes to Done in One Job, "and vice
+   versa on sync".** A card swiped Done closes the task in Todoist.
+   *Coral's note:* the second half is write-back (R3.4), which the
+   roadmap puts after a proven week of read-only. Built in that
+   order unless he says otherwise.
+3. **Tier: not decided.** "let's not decide this yet. it may be that
+   any integration at all is what costs money or maybe it's the
+   second list as you say."
+4. **Token on the device: "yes for now… likely we support oauth
+   ultimately".**
+5. **Coral may write to the One Job project in Todoist** (his words
+   in session). Coral adds tasks to both sections and closes only its
+   own.
+
+## Build log
+
+- **2026-10-12, slice 1 (done):** `src/services/todoistAdapter.ts`:
+  list the user's projects and sections; read one project's or one
+  section's open tasks as cards, in order, with sub-tasks nested;
+  follow pages; fail loudly. The seam gained a deck name and
+  sub-cards. Stage `alpha` is registered. 12 new tests. Run against
+  the real test account, read-only: both sections came back as decks
+  of four cards. Sub-task nesting is covered by tests only; the test
+  account has no open sub-tasks at the moment.
+- **Next, slice 2:** the Integrations screen: token, pick a list, the
+  order question, import. Nothing in the app shows Todoist yet.
+- **Then, slice 3:** sync. New tasks land on top; a task closed in
+  Todoist goes to Done; the order rule. Red zone.
+- **Later:** completion write-back (R3.4), when xian says.

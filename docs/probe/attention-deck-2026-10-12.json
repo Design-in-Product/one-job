@@ -1,35 +1,35 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T03:04:53.200Z",
+  "exportedAt": "2026-10-13T03:28:26.151Z",
   "tasks": [
     {
-      "id": "2b2dd00a-d106-4bd1-bd51-47ee5d022798",
+      "id": "a2e29174-1a9a-44cd-95ac-4526c6e39bc4",
       "title": "Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?",
       "description": "🟡 #36 · Test build 42: does a Siri card land on top?\n\nCoral's rec: If yes, say \"Pilot 42\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Build 41 stays out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:04:53.199Z",
+      "createdAt": "2026-10-13T03:28:26.151Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "74c8112c-b2d5-458e-856d-ceaba904e0f3",
-      "title": "UX walk, step 2: walk me through what's wrong with tapping and editing a card.",
-      "description": "🟡 #22 · UX walk: step 2 of 11, tap and edit (your walk-through to come)\n\nCoral's rec: In any order, as it comes. I record your words and ask one follow-up at a time.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "id": "aee87317-2b5d-4136-bb79-327b21af85ce",
+      "title": "UX walk, step 2: should an open card be card-shaped, or take the whole screen?",
+      "description": "🟡 #22 · UX walk, step 2: open card as a card, or the whole screen?\n\nCoral's rec: Card-shaped. Tapping a card would then turn it over and bring it forward, and the deck stays the only place you are. A whole screen is a second place. Say which, and whether to build it now or after the walk.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:04:53.200Z",
+      "createdAt": "2026-10-13T03:28:26.151Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "801c6c3b-bdf4-45b3-9723-7250add85660",
-      "title": "Say \"you may write to the One Job project in Todoist\", then answer the design's questions.",
-      "description": "🟡 #40 · Todoist: may Coral write to your project? Plus four design questions\n\nCoral's rec: Yes to writing, in that project only: I add tasks to both sections and close only my own. On the design: a new task lands on top; a task closed in Todoist goes to Done here; one tied list is free and more are Pro; the token stays on the device for alpha and beta. I build nothing until you answer.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
+      "id": "4876eb83-5c2d-420b-be57-065363ea933c",
+      "title": "Todoist: does a Done swipe close the task from day one, or after a read-only week?",
+      "description": "🟡 #40 · Todoist: is completion write-back after a proven week, or from the start?\n\nCoral's rec: After the week, as the roadmap says. Reading can't damage your list; writing can. I build reading first either way, so this doesn't hold anything up yet. Tier stays undecided, as you asked.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:04:53.200Z",
+      "createdAt": "2026-10-13T03:28:26.151Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     }

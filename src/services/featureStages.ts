@@ -19,6 +19,8 @@ export const STAGES = {
   // beta (2026-08-06, both Xian's calls):
   inchworm: 'beta',       // "buggy… nice-to-have, not MVP" — parked
   githubImport: 'beta',   // wrong-shaped v1 (all-repos); v2 spec filed
+  // alpha (2026-10-12): the first real integration, read-only first.
+  todoist: 'alpha',
 } as const;
 
 export type StagedFeature = keyof typeof STAGES;

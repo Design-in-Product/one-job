@@ -24,11 +24,17 @@ export interface ExternalCard {
   description?: string;
   completed: boolean;
   createdAt?: Date;
+  /** Cards that belong inside this one (a task's sub-tasks). They land
+      in the card's interior deck. */
+  subcards?: ExternalCard[];
 }
 
 export interface SourceAdapter {
-  /** Service slug: names the source deck and stamps provenance. */
+  /** Service slug: the deck's binding key, and the provenance stamp. */
   readonly service: string;
+  /** What to call the deck when it is first created. Defaults to the
+      slug. The user may rename the deck; the binding is by `service`. */
+  readonly deckName?: string;
   /** Read-only pull of the service's current cards. */
   fetchCards(): Promise<ExternalCard[]>;
   // Write access (close/complete upstream) arrives in R3.4, earned —
@@ -39,6 +45,28 @@ export interface ImportResult {
   imported: number;
   skipped: number;
   deckId: string;
+}
+
+/** An external card as a local one: a fresh LOCAL id (never the
+    upstream id), provenance stamped, sub-cards in an interior deck. */
+function toCard(e: ExternalCard, service: string): Task {
+  const now = new Date();
+  return {
+    id: uuidv4(),
+    // External data can be anything; the store's title invariant would
+    // reject an empty one and kill the whole batch. Fall back to a
+    // name that keeps the entry traceable to its source instead.
+    title: e.title?.trim() || `(untitled ${service} item ${e.externalId})`,
+    description: e.description,
+    completed: e.completed,
+    createdAt: e.createdAt ?? now,
+    completedAt: e.completed ? now : undefined,
+    source: service,
+    externalId: e.externalId,
+    ...(e.subcards?.length
+      ? { decks: [{ id: uuidv4(), name: null, cards: e.subcards.map(c => toCard(c, service)), createdAt: now }] }
+      : {}),
+  };
 }
 
 /**
@@ -77,7 +105,7 @@ export async function importFromSource(
     );
     if (legacy) deck = legacy;
   }
-  if (!deck) deck = await store.createDeck(adapter.service);
+  if (!deck) deck = await store.createDeck(adapter.deckName ?? adapter.service);
   // Persist the binding through the store rather than mutating the
   // returned object: an in-memory stamp would survive only if something
   // else happened to save, and an import with zero new cards saves
@@ -110,19 +138,7 @@ export async function importFromSource(
       continue;
     }
     known.add(e.externalId); // grow as we go — see the note on `known`
-    fresh.push({
-      id: uuidv4(), // LOCAL identity — never the upstream id
-      // External data can be anything; the store's title invariant would
-      // reject an empty one and kill the whole batch. Fall back to a
-      // name that keeps the entry traceable to its source instead.
-      title: e.title?.trim() || `(untitled ${adapter.service} item ${e.externalId})`,
-      description: e.description,
-      completed: e.completed,
-      createdAt: e.createdAt ?? new Date(),
-      completedAt: e.completed ? new Date() : undefined,
-      source: adapter.service,
-      externalId: e.externalId,
-    });
+    fresh.push(toCard(e, adapter.service));
   }
   if (fresh.length > 0) {
     if (!store.addCardsToDeck) {
