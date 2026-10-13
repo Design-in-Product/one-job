@@ -380,6 +380,20 @@ nativeStorageBridge + sourceAdapter path as cards-with-provenance.
 **Open sequencing question vs. Todoist 1.1** (broad-shallow vs.
 deep-narrow) — for the next-steps conversation, Xian's call.
 
+*Placement, 2026-10-12 (build 42):* a card added by Siri or a
+Shortcut now lands on top, like one typed in. xian reversed the
+2026-09-12 "behind the top card" ruling after using build 41:
+"optional complexity". For arrivals in bulk his idea, not decided, is
+a deck inside one new card that sits on top until sorted. Today an
+import lands in a deck of its own, named for the service.
+
+*Deck order with an integration, 2026-10-12 (xian's go):* when the
+user adds an integration, One Job asks whether the service updates
+the deck's order during sync or the deck's order is maintained. The
+default is One Job's order. No general "don't ask me again"; the
+choice can be changed in that integration's settings. One Job keeps
+its own sense of the order either way. Free.
+
 ## 1.1 — the first post-launch release (scoped 2026-09-04)
 
 **Todoist, done properly**, is the headline. Context that makes it

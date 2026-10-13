@@ -1,35 +1,35 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T01:04:55.440Z",
+  "exportedAt": "2026-10-13T01:22:44.706Z",
   "tasks": [
     {
-      "id": "7a8d4878-eb9f-45ef-9707-f317316bd570",
-      "title": "Should a card added by Siri land on top, like one you add by hand?",
-      "description": "🟡 #36 · Siri cards: on top, like the ones you add by hand?\n\nCoral's rec: Yes for Siri and Shortcuts: you added that card yourself, so it should behave like typing it. Keep \"behind the top card\" for arrivals in bulk (imports, a synced list), where thirty cards landing on top would bury your one job. The cost: several Siri cards added while the app is closed will sit above the card you left on top. On your yes I change it with tests and make build 42, which also carries the wording fix. Build 41 stays out of the Pilot group meanwhile, because its wording is wrong; say \"Pilot 41\" if you'd rather not wait.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
+      "id": "2b6c80d1-df2d-4642-af1c-9fe37242816c",
+      "title": "Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?",
+      "description": "🟡 #36 · Test build 42: does a Siri card land on top?\n\nCoral's rec: If yes, say \"Pilot 42\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Build 41 stays out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T01:04:55.440Z",
+      "createdAt": "2026-10-13T01:22:44.706Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "846d178a-d9eb-4391-9e44-9c9af821dfc6",
-      "title": "UX walk, step 1: the face-down deck and the tap to reveal. How does that moment feel?",
-      "description": "🟡 #22 · UX walk: step 1 of 11, one follow-up out (the face-down deck)\n\nCoral's rec: No hurry. If there's nothing to say about it, say \"step 1 is done\" and I'll open step 2 (the active card).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "id": "945ea48c-151a-4bd2-abfc-e31b4395b601",
+      "title": "UX walk: anything more on the cold open, or is step 1 done?",
+      "description": "🟡 #22 · UX walk: is step 1 (the cold open) done?\n\nCoral's rec: Say \"step 1 is done\" and I'll open step 2, the active card: swipes, tap and edit.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T01:04:55.440Z",
+      "createdAt": "2026-10-13T01:22:44.706Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "64a353df-bd87-4952-b7da-076ca8893fa9",
-      "title": "Deck order default: keep One Job's order? And is there a \"don't ask again\"?",
-      "description": "🟡 #40 · Deck order with an integration: which choice is the default?\n\nCoral's rec: Default to One Job's order, your lean and mine: the top card is what the app protects, and \"Later\" has to mean something. Skip a general \"don't ask me again\" for now. Ask once per integration with the default already selected, and let the user change it later in that integration's settings. A general preference only earns its place when there are several integrations (R3.5). Two smaller questions remain in the write-up (answering from a card; whether this replaces R4.1 and R4.3).\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
+      "id": "d0ea6630-3b23-4a14-9a74-deacffa77bf2",
+      "title": "Before Todoist: scope GitHub's import to one repo, or hide it? And a test token.",
+      "description": "🟡 #40 · Todoist: scope the GitHub import or hide it first? And a test token\n\nCoral's rec: Scope it to one repo the user picks. Todoist needs the same \"pick one list\" step, so the two share a screen, and hiding would take a feature away from people who have 1.1. The token: Todoist → Settings → Integrations → Developer. It stays on this machine, outside the repo. Two smaller questions remain in the write-up (answering from a card; whether this replaces R4.1 and R4.3): https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 9 days (since 2026-10-03)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T01:04:55.440Z",
+      "createdAt": "2026-10-13T01:22:44.706Z",
       "sortOrder": 3,
       "source": "coral/attention-rollup"
     }

@@ -330,11 +330,16 @@ architecture.
    - Saved data carries a `schemaVersion`. An older build must never
      overwrite data saved by a newer one.
 
-3. **Cards from outside join behind the top card.** Siri, Shortcuts
-   and imports use `placement: 'behind-top'` (ruled 2026-09-12). The
-   top card is the thing the app protects. External sources plug in
-   at `SourceAdapter` (`src/services/sourceAdapter.ts`), read-only
-   until write access is earned (ROADMAP R3.4).
+3. **A new card takes the top, whoever adds it.** A card said to Siri
+   or added by a Shortcut lands on top, exactly like one typed in
+   (xian, 2026-10-12, reversing the 2026-09-12 "behind the top card"
+   ruling after using it: "optional complexity"). There is no
+   `placement` option any more. Arrivals in bulk (an import) land in
+   a deck of their own, named for the service; xian's idea for them
+   (10-12, not decided) is a deck inside one new card on top.
+   External sources plug in at `SourceAdapter`
+   (`src/services/sourceAdapter.ts`), read-only until write access is
+   earned (ROADMAP R3.4).
 
 4. **Mobile-Optimized Component Hierarchy (Card Deck Experience)**:
 

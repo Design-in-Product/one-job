@@ -6,7 +6,7 @@ step is exhausted, then the next. The rails are in
 `UX-SESSION-PREP-2026-09.md` ("The walk order"). xian's words are the
 data; Coral's notes are marked as Coral's.
 
-**Where we are:** step 1, first narration given 2026-10-12; one follow-up is out (the face-down deck). Step 3b also has narration, given with the build 41 retest.
+**Where we are:** step 1, narrated 2026-10-12, with one follow-up answered. Waiting for xian to say whether it is exhausted. Step 3b also has narration, given with the build 41 retest.
 
 | Step | Topic | State |
 |---|---|---|
@@ -47,6 +47,18 @@ data; Coral's notes are marked as Coral's.
     the phone with the next native build. The placement point
     questions the 2026-09-12 ruling that cards from outside join
     behind the top card. Board item 36 carries the question.
+- **Step 3b, the ruling reversed (10-12):** "I am reversing that
+  ruling. It was persuasively argued but my own experience has now
+  convinced me it represents "optional complexity" that does not
+  provide sufficient value. I just think we overengineered it and now
+  that it's instant there is no need." On arrivals in bulk: "yes,
+  maybe, to bulk arrivals but it might be better to say they come in
+  as a deck inside a new card and that card may be on top till sorted
+  elsewhere to avoid the need for even this exception."
+  - *Coral's notes:* done in build 42. An import already lands in a
+    deck of its own, named for the service, so nothing uses "behind
+    the top" any more and the option is removed. His deck-inside-a-
+    card idea is recorded in the roadmap, not decided.
 
 ## Step 1 · Cold open
 
@@ -68,3 +80,6 @@ if I never did that in the first place)."
 - *Follow-up asked (10-12):* the face-down deck and the tap to reveal.
   He described what he sees once the deck is showing, and didn't
   mention that moment.
+- **xian, 2026-10-12, on that follow-up:** "the moment of revealing
+  the first card feels "fun"".
+- *Asked next:* whether step 1 is exhausted.

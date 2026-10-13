@@ -14,11 +14,10 @@ import { DemoService } from './demoService';
 
 export interface TaskStore {
   getAllTasks(): Promise<Task[]>;
-  /** placement 'behind-top' is for EXTERNAL arrivals (Shortcuts, and
-      someday agents): they join the deck behind the current job rather
-      than usurping it (ruled 2026-09-12 — the top card is the thing
-      the app protects). User-created cards keep taking the top. */
-  createTask(title: string, description?: string, opts?: { placement?: 'top' | 'behind-top' }): Promise<Task>;
+  /** A new card takes the top, whoever adds it: typed in, or said to
+      Siri (ruled 2026-10-12; the earlier behind-the-top placement for
+      outside arrivals is gone). */
+  createTask(title: string, description?: string): Promise<Task>;
   /** Edit title/description */
   updateTask(id: string, updates: { title?: string; description?: string }): Promise<Task>;
   completeTask(id: string): Promise<Task>;

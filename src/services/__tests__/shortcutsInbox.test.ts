@@ -96,32 +96,54 @@ describe('drainShortcutsInbox (through the real LocalTaskStore)', () => {
   });
 });
 
-describe('placement: externally-dealt cards never usurp the top (ruled 2026-09-12)', () => {
+// Ruling reversed by xian, 2026-10-12, after using build 41: a card he
+// adds by Siri is a card he added, and it should behave exactly like
+// one typed in. Behind-the-top was "optional complexity"; now that the
+// card lands at once there is no need for it. (The 2026-09-12 ruling
+// had these join behind the top card.)
+describe('placement: a Siri/Shortcuts card lands on top, like one added by hand (ruled 2026-10-12)', () => {
   beforeEach(() => {
     localStorage.clear();
     prefs.clear();
     resetTaskStoreForTests();
   });
 
-  it('lands BEHIND the current top card, in arrival order', async () => {
+  it('lands ON TOP of the current top card', async () => {
     const store = getTaskStore();
-    await store.createTask('My current job');   // top
-    await store.createTask('Older card');       // created later = new top
-    // "Older card" is now top (top-insertion for user-created cards).
+    await store.createTask('Older card');
+    await store.createTask('My current job');   // created later = top
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Said to Siri' }]));
+    await drainShortcutsInbox();
+    const titles = (await store.getAllTasks()).filter(t => !t.completed).map(t => t.title);
+    expect(titles).toEqual(['Said to Siri', 'My current job', 'Older card']);
+  });
+
+  it('several queued cards stack as if typed in that order: the last one is on top', async () => {
+    const byHand = getTaskStore();
+    await byHand.createTask('My current job');
+    await byHand.createTask('Arrived first');
+    await byHand.createTask('Arrived second');
+    const typed = (await byHand.getAllTasks()).filter(t => !t.completed).map(t => t.title);
+
+    localStorage.clear();
+    resetTaskStoreForTests();
+    const store = getTaskStore();
+    await store.createTask('My current job');
     prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Arrived first' }, { title: 'Arrived second' }]));
     await drainShortcutsInbox();
     const titles = (await store.getAllTasks()).filter(t => !t.completed).map(t => t.title);
-    expect(titles).toEqual(['Older card', 'Arrived first', 'Arrived second', 'My current job']);
+    expect(titles).toEqual(['Arrived second', 'Arrived first', 'My current job']);
+    expect(titles).toEqual(typed);
   });
 
-  it('an empty deck has no focus to protect — the card is simply the deck', async () => {
+  it('into an empty deck, the card is simply the deck', async () => {
     prefs.set(PENDING_KEY, JSON.stringify([{ title: 'Only card' }]));
     await drainShortcutsInbox();
     const titles = (await getTaskStore().getAllTasks()).filter(t => !t.completed).map(t => t.title);
     expect(titles).toEqual(['Only card']);
   });
 
-  it('user-created cards still take the top (the ruling is about EXTERNAL arrivals only)', async () => {
+  it('user-created cards take the top (the behaviour Siri cards now match)', async () => {
     const store = getTaskStore();
     await store.createTask('First');
     await store.createTask('I chose to add this');

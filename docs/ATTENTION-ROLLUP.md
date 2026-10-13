@@ -1,6 +1,6 @@
 # One Job — what needs xian · v96 (2026-10-12)
 
-**Cite as "Coral rollup v99".** One file, one URL:
+**Cite as "Coral rollup v100".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -21,67 +21,63 @@ Closed on 10-12: one other organisation member could read the
 private repo. On your word they are now an outside collaborator and
 yours is the only account with access (45, archived).
 
-You answered all three open items on 10-12, and each has one
-question left: whether Siri cards land on top (36), the face-down
-deck in the UX walk (22), and the default for deck order with an
-integration (40). Pilot had no testers at the last check (10-12).
+Build 1.1.1 (42) is in your Internal group (10-12): a Siri card now
+lands on top, on your reversal of the 09-12 ruling, and Siri's wording
+is corrected (36). The UX walk's step 1 is narrated (22). You said go
+on the integration order prompt, and Todoist needs two things from
+you before I build it (40). Pilot had no testers at the last check
+(10-12).
 
 ## Open
 
-### 🟡 36. Siri cards: on top, like the ones you add by hand?
-You retested build 41 on 10-12. The card appeared at once, under the
-current card, as designed. Two things are wrong. The Siri action's
-description and its spoken reply still say the card appears the next
-time you open the app; both are corrected in the source and need a
-native build to reach the phone. And you said a card added by hand
-lands on top while this one is "hidden", and that the reasoning
-"fails in reality as an experience". Changing that reverses part of
-your 2026-09-12 ruling (cards from outside join behind the top card).
-**Where to act:** Coral's session or through Janus.
+### 🟡 36. Test build 42: does a Siri card land on top?
+You reversed the 2026-09-12 ruling on 10-12: a card added by Siri or
+a Shortcut now lands on top, like one typed in. Build 1.1.1 (42) has
+that and the corrected wording, and it is in your Internal group.
+What to Test lists three checks.
+**Where to act:** TestFlight on your phone → One Job → install 42.
 **Since:** 2026-10-08
-**Ask:** Should a card added by Siri land on top, like one you add by hand?
-**Rec:** Yes for Siri and Shortcuts: you added that card yourself, so
-it should behave like typing it. Keep "behind the top card" for
-arrivals in bulk (imports, a synced list), where thirty cards landing
-on top would bury your one job. The cost: several Siri cards added
-while the app is closed will sit above the card you left on top. On
-your yes I change it with tests and make build 42, which also carries
-the wording fix. Build 41 stays out of the Pilot group meanwhile,
-because its wording is wrong; say "Pilot 41" if you'd rather not wait.
+**Ask:** Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?
+**Rec:** If yes, say "Pilot 42" and I'll attach it to the Pilot group.
+If no, tell me exactly what you saw. Build 41 stays out of Pilot.
 
-### 🟡 22. UX walk: step 1 of 11, one follow-up out (the face-down deck)
+### 🟡 22. UX walk: is step 1 (the cold open) done?
 You gave step 1 on 10-12: returning to the last deck, its colour, and
-knowing the other decks are there all work for you and match your
-design vision. Your words are in
+knowing the other decks are there all work for you, and revealing the
+first card "feels fun". Your words are in
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
 **Where to act:** Coral's session, a sentence or a screenshot at a
 time.
 **Since:** 2026-08-13
-**Ask:** UX walk, step 1: the face-down deck and the tap to reveal. How does that moment feel?
-**Rec:** No hurry. If there's nothing to say about it, say "step 1
-is done" and I'll open step 2 (the active card).
+**Ask:** UX walk: anything more on the cold open, or is step 1 done?
+**Rec:** Say "step 1 is done" and I'll open step 2, the active card:
+swipes, tap and edit.
 
-### 🟡 40. Deck order with an integration: which choice is the default?
-You ruled on 10-12: when the user adds an integration, One Job asks
-whether the service updates the deck's order during sync or the
-deck's order is maintained. Either way One Job keeps its own sense of
-the order. Two things are left to settle, and nothing is built until
-you say go. Write-up:
-https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
-**Where to act:** Coral's session or through Janus.
+### 🟡 40. Todoist: scope the GitHub import or hide it first? And a test token
+You said go on 10-12. Decided: the user is asked about deck order
+when adding an integration, the default is One Job's order, and there
+is no general "don't ask me again". Building Todoist (read-only, one
+designated list) needs two things from you first. The roadmap makes
+fixing the GitHub import a precondition, because it takes in every
+issue assigned to you. And I can't check the adapter against the
+real service without a Todoist API token.
+**Where to act:** Coral's session. Give the token there, not in mail
+or on the board.
 **Since:** 2026-10-03
-**Ask:** Deck order default: keep One Job's order? And is there a "don't ask again"?
-**Rec:** Default to One Job's order, your lean and mine: the top card
-is what the app protects, and "Later" has to mean something. Skip a
-general "don't ask me again" for now. Ask once per integration with
-the default already selected, and let the user change it later in
-that integration's settings. A general preference only earns its
-place when there are several integrations (R3.5). Two smaller
-questions remain in the write-up (answering from a card; whether this
-replaces R4.1 and R4.3).
+**Ask:** Before Todoist: scope GitHub's import to one repo, or hide it? And a test token.
+**Rec:** Scope it to one repo the user picks. Todoist needs the same
+"pick one list" step, so the two share a screen, and hiding would
+take a feature away from people who have 1.1. The token: Todoist →
+Settings → Integrations → Developer. It stays on this machine,
+outside the repo. Two smaller questions remain in the write-up
+(answering from a card; whether this replaces R4.1 and R4.3):
+https://github.com/Design-in-Product/one-job/blob/main/docs/AGENT-DECK-VIA-INTEGRATIONS-2026-10.md
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-12 · **Ruling reversed: a new card takes the top, whoever adds it.** Siri and Shortcut cards land on top like typed ones ("optional complexity"; "now that it's instant there is no need"). Supersedes 2026-09-12. In build 42.
+- 2026-10-12 · **Bulk arrivals, your idea, not decided:** they come in as a deck inside one new card that sits on top until sorted. Today an import lands in a deck of its own, named for the service.
+- 2026-10-12 · **Deck order default: One Job's order. No general "don't ask me again"** (your "40 - go").
 - 2026-10-12 · **Build 41 retest passed on its one job:** a Siri card appears at once, with the app open, in the deck you are on. The wording and the placement are item 36.
 - 2026-10-12 · **Deck order with an integration:** the user is asked when adding it (service updates the order, or the deck's order is maintained). One Job keeps its own sense of the order either way.
 - 2026-10-12 · **Second GitHub cleanup request sent** by you (44), through the Virtual Assistant ("Ticket created"), for the 492 old commits the third pass left. Waiting on GitHub; I check the old commit link at every fire.

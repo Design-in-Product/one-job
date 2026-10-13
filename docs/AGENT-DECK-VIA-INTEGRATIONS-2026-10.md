@@ -34,10 +34,13 @@ Decided:
   maintained?
 - Either way, One Job keeps its own sense of the order.
 
-Still to discuss (xian and Coral):
+Settled the same day, on Coral's recommendation and xian's "40 - go":
 
-- The app's default. xian's lean: One Job's order retained.
-- Whether there is a general "don't ask me again" preference.
+- The default is One Job's order retained.
+- No general "don't ask me again" for now. The question is asked once
+  per integration with the default already selected, and the choice
+  can be changed later in that integration's settings. A general
+  preference waits until there are several integrations (R3.5).
 
 ## What xian said
 
@@ -135,7 +138,7 @@ agent's deck needs) is Pro. That is a flag, not a fork.
 ## Questions for xian
 
 1. Is this write-up right now, with your correction in?
-2. ~~Order: does the deck follow Todoist's order, or keep its own?~~ Ruled 10-12: the user is asked. Open: the default, and "don't ask me again".
+2. ~~Order: does the deck follow Todoist's order, or keep its own?~~ Ruled 10-12: the user is asked; the default is One Job's order; no general "don't ask me again".
 3. Answering: is "complete it" enough at first, or do you need to
    write a reply from the card?
 4. Does this replace R4.1 and R4.3 on the roadmap, or sit beside them?
