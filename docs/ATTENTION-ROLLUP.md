@@ -1,6 +1,6 @@
-# One Job — what needs xian · v105 (2026-10-12)
+# One Job — what needs xian · v106 (2026-10-12)
 
-**Cite as "Coral rollup v105".** One file, one URL:
+**Cite as "Coral rollup v106".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -13,8 +13,8 @@ Two things are open for you:
 - **Siri (36):** build 1.1.1 (42) is in your Internal group. A Siri
   card now lands on top and Siri's wording is corrected. You test it,
   then say "Pilot 42".
-- **UX walk (22):** step 2. You gave five changes to the open card
-  and agreed on a card shape. Anything more on tapping and editing?
+- **UX walk (22):** step 2. The open card is rebuilt from your five
+  changes and live in the web app. Does it feel right?
 
 In progress, mine, nothing needed from you:
 
@@ -23,7 +23,6 @@ In progress, mine, nothing needed from you:
   the Integrations screen and sync. Your asks are also tasks on your
   list in the Todoist test project, as an experiment beside this
   board.
-- **The open card:** being rebuilt from your step 2 feedback.
 
 Waiting on others: GitHub has your second cleanup request (sent
 10-12, about 17:40). Until they act, the old commits from the third
@@ -45,15 +44,20 @@ What to Test lists three checks.
 **Rec:** If yes, say "Pilot 42" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw. Build 41 stays out of Pilot.
 
-### 🟡 22. UX walk, step 2: anything more on tapping and editing?
-On 10-12 you gave five changes to the open card and agreed it should
-be card-shaped. I am building that. Your words:
+### 🟡 22. UX walk, step 2: look at the rebuilt open card
+On 10-12 you gave five changes to the open card and agreed on a card
+shape. It is built and live in the web app: a card, no Status or
+Created, no Edit button (tap the title or description to edit it),
+and a much bigger sub-deck in the deck's colour. Your words and what
+I built:
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
-**Where to act:** Coral's session, a sentence or a screenshot at a
-time.
+**Where to act:** https://onejob.co/app/ on your phone, or say "build
+43" in Coral's session to get it in the phone app.
 **Since:** 2026-08-13
-**Ask:** UX walk: anything more on tapping and editing a card, or is step 2 done?
-**Rec:** If it's done, say so and I'll open step 3: adding a card.
+**Ask:** UX walk, step 2: does the rebuilt open card feel right? Anything more on tap and edit?
+**Rec:** Say "build 43" and test it with the Siri change in one go;
+42 would then be skipped. If step 2 is done, say so and I'll open
+step 3: adding a card.
 
 ## Recorded, final (not re-asked)
 

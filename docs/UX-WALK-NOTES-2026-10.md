@@ -128,3 +128,12 @@ This has been my feedback for some time so it's good to get to it!"
   shape agreed".
 - *Asked next:* anything more on tapping and editing, or is step 2
   done.
+- **Built 10-12 (Coral):** the open card is a card in the deck card's
+  5:7 shape, a little larger. No headings, no Status, no Created, no
+  Edit, Close, Save or Cancel buttons. Tap the title or the
+  description to edit that element; it saves when you leave the field
+  or close the card. The sub-deck is 75% wider than before and wears
+  the deck's colour, as does the card's margin. A card that came from
+  outside, or is done, shows one small grey line saying so. Checked
+  with phone-sized screenshots. Live in the web app; the phone app
+  needs a new build. Not yet seen by xian.

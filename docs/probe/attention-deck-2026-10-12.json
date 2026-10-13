@@ -1,25 +1,25 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T03:36:59.579Z",
+  "exportedAt": "2026-10-13T03:42:26.663Z",
   "tasks": [
     {
-      "id": "13302712-71d6-4606-9dbd-b009c571f3ab",
+      "id": "2081546c-a670-46a6-b0c1-ab17ee7af904",
       "title": "Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?",
       "description": "🟡 #36 · Test build 42: does a Siri card land on top?\n\nCoral's rec: If yes, say \"Pilot 42\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Build 41 stays out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 4 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:36:59.579Z",
+      "createdAt": "2026-10-13T03:42:26.663Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "63877d60-47da-4a6f-ad4b-8b15907f629f",
-      "title": "UX walk: anything more on tapping and editing a card, or is step 2 done?",
-      "description": "🟡 #22 · UX walk, step 2: anything more on tapping and editing?\n\nCoral's rec: If it's done, say so and I'll open step 3: adding a card.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
+      "id": "35b2601d-d032-4323-a65f-3bc5baee0472",
+      "title": "UX walk, step 2: does the rebuilt open card feel right? Anything more on tap and edit?",
+      "description": "🟡 #22 · UX walk, step 2: look at the rebuilt open card\n\nCoral's rec: Say \"build 43\" and test it with the Siri change in one go; 42 would then be skipped. If step 2 is done, say so and I'll open step 3: adding a card.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-12 · waiting 60 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T03:36:59.579Z",
+      "createdAt": "2026-10-13T03:42:26.663Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     }

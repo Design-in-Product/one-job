@@ -90,14 +90,15 @@
       "completedRecently": "Completed recently"
     },
     "details": {
-      "created": "Created",
+      "from": "from {{source}}",
+      "completedAgo": "done {{when}}",
       "decks": "Sub-decks",
       "descriptionPlaceholder": "Add a detailed description...",
       "cancel": "Cancel",
       "save": "Save Changes",
       "close": "Close",
       "edit": "Edit",
-      "noDescription": "No description — tap to add one",
+      "noDescription": "Tap to add a description",
       "subtasks": "Sub-tasks",
       "addSubtasks": "Add sub-tasks",
       "openCount_one": "{{count}} open",

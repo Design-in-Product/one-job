@@ -1019,6 +1019,7 @@ const Index = () => {
             onAddSubtasks={handleAddSubtasks}
             onOpenSubstack={handleOpenSubstack}
             onUpdateTask={handleUpdateTask}
+            deckColor={deckOrder.find(d => d.id === getTaskStore().activeDeckId?.())?.color}
           />
           {overlays}
         </div>

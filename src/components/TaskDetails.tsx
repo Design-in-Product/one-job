@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'; // <--- ADD useEffect and useState
+import React, { useState, useEffect } from 'react';
 import { Task, Substack } from '@/types/task';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'; // <--- ADD DialogFooter
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronRight, Layers, Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { pendingEdit } from '@/domain/cardEdit';
 
 interface TaskDetailsProps {
   task: Task | null;
@@ -13,18 +14,28 @@ interface TaskDetailsProps {
   /** Item 23: creates the default (unnamed) sub-deck AND opens it */
   onAddSubtasks?: (taskId: string) => void;
   onOpenSubstack: (task: Task, substack: Substack) => void;
-  // <--- NEW PROP: Function to send updates to the parent (Index.tsx)
   /** Optional: substack views don't support editing yet */
   onUpdateTask?: (taskId: string, updates: { title?: string; description?: string }) => void;
+  /** The colour of the deck this card lives in. The sub-deck inside
+      the card wears it. Absent = the brand colours. */
+  deckColor?: { g1: string; g2: string };
 }
 
+type Field = 'title' | 'description';
+
+// The open card (xian, UX walk step 2, 2026-10-12): "The layout is too
+// fussy." It is a CARD, in the deck card's 5:7 shape, a little larger
+// because it has come forward. No headings, no Status, no Created, no
+// Edit button: "like a wiki where tapping on any element makes it
+// editable." The sub-deck is big and wears its parent deck's colour.
 const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
   isOpen,
   onClose,
   onAddSubtasks,
   onOpenSubstack,
-  onUpdateTask
+  onUpdateTask,
+  deckColor,
 }) => {
   // ALL hooks must run before any early return (Rules of Hooks): this
   // component stays mounted with task=null and receives a task later,
@@ -33,34 +44,37 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const { t } = useTranslation();
   const [editedTitle, setEditedTitle] = useState(task?.title ?? '');
   const [editedDescription, setEditedDescription] = useState(task?.description || '');
-  // R1.4 (Vision Item 18): the card opens for READING, like a baseball
-  // card; a tap on the text (or the Edit button) switches to editing.
-  const [isEditing, setIsEditing] = useState(false);
+  const [editing, setEditing] = useState<Field | null>(null);
 
-  // Sync local state when a different task is opened
+  // A different card opened: start from its text, reading.
   useEffect(() => {
     if (task) {
       setEditedTitle(task.title);
       setEditedDescription(task.description || '');
-      setIsEditing(false);
+      setEditing(null);
     }
-  }, [task]);
+    // Keyed on the card, not the object: a save refreshes `task`, and
+    // that must not throw the user out of the field they are still in.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task?.id]);
 
   if (!task) return null;
 
   // Autosave (Xian, 07-06): never lose field edits to navigation. Fires
-  // on blur and before any action that leaves the edit surface.
+  // on blur and before any action that leaves the card.
   const flushPendingEdits = () => {
-    if (!isEditing || !task) return;
-    if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
-      // A title blanked out reverts to the original rather than saving —
-      // the store refuses empty titles (its invariant), and autosave-on-
-      // navigation is the wrong moment to surface an error the user
-      // can't act on. Deleting a title is not a way to delete a card.
-      const title = editedTitle.trim() || task.title;
-      onUpdateTask?.(task.id, { title, description: editedDescription });
-    }
+    if (!editing) return;
+    const edit = pendingEdit(task, editedTitle, editedDescription);
+    if (edit) onUpdateTask?.(task.id, edit);
+    else setEditedTitle(task.title); // a blanked title shows the original again
   };
+  const stopEditing = () => { flushPendingEdits(); setEditing(null); };
+
+  // Honest surface: a field is tappable only when a save path exists.
+  // An editable field that discards on blur is a lie (the 2026-07-07
+  // sub-card edit bug).
+  const canEdit = !!onUpdateTask;
+  const edit = (field: Field) => () => { if (canEdit) setEditing(field); };
 
   const handleOpenSubstack = (substack: Substack) => {
     flushPendingEdits();
@@ -73,185 +87,147 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
     onAddSubtasks?.(task.id);
   };
 
-  // <--- NEW: Handler for saving changes
-  const handleSave = () => {
-    // Only send update if title or description have actually changed
-    if (editedTitle !== task.title || editedDescription !== (task.description || '')) {
-      onUpdateTask?.(task.id, {
-        title: editedTitle.trim() || task.title, // blank reverts — see flushPendingEdits
-        description: editedDescription
-      });
-    }
-    onClose(); // Close the dialog after attempting to save
+  const handleOpenChange = (open: boolean) => {
+    if (open) return;
+    flushPendingEdits();
+    setEditing(null);
+    onClose();
   };
 
+  const deckFill = deckColor
+    ? { background: `linear-gradient(135deg, ${deckColor.g1}, ${deckColor.g2})` }
+    : undefined;
+  const deckLayer = 'absolute inset-0 rounded-xl' + (deckColor ? '' : ' bg-gradient-to-br from-taskGradient-start to-taskGradient-end');
+  // The same hued margin the card wears in its deck (TaskCard).
+  const marginStyle = deckColor
+    ? {
+        border: '4px solid transparent',
+        background: `linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg, color-mix(in srgb, ${deckColor.g1} 50%, #f3f1ee), color-mix(in srgb, ${deckColor.g2} 50%, #f3f1ee)) border-box`,
+      }
+    : undefined;
+  const openInside = (deck: Substack) => deck.cards.filter(c => !c.completed).length;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md select-text">
-        <DialogHeader>
-          {isEditing ? (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent
+        aria-describedby={undefined}
+        data-testid="open-card"
+        // Don't hand focus to the first button on open: on a phone that
+        // draws a focus ring round the sub-deck for no reason.
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="w-[min(90vw,22rem)] max-w-none aspect-[5/7] max-h-[88dvh] rounded-2xl sm:rounded-2xl border-gray-200 bg-white p-6 pt-9 shadow-2xl flex flex-col gap-3 select-text"
+        style={marginStyle}
+      >
+        {editing === 'title' ? (
+          <>
+            <DialogTitle className="sr-only">{task.title}</DialogTitle>
             <input
               type="text"
-              className="text-xl font-bold break-words w-full p-2 -ml-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              autoFocus
+              aria-label={task.title}
+              className="text-xl font-bold w-full bg-transparent border-b-2 border-gray-300 focus:border-gray-500 focus:outline-none pb-1"
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
-              onBlur={flushPendingEdits}
+              onBlur={stopEditing}
+              onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+            />
+          </>
+        ) : (
+          <DialogTitle
+            className={`text-xl font-bold leading-snug break-words text-left pb-1 border-b-2 border-transparent ${canEdit ? 'cursor-text' : ''}`}
+            onClick={edit('title')}
+          >
+            {task.title}
+          </DialogTitle>
+        )}
+
+        <div className="flex-1 min-h-0 flex flex-col">
+          {editing === 'description' ? (
+            <textarea
+              autoFocus
+              className="flex-1 min-h-0 w-full bg-transparent text-gray-700 leading-relaxed resize-none focus:outline-none"
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              onBlur={stopEditing}
+              placeholder={t('details.descriptionPlaceholder')}
             />
           ) : (
-            <DialogTitle
-              className={`text-xl font-bold break-words ${onUpdateTask ? 'cursor-text' : ''}`}
-              // Honest surface: never enter edit mode when no save path
-              // exists — an editable field that discards on blur is a lie
-              // (the 2026-07-07 sub-card edit bug).
-              onClick={() => onUpdateTask && setIsEditing(true)}
+            <p
+              className={`flex-1 min-h-0 overflow-y-auto text-gray-700 leading-relaxed whitespace-pre-line break-words ${canEdit ? 'cursor-text' : ''}`}
+              onClick={edit('description')}
             >
-              {task.title}
-            </DialogTitle>
-          )}
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Description</h4>
-            {isEditing ? (
-              <textarea
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px]"
-                rows={5}
-                value={editedDescription}
-                onChange={(e) => setEditedDescription(e.target.value)}
-                onBlur={flushPendingEdits}
-                placeholder={t('details.descriptionPlaceholder')}
-              />
-            ) : (
-              <p
-                className={`text-gray-700 whitespace-pre-line min-h-[1.5rem] ${onUpdateTask ? 'cursor-text' : ''}`}
-                onClick={() => onUpdateTask && setIsEditing(true)}
-              >
-                {task.description || <span className="text-gray-400">{t('details.noDescription')}</span>}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Status</h4>
-            <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-              task.completed
-                ? 'bg-green-100 text-green-800'
-                : 'bg-blue-100 text-blue-800'
-            }`}>
-              {task.completed ? 'Completed' : 'Active'}
-            </span>
-          </div>
-
-          {task.source && (
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">Source</h4>
-              <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-                {task.source}
-              </span>
-            </div>
-          )}
-
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">{t('details.created')}</h4>
-            <p className="text-gray-600 text-sm">
-              {formatDistanceToNow(task.createdAt, { addSuffix: true })}
+              {task.description || (canEdit && <span className="text-gray-400">{t('details.noDescription')}</span>)}
             </p>
-          </div>
-
-          {task.completedAt && (
-            <div>
-              <h4 className="font-semibold text-gray-700 mb-2">Completed</h4>
-              <p className="text-gray-600 text-sm">
-                {formatDistanceToNow(task.completedAt, { addSuffix: true })}
-              </p>
-            </div>
           )}
-
-          {/* Sub-tasks (Item 23): one default deck, no naming ritual.
-              Legacy cards with multiple named decks keep a plain list;
-              names return as a surface only with multi-deck support. */}
-          <div>
-            {(task.decks?.length ?? 0) > 1 ? (
-              <div className="space-y-2">
-                {task.decks!.map((deck) => (
-                  <Button
-                    key={deck.id}
-                    variant="outline"
-                    className="w-full justify-between"
-                    onClick={() => handleOpenSubstack(deck)}
-                  >
-                    <span>{deck.name ?? t('details.subtasks')}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">
-                        {t('details.openCount', { count: deck.cards.filter(c => !c.completed).length })}
-                      </span>
-                      <ChevronRight className="w-4 h-4" />
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            ) : task.decks?.[0] ? (
-              /* The interior deck IS a little deck: tap to expand into it
-                 (top card arrives face-up). Xian, 2026-07-06. */
-              <button
-                onClick={() => handleOpenSubstack(task.decks![0])}
-                className="flex flex-col items-center gap-1.5 mx-auto"
-                aria-label={t('details.subtasksAria', {
-                  count: task.decks[0].cards.filter(c => !c.completed).length
-                })}
-              >
-                <div className="relative w-16 aspect-[5/7]">
-                  <div className="absolute inset-0 translate-y-2 scale-[0.92] rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end opacity-40" />
-                  <div className="absolute inset-0 translate-y-1 scale-[0.96] rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end opacity-70" />
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-taskGradient-start to-taskGradient-end shadow-md flex items-center justify-center">
-                    <span className="w-8 h-8 rounded-full bg-white/95 text-sm font-bold flex items-center justify-center text-taskGradient-start">
-                      {task.decks[0].cards.filter(c => !c.completed).length}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs text-gray-500">{t('details.subtasks')}</span>
-              </button>
-            ) : onAddSubtasks ? (
-              /* Ghost mini-deck: same shape, dashed — the affordance to start one */
-              <button
-                onClick={handleAddSubtasksClick}
-                className="flex flex-col items-center gap-1.5 mx-auto"
-                aria-label={t('details.addSubtasks')}
-              >
-                <div className="w-16 aspect-[5/7] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                  <Plus className="w-5 h-5 text-gray-400" />
-                </div>
-                <span className="text-xs text-gray-500">{t('details.addSubtasks')}</span>
-              </button>
-            ) : null}
-          </div>
         </div>
 
-        {/* <--- ADD DIALOG FOOTER WITH SAVE/CANCEL BUTTONS */}
-        <DialogFooter>
-          {isEditing ? (
-            <>
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
-                {t('details.cancel')}
+        {(task.source || task.completedAt) && (
+          <p className="text-xs text-gray-400">
+            {[
+              task.source && t('details.from', { source: task.source.split(':')[0] }),
+              task.completedAt && t('details.completedAgo', { when: formatDistanceToNow(task.completedAt, { addSuffix: true }) }),
+            ].filter(Boolean).join(' · ')}
+          </p>
+        )}
+
+        {/* Sub-tasks (Item 23): one default deck, no naming ritual.
+            Legacy cards with multiple named decks keep a plain list;
+            names return as a surface only with multi-deck support. */}
+        {(task.decks?.length ?? 0) > 1 ? (
+          <div className="space-y-2">
+            {task.decks!.map((deck) => (
+              <Button
+                key={deck.id}
+                variant="outline"
+                className="w-full justify-between"
+                onClick={() => handleOpenSubstack(deck)}
+              >
+                <span>{deck.name ?? t('details.subtasks')}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500">
+                    {t('details.openCount', { count: openInside(deck) })}
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </div>
               </Button>
-              <Button onClick={handleSave}>
-                {t('details.save')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant="outline" onClick={onClose}>
-                {t('details.close')}
-              </Button>
-              {onUpdateTask && (
-                <Button onClick={() => setIsEditing(true)}>
-                  {t('details.edit')}
-                </Button>
-              )}
-            </>
-          )}
-        </DialogFooter>
+            ))}
+          </div>
+        ) : task.decks?.[0] ? (
+          /* The interior deck IS a deck: tap to go into it (top card
+             arrives face-up). Xian, 2026-07-06; made much bigger and
+             given its parent deck's colour, 2026-10-12. */
+          <button
+            onClick={() => handleOpenSubstack(task.decks![0])}
+            className="flex flex-col items-center gap-2 mx-auto shrink-0"
+            aria-label={t('details.subtasksAria', { count: openInside(task.decks[0]) })}
+          >
+            <div className="relative w-28 aspect-[5/7] mb-1">
+              <div className={`${deckLayer} translate-y-3 scale-[0.9] opacity-40`} style={deckFill} />
+              <div className={`${deckLayer} translate-y-1.5 scale-[0.95] opacity-70`} style={deckFill} />
+              <div className={`${deckLayer} shadow-md flex items-center justify-center`} style={deckFill}>
+                <span
+                  className={`w-12 h-12 rounded-full bg-white/95 text-xl font-bold flex items-center justify-center ${deckColor ? '' : 'text-taskGradient-start'}`}
+                  style={deckColor ? { color: deckColor.g2 } : undefined}
+                >
+                  {openInside(task.decks[0])}
+                </span>
+              </div>
+            </div>
+            <span className="text-xs text-gray-500">{t('details.subtasks')}</span>
+          </button>
+        ) : onAddSubtasks ? (
+          /* Ghost deck: same shape, dashed. The way to start one. */
+          <button
+            onClick={handleAddSubtasksClick}
+            className="flex flex-col items-center gap-2 mx-auto shrink-0"
+            aria-label={t('details.addSubtasks')}
+          >
+            <div className="w-28 aspect-[5/7] rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
+              <Plus className="w-7 h-7 text-gray-400" />
+            </div>
+            <span className="text-xs text-gray-500">{t('details.addSubtasks')}</span>
+          </button>
+        ) : null}
       </DialogContent>
     </Dialog>
   );
