@@ -137,3 +137,14 @@ This has been my feedback for some time so it's good to get to it!"
   outside, or is done, shows one small grey line saying so. Checked
   with phone-sized screenshots. Live in the web app; the phone app
   needs a new build. Not yet seen by xian.
+- **xian, 2026-10-13:** "go for build 43", "rebuild card feels good",
+  "will test siri change on build 43".
+- *Coral's notes:* step 2 is closed on "feels good". He saw it in the
+  web app; build 1.1.1 (43) puts it on the phone. Anything he finds
+  there on tap and edit is recorded under step 3.
+
+## Step 3 · Adding a card
+
+*Asked 10-13:* add a card or two as you normally would (the long
+press, the arc menu, the form, where the card lands). What feels
+right and what doesn't? Not yet answered.

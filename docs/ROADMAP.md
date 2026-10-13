@@ -387,6 +387,12 @@ Shortcut now lands on top, like one typed in. xian reversed the
 a deck inside one new card that sits on top until sorted. Today an
 import lands in a deck of its own, named for the service.
 
+*Open card, 2026-10-13 (build 43):* the open card is card-shaped,
+with no Status, Created or Edit button; tap the title or description
+to edit it; the sub-deck is bigger and in the deck's colour (UX walk
+step 2, xian's feedback of 10-12; "feels good" 10-13). Build 42 was
+skipped; 43 carries its Siri change.
+
 *GitHub import, 2026-10-12 (xian):* "not release-ready yet because
 importing all the issues at once is really just not ever a good
 idea." It stays hidden behind its flag and Todoist becomes the first

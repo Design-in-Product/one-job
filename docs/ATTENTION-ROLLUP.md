@@ -1,6 +1,6 @@
-# One Job — what needs xian · v106 (2026-10-12)
+# One Job — what needs xian · v107 (2026-10-13)
 
-**Cite as "Coral rollup v106".** One file, one URL:
+**Cite as "Coral rollup v107".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -10,11 +10,11 @@ The narrative is in `development/coral-logs/`.
 
 Two things are open for you:
 
-- **Siri (36):** build 1.1.1 (42) is in your Internal group. A Siri
-  card now lands on top and Siri's wording is corrected. You test it,
-  then say "Pilot 42".
-- **UX walk (22):** step 2. The open card is rebuilt from your five
-  changes and live in the web app. Does it feel right?
+- **Build 43 (36):** 1.1.1 (43) is in your Internal group, on your
+  "go for build 43". It has the Siri change and the rebuilt open
+  card. You test it, then say "Pilot 43".
+- **UX walk (22):** step 3, adding a card. You said the rebuilt open
+  card "feels good" on 10-13, which closed step 2.
 
 In progress, mine, nothing needed from you:
 
@@ -24,43 +24,44 @@ In progress, mine, nothing needed from you:
   list in the Todoist test project, as an experiment beside this
   board.
 
-Waiting on others: GitHub has your second cleanup request (sent
-10-12, about 17:40). Until they act, the old commits from the third
-scrub pass still open by exact link.
+Closed on 10-13: GitHub removed the old commits from the third scrub
+pass (44). The old link no longer opens.
 
-Closed on 10-12: the third scrub pass; the private repo is readable
-by your account only. Pilot has no testers.
+Pilot has no testers. Build 42 was skipped; 43 carries everything in
+it.
 
 ## Open
 
-### 🟡 36. Test build 42: does a Siri card land on top?
+### 🟡 36. Test build 43: Siri card on top, and the open card
 You reversed the 2026-09-12 ruling on 10-12: a card added by Siri or
-a Shortcut now lands on top, like one typed in. Build 1.1.1 (42) has
-that and the corrected wording, and it is in your Internal group.
-What to Test lists three checks.
-**Where to act:** TestFlight on your phone → One Job → install 42.
+a Shortcut now lands on top, like one typed in. Build 1.1.1 (43) has
+that, the corrected Siri wording, and the open card rebuilt from your
+step 2 feedback. It is in your Internal group. What to Test lists
+five checks.
+**Where to act:** TestFlight on your phone → One Job → install 43.
 **Since:** 2026-10-08
-**Ask:** Install 42 and add a card by Siri. Is it on top, and is Siri's reply right?
-**Rec:** If yes, say "Pilot 42" and I'll attach it to the Pilot group.
-If no, tell me exactly what you saw. Build 41 stays out of Pilot.
+**Ask:** Install 43. Is a Siri card on top, and does the open card work on the phone?
+**Rec:** If yes, say "Pilot 43" and I'll attach it to the Pilot group.
+If no, tell me exactly what you saw. Builds 41 and 42 stay out of
+Pilot.
 
-### 🟡 22. UX walk, step 2: look at the rebuilt open card
-On 10-12 you gave five changes to the open card and agreed on a card
-shape. It is built and live in the web app: a card, no Status or
-Created, no Edit button (tap the title or description to edit it),
-and a much bigger sub-deck in the deck's colour. Your words and what
-I built:
+### 🟡 22. UX walk, step 3: add a card. What works and what doesn't?
+Step 2 closed on 10-13 with your "rebuild card feels good". Step 3 is
+adding a card: the long press, the arc menu, the form, and where the
+new card lands. Use it as you normally would and tell me what you
+notice, in any form. Your words so far:
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
-**Where to act:** https://onejob.co/app/ on your phone, or say "build
-43" in Coral's session to get it in the phone app.
+**Where to act:** One Job on your phone (build 43), then tell Coral in
+session.
 **Since:** 2026-08-13
-**Ask:** UX walk, step 2: does the rebuilt open card feel right? Anything more on tap and edit?
-**Rec:** Say "build 43" and test it with the Siri change in one go;
-42 would then be skipped. If step 2 is done, say so and I'll open
-step 3: adding a card.
+**Ask:** UX walk, step 3: add a card or two. What feels right and what doesn't?
+**Rec:** Do it while you test build 43, since you'll have the app open.
+Anything more on tap and edit from the phone goes here too.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-13 · **GitHub removed the old commits** (44). The pre-rewrite head of the third pass returns 404 by direct link and "No commit found" from the API (checked 05:53 PT).
+- 2026-10-13 · **UX walk step 2 closed:** "rebuild card feels good". Build 43 made on your "go for build 43"; you'll test the Siri change there. Build 42 skipped.
 - 2026-10-12 · **Todoist stays one-way for the first week** ("gall's law approach"): One Job reads; a Done swipe does not close the task in Todoist until after that.
 - 2026-10-12 · **The open card is card-shaped**, not a sheet and not the whole screen. Remove Status and Created; a much bigger sub-deck in its parent deck's colour; no Edit button, tap any element to edit it.
 - 2026-10-12 · **Todoist design answered:** a new task lands on top; a task closed in Todoist goes to Done here, and the reverse on sync; tier not decided; the token stays on the device for now, OAuth likely later; mapping is "loose but simple".
@@ -72,7 +73,7 @@ step 3: adding a card.
 - 2026-10-12 · **Deck order default: One Job's order. No general "don't ask me again"** (your "40 - go").
 - 2026-10-12 · **Build 41 retest passed on its one job:** a Siri card appears at once, with the app open, in the deck you are on. The wording and the placement are item 36.
 - 2026-10-12 · **Deck order with an integration:** the user is asked when adding it (service updates the order, or the deck's order is maintained). One Job keeps its own sense of the order either way.
-- 2026-10-12 · **Second GitHub cleanup request sent** by you (44), through the Virtual Assistant ("Ticket created"), for the 492 old commits the third pass left. Waiting on GitHub; I check the old commit link at every fire.
+- 2026-10-12 · **Second GitHub cleanup request sent** by you (44), through the Virtual Assistant ("Ticket created"), for the 492 old commits the third pass left. GitHub acted by 10-13.
 - 2026-10-12 · **Private repo access closed** (45), on your word: the organisation's other member is now an outside collaborator.
 - 2026-10-11 · **Second scrub pass done** (41), on your "second pass, yes". main went from `a8e94ec` to `ada8298`. The missed tester is "Tester H" throughout.
 - 2026-10-11 · **CLAUDE.md methodology rewritten** (38), on your "update it to reflect how the paradigm has evolved and what is stable about it". The old text is in the archive, verbatim.
@@ -85,22 +86,16 @@ step 3: adding a card.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v103, 10-12):**
-- **Third pass (15:28 PT):** backup 24 of 24 refs in one-job-private
-  under `pre-scrub-3/`; 798 commits before and after; 805 files
-  checked, 14 changed, 0 mismatches; 0 matches for every marked term
-  in contents, messages and paths, on the rewritten copy and on a
-  fresh clone from GitHub; 250 tests, tsc and build pass.
-- **Old commits (20:03):** the pre-rewrite head still opens by direct
-  link (200). Expected until GitHub acts on the ticket.
-- **Private repo (17:49):** GitHub lists one account with access.
-- **Build 42 (18:2x):** VALID; in Internal (3 testers). Checked inside
-  the archive before upload: version 1.1.1 (42), old Siri wording
-  absent, new wording present. 251 tests pass.
-- **Pilot group (ASC API, 18:2x):** builds 40 and 39, 0 testers.
-- **Todoist (20:2x):** on your word in session, 7 tasks added (3 on
-  your list, 4 on mine) and 6 of mine closed. Read back: 4 open on
-  your list, 4 on mine.
+**Verified how (v107, 10-13):**
+- **Build 43 (05:5x PT):** VALID; in Internal (3 testers). Checked
+  inside the archive before upload: version 1.1.1 (43), the open-card
+  code present, old Siri wording absent, new wording present. 269
+  tests, tsc and build pass. What to Test set from the release note.
+- **Old commits (05:53):** the pre-rewrite head of the third pass
+  returns 404 by direct link, and the API says "No commit found". The
+  current head opens (200).
+- **Pilot group (ASC API, 05:53):** builds 40 and 39, 0 testers.
+- **Private repo (10-12, 17:49):** GitHub lists one account with
+  access.
 - **Items:** 27 `###` items across this board (2) and the archive
-  (25). Recorded lines from 10-10 and earlier moved to the archive
-  on 10-12 (10 lines).
+  (25).
