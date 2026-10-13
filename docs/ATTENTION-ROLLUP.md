@@ -1,6 +1,6 @@
-# One Job — what needs xian · v107 (2026-10-13)
+# One Job — what needs xian · v108 (2026-10-13)
 
-**Cite as "Coral rollup v107".** One file, one URL:
+**Cite as "Coral rollup v108".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -18,11 +18,12 @@ Two things are open for you:
 
 In progress, mine, nothing needed from you:
 
-- **Todoist:** the design is settled (40, archived). The read-only
-  adapter is built and checked against your test account. Next are
-  the Integrations screen and sync. Your asks are also tasks on your
-  list in the Todoist test project, as an experiment beside this
-  board.
+- **Todoist:** built to the end of the one-way design, at the alpha
+  stage (https://onejob.co/app/?alpha=on): connect a list, sync
+  (new tasks on top, closed tasks to Done, the order rule), and
+  disconnect, which you asked for on 10-13. You are trying it on the
+  web app. Known limits are listed in the design doc. Write-back
+  waits for your word after the first week.
 
 Closed on 10-13: GitHub removed the old commits from the third scrub
 pass (44). The old link no longer opens.
@@ -86,11 +87,15 @@ Anything more on tap and edit from the phone goes here too.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v107, 10-13):**
+**Verified how (v108, 10-13):**
 - **Build 43 (05:5x PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269
   tests, tsc and build pass. What to Test set from the release note.
+- **Todoist sync (06:5x):** 297 tests pass. Walked at phone size
+  against the test account: new task on top, closed task to Done,
+  nothing removed, disconnect leaves the deck. The app sent Todoist
+  no request other than reads.
 - **Old commits (05:53):** the pre-rewrite head of the third pass
   returns 404 by direct link, and the API says "No commit found". The
   current head opens (200).

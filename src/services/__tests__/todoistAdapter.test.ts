@@ -101,3 +101,25 @@ describe('listTodoistLists', () => {
     expect(lists[0].sections).toEqual([]);
   });
 });
+
+describe('TodoistSourceAdapter.fetchClosed', () => {
+  const adapter = () => new TodoistSourceAdapter('tok', { projectId: 'p1', name: 'P' });
+  const one = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
+
+  it('says closed only for a task Todoist reports as checked', async () => {
+    const answers: Record<string, Response> = {
+      done: one(task({ id: 'done', checked: true })),
+      open: one(task({ id: 'open', checked: false })),
+      deleted: one(task({ id: 'deleted', checked: true, is_deleted: true })),
+      gone: one({ error: 'Task not found' }, 404),
+    };
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => answers[url.split('/').pop()!]));
+    expect(await adapter().fetchClosed(['done', 'open', 'deleted', 'gone'])).toEqual(['done']);
+    expect(calls().every(c => c[1].headers.Authorization === 'Bearer tok' && !c[1].method)).toBe(true);
+  });
+
+  it('throws on any other failure, so nothing is completed on a bad connection', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => one({ error: 'Unauthorized' }, 401)));
+    await expect(adapter().fetchClosed(['x'])).rejects.toThrow('401');
+  });
+});

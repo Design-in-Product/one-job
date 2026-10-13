@@ -37,6 +37,11 @@ export interface SourceAdapter {
   readonly deckName?: string;
   /** Read-only pull of the service's current cards. */
   fetchCards(): Promise<ExternalCard[]>;
+  /** Of these ids, which are CLOSED upstream? Asked only about cards
+      that have left the open list, so a task that was moved or deleted
+      is not mistaken for a finished one. Optional: without it a sync
+      completes nothing. Still a read. */
+  fetchClosed?(externalIds: string[]): Promise<string[]>;
   // Write access (close/complete upstream) arrives in R3.4, earned —
   // deliberately absent from the read-only contract.
 }
@@ -147,6 +152,61 @@ export async function importFromSource(
     await store.addCardsToDeck(deck.id, fresh);
   }
   return { imported: fresh.length, skipped, deckId: deck.id };
+}
+
+export interface SyncResult {
+  added: number;
+  completed: number;
+  /** Closed upstream but left open here: unfinished cards inside. */
+  held: number;
+  reordered: boolean;
+  deckId: string;
+}
+
+/**
+ * Bring a connected deck up to date with its source. One way: nothing
+ * is written upstream (that is R3.4). xian's rulings, 2026-10-12:
+ * a new task lands on top; a task closed upstream goes to Done; the
+ * order follows the service only when the user chose that ('source').
+ * Everything is read first and applied in ONE save, so a failed
+ * request changes nothing. A list not yet connected is imported.
+ */
+export async function syncFromSource(
+  store: TaskStore,
+  adapter: SourceAdapter,
+  opts: { order: 'onejob' | 'source' },
+): Promise<SyncResult> {
+  if (!store.getDecks) throw new Error('This store has no root decks — source sync needs them');
+  const deck = (await store.getDecks()).find(d => d.source === adapter.service);
+  if (!deck) {
+    const first = await importFromSource(store, adapter);
+    return { added: first.imported, completed: 0, held: 0, reordered: false, deckId: first.deckId };
+  }
+  if (!store.syncSourceDeck) throw new Error('This store cannot sync source decks');
+
+  const external = await adapter.fetchCards();
+  const mine = deck.cards.filter(c => c.source === adapter.service && c.externalId);
+  const localId = new Map(mine.map(c => [c.externalId!, c.id]));
+
+  const add: Task[] = [];
+  for (const e of external) {
+    if (localId.has(e.externalId)) continue;
+    const card = toCard(e, adapter.service);
+    localId.set(e.externalId, card.id); // grow as we go: one feed can repeat an id
+    add.push(card);
+  }
+
+  // Open here, absent from the open list upstream: ask, don't assume.
+  const stillOpen = new Set(external.map(e => e.externalId));
+  const missing = mine.filter(c => !c.completed && !stillOpen.has(c.externalId!)).map(c => c.externalId!);
+  const closed = missing.length > 0 && adapter.fetchClosed ? await adapter.fetchClosed(missing) : [];
+
+  const outcome = await store.syncSourceDeck(deck.id, {
+    add,
+    completeIds: closed.filter(id => missing.includes(id)).map(id => localId.get(id)!),
+    ...(opts.order === 'source' ? { order: external.map(e => localId.get(e.externalId)!) } : {}),
+  });
+  return { ...outcome, deckId: deck.id };
 }
 
 /** The seam's proof: a fake service with local, controllable upstream. */

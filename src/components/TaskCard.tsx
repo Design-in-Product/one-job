@@ -1,3 +1,4 @@
+import { sourceLabel } from '@/domain/tasks';
 // src/components/TaskCard.tsx
 // Pure presentational card face for a task. Fills its parent container;
 // gesture handling (drag/swipe/flip) lives in SwipeableCard and FlipCard.
@@ -133,7 +134,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFli
           {task.source && (
             <div className="mb-3">
               <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                {task.source}
+                {sourceLabel(task.source)}
               </span>
             </div>
           )}

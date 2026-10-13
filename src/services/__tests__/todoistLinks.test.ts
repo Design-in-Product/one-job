@@ -2,7 +2,7 @@
 // the user chose for each (design: docs/TODOIST-INTEGRATION-DESIGN-2026-10.md).
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  getTodoistLinks, saveTodoistLink, setTodoistLinkOrder, serviceKeyFor, DEFAULT_ORDER,
+  getTodoistLinks, saveTodoistLink, setTodoistLinkOrder, removeTodoistLink, serviceKeyFor, DEFAULT_ORDER,
 } from '../todoistLinks';
 
 beforeEach(() => localStorage.clear());
@@ -54,5 +54,12 @@ describe('todoistLinks', () => {
     expect(getTodoistLinks()).toEqual([
       { service: 'todoist:project:p1', projectId: 'p1', name: 'Work', order: 'onejob' },
     ]);
+  });
+
+  it('disconnects one list and leaves the others', () => {
+    saveTodoistLink({ projectId: 'p1', name: 'Work' });
+    saveTodoistLink({ projectId: 'p2', name: 'Home' });
+    removeTodoistLink('todoist:project:p1');
+    expect(getTodoistLinks().map(l => l.name)).toEqual(['Home']);
   });
 });

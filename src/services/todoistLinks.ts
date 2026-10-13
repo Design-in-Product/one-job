@@ -82,3 +82,10 @@ export const saveTodoistLink = (target: TodoistTarget, order: TodoistOrder = DEF
 export const setTodoistLinkOrder = (service: string, order: TodoistOrder): void => {
   write(getTodoistLinks().map(l => (l.service === service ? { ...l, order } : l)));
 };
+
+/** Stop syncing a list. The deck and its cards are not touched, and
+    the deck keeps its binding, so connecting the list again resumes
+    with the same deck instead of making a second one. */
+export const removeTodoistLink = (service: string): void => {
+  write(getTodoistLinks().filter(l => l.service !== service));
+};

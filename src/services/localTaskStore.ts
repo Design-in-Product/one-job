@@ -6,6 +6,7 @@ import { Task, InteriorDeck } from '@/types/task';
 import { v4 as uuidv4 } from 'uuid';
 import type { TaskStore } from './taskStore';
 import { mirrorToNativeStorage } from './nativeStorageBridge';
+import { applySourceSync, type SourceSyncPlan, type SourceSyncOutcome } from '@/domain/sourceSync';
 import { reviveTask, sortTasks, topSortOrder, applyCompletion, applyDeferral, applyUncompletion, applyArchive, applyUnarchive, applyTrash, applyRestoreFromTrash, cardRoom, findCardById, findDeckById, findDeckOfCard, findParentOfCard, findCardOwningDeck, collectDescendantIds, unfinishedDescendants, nextDeckColor } from '@/domain/tasks';
 import { migrateDocument, CURRENT_SCHEMA_VERSION, FutureDataError } from '@/domain/migrate';
 // R1.5 instrumentation seam — every recorder is a guaranteed-safe no-op
@@ -132,6 +133,17 @@ export class LocalTaskStore implements TaskStore {
     if (!deck) throw new Error('Unknown deck');
     deck.cards.push(...cards);
     this.saveTasks();
+  }
+
+  /** Apply a sync to a root deck in one save: new cards on top, cards
+      closed upstream to Done, the service's order if asked for. The
+      rules live in the domain (`applySourceSync`); nothing is removed. */
+  async syncSourceDeck(deckId: string, plan: SourceSyncPlan): Promise<SourceSyncOutcome> {
+    const deck = this.decks.find(d => d.id === deckId);
+    if (!deck) throw new Error('Unknown deck');
+    const outcome = applySourceSync(deck.cards, plan);
+    this.saveTasks();
+    return outcome;
   }
 
   /** Move a TOP-LEVEL card to another root deck, landing on TOP of the

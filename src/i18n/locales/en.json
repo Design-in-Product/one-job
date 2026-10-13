@@ -318,7 +318,15 @@
       "importing": "Bringing it in…",
       "imported": "Todoist: {{imported}} new cards in the \"{{name}}\" deck ({{skipped}} already there)",
       "importFailed": "Todoist import failed: {{message}}",
-      "connectedLists": "Connected lists"
+      "connectedLists": "Connected lists",
+      "connectedHint": "These catch up when you open One Job. Disconnecting stops that; the deck and its cards stay.",
+      "syncNow": "Sync now",
+      "syncing": "Syncing…",
+      "synced": "\"{{name}}\": {{added}} new, {{completed}} done in Todoist",
+      "syncedHeld": "\"{{name}}\": {{added}} new, {{completed}} done in Todoist. {{held}} left open because of unfinished cards inside.",
+      "syncFailed": "Sync failed: {{message}}",
+      "disconnect": "Disconnect",
+      "disconnected": "\"{{name}}\" is disconnected. Its deck and cards are still here."
     }
   }
 }

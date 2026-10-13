@@ -12,9 +12,10 @@ import {
   type TodoistList, type TodoistTarget,
 } from '@/services/todoistAdapter';
 import {
-  getTodoistLinks, saveTodoistLink, setTodoistLinkOrder, serviceKeyFor, DEFAULT_ORDER,
-  type TodoistOrder,
+  getTodoistLinks, saveTodoistLink, setTodoistLinkOrder, removeTodoistLink, serviceKeyFor, DEFAULT_ORDER,
+  type TodoistOrder, type TodoistLink,
 } from '@/services/todoistLinks';
+import { syncTodoistLinks } from '@/services/todoistSync';
 
 interface TodoistIntegrationProps {
   /** The import writes to the store directly; the parent just refreshes. */
@@ -32,7 +33,7 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
   const [lists, setLists] = useState<TodoistList[] | null>(null);
   const [picked, setPicked] = useState<TodoistTarget | null>(null);
   const [order, setOrder] = useState<TodoistOrder>(DEFAULT_ORDER);
-  const [busy, setBusy] = useState<'lists' | 'import' | null>(null);
+  const [busy, setBusy] = useState<'lists' | 'import' | 'sync' | null>(null);
   const [links, setLinks] = useState(getTodoistLinks());
 
   const connected = (target: Pick<TodoistTarget, 'projectId' | 'sectionId'>) =>
@@ -86,6 +87,33 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
   const changeOrder = (service: string, next: TodoistOrder) => {
     setTodoistLinkOrder(service, next);
     setLinks(getTodoistLinks());
+  };
+
+  const handleSync = async (link: TodoistLink) => {
+    setBusy('sync');
+    try {
+      const [report] = await syncTodoistLinks(getTaskStore(), token.trim(), [link]);
+      if (report.error || !report.result) {
+        toast.error(t('todoist.syncFailed', { message: report.error ?? '' }));
+        return;
+      }
+      const r = report.result;
+      // Observed counts only. "held" = closed there, but unfinished cards inside here.
+      toast.success(t(r.held > 0 ? 'todoist.syncedHeld' : 'todoist.synced', {
+        name: link.name, added: r.added, completed: r.completed, held: r.held,
+      }));
+      onImported?.();
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // Disconnecting stops the sync and nothing else: the deck and its
+  // cards stay (no operation may discard cards as a side effect).
+  const handleDisconnect = (link: TodoistLink) => {
+    removeTodoistLink(link.service);
+    setLinks(getTodoistLinks());
+    toast.success(t('todoist.disconnected', { name: link.name }));
   };
 
   const pick = (target: TodoistTarget) => (
@@ -163,10 +191,19 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
       {links.length > 0 && (
         <div className="space-y-3 border-t pt-3">
           <p className="text-sm font-medium">{t('todoist.connectedLists')}</p>
+          <p className="text-xs text-muted-foreground">{t('todoist.connectedHint')}</p>
           {links.map(l => (
             <div key={l.service} className="space-y-2" data-testid={`todoist-link-${l.service}`}>
               <p className="text-sm">{l.name}</p>
               {orderChoice(`todoist-order-${l.service}`, l.order, v => changeOrder(l.service, v))}
+              <div className="flex gap-2">
+                <Button onClick={() => handleSync(l)} disabled={busy !== null} variant="outline" size="sm" className="flex-1">
+                  {busy === 'sync' ? t('todoist.syncing') : t('todoist.syncNow')}
+                </Button>
+                <Button onClick={() => handleDisconnect(l)} disabled={busy !== null} variant="ghost" size="sm">
+                  {t('todoist.disconnect')}
+                </Button>
+              </div>
             </div>
           ))}
         </div>

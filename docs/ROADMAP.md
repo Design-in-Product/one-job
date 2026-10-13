@@ -393,6 +393,12 @@ to edit it; the sub-deck is bigger and in the deck's colour (UX walk
 step 2, xian's feedback of 10-12; "feels good" 10-13). Build 42 was
 skipped; 43 carries its Siri change.
 
+*Todoist, 2026-10-13 (alpha):* connect one project or section as a
+deck, sync one way (new tasks on top, closed tasks to Done, the
+user's order rule), disconnect. Build log and known limits:
+`TODOIST-INTEGRATION-DESIGN-2026-10.md`. Write-back (R3.4) is next,
+on xian's word after a week.
+
 *GitHub import, 2026-10-12 (xian):* "not release-ready yet because
 importing all the issues at once is really just not ever a good
 idea." It stays hidden behind its flag and Todoist becomes the first

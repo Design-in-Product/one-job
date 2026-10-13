@@ -132,6 +132,43 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
   added nothing and kept the changed order rule (a bug the walk
   found and fixed); no request to Todoist was anything but a read.
   The order rule is recorded but nothing acts on it until slice 3.
-- **Then, slice 3:** sync. New tasks land on top; a task closed in
-  Todoist goes to Done; the order rule. Red zone.
+- **2026-10-13, slice 3 (done):** sync, one way. Red zone, tests
+  first (`src/domain/sourceSync.ts`, `syncFromSource` in the seam,
+  `syncSourceDeck` on the store, `src/services/todoistSync.ts`).
+  - A new task lands on top. A task closed in Todoist goes to Done.
+    The order follows Todoist only on a list set to "Let Todoist
+    update the order"; then a new task goes where Todoist has it.
+  - A task that has merely left the list (moved or deleted) is left
+    alone: One Job asks Todoist about each missing task and completes
+    only the ones it reports as closed. Nothing is ever removed.
+  - A card closed in Todoist that has unfinished cards inside it here
+    stays open, and the sync message says so.
+  - Everything is read first and applied in one save, so a failed
+    request changes nothing.
+  - It runs when the app opens and when it comes back to the front
+    (quietly, at most once a minute), and from "Sync now".
+  - Walked at phone size against the test account with temporary
+    tasks in Coral's section: one closed and one added upstream, then
+    "Sync now": the new one on top, the closed one in Done, nothing
+    removed. A second one closed upstream, then a reload: Done
+    without being asked. Requests from the app other than reads: 0.
+- **2026-10-13, disconnect (done), on xian's feedback** ("it generall
+  works. I think we need a way to undo an integration / detach it
+  though?"): each connected list has "Disconnect". It stops the sync
+  and nothing else; the deck and its cards stay. The deck keeps its
+  binding, so connecting the same list again resumes with the same
+  deck. *Open question for xian:* should detaching also offer to
+  remove the deck and its cards?
+- **Also 10-13:** a card's source chip says "todoist", not the
+  binding key (his screenshot showed `todoist:section:6hj…`).
+- **Known limits, from his screenshots and the walk:**
+  - A project's deck includes the tasks in its sections. Connecting
+    a project and its sections, as he did, gives the same task in two
+    decks.
+  - Todoist descriptions are Markdown. A link shows as raw
+    `[text](url)` on the card.
+  - After the first import, changes to a task's title, description
+    or sub-tasks in Todoist do not come across. Only new top-level
+    tasks, closures and order do.
+  - Nothing reopens a card when a task is reopened in Todoist.
 - **Later:** completion write-back (R3.4), when xian says.

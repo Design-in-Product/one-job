@@ -3,7 +3,7 @@
 // read-only before earning write access).
 import { describe, it, expect, beforeEach } from 'vitest';
 import { LocalTaskStore } from '../localTaskStore';
-import { DemoSourceAdapter, importFromSource } from '../sourceAdapter';
+import { DemoSourceAdapter, importFromSource, syncFromSource, type SourceAdapter, type ExternalCard } from '../sourceAdapter';
 
 const KEY = 'sourcetest';
 
@@ -241,5 +241,112 @@ describe('SourceAdapter seam: deck name and sub-cards', () => {
     expect(parent.decks![0].cards.map(c => c.title)).toEqual(['Child one', 'Child two']);
     expect(parent.decks![0].cards[0]).toMatchObject({ source: 'todoist:section:s1', externalId: 'c1' });
     expect(parent.decks![0].cards[0].id).not.toBe('c1');
+  });
+});
+
+// Slice 3 (2026-10-13): sync after the first import. xian's rulings of
+// 10-12: a new task lands on top; a task closed upstream goes to Done;
+// the order follows the service only if the user chose that. One way:
+// nothing here writes upstream.
+describe('syncFromSource', () => {
+  class Upstream implements SourceAdapter {
+    readonly service = 'svc:list:1';
+    readonly deckName = 'My list';
+    open: ExternalCard[] = [];
+    closed = new Set<string>();
+    asked: string[][] = [];
+    async fetchCards() { return [...this.open]; }
+    async fetchClosed(ids: string[]) { this.asked.push(ids); return ids.filter(i => this.closed.has(i)); }
+  }
+  const ext = (id: string): ExternalCard => ({ externalId: id, title: id, completed: false });
+  const setup = async (ids: string[]) => {
+    localStorage.clear();
+    const store = new LocalTaskStore('synctest');
+    const up = new Upstream();
+    up.open = ids.map(ext);
+    await importFromSource(store, up);
+    return { store, up };
+  };
+  const deckOf = async (store: LocalTaskStore) => (await store.getDecks()).find(d => d.source === 'svc:list:1')!;
+  const openTitles = async (store: LocalTaskStore) =>
+    [...(await deckOf(store)).cards].filter(c => !c.completed)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map(c => c.title);
+
+  it('first sync of an unconnected list is the import', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore('synctest');
+    const up = new Upstream(); up.open = [ext('a'), ext('b')];
+    const r = await syncFromSource(store, up, { order: 'onejob' });
+    expect(r).toMatchObject({ added: 2, completed: 0 });
+    expect(await openTitles(store)).toEqual(['a', 'b']);
+  });
+
+  it('a new task lands on top; the rest keep their order', async () => {
+    const { store, up } = await setup(['a', 'b']);
+    up.open = [ext('a'), ext('b'), ext('c')];
+    const r = await syncFromSource(store, up, { order: 'onejob' });
+    expect(r).toMatchObject({ added: 1, completed: 0, reordered: false });
+    expect(await openTitles(store)).toEqual(['c', 'a', 'b']);
+  });
+
+  it('a task closed upstream goes to Done here and is not removed', async () => {
+    const { store, up } = await setup(['a', 'b']);
+    up.open = [ext('b')]; up.closed.add('a');
+    const r = await syncFromSource(store, up, { order: 'onejob' });
+    expect(r.completed).toBe(1);
+    const deck = await deckOf(store);
+    expect(deck.cards).toHaveLength(2);
+    expect(deck.cards.find(c => c.title === 'a')!.completed).toBe(true);
+  });
+
+  it('a task that is merely gone from the list (moved or deleted) is left alone', async () => {
+    const { store, up } = await setup(['a', 'b']);
+    up.open = [ext('b')]; // 'a' is missing but NOT closed
+    const r = await syncFromSource(store, up, { order: 'onejob' });
+    expect(up.asked).toEqual([['a']]);
+    expect(r.completed).toBe(0);
+    expect(await openTitles(store)).toEqual(['a', 'b']);
+  });
+
+  it('an adapter that cannot say what closed completes nothing', async () => {
+    const { store, up } = await setup(['a', 'b']);
+    up.open = [];
+    (up as { fetchClosed?: unknown }).fetchClosed = undefined;
+    const r = await syncFromSource(store, up, { order: 'onejob' });
+    expect(r.completed).toBe(0);
+    expect(await openTitles(store)).toEqual(['a', 'b']);
+  });
+
+  it("keeps the user's own order by default", async () => {
+    const { store, up } = await setup(['a', 'b', 'c']);
+    const deck = await deckOf(store);
+    await store.switchDeck(deck.id);
+    await store.deferTask(deck.cards.find(c => c.title === 'a')!.id); // Later: a to the bottom
+    await syncFromSource(store, up, { order: 'onejob' });
+    expect(await openTitles(store)).toEqual(['b', 'c', 'a']);
+  });
+
+  it("follows the service's order when the user chose that", async () => {
+    const { store, up } = await setup(['a', 'b', 'c']);
+    const deck = await deckOf(store);
+    await store.switchDeck(deck.id);
+    await store.deferTask(deck.cards.find(c => c.title === 'a')!.id);
+    const r = await syncFromSource(store, up, { order: 'source' });
+    expect(r.reordered).toBe(true);
+    expect(await openTitles(store)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('survives a reload: the result is saved', async () => {
+    const { store, up } = await setup(['a']);
+    up.open = [ext('a'), ext('b')];
+    await syncFromSource(store, up, { order: 'onejob' });
+    expect(await openTitles(new LocalTaskStore('synctest'))).toEqual(['b', 'a']);
+  });
+
+  it('a failed fetch changes nothing', async () => {
+    const { store, up } = await setup(['a', 'b']);
+    up.fetchCards = async () => { throw new Error('Todoist refused the request: 401'); };
+    await expect(syncFromSource(store, up, { order: 'source' })).rejects.toThrow('401');
+    expect(await openTitles(store)).toEqual(['a', 'b']);
   });
 });

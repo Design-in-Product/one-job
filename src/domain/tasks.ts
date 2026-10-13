@@ -346,3 +346,7 @@ export const activeSiblingTargets = (cards: Task[], movingCard: Task): Task[] =>
   const peers = deck ? deck.cards : cards; // top-level cards are peers too
   return peers.filter(c => !c.completed && c.id !== movingCard.id);
 };
+
+/** What to call a card's source on its face: the service's name, not
+    the binding key ("todoist:section:6hj…" reads as "todoist"). */
+export const sourceLabel = (source: string): string => source.split(':')[0];

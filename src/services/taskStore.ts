@@ -78,6 +78,10 @@ export interface TaskStore {
   bindDeckSource?(deckId: string, source: string): Promise<void>;
   /** Append prepared cards to a root deck (SourceAdapter write path). */
   addCardsToDeck?(deckId: string, cards: import('@/types/task').Task[]): Promise<void>;
+  /** Apply a source sync to a root deck in one save: new cards on top,
+      closed-upstream cards to Done, the service's order if the plan
+      carries one. Never removes a card. */
+  syncSourceDeck?(deckId: string, plan: import('@/domain/sourceSync').SourceSyncPlan): Promise<import('@/domain/sourceSync').SourceSyncOutcome>;
   /** Move a top-level card to another root deck (stage 3). */
   moveCardToDeck?(cardId: string, deckId: string): Promise<import('@/types/task').Task>;
   /** Session-deep undo: restore the state before the last mutation. */

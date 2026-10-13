@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { sourceLabel } from '@/domain/tasks';
 import { Task, Substack } from '@/types/task';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -164,7 +165,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         {(task.source || task.completedAt) && (
           <p className="text-xs text-gray-400">
             {[
-              task.source && t('details.from', { source: task.source.split(':')[0] }),
+              task.source && t('details.from', { source: sourceLabel(task.source) }),
               task.completedAt && t('details.completedAgo', { when: formatDistanceToNow(task.completedAt, { addSuffix: true }) }),
             ].filter(Boolean).join(' · ')}
           </p>

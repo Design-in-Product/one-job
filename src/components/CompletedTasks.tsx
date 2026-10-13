@@ -1,3 +1,4 @@
+import { sourceLabel } from '@/domain/tasks';
 
 import React from 'react';
 import { Task } from '@/types/task';
@@ -67,7 +68,7 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks, onUncomplete }) 
             </span>
             {task.source && (
               <span className="bg-white/20 px-2 py-0.5 rounded-full">
-                {task.source}
+                {sourceLabel(task.source)}
               </span>
             )}
           </div>

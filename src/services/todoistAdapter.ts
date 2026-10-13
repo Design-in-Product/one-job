@@ -144,4 +144,21 @@ export class TodoistSourceAdapter implements SourceAdapter {
     // rather than dropped; a card must not vanish because its parent did).
     return tasks.filter(t => !t.parent_id || !ids.has(t.parent_id)).map(card);
   }
+
+  /** Which of these tasks are CLOSED in Todoist. A task that is gone
+      (deleted, or an id Todoist no longer knows) is not closed. Any
+      other failure throws, so a bad connection completes nothing. */
+  async fetchClosed(externalIds: string[]): Promise<string[]> {
+    const closed: string[] = [];
+    for (const id of externalIds) {
+      const res = await fetch(`${API}/tasks/${encodeURIComponent(id)}`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+      if (res.status === 404 || res.status === 400) continue;
+      if (!res.ok) throw new Error(`Todoist refused the request: ${res.status} ${res.statusText}`);
+      const t = (await res.json()) as { checked?: boolean; is_deleted?: boolean };
+      if (t.checked && !t.is_deleted) closed.push(id);
+    }
+    return closed;
+  }
 }

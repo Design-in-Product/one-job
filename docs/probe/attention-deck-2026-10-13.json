@@ -1,25 +1,25 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-13T12:58:47.413Z",
+  "exportedAt": "2026-10-13T13:34:09.050Z",
   "tasks": [
     {
-      "id": "b9474fd3-2491-4f9c-bc47-e6e60d7bcca1",
+      "id": "c8b37cc7-5196-4d44-b343-4b31060861ce",
       "title": "Install 43. Is a Siri card on top, and does the open card work on the phone?",
       "description": "🟡 #36 · Test build 43: Siri card on top, and the open card\n\nCoral's rec: If yes, say \"Pilot 43\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Builds 41 and 42 stay out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 5 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T12:58:47.412Z",
+      "createdAt": "2026-10-13T13:34:09.050Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "f08dfa4f-506c-423a-b70f-352806288551",
+      "id": "d52af2d0-78c8-499c-9309-628ec83760a1",
       "title": "UX walk, step 3: add a card or two. What feels right and what doesn't?",
       "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Do it while you test build 43, since you'll have the app open. Anything more on tap and edit from the phone goes here too.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-13 · waiting 61 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-13T12:58:47.413Z",
+      "createdAt": "2026-10-13T13:34:09.050Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     }
