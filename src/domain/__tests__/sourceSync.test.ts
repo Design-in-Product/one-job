@@ -66,6 +66,18 @@ describe('applySourceSync', () => {
     expect(order(cards)).toEqual(['x', 'n', 'y']);
   });
 
+  // Every other order test has nothing to complete. In a real sync the
+  // two come together: a task closed in Todoist drops out of its order.
+  it('with an order and a closed task: the closed card goes to Done, a held one keeps its place', () => {
+    const open = (id: string) => ({ id: `${id}-d`, name: null, cards: [card(`${id}-in`)], createdAt: new Date(0) });
+    const cards = [card('x'), card('y'), card('h', { decks: [open('h')] }), card('z')];
+    const r = applySourceSync(cards, { add: [], completeIds: ['y', 'h'], order: ['z', 'x'] });
+    expect(cards).toHaveLength(4);
+    expect(cards.find(c => c.id === 'y')!.completed).toBe(true);
+    expect(order(cards)).toEqual(['z', 'h', 'x']);
+    expect(r).toMatchObject({ completed: 1, held: 1, reordered: true });
+  });
+
   it('reports reordered false when the order already matches', () => {
     const cards = [card('x'), card('y')];
     expect(applySourceSync(cards, { add: [], completeIds: [], order: ['x', 'y'] }).reordered).toBe(false);

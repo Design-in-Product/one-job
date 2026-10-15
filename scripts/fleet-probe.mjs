@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 
 const rollup = readFileSync('docs/ATTENTION-ROLLUP.md', 'utf8');
 
@@ -216,8 +217,14 @@ const backup = {
   tasks,
 };
 
-mkdirSync('docs/probe', { recursive: true });
-const outPath = `docs/probe/attention-deck-${today()}.json`;
-writeFileSync(outPath, JSON.stringify(backup, null, 2));
-console.log(`${tasks.length} open items → ${outPath}`);
-for (const t of tasks) console.log('  ·', t.title);
+// Write only when run as a script. The test suite imports this file for
+// its helpers; the guards above still check the live board on every run,
+// but a test run must not leave a new deck in docs/probe (it did, every
+// run, until 2026-10-14).
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  mkdirSync('docs/probe', { recursive: true });
+  const outPath = `docs/probe/attention-deck-${today()}.json`;
+  writeFileSync(outPath, JSON.stringify(backup, null, 2));
+  console.log(`${tasks.length} open items → ${outPath}`);
+  for (const t of tasks) console.log('  ·', t.title);
+}

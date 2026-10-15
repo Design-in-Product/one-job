@@ -112,9 +112,11 @@ describe('TodoistSourceAdapter.fetchClosed', () => {
       open: one(task({ id: 'open', checked: false })),
       deleted: one(task({ id: 'deleted', checked: true, is_deleted: true })),
       gone: one({ error: 'Task not found' }, 404),
+      // What the live API actually answers for an id it doesn't know.
+      bad: one({ error: 'Invalid argument value' }, 400),
     };
     vi.stubGlobal('fetch', vi.fn(async (url: string) => answers[url.split('/').pop()!]));
-    expect(await adapter().fetchClosed(['done', 'open', 'deleted', 'gone'])).toEqual(['done']);
+    expect(await adapter().fetchClosed(['done', 'open', 'deleted', 'gone', 'bad'])).toEqual(['done']);
     expect(calls().every(c => c[1].headers.Authorization === 'Bearer tok' && !c[1].method)).toBe(true);
   });
 
