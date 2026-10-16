@@ -87,6 +87,16 @@ is deleted by removing a deck. The one exception stays a Todoist
 detach, which can delete an attached deck with its cards after a
 confirmation.
 
+### ✅ 36. Test the Siri change and the open card; then Pilot (closed 2026-10-16)
+Opened 10-08 for build 41's Siri retest; carried through 42 (skipped)
+and 43. On 43, xian confirmed "Siri adds card to top as expected" and
+liked the open card "much better", with three ideas. Those, Markdown
+(48) and the deck actions (46, 47) went into 44 on his "go for 44
+before the pilot update". He then said "Pilot 44, yes" (relayed by
+Janus). Build 44 was attached to Pilot and submitted for Beta App
+Review on 10-16; Apple approved it within minutes. Builds 41–43 never
+went to Pilot.
+
 ### ✅ 48. Markdown in a description: render it (answered and built 2026-10-16)
 Text from GitHub and Todoist showed Markdown marks as typed. xian:
 "render it please, just as you say. make sure we are documenting these

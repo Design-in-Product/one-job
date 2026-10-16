@@ -1,26 +1,16 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-16T22:56:58.721Z",
+  "exportedAt": "2026-10-16T23:46:22.349Z",
   "tasks": [
     {
-      "id": "ed69d4b2-5646-4093-aacd-aa12e2d14c0a",
-      "title": "Install 44. Do the open card, Markdown and deck moves work?",
-      "description": "🟡 #36 · Test build 44: the open card, Markdown, and the deck actions\n\nCoral's rec: If yes, say \"Pilot 44\" and I'll attach it to the Pilot group. I read your \"before the pilot update\" as Pilot taking 44, not 43. Say if you meant 43.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 8 days (since 2026-10-08)",
-      "completed": false,
-      "status": "todo",
-      "createdAt": "2026-10-16T22:56:58.721Z",
-      "sortOrder": 1,
-      "source": "coral/attention-rollup"
-    },
-    {
-      "id": "2e6f167d-ce59-45a7-b17e-1e15f8f5b563",
+      "id": "d6ed180c-3170-410d-aafa-1099f627c29f",
       "title": "UX walk, step 3: add two cards. What feels right and what doesn't?",
       "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Start with the + button. If anything makes you hesitate, that's the thing to tell me.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 64 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-16T22:56:58.721Z",
-      "sortOrder": 2,
+      "createdAt": "2026-10-16T23:46:22.349Z",
+      "sortOrder": 1,
       "source": "coral/attention-rollup"
     }
   ]

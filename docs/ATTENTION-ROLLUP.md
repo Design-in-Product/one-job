@@ -1,6 +1,6 @@
-# One Job — what needs xian · v114 (2026-10-16)
+# One Job — what needs xian · v115 (2026-10-16)
 
-**Cite as "Coral rollup v114".** One file, one URL:
+**Cite as "Coral rollup v115".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,13 +8,14 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Two things are open for you:
+One thing is open for you:
 
-- **Build 44 (36):** on your "go for 44 before the pilot update", 1.1.1 (44)
-  is in Internal (16:10): the open card from your 10-16 ideas, Markdown
-  (48, answered), the Done view fix, and the deck actions (46, 47). When you've tried it, say "Pilot 44".
-- **UX walk (22):** step 3, adding a card. You said on 10-16 you're
-  ready; the question is in this item.
+- **UX walk (22):** step 3, adding a card. You said you'd come back to
+  it "after a bit"; the question is in this item.
+
+Done on 10-16: build 1.1.1 (44) is in the Pilot group on your "Pilot
+44, yes" (36, archived), and Apple has approved it for outside
+testers. Pilot has no testers yet, so nobody has received it.
 
 How a card shows itself is now written down in one place, rule by
 rule, with who decided each and why: [`docs/CARD-DESIGN.md`](CARD-DESIGN.md).
@@ -26,23 +27,7 @@ In progress, mine, nothing needed from you:
   design doc; Markdown is no longer one of them. Write-back waits for
   your word after the first week.
 
-Pilot has no testers. Builds 42 and 43 stay out of Pilot; 44 carries
-everything in them.
-
 ## Open
-
-### 🟡 36. Test build 44: the open card, Markdown, and the deck actions
-Build 43 passed in your words on 10-16. On your "go for 44 before the
-pilot update", 1.1.1 (44) carries your three open-card ideas with the
-fixed-size sub-deck, Markdown (48), the Done view no longer stretching
-a long card off the screen, and the deck actions (46, 47). It goes to
-your Internal group. What to Test lists the checks.
-**Where to act:** TestFlight on your phone → One Job → install 44.
-**Since:** 2026-10-08
-**Ask:** Install 44. Do the open card, Markdown and deck moves work?
-**Rec:** If yes, say "Pilot 44" and I'll attach it to the Pilot group.
-I read your "before the pilot update" as Pilot taking 44, not 43. Say
-if you meant 43.
 
 ### 🟡 22. UX walk, step 3: add a card. What works and what doesn't?
 You said on 10-16 you're ready. Step 3 is adding a card. On the phone
@@ -59,6 +44,7 @@ that's the thing to tell me.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-16 · **Pilot 44** (36). Your words, relayed by Janus: "Pilot 44, yes, to Coral". Attached and submitted for Beta App Review at 16:4x.
 - 2026-10-16 · **Go for build 44 before the Pilot update.** Your words: "go for 44 before the pilot update".
 - 2026-10-16 · **Markdown is rendered** (48). "render it please, just as you say. make sure we are documenting these choice and not just patching them." Built as recommended; the choices are in `docs/CARD-DESIGN.md`.
 - 2026-10-16 · **The sub-deck is one fixed size.** "agreed with your take on the fixed-size subdeck and its size."
@@ -94,7 +80,11 @@ that's the thing to tell me.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v114, 10-16; earlier lines from v110, 10-13):**
+**Verified how (v115, 10-16; earlier lines from v110, 10-13):**
+- **Pilot 44 (16:4x PT):** `scripts/asc-pilot.mjs` attached build 44
+  to Pilot (read back: Pilot holds 44, 40, 39) and submitted it for
+  Beta App Review (WAITING_FOR_REVIEW); read back minutes later:
+  APPROVED. Pilot testers: 0.
 - **Build 44 (16:10 PT):** delivery `5265ce83`, VALID, in Internal (3
   testers); What to Test set from the release note. Checked inside the
   archive before upload: version 1.1.1 (44), the Markdown, inset-well,
@@ -133,5 +123,5 @@ that's the thing to tell me.
   deck into an existing card and into a new card on top (every card
   kept, done ones too); all cards moved to another deck, on top and
   in order; the emptied deck deleted; Undo brought it back.
-- **Items:** 30 `###` items across this board (2) and the archive
-  (28); 48 opened and archived 10-16. 46 and 47 were opened and archived on 10-13.
+- **Items:** 30 `###` items across this board (1) and the archive
+  (29); 36 archived 10-16. 46 and 47 were opened and archived on 10-13.
