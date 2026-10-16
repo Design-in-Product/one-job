@@ -1,6 +1,6 @@
-# One Job — what needs xian · v110 (2026-10-13)
+# One Job — what needs xian · v111 (2026-10-16)
 
-**Cite as "Coral rollup v110".** One file, one URL:
+**Cite as "Coral rollup v111".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -10,9 +10,9 @@ The narrative is in `development/coral-logs/`.
 
 Two things are open for you:
 
-- **Build 43 (36):** 1.1.1 (43) is in your Internal group, on your
-  "go for build 43". It has the Siri change and the rebuilt open
-  card. You test it, then say "Pilot 43".
+- **Build 43 (36):** you confirmed on 10-16 that a Siri card lands on
+  top. One check left: tap a card on the phone and see that the open
+  card works. Then say "Pilot 43".
 - **UX walk (22):** step 3, adding a card. You said the rebuilt open
   card "feels good" on 10-13, which closed step 2.
 
@@ -40,15 +40,17 @@ it.
 
 ## Open
 
-### 🟡 36. Test build 43: Siri card on top, and the open card
-You reversed the 2026-09-12 ruling on 10-12: a card added by Siri or
-a Shortcut now lands on top, like one typed in. Build 1.1.1 (43) has
-that, the corrected Siri wording, and the open card rebuilt from your
-step 2 feedback. It is in your Internal group. What to Test lists
-five checks.
-**Where to act:** TestFlight on your phone → One Job → install 43.
+### 🟡 36. Build 43: does the open card work on the phone?
+Build 1.1.1 (43) is in your Internal group. Half of it is confirmed:
+a card added by Siri lands on top (your words, 10-16). The other half
+is the open card, which is what you see when you tap any card: card
+shaped, no Status or Created line, no Edit button, tap the title or
+the description to edit it, and a bigger sub-deck in the deck's
+colour. You said "rebuild card feels good" on 10-13; this is the same
+check on the phone.
+**Where to act:** One Job (build 43) on your phone: tap the top card.
 **Since:** 2026-10-08
-**Ask:** Install 43. Is a Siri card on top, and does the open card work on the phone?
+**Ask:** On the phone, tap a card. Does the open card work?
 **Rec:** If yes, say "Pilot 43" and I'll attach it to the Pilot group.
 If no, tell me exactly what you saw. Builds 41 and 42 stay out of
 Pilot.
@@ -68,6 +70,7 @@ Anything more on tap and edit from the phone goes here too.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-16 · **Build 43: a Siri card lands on top** (first half of 36). Your words, relayed by Janus: "I confirm Siri adds card to top as expected."
 - 2026-10-13 · **A deck is removed only when empty, with a "move all cards" option** (46). Your words, given in Janus's session and relayed: "only when empty with a "move all cards" option". Built the same day.
 - 2026-10-13 · **A whole deck can move into a card, from one menu entry** (47). Your words, relayed by Janus: "one menu entry yes". Built as both an existing card and a new card on top; "both" is Janus's reading of your yes, not your word. Say if you meant one.
 - 2026-10-13 · **Detaching an integration offers two outcomes:** "an offer to delete the attached deck -or- to leave it detached as an ordinary deck (no ability to re-attach implied)". Built the same day.
@@ -98,7 +101,7 @@ Anything more on tap and edit from the phone goes here too.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v110, 10-13):**
+**Verified how (v111, 10-16; earlier lines from v110, 10-13):**
 - **Build 43 (05:53 PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269
