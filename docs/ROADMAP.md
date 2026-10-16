@@ -396,9 +396,10 @@ skipped; 43 carries its Siri change.
 *Open card, 2026-10-16 (web app; not yet in a phone build):* from
 xian's feedback on 43. The title and description sit in faint inset
 wells so they read as editable; the description is only as tall as
-its text (about five lines, then it scrolls), and the sub-deck takes
-the rest; editing the description fills the area below and hides the
-sub-deck. Notes: `docs/UX-WALK-NOTES-2026-10.md`, step 3.
+its text; the sub-deck is one fixed size on every card, and the
+title, description and source line scroll together above it, so a
+wall of text stays inside the card; editing the description fills
+the area below and hides the sub-deck. Notes: `docs/UX-WALK-NOTES-2026-10.md`, step 3.
 
 *Todoist, 2026-10-13 (alpha):* connect one project or section as a
 deck, sync one way (new tasks on top, closed tasks to Done, the

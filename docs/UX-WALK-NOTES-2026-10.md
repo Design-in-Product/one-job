@@ -179,3 +179,24 @@ right and what doesn't? Not yet answered.
   A sub-card (which can't hold a deck) keeps the full-height
   description. Checked with phone-sized screenshots; saving on leave
   and on close, and a blank title going back, all still pass.
+- **xian, 2026-10-16, on point 2:** "you're probably right. my one
+  concern is that maybe the subdeck shouldn't flex in size, idk."
+  Then, after Coral's recommendation (a fixed size, about a third
+  bigger than in 43): "agreed with your take on the fixed-size subdeck
+  and its size."
+- **xian, 2026-10-16, a new point:** "the design up to now does not
+  deal well with huge long text blocks. The old github import brought
+  in walls of text that just took over the screen... we need to make
+  sure some sort of smart truncation happens at least for smart
+  display, scrolling is supported if needed, etc."
+- **Built 10-16 (Coral):** the sub-deck (and the ghost deck) is one
+  fixed size on every card, 12rem high. The title, the description
+  and the source line share one scrolling area above it, whose bottom
+  edge fades when the text runs on. The open card keeps its 5:7 shape
+  whatever the text. The card face already cut the description at 180
+  characters and shrank the text to fit; checked with a GitHub-style
+  wall of text (a six-line title, about 3,000 characters of Markdown
+  with a long link): nothing wider than the screen, the text scrolls,
+  and editing fills the card. With a title that long, only a faded
+  line of the description shows until you scroll. Raw Markdown (`##`,
+  `**`) still shows as typed: his call (see the board).

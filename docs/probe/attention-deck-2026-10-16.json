@@ -1,26 +1,36 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-16T22:32:40.682Z",
+  "exportedAt": "2026-10-16T22:43:49.316Z",
   "tasks": [
     {
-      "id": "7ebf1dd7-4c90-4d98-a6c2-375f30ef0d06",
+      "id": "b2110bfc-feed-4be4-8809-adfca102f088",
       "title": "Say \"Pilot 43\", and \"go for 44\" if you want the new card on the phone.",
       "description": "🟡 #36 · Build 43 passed. Pilot it, and make 44?\n\nCoral's rec: Both. Pilot 43 now, since it passed and Pilot has no testers to disturb. Then build 44 for the open card ideas and the deck actions; 44 goes to Internal first, like every build.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 8 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-16T22:32:40.681Z",
+      "createdAt": "2026-10-16T22:43:49.315Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "27c9d335-594f-41a6-b8d8-c1dbbc9342c3",
+      "id": "54697c28-24e2-486a-adcb-447abc33b237",
       "title": "UX walk, step 3: add a card or two. What feels right and what doesn't?",
       "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Do it while you test build 43, since you'll have the app open. Anything more on tap and edit from the phone goes here too.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 64 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-16T22:32:40.682Z",
+      "createdAt": "2026-10-16T22:43:49.316Z",
       "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "d6c2cd60-ad16-4819-9470-6a29b429ed7b",
+      "title": "Markdown in descriptions: render it, or leave it as typed?",
+      "description": "🟢 #48 · Markdown in a description: render it, or show it as typed?\n\nCoral's rec: Render it. On the card face, strip the marks and show plain text. In the open card, show headings, bold and lists, and make links tappable. When you tap to edit, you see the text as typed, marks and all. No images and no HTML. Free tier.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 0 days (since 2026-10-16)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-16T22:43:49.316Z",
+      "sortOrder": 3,
       "source": "coral/attention-rollup"
     }
   ]

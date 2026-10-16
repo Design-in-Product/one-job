@@ -1,6 +1,6 @@
-# One Job — what needs xian · v112 (2026-10-16)
+# One Job — what needs xian · v113 (2026-10-16)
 
-**Cite as "Coral rollup v112".** One file, one URL:
+**Cite as "Coral rollup v113".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,12 +8,14 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Two things are open for you:
+Three things are open for you:
 
 - **Build 43 (36):** both halves confirmed on 10-16: a Siri card lands
   on top, and you like the open card "much better". Your three ideas
   for it are built in the web app. Waiting on your word: "Pilot 43",
   and whether to make build 44 so the phone gets them.
+- **Markdown (48):** a description with `##` or `**bold**` shows the
+  marks as typed. Render it, or leave it?
 - **UX walk (22):** step 3, adding a card. You said the rebuilt open
   card "feels good" on 10-13, which closed step 2.
 
@@ -49,6 +51,8 @@ built in the web app (https://onejob.co/app/): inset wells on the
 title and description, a description only as tall as its text, and
 the description filling the card while you edit it. Point 2 differs
 from what you suggested; the reason is in the UX walk notes, step 3.
+On your agreement, the sub-deck is now one fixed size, and the text
+above it scrolls, so a wall of text stays inside the card.
 A build 44 would also carry the deck actions (46, 47).
 **Where to act:** tell Coral in session.
 **Since:** 2026-10-08
@@ -56,6 +60,20 @@ A build 44 would also carry the deck actions (46, 47).
 **Rec:** Both. Pilot 43 now, since it passed and Pilot has no testers
 to disturb. Then build 44 for the open card ideas and the deck actions;
 44 goes to Internal first, like every build.
+
+### 🟢 48. Markdown in a description: render it, or show it as typed?
+Text that comes in from GitHub or Todoist often carries Markdown:
+`## Heading`, `**bold**`, `[a link](https://…)`. Today the card face
+and the open card show those marks as typed. It came up while
+checking walls of text (your point, 10-16); it is also one of the
+Todoist known limits.
+**Where to act:** tell Coral in session.
+**Since:** 2026-10-16
+**Ask:** Markdown in descriptions: render it, or leave it as typed?
+**Rec:** Render it. On the card face, strip the marks and show plain
+text. In the open card, show headings, bold and lists, and make links
+tappable. When you tap to edit, you see the text as typed, marks and
+all. No images and no HTML. Free tier.
 
 ### 🟡 22. UX walk, step 3: add a card. What works and what doesn't?
 Step 2 closed on 10-13 with your "rebuild card feels good". Step 3 is
@@ -105,6 +123,11 @@ Anything more on tap and edit from the phone goes here too.
 
 ---
 **Verified how (v112, 10-16; earlier lines from v110, 10-13):**
+- **Fixed sub-deck and long text (15:4x):** 317 tests, tsc and build
+  pass. Screenshots at phone size: the same sub-deck size on four
+  cards; a GitHub-style wall of text (a six-line title, about 3,000
+  characters) keeps the card's shape and scrolls; nothing is wider
+  than the screen.
 - **Open card ideas (15:3x):** 317 tests, tsc and build pass.
   Phone-sized screenshots of four states: a card with a sub-deck, a
   long description, the description while editing, and a card with
@@ -132,5 +155,5 @@ Anything more on tap and edit from the phone goes here too.
   deck into an existing card and into a new card on top (every card
   kept, done ones too); all cards moved to another deck, on top and
   in order; the emptied deck deleted; Undo brought it back.
-- **Items:** 29 `###` items across this board (2) and the archive
-  (27). 46 and 47 were opened and archived on 10-13.
+- **Items:** 30 `###` items across this board (3) and the archive
+  (27); 48 opened 10-16. 46 and 47 were opened and archived on 10-13.

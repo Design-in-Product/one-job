@@ -89,7 +89,6 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   // With nothing below (a sub-card, which can't hold a deck), the
   // description keeps the whole card, as before.
   const hasBelow = (task.decks?.length ?? 0) > 0 || !!onAddSubtasks;
-  const tall = writing || !hasBelow;
 
   const handleOpenSubstack = (substack: Substack) => {
     flushPendingEdits();
@@ -133,6 +132,12 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         className="w-[min(90vw,22rem)] max-w-none aspect-[5/7] max-h-[88dvh] rounded-2xl sm:rounded-2xl border-gray-200 bg-white p-6 pt-9 shadow-2xl flex flex-col gap-3 select-text"
         style={marginStyle}
       >
+        {/* Title, description and the source line share one scrolling
+            area, so a wall of text (a GitHub issue, say) scrolls inside
+            the card and never squeezes the sub-deck. The negative margin
+            gives the wells' edges room inside the scroller; the bottom
+            edge fades, so text that runs on shows that it scrolls. */}
+        <div className={`flex-1 min-h-0 -mx-2 px-2 pt-0.5 flex flex-col gap-3 ${writing ? '' : 'overflow-y-auto pb-6 [mask-image:linear-gradient(to_bottom,black_calc(100%-1.5rem),transparent)]'}`}>
         {editing === 'title' ? (
           <>
             <DialogTitle className="sr-only">{task.title}</DialogTitle>
@@ -156,11 +161,9 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           </DialogTitle>
         )}
 
-        {/* The description is only as tall as its text (up to about five
-            lines, then it scrolls), so the sub-deck gets the rest. xian
+        {/* The description's well is only as tall as its text. xian
             asked for one line; a fixed line would make reading a long
             description a tap, and a tap now edits. */}
-        <div className={tall ? 'flex-1 min-h-0 flex flex-col' : 'shrink-0 flex flex-col max-h-[9.5rem]'}>
           {writing ? (
             <textarea
               autoFocus
@@ -172,13 +175,12 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             />
           ) : (
             <p
-              className={`${tall ? 'flex-1 ' : ''}min-h-0 overflow-y-auto text-gray-700 leading-relaxed whitespace-pre-line break-words ${fieldBox}`}
+              className={`${hasBelow ? '' : 'flex-1 '}text-gray-700 leading-relaxed whitespace-pre-line break-words ${fieldBox}`}
               onClick={edit('description')}
             >
               {task.description || (canEdit && <span className="text-gray-400">{t('details.noDescription')}</span>)}
             </p>
           )}
-        </div>
 
         {!writing && (task.source || task.completedAt) && (
           <p className="text-xs text-gray-400">
@@ -188,12 +190,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             ].filter(Boolean).join(' · ')}
           </p>
         )}
+        </div>
 
         {/* Sub-tasks (Item 23): one default deck, no naming ritual.
             Legacy cards with multiple named decks keep a plain list;
             names return as a surface only with multi-deck support. */}
         {writing ? null : (task.decks?.length ?? 0) > 1 ? (
-          <div className="space-y-2 overflow-y-auto min-h-0">
+          <div className="space-y-2 overflow-y-auto shrink-0 max-h-40">
             {task.decks!.map((deck) => (
               <Button
                 key={deck.id}
@@ -217,13 +220,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
              given its parent deck's colour, 2026-10-12. */
           <button
             onClick={() => handleOpenSubstack(task.decks![0])}
-            className="flex-1 min-h-[7rem] w-full flex flex-col items-center justify-center gap-2"
+            className="shrink-0 flex flex-col items-center gap-2 mx-auto"
             aria-label={t('details.subtasksAria', { count: openInside(task.decks[0]) })}
           >
-            {/* As big as the space left over. The height sets the width
-                (5:7); capping the height keeps it under half the card. */}
-            <div className="flex-1 min-h-0 max-h-[13rem] w-full flex justify-center mb-1">
-            <div className="relative h-full aspect-[5/7]">
+            {/* One fixed size on every card (xian, 10-16: a deck that
+                changes size from card to card reads as a different
+                object), about a third bigger than in build 43. */}
+            <div className="relative h-48 aspect-[5/7] mb-1">
               <div className={`${deckLayer} translate-y-3 scale-[0.9] opacity-40`} style={deckFill} />
               <div className={`${deckLayer} translate-y-1.5 scale-[0.95] opacity-70`} style={deckFill} />
               <div className={`${deckLayer} shadow-md flex items-center justify-center`} style={deckFill}>
@@ -235,20 +238,17 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 </span>
               </div>
             </div>
-            </div>
             <span className="text-xs text-gray-500">{task.decks[0].name ?? t('details.subtasks')}</span>
           </button>
         ) : onAddSubtasks ? (
           /* Ghost deck: same shape, dashed. The way to start one. */
           <button
             onClick={handleAddSubtasksClick}
-            className="flex-1 min-h-[7rem] w-full flex flex-col items-center justify-center gap-2"
+            className="shrink-0 flex flex-col items-center gap-2 mx-auto"
             aria-label={t('details.addSubtasks')}
           >
-            <div className="flex-1 min-h-0 max-h-[13rem] w-full flex justify-center">
-            <div className="h-full aspect-[5/7] rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
+            <div className="h-48 aspect-[5/7] rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
               <Plus className="w-7 h-7 text-gray-400" />
-            </div>
             </div>
             <span className="text-xs text-gray-500">{t('details.addSubtasks')}</span>
           </button>
