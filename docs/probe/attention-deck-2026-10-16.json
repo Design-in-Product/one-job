@@ -1,25 +1,25 @@
 {
   "app": "one-job",
   "version": 2,
-  "exportedAt": "2026-10-16T18:44:43.564Z",
+  "exportedAt": "2026-10-16T22:32:40.682Z",
   "tasks": [
     {
-      "id": "0e9350b0-5bf1-4b64-a904-1fe6d24d6898",
-      "title": "On the phone, tap a card. Does the open card work?",
-      "description": "🟡 #36 · Build 43: does the open card work on the phone?\n\nCoral's rec: If yes, say \"Pilot 43\" and I'll attach it to the Pilot group. If no, tell me exactly what you saw. Builds 41 and 42 stay out of Pilot.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 8 days (since 2026-10-08)",
+      "id": "7ebf1dd7-4c90-4d98-a6c2-375f30ef0d06",
+      "title": "Say \"Pilot 43\", and \"go for 44\" if you want the new card on the phone.",
+      "description": "🟡 #36 · Build 43 passed. Pilot it, and make 44?\n\nCoral's rec: Both. Pilot 43 now, since it passed and Pilot has no testers to disturb. Then build 44 for the open card ideas and the deck actions; 44 goes to Internal first, like every build.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 8 days (since 2026-10-08)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-16T18:44:43.563Z",
+      "createdAt": "2026-10-16T22:32:40.681Z",
       "sortOrder": 1,
       "source": "coral/attention-rollup"
     },
     {
-      "id": "8e8ad514-b58b-4ad0-a78b-5ba3410fb6ab",
+      "id": "27c9d335-594f-41a6-b8d8-c1dbbc9342c3",
       "title": "UX walk, step 3: add a card or two. What feels right and what doesn't?",
       "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Do it while you test build 43, since you'll have the app open. Anything more on tap and edit from the phone goes here too.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-16 · waiting 64 days (since 2026-08-13)",
       "completed": false,
       "status": "todo",
-      "createdAt": "2026-10-16T18:44:43.564Z",
+      "createdAt": "2026-10-16T22:32:40.682Z",
       "sortOrder": 2,
       "source": "coral/attention-rollup"
     }

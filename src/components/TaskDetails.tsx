@@ -76,6 +76,20 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   // sub-card edit bug).
   const canEdit = !!onUpdateTask;
   const edit = (field: Field) => () => { if (canEdit) setEditing(field); };
+  // xian, testing build 43 (2026-10-16): "We need at least a hint that
+  // the title and description are now editable." An editable field sits
+  // in a faint inset well, so it reads as a field before it is tapped.
+  // Editing deepens the same well rather than swapping in a new box.
+  const well = 'rounded-lg -mx-2 px-2 py-1 bg-gray-50 shadow-[inset_0_1px_3px_rgba(0,0,0,0.08)] ring-1 ring-inset ring-gray-200/70';
+  const wellEditing = 'rounded-lg -mx-2 px-2 py-1 bg-white shadow-[inset_0_1px_3px_rgba(0,0,0,0.12)] ring-1 ring-inset ring-gray-400 focus:outline-none';
+  const fieldBox = canEdit ? `${well} cursor-text` : '';
+  // While the description is being edited it takes everything below the
+  // title, sub-deck included (xian's point 3).
+  const writing = editing === 'description';
+  // With nothing below (a sub-card, which can't hold a deck), the
+  // description keeps the whole card, as before.
+  const hasBelow = (task.decks?.length ?? 0) > 0 || !!onAddSubtasks;
+  const tall = writing || !hasBelow;
 
   const handleOpenSubstack = (substack: Substack) => {
     flushPendingEdits();
@@ -126,7 +140,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               type="text"
               autoFocus
               aria-label={task.title}
-              className="text-xl font-bold w-full bg-transparent border-b-2 border-gray-300 focus:border-gray-500 focus:outline-none pb-1"
+              className={`text-xl font-bold leading-snug w-[calc(100%+1rem)] ${wellEditing}`}
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
               onBlur={stopEditing}
@@ -135,18 +149,22 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           </>
         ) : (
           <DialogTitle
-            className={`text-xl font-bold leading-snug break-words text-left pb-1 border-b-2 border-transparent ${canEdit ? 'cursor-text' : ''}`}
+            className={`text-xl font-bold leading-snug break-words text-left ${fieldBox}`}
             onClick={edit('title')}
           >
             {task.title}
           </DialogTitle>
         )}
 
-        <div className="flex-1 min-h-0 flex flex-col">
-          {editing === 'description' ? (
+        {/* The description is only as tall as its text (up to about five
+            lines, then it scrolls), so the sub-deck gets the rest. xian
+            asked for one line; a fixed line would make reading a long
+            description a tap, and a tap now edits. */}
+        <div className={tall ? 'flex-1 min-h-0 flex flex-col' : 'shrink-0 flex flex-col max-h-[9.5rem]'}>
+          {writing ? (
             <textarea
               autoFocus
-              className="flex-1 min-h-0 w-full bg-transparent text-gray-700 leading-relaxed resize-none focus:outline-none"
+              className={`flex-1 min-h-0 w-[calc(100%+1rem)] text-gray-700 leading-relaxed resize-none ${wellEditing}`}
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
               onBlur={stopEditing}
@@ -154,7 +172,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             />
           ) : (
             <p
-              className={`flex-1 min-h-0 overflow-y-auto text-gray-700 leading-relaxed whitespace-pre-line break-words ${canEdit ? 'cursor-text' : ''}`}
+              className={`${tall ? 'flex-1 ' : ''}min-h-0 overflow-y-auto text-gray-700 leading-relaxed whitespace-pre-line break-words ${fieldBox}`}
               onClick={edit('description')}
             >
               {task.description || (canEdit && <span className="text-gray-400">{t('details.noDescription')}</span>)}
@@ -162,7 +180,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
           )}
         </div>
 
-        {(task.source || task.completedAt) && (
+        {!writing && (task.source || task.completedAt) && (
           <p className="text-xs text-gray-400">
             {[
               task.source && t('details.from', { source: sourceLabel(task.source) }),
@@ -174,8 +192,8 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         {/* Sub-tasks (Item 23): one default deck, no naming ritual.
             Legacy cards with multiple named decks keep a plain list;
             names return as a surface only with multi-deck support. */}
-        {(task.decks?.length ?? 0) > 1 ? (
-          <div className="space-y-2">
+        {writing ? null : (task.decks?.length ?? 0) > 1 ? (
+          <div className="space-y-2 overflow-y-auto min-h-0">
             {task.decks!.map((deck) => (
               <Button
                 key={deck.id}
@@ -199,10 +217,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
              given its parent deck's colour, 2026-10-12. */
           <button
             onClick={() => handleOpenSubstack(task.decks![0])}
-            className="flex flex-col items-center gap-2 mx-auto shrink-0"
+            className="flex-1 min-h-[7rem] w-full flex flex-col items-center justify-center gap-2"
             aria-label={t('details.subtasksAria', { count: openInside(task.decks[0]) })}
           >
-            <div className="relative w-28 aspect-[5/7] mb-1">
+            {/* As big as the space left over. The height sets the width
+                (5:7); capping the height keeps it under half the card. */}
+            <div className="flex-1 min-h-0 max-h-[13rem] w-full flex justify-center mb-1">
+            <div className="relative h-full aspect-[5/7]">
               <div className={`${deckLayer} translate-y-3 scale-[0.9] opacity-40`} style={deckFill} />
               <div className={`${deckLayer} translate-y-1.5 scale-[0.95] opacity-70`} style={deckFill} />
               <div className={`${deckLayer} shadow-md flex items-center justify-center`} style={deckFill}>
@@ -214,17 +235,20 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 </span>
               </div>
             </div>
+            </div>
             <span className="text-xs text-gray-500">{task.decks[0].name ?? t('details.subtasks')}</span>
           </button>
         ) : onAddSubtasks ? (
           /* Ghost deck: same shape, dashed. The way to start one. */
           <button
             onClick={handleAddSubtasksClick}
-            className="flex flex-col items-center gap-2 mx-auto shrink-0"
+            className="flex-1 min-h-[7rem] w-full flex flex-col items-center justify-center gap-2"
             aria-label={t('details.addSubtasks')}
           >
-            <div className="w-28 aspect-[5/7] rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
+            <div className="flex-1 min-h-0 max-h-[13rem] w-full flex justify-center">
+            <div className="h-full aspect-[5/7] rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
               <Plus className="w-7 h-7 text-gray-400" />
+            </div>
             </div>
             <span className="text-xs text-gray-500">{t('details.addSubtasks')}</span>
           </button>

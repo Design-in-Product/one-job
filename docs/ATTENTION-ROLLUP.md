@@ -1,6 +1,6 @@
-# One Job — what needs xian · v111 (2026-10-16)
+# One Job — what needs xian · v112 (2026-10-16)
 
-**Cite as "Coral rollup v111".** One file, one URL:
+**Cite as "Coral rollup v112".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -10,9 +10,10 @@ The narrative is in `development/coral-logs/`.
 
 Two things are open for you:
 
-- **Build 43 (36):** you confirmed on 10-16 that a Siri card lands on
-  top. One check left: tap a card on the phone and see that the open
-  card works. Then say "Pilot 43".
+- **Build 43 (36):** both halves confirmed on 10-16: a Siri card lands
+  on top, and you like the open card "much better". Your three ideas
+  for it are built in the web app. Waiting on your word: "Pilot 43",
+  and whether to make build 44 so the phone gets them.
 - **UX walk (22):** step 3, adding a card. You said the rebuilt open
   card "feels good" on 10-13, which closed step 2.
 
@@ -40,20 +41,21 @@ it.
 
 ## Open
 
-### 🟡 36. Build 43: does the open card work on the phone?
-Build 1.1.1 (43) is in your Internal group. Half of it is confirmed:
-a card added by Siri lands on top (your words, 10-16). The other half
-is the open card, which is what you see when you tap any card: card
-shaped, no Status or Created line, no Edit button, tap the title or
-the description to edit it, and a bigger sub-deck in the deck's
-colour. You said "rebuild card feels good" on 10-13; this is the same
-check on the phone.
-**Where to act:** One Job (build 43) on your phone: tap the top card.
+### 🟡 36. Build 43 passed. Pilot it, and make 44?
+Both halves of 1.1.1 (43) are confirmed in your words (10-16): "I
+confirm Siri adds card to top as expected" and "I like the card
+experience much better". Your three ideas for the open card are
+built in the web app (https://onejob.co/app/): inset wells on the
+title and description, a description only as tall as its text, and
+the description filling the card while you edit it. Point 2 differs
+from what you suggested; the reason is in the UX walk notes, step 3.
+A build 44 would also carry the deck actions (46, 47).
+**Where to act:** tell Coral in session.
 **Since:** 2026-10-08
-**Ask:** On the phone, tap a card. Does the open card work?
-**Rec:** If yes, say "Pilot 43" and I'll attach it to the Pilot group.
-If no, tell me exactly what you saw. Builds 41 and 42 stay out of
-Pilot.
+**Ask:** Say "Pilot 43", and "go for 44" if you want the new card on the phone.
+**Rec:** Both. Pilot 43 now, since it passed and Pilot has no testers
+to disturb. Then build 44 for the open card ideas and the deck actions;
+44 goes to Internal first, like every build.
 
 ### 🟡 22. UX walk, step 3: add a card. What works and what doesn't?
 Step 2 closed on 10-13 with your "rebuild card feels good". Step 3 is
@@ -70,6 +72,7 @@ Anything more on tap and edit from the phone goes here too.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-16 · **Build 43: the open card passes on the phone.** "I like the card experience much better, thanks… Definitely it already addresses the core goals of the update." Your three ideas (an editable hint; a one-line description; the description filling the card while editing) are built in the web app, point 2 in a modified form. Your words in full: UX walk notes, step 3.
 - 2026-10-16 · **Build 43: a Siri card lands on top** (first half of 36). Your words, relayed by Janus: "I confirm Siri adds card to top as expected."
 - 2026-10-13 · **A deck is removed only when empty, with a "move all cards" option** (46). Your words, given in Janus's session and relayed: "only when empty with a "move all cards" option". Built the same day.
 - 2026-10-13 · **A whole deck can move into a card, from one menu entry** (47). Your words, relayed by Janus: "one menu entry yes". Built as both an existing card and a new card on top; "both" is Janus's reading of your yes, not your word. Say if you meant one.
@@ -101,7 +104,12 @@ Anything more on tap and edit from the phone goes here too.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v111, 10-16; earlier lines from v110, 10-13):**
+**Verified how (v112, 10-16; earlier lines from v110, 10-13):**
+- **Open card ideas (15:3x):** 317 tests, tsc and build pass.
+  Phone-sized screenshots of four states: a card with a sub-deck, a
+  long description, the description while editing, and a card with
+  no sub-deck yet. Title saves on leave, description saves on close,
+  and a blank title goes back.
 - **Build 43 (05:53 PT):** VALID; in Internal (3 testers). Checked
   inside the archive before upload: version 1.1.1 (43), the open-card
   code present, old Siri wording absent, new wording present. 269

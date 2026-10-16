@@ -148,3 +148,34 @@ This has been my feedback for some time so it's good to get to it!"
 *Asked 10-13:* add a card or two as you normally would (the long
 press, the arc menu, the form, where the card lands). What feels
 right and what doesn't? Not yet answered.
+
+### The open card on the phone (build 43), recorded here as agreed
+
+- **xian, 2026-10-16, on build 43:** "I like the card experience much
+  better, thanks. I have a few ideas for improvements: 1. We need at
+  least a hint that the title and description are now editable.
+  Perhaps thin light interior drop shadow appear? or ... well I'm a
+  PM not a visual designer versed in the current vernacular so I am
+  open to suggestion 2. I think the default height of the description
+  in this view can be one line. high, so that the space for a subdeck
+  is maximized. 3. If you agree then when tapping on the description
+  to edit, its box could extend to cover the entire area below,
+  temporarily hiding any subdeck." And: "I feel strongly about 1 and
+  for 2 and 3 I am going more on gut and am open to persuasion.
+  Definitely it already addresses the core goals of the update."
+- **Built 10-16 (Coral), in the web app; the phone needs a build:**
+  1. The title and the description each sit in a faint inset well
+     (his interior shadow, with a light edge), so they read as fields
+     before you tap. Editing deepens the same well.
+  2. *Changed from his version:* the description is as tall as its
+     text, so a one-line description takes one line, and it scrolls
+     after about five lines. A fixed single line would make reading a
+     long description a tap, and a tap now starts editing. The
+     sub-deck takes the space that is left: about a third bigger
+     than in 43, capped at half the card's width.
+  3. As he described: while the description is being edited, its box
+     fills everything below the title, and the sub-deck is hidden
+     until he leaves the field.
+  A sub-card (which can't hold a deck) keeps the full-height
+  description. Checked with phone-sized screenshots; saving on leave
+  and on close, and a blank title going back, all still pass.

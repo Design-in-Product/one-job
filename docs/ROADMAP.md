@@ -393,6 +393,13 @@ to edit it; the sub-deck is bigger and in the deck's colour (UX walk
 step 2, xian's feedback of 10-12; "feels good" 10-13). Build 42 was
 skipped; 43 carries its Siri change.
 
+*Open card, 2026-10-16 (web app; not yet in a phone build):* from
+xian's feedback on 43. The title and description sit in faint inset
+wells so they read as editable; the description is only as tall as
+its text (about five lines, then it scrolls), and the sub-deck takes
+the rest; editing the description fills the area below and hides the
+sub-deck. Notes: `docs/UX-WALK-NOTES-2026-10.md`, step 3.
+
 *Todoist, 2026-10-13 (alpha):* connect one project or section as a
 deck, sync one way (new tasks on top, closed tasks to Done, the
 user's order rule), disconnect. Build log and known limits:
