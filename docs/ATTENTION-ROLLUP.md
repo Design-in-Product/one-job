@@ -10,10 +10,9 @@ The narrative is in `development/coral-logs/`.
 
 Two things are open for you:
 
-- **Build 44 (36):** on your "go for 44 before the pilot update", I'm
-  making 1.1.1 (44): the open card from your 10-16 ideas, Markdown
-  (48, answered), the Done view fix, and the deck actions (46, 47). It
-  goes to Internal. When you've tried it, say "Pilot 44".
+- **Build 44 (36):** on your "go for 44 before the pilot update", 1.1.1 (44)
+  is in Internal (16:10): the open card from your 10-16 ideas, Markdown
+  (48, answered), the Done view fix, and the deck actions (46, 47). When you've tried it, say "Pilot 44".
 - **UX walk (22):** step 3, adding a card. You said on 10-16 you're
   ready; the question is in this item.
 
@@ -95,7 +94,13 @@ that's the thing to tell me.
 - Full history: [archive](archive/ATTENTION-ROLLUP-ARCHIVE.md).
 
 ---
-**Verified how (v112, 10-16; earlier lines from v110, 10-13):**
+**Verified how (v114, 10-16; earlier lines from v110, 10-13):**
+- **Build 44 (16:10 PT):** delivery `5265ce83`, VALID, in Internal (3
+  testers); What to Test set from the release note. Checked inside the
+  archive before upload: version 1.1.1 (44), the Markdown, inset-well,
+  shape and deck-move code present, the Siri wording in the native
+  binary. 337 tests, tsc and build pass. Pilot: builds 40 and 39, 0
+  testers.
 - **Fixed sub-deck and long text (15:4x):** 317 tests, tsc and build
   pass. Screenshots at phone size: the same sub-deck size on four
   cards; a GitHub-style wall of text (a six-line title, about 3,000
