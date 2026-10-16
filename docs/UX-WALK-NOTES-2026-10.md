@@ -200,3 +200,17 @@ right and what doesn't? Not yet answered.
   and editing fills the card. With a title that long, only a faded
   line of the description shows until you scroll. Raw Markdown (`##`,
   `**`) still shows as typed: his call (see the board).
+- **xian, 2026-10-16:** "1. go for 44 before the pilot update 2.
+  render it please, just as you say. make sure we are documenting
+  these choice and not just patching them. 3. ready for that next step
+  in the walk when you are."
+- *Coral's notes:* Markdown is built as recommended. Every rule about
+  how a card shows itself (shape, face, open card, Markdown, Done
+  list) is now written down, with who decided it, when and why:
+  `docs/CARD-DESIGN.md`. Found while checking walls of text: the
+  Done view let a long text stretch its card past the screen; fixed
+  at the shared card shape. Build 44 is being made.
+- *Asked (step 3):* on the phone, add two cards the way you normally
+  would, one from the red + button and one from the long-press menu.
+  Watch the form, the keyboard, and where each card lands. What felt
+  right, and what didn't?

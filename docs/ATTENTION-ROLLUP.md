@@ -1,6 +1,6 @@
-# One Job — what needs xian · v113 (2026-10-16)
+# One Job — what needs xian · v114 (2026-10-16)
 
-**Cite as "Coral rollup v113".** One file, one URL:
+**Cite as "Coral rollup v114".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,88 +8,61 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-Three things are open for you:
+Two things are open for you:
 
-- **Build 43 (36):** both halves confirmed on 10-16: a Siri card lands
-  on top, and you like the open card "much better". Your three ideas
-  for it are built in the web app. Waiting on your word: "Pilot 43",
-  and whether to make build 44 so the phone gets them.
-- **Markdown (48):** a description with `##` or `**bold**` shows the
-  marks as typed. Render it, or leave it?
-- **UX walk (22):** step 3, adding a card. You said the rebuilt open
-  card "feels good" on 10-13, which closed step 2.
+- **Build 44 (36):** on your "go for 44 before the pilot update", I'm
+  making 1.1.1 (44): the open card from your 10-16 ideas, Markdown
+  (48, answered), the Done view fix, and the deck actions (46, 47). It
+  goes to Internal. When you've tried it, say "Pilot 44".
+- **UX walk (22):** step 3, adding a card. You said on 10-16 you're
+  ready; the question is in this item.
 
-Answered and built on 10-13 (46, 47, archived): a deck is deleted
-only when empty; "Move all cards to another deck…" empties it; and
-"Move this deck into a card…" puts a whole deck inside an existing
-card or a new one. All three are in the long-press menu of the web
-app when you have more than one deck. The phone app needs a build.
+How a card shows itself is now written down in one place, rule by
+rule, with who decided each and why: [`docs/CARD-DESIGN.md`](CARD-DESIGN.md).
 
 In progress, mine, nothing needed from you:
 
 - **Todoist:** built to the end of the one-way design, at the alpha
-  stage (https://onejob.co/app/?alpha=on): connect a list, sync
-  (new tasks on top, closed tasks to Done, the order rule), and
-  detach, which asks whether to keep the deck as an ordinary deck or
-  delete it with its cards (your words, 10-13). You are trying it on the
-  web app. Known limits are listed in the design doc. Write-back
-  waits for your word after the first week.
+  stage (https://onejob.co/app/?alpha=on). Known limits are in the
+  design doc; Markdown is no longer one of them. Write-back waits for
+  your word after the first week.
 
-Closed on 10-13: GitHub removed the old commits from the third scrub
-pass (44). The old link no longer opens.
-
-Pilot has no testers. Build 42 was skipped; 43 carries everything in
-it.
+Pilot has no testers. Builds 42 and 43 stay out of Pilot; 44 carries
+everything in them.
 
 ## Open
 
-### 🟡 36. Build 43 passed. Pilot it, and make 44?
-Both halves of 1.1.1 (43) are confirmed in your words (10-16): "I
-confirm Siri adds card to top as expected" and "I like the card
-experience much better". Your three ideas for the open card are
-built in the web app (https://onejob.co/app/): inset wells on the
-title and description, a description only as tall as its text, and
-the description filling the card while you edit it. Point 2 differs
-from what you suggested; the reason is in the UX walk notes, step 3.
-On your agreement, the sub-deck is now one fixed size, and the text
-above it scrolls, so a wall of text stays inside the card.
-A build 44 would also carry the deck actions (46, 47).
-**Where to act:** tell Coral in session.
+### 🟡 36. Test build 44: the open card, Markdown, and the deck actions
+Build 43 passed in your words on 10-16. On your "go for 44 before the
+pilot update", 1.1.1 (44) carries your three open-card ideas with the
+fixed-size sub-deck, Markdown (48), the Done view no longer stretching
+a long card off the screen, and the deck actions (46, 47). It goes to
+your Internal group. What to Test lists the checks.
+**Where to act:** TestFlight on your phone → One Job → install 44.
 **Since:** 2026-10-08
-**Ask:** Say "Pilot 43", and "go for 44" if you want the new card on the phone.
-**Rec:** Both. Pilot 43 now, since it passed and Pilot has no testers
-to disturb. Then build 44 for the open card ideas and the deck actions;
-44 goes to Internal first, like every build.
-
-### 🟢 48. Markdown in a description: render it, or show it as typed?
-Text that comes in from GitHub or Todoist often carries Markdown:
-`## Heading`, `**bold**`, `[a link](https://…)`. Today the card face
-and the open card show those marks as typed. It came up while
-checking walls of text (your point, 10-16); it is also one of the
-Todoist known limits.
-**Where to act:** tell Coral in session.
-**Since:** 2026-10-16
-**Ask:** Markdown in descriptions: render it, or leave it as typed?
-**Rec:** Render it. On the card face, strip the marks and show plain
-text. In the open card, show headings, bold and lists, and make links
-tappable. When you tap to edit, you see the text as typed, marks and
-all. No images and no HTML. Free tier.
+**Ask:** Install 44. Do the open card, Markdown and deck moves work?
+**Rec:** If yes, say "Pilot 44" and I'll attach it to the Pilot group.
+I read your "before the pilot update" as Pilot taking 44, not 43. Say
+if you meant 43.
 
 ### 🟡 22. UX walk, step 3: add a card. What works and what doesn't?
-Step 2 closed on 10-13 with your "rebuild card feels good". Step 3 is
-adding a card: the long press, the arc menu, the form, and where the
-new card lands. Use it as you normally would and tell me what you
-notice, in any form. Your words so far:
+You said on 10-16 you're ready. Step 3 is adding a card. On the phone
+(43 or 44), add two cards the way you normally would: one from the
+red + button, one from the long-press menu. Watch the form, the
+keyboard, and where each card lands. Then tell me what felt right and
+what didn't, in any form. Your words so far:
 https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-10.md
-**Where to act:** One Job on your phone (build 43), then tell Coral in
-session.
+**Where to act:** One Job on your phone, then tell Coral in session.
 **Since:** 2026-08-13
-**Ask:** UX walk, step 3: add a card or two. What feels right and what doesn't?
-**Rec:** Do it while you test build 43, since you'll have the app open.
-Anything more on tap and edit from the phone goes here too.
+**Ask:** UX walk, step 3: add two cards. What feels right and what doesn't?
+**Rec:** Start with the + button. If anything makes you hesitate,
+that's the thing to tell me.
 
 ## Recorded, final (not re-asked)
 
+- 2026-10-16 · **Go for build 44 before the Pilot update.** Your words: "go for 44 before the pilot update".
+- 2026-10-16 · **Markdown is rendered** (48). "render it please, just as you say. make sure we are documenting these choice and not just patching them." Built as recommended; the choices are in `docs/CARD-DESIGN.md`.
+- 2026-10-16 · **The sub-deck is one fixed size.** "agreed with your take on the fixed-size subdeck and its size."
 - 2026-10-16 · **Build 43: the open card passes on the phone.** "I like the card experience much better, thanks… Definitely it already addresses the core goals of the update." Your three ideas (an editable hint; a one-line description; the description filling the card while editing) are built in the web app, point 2 in a modified form. Your words in full: UX walk notes, step 3.
 - 2026-10-16 · **Build 43: a Siri card lands on top** (first half of 36). Your words, relayed by Janus: "I confirm Siri adds card to top as expected."
 - 2026-10-13 · **A deck is removed only when empty, with a "move all cards" option** (46). Your words, given in Janus's session and relayed: "only when empty with a "move all cards" option". Built the same day.
@@ -155,5 +128,5 @@ Anything more on tap and edit from the phone goes here too.
   deck into an existing card and into a new card on top (every card
   kept, done ones too); all cards moved to another deck, on top and
   in order; the emptied deck deleted; Undo brought it back.
-- **Items:** 30 `###` items across this board (3) and the archive
-  (27); 48 opened 10-16. 46 and 47 were opened and archived on 10-13.
+- **Items:** 30 `###` items across this board (2) and the archive
+  (28); 48 opened and archived 10-16. 46 and 47 were opened and archived on 10-13.

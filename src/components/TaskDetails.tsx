@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ChevronRight, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { pendingEdit } from '@/domain/cardEdit';
+import MarkdownText from './MarkdownText';
 
 interface TaskDetailsProps {
   task: Task | null;
@@ -174,12 +175,16 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               placeholder={t('details.descriptionPlaceholder')}
             />
           ) : (
-            <p
-              className={`${hasBelow ? '' : 'flex-1 '}text-gray-700 leading-relaxed whitespace-pre-line break-words ${fieldBox}`}
+            // Read as Markdown, edited as typed (board 48).
+            <div
+              data-testid="open-card-description"
+              className={`${hasBelow ? '' : 'flex-1 '}text-gray-700 leading-relaxed break-words space-y-2 ${fieldBox}`}
               onClick={edit('description')}
             >
-              {task.description || (canEdit && <span className="text-gray-400">{t('details.noDescription')}</span>)}
-            </p>
+              {task.description
+                ? <MarkdownText text={task.description} />
+                : canEdit && <span className="text-gray-400">{t('details.noDescription')}</span>}
+            </div>
           )}
 
         {!writing && (task.source || task.completedAt) && (

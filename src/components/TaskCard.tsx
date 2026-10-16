@@ -1,4 +1,3 @@
-import { sourceLabel } from '@/domain/tasks';
 // src/components/TaskCard.tsx
 // Pure presentational card face for a task. Fills its parent container;
 // gesture handling (drag/swipe/flip) lives in SwipeableCard and FlipCard.
@@ -11,6 +10,8 @@ import { Task } from '@/types/task';
 import { Layers, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFitText } from '@/hooks/use-fit-text';
+import { sourceLabel } from '@/domain/tasks';
+import { previewText } from '@/domain/markdown';
 
 interface TaskCardProps {
   task: Task;
@@ -31,10 +32,6 @@ interface TaskCardProps {
   className?: string;
 }
 
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + '...';
-};
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFlipBack, showHints = false, className, deckIdentity }) => {
   const { t } = useTranslation();
@@ -43,7 +40,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onOpenSubdeck, onFli
   const unfinishedInside = (task.decks ?? [])
     .flatMap(d => d.cards)
     .filter(c => !c.completed).length;
-  const description = task.description ? truncateText(task.description, 180) : '';
+  // The face shows plain text: Markdown marks dropped, cut on a word
+  // (board 48; docs/CARD-DESIGN.md).
+  const description = task.description ? previewText(task.description, 180) : '';
 
   const { containerRef, contentRef, fontSize } = useFitText(
     [task.title, description, unfinishedInside, task.source, showHints]

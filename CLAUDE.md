@@ -840,6 +840,7 @@ Before starting ANY implementation:
 
 - `docs/ROADMAP.md` - Current project status and roadmap
 - `docs/VISION.md` - The covenants
+- `docs/CARD-DESIGN.md` - How a card shows itself: every display rule, who decided it, why (change it with the code)
 - `src/services/taskStore.ts` - The store contract
 - `src/pages/Index.tsx` - Main application logic
 - `src/types/task.ts` - Type definitions

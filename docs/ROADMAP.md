@@ -401,6 +401,13 @@ title, description and source line scroll together above it, so a
 wall of text stays inside the card; editing the description fills
 the area below and hides the sub-deck. Notes: `docs/UX-WALK-NOTES-2026-10.md`, step 3.
 
+*Markdown and long text, 2026-10-16 (build 44):* descriptions render
+Markdown in the open card (headings, bold, lists, code, quotes,
+tappable links; never HTML, never images) and show plain text on the
+face and in the Done list (board 48, xian: "render it please"). The
+Done view no longer lets a long text stretch a card past the screen.
+Every display rule, with its decision and reason: `docs/CARD-DESIGN.md`.
+
 *Todoist, 2026-10-13 (alpha):* connect one project or section as a
 deck, sync one way (new tasks on top, closed tasks to Done, the
 user's order rule), disconnect. Build log and known limits:

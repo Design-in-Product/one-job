@@ -87,6 +87,15 @@ is deleted by removing a deck. The one exception stays a Todoist
 detach, which can delete an attached deck with its cards after a
 confirmation.
 
+### ✅ 48. Markdown in a description: render it (answered and built 2026-10-16)
+Text from GitHub and Todoist showed Markdown marks as typed. xian:
+"render it please, just as you say. make sure we are documenting these
+choice and not just patching them." Built as recommended: plain text
+on the card face and in the Done list; headings, bold, lists, code,
+quotes and tappable links in the open card; the text as typed while
+editing. Nothing is treated as HTML; links only to the web or mail;
+images never load. The rules: `docs/CARD-DESIGN.md` § 4. In build 44.
+
 ### ✅ 47. Move a whole deck into a card (answered and built 2026-10-13)
 xian asked for it so decks don't pile up. His answer, relayed by
 Janus: "one menu entry yes". Built: "Move this deck into a card…":

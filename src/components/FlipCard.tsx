@@ -12,8 +12,11 @@ import { useTranslation } from 'react-i18next';
  * Shared card geometry. Every card face (front, back, deck underlays) uses
  * this so the card never changes shape or jumps position mid-flip.
  * Playing-card aspect ratio (63mm x 88mm ≈ 5:7), sized for mobile viewports.
+ * min-h-0 makes the ratio strict: by default an aspect-ratio box grows to
+ * fit its content, and a long text stretched the Done card off the screen
+ * (2026-10-16).
  */
-export const CARD_GEOMETRY = 'w-[min(85vw,20rem)] aspect-[5/7]';
+export const CARD_GEOMETRY = 'w-[min(85vw,20rem)] aspect-[5/7] min-h-0';
 
 export type FlipPreset = 'classic' | 'quick' | 'smooth' | 'wave';
 

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Undo2 } from 'lucide-react';
+import { previewText } from '@/domain/markdown';
 
 interface CompletedTasksProps {
   tasks: Task[];
@@ -40,7 +41,9 @@ const CompletedTasks: React.FC<CompletedTasksProps> = ({ tasks, onUncomplete }) 
             <div className="min-w-0">
               <h3 className="font-medium">{task.title}</h3>
               {task.description && (
-                <p className="text-sm text-white/90 mt-1">{task.description}</p>
+                // A preview, never the whole text: an imported issue
+                // body would fill the screen (xian, 10-16).
+                <p className="text-sm text-white/90 mt-1 whitespace-pre-line line-clamp-3 break-words">{previewText(task.description, 140)}</p>
               )}
             </div>
             {onUncomplete && (

@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 import { Task } from '@/types/task';
 import { cardRoom, flattenWithParent, Room } from '@/domain/tasks';
 import TaskCard from './TaskCard';
+import { CARD_GEOMETRY } from './FlipCard';
 import SwipeableCard from './SwipeableCard';
 import ActionSheet, { SheetAction } from './ActionSheet';
 import { Button } from '@/components/ui/button';
@@ -217,9 +218,11 @@ const ChainView: React.FC<ChainViewProps> = ({
             onLongPress={() => setMenuCard(top)}
             rightHint={g.rightHint}
             leftHint={g.leftHint}
-            className="w-[min(85vw,20rem)] aspect-[5/7]"
+            className={CARD_GEOMETRY}
           >
-            <div style={{ filter: roomShade[room] }}>
+            {/* h-full: TaskCard fits its text to its parent's height. Without
+                it a long text grew the card past the screen (seen 10-16). */}
+            <div className="h-full" style={{ filter: roomShade[room] }}>
               <TaskCard task={top} />
             </div>
           </SwipeableCard>
