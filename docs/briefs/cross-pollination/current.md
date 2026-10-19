@@ -1,3 +1,3 @@
-# Cross-Pollination Brief — October 18, 2026
+# Cross-Pollination Brief — October 19, 2026
 
-This repository is public, so the brief itself is not copied here. Read today's brief at https://designinproduct.com/internal/briefs/2026-10-18-brief/ (private source: `mediajunkie/designinproduct` → `src/internal/briefs/2026-10-18-brief.md`).
+This repository is public, so the brief itself is not copied here. Read today's brief at https://designinproduct.com/internal/briefs/2026-10-19-brief/ (private source: `mediajunkie/designinproduct` → `src/internal/briefs/2026-10-19-brief.md`).
