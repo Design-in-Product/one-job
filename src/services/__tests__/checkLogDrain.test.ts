@@ -39,4 +39,23 @@ describe('coral-log Drain line guard', () => {
     const lines = [...fire('- **Drain:** nothing unblocked after two checks.'), ...fire('- **Sync:** ok')];
     expect(findDrainProblems(lines)).toHaveLength(1);
   });
+
+  // 2026-10-18: from 10-11 the fire headings read "## 17:49 PDT — duty
+  // fire" and the guard matched only "## Duty-cycle fire", so it checked
+  // nothing for a week and every commit passed. The fixture above used
+  // the one heading the guard knew, so the tests could not see it. These
+  // use the headings actually written.
+  it.each([
+    '## 17:49 PDT — duty fire',
+    '## 17:49 PT — duty fire',
+    '## 17:49 PDT · duty fire (first entry today)',
+    '## Duty-cycle fire (out of band) #6 — 2026-10-08 07:50 PDT',
+  ])('recognises the heading %s as a fire', heading => {
+    expect(findDrainProblems([heading, '- **Sync:** ok'])).toHaveLength(1);
+  });
+
+  it('does not treat a mail wake or a session as a fire', () => {
+    expect(findDrainProblems(['## 18:05 PT — mail wake (Janus)', '- read it'])).toEqual([]);
+    expect(findDrainProblems(['## 15:2x — xian in session: fire the old build?', '- no'])).toEqual([]);
+  });
 });

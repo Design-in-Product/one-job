@@ -11,7 +11,10 @@
 import { execSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
-const FIRE_HEADING = /^## Duty-cycle fire\b/;
+// Any heading naming a duty fire, in either wording ("Duty-cycle fire #9",
+// "17:49 PDT — duty fire"). Until 2026-10-18 this matched only the first,
+// so from 10-11 it checked no fire at all and passed every commit.
+const FIRE_HEADING = /^## .*\bduty(?:-cycle)? fire\b/i;
 const DRAIN_LINE = /^\s*(-\s*)?\**Drain:?\**/i;
 const DEFERS = /\b(defer|deferred|later|next fire|tomorrow|next session|working session|by \d{1,2}:\d{2})\b/i;
 const NAMES_BLOCKER = /(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by)/i;
