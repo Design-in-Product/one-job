@@ -39,6 +39,10 @@ const quietable = <F extends AnyFn>(fn: F): F =>
 
 // Same callable-with-methods shape sonner exports; success/info/message
 // gated, error (and everything unlisted) untouched.
+// The cast below hides the bare call's type, and quietMode.test.ts mocks
+// sonner whole, so neither would notice sonner changing what toast() is.
+// On a sonner upgrade, read its changelog for toast() itself, not only
+// the breaking-changes list (10-20 brief).
 const toast: typeof sonnerToast = Object.assign(
   quietable(sonnerToast.bind(null) as unknown as typeof sonnerToast),
   sonnerToast,
