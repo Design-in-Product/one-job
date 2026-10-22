@@ -16,7 +16,9 @@ import { pathToFileURL } from 'node:url';
 // so from 10-11 it checked no fire at all and passed every commit.
 const FIRE_HEADING = /^## .*\bduty(?:-cycle)? fire\b/i;
 const DRAIN_LINE = /^\s*(-\s*)?\**Drain:?\**/i;
-const DEFERS = /\b(defer|deferred|later|next fire|tomorrow|next session|working session|by \d{1,2}:\d{2})\b/i;
+// Every form of the word (defers, deferring, deferral), not two exact
+// spellings (widened 2026-10-21 after Janus found the same gap in theirs).
+const DEFERS = /\b(defer\w*|postpon\w*|on hold|later|next fire|tomorrow|next session|working session|by \d{1,2}:\d{2})\b/i;
 const NAMES_BLOCKER = /(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by)/i;
 
 /** Pure over its input (added log lines). Returns one message per problem. */

@@ -94,4 +94,15 @@ describe('coral-log Drain line guard', () => {
       '- **Notes:** none.',
     ))).toEqual([]);
   });
+
+  // 2026-10-21 (Janus's check of the same guard): the word list held
+  // "defer" and "deferred" exactly, so other forms of the word passed.
+  it.each([
+    'the typecheck pass defers to the next session.',
+    'deferring the release note.',
+    'the scrub is postponed.',
+    'the Pilot attach is on hold.',
+  ])('fires on "%s" with no blocker', text => {
+    expect(findDrainProblems(fire(`**Drain:** done: sync. Also ${text}`))).toHaveLength(1);
+  });
 });
