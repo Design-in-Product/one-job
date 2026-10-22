@@ -31,7 +31,25 @@ export function findDrainProblems(lines) {
   }
   const problems = [];
   for (const b of blocks.filter(Boolean)) {
-    const drains = b.lines.filter(l => DRAIN_LINE.test(l));
+    // A Drain entry is its whole paragraph: the Drain line plus the lines
+    // after it, up to a blank line or the next list item at its own depth. Until 2026-10-21
+    // only the first physical line was read, so a wrapped entry was judged
+    // on half its text, and a deferral on a later line went unchecked.
+    const drains = [];
+    b.lines.forEach((l, i) => {
+      if (!DRAIN_LINE.test(l)) return;
+      let text = l;
+      const indent = l.search(/\S/);
+      for (let j = i + 1; j < b.lines.length; j++) {
+        const next = b.lines[j];
+        // A list item indented deeper than the Drain line is its sub-list
+        // (blockers listed one per line), so it belongs to the entry.
+        const sibling = /^\s*[-*] /.test(next) && next.search(/\S/) <= indent;
+        if (!next.trim() || sibling || DRAIN_LINE.test(next)) break;
+        text += ' ' + next.trim();
+      }
+      drains.push(text);
+    });
     if (!drains.length) {
       problems.push(`fire entry without a Drain line: ${b.head}`);
       continue;

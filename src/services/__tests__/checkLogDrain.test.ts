@@ -58,4 +58,40 @@ describe('coral-log Drain line guard', () => {
     expect(findDrainProblems(['## 18:05 PT — mail wake (Janus)', '- read it'])).toEqual([]);
     expect(findDrainProblems(['## 15:2x — xian in session: fire the old build?', '- no'])).toEqual([]);
   });
+
+  // 2026-10-21: the guard read only the first physical line of a Drain
+  // entry. A wrapped entry was judged on half its text: refused when
+  // "Deferred" ended line one and the blocker began line two, and
+  // never checked when the deferral itself sat on a later line.
+  it('reads a wrapped Drain entry as one paragraph (blocker on the next line)', () => {
+    expect(findDrainProblems(fire(
+      '**Drain:** done: sync, mail. Deferred,',
+      'each with its blocker: step 3 (waits on xian).',
+    ))).toEqual([]);
+  });
+
+  it('fires on a deferral that sits on a continuation line', () => {
+    const problems = findDrainProblems(fire(
+      '**Drain:** done: sync, mail, TestFlight check.',
+      'The typecheck pass is deferred to the next fire.',
+    ));
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/without naming a blocker/);
+  });
+
+  it('ends the Drain paragraph at a blank line', () => {
+    expect(findDrainProblems(fire(
+      '**Drain:** nothing unblocked after two checks.',
+      '',
+      'Notes: tomorrow xian may test 44.',
+    ))).toEqual([]);
+  });
+
+  it('reads a nested list of blockers as part of the Drain entry (10-10 shape)', () => {
+    expect(findDrainProblems(fire(
+      '- **Drain:** done: the fixes. Deferred with blockers:',
+      '  - the push waits on xian approving it (37)',
+      '- **Notes:** none.',
+    ))).toEqual([]);
+  });
 });
