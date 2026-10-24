@@ -114,6 +114,27 @@ if (prev) prev.body = open.slice(prev.end).trim();
 
 for (const i of items) i.status = classifyHeading(i.heading);
 
+// Fifth structural guard (2026-10-23, cross-pollination brief: a guard
+// that turns "no output" into a verdict recurs at the next layer). An
+// item whose heading isn't `### ` is never parsed, so its Ask reaches
+// no card, and if every item slips the deck says "0 open items", which
+// reads exactly like nothing waiting on xian. Any **Ask:** before the
+// first `### ` is such an item.
+export function strandedAsks(openSection) {
+  const first = openSection.search(/^### /m);
+  const preamble = first === -1 ? openSection : openSection.slice(0, first);
+  return (preamble.match(/\*\*Ask:\*\*/g) ?? []).length;
+}
+const stranded = strandedAsks(open);
+if (stranded) {
+  console.error(
+    `\nRefusing to deal: ${stranded} **Ask:** line(s) in the Open section sit ` +
+    `before the first \`### \` item, so no card would carry them.\n` +
+    `Give each its own \`### \` heading with a status marker, then re-run.\n`
+  );
+  process.exit(1);
+}
+
 const unclassified = items.filter(i => i.status.kind === 'unclassified');
 if (unclassified.length) {
   console.error(

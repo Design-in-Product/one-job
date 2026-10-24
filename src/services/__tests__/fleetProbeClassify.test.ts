@@ -12,7 +12,7 @@
 // return EVERY verdict, not just the happy one.
 
 import { describe, it, expect } from 'vitest';
-import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays} from '../../../scripts/fleet-probe.mjs';
+import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays, strandedAsks } from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
   it('ranks the three open markers, blocking first', () => {
@@ -104,3 +104,26 @@ describe('age (the **Since:** guard)', () => {
     expect(ageInDays('2024-02-28', '2024-03-01')).toBe(2);
   });
 });
+
+// 2026-10-23 (cross-pollination brief: a guard that turns "no output"
+// into a verdict recurs at the next layer). An item whose heading isn't
+// `### ` is not parsed, so its Ask is dealt to nobody. When every item
+// slips that way the deck reads "0 open items", which looks exactly
+// like nothing waiting on xian. An Ask before the first `### ` is the
+// tell.
+describe('fleet probe: an Ask outside any item', () => {
+  it('finds an Ask under a heading the item parser cannot see', () => {
+    const open = '\n#### 🟡 22. UX walk\n**Ask:** add two cards.\n**Since:** 2026-10-16\n';
+    expect(strandedAsks(open)).toBe(1);
+  });
+
+  it('finds none when every Ask sits inside a ### item', () => {
+    const open = '\nIntro text.\n\n### 🟡 22. UX walk\n**Ask:** add two cards.\n';
+    expect(strandedAsks(open)).toBe(0);
+  });
+
+  it('finds none on an honestly empty Open section', () => {
+    expect(strandedAsks('\nNothing is waiting on xian.\n')).toBe(0);
+  });
+});
+
