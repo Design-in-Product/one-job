@@ -92,7 +92,9 @@ diff <(that) <(grep '^### ' docs/ATTENTION-ROLLUP.md)
 **Rules 1 and 2 are enforced structurally, not by my diligence** — the
 probe script refuses to write a deck if any heading lacks a recognized
 status marker (🔴/🟡/🟢/✅) or any open item lacks an Ask, naming what
-to fix. This is deliberate: a card that doesn't say what it wants, or
+to fix. It also refuses when an `**Ask:**` sits outside any `###` item
+(2026-10-23), because a mis-headed item would otherwise vanish and the
+deck would read "0 open items". This is deliberate: a card that doesn't say what it wants, or
 that shouldn't exist at all, is the exact failure mode the format
 exists to prevent, so it is made impossible rather than discouraged.
 Regression tests in `src/services/__tests__/fleetProbeClassify.test.ts`
