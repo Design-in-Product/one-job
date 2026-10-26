@@ -51,7 +51,11 @@ describe('coral-log Drain line guard', () => {
     '## 17:49 PDT · duty fire (first entry today)',
     '## Duty-cycle fire (out of band) #6 — 2026-10-08 07:50 PDT',
   ])('recognises the heading %s as a fire', heading => {
-    expect(findDrainProblems([heading, '- **Sync:** ok'])).toHaveLength(1);
+    // Key the reason, not the count (10-25 brief): one problem, and it
+    // must be the missing Drain line.
+    const problems = findDrainProblems([heading, '- **Sync:** ok']);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/without a Drain line/);
   });
 
   it('does not treat a mail wake or a session as a fire', () => {
@@ -103,6 +107,8 @@ describe('coral-log Drain line guard', () => {
     'the scrub is postponed.',
     'the Pilot attach is on hold.',
   ])('fires on "%s" with no blocker', text => {
-    expect(findDrainProblems(fire(`**Drain:** done: sync. Also ${text}`))).toHaveLength(1);
+    const problems = findDrainProblems(fire(`**Drain:** done: sync. Also ${text}`));
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/without naming a blocker/);
   });
 });
