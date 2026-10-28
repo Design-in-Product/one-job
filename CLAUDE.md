@@ -82,7 +82,12 @@ entry at all** — their closures survived only in coral-logs, so the
 ledger no longer recorded that they were ever decided. The mechanism is
 that the rebuilt file reads as cleaner and therefore more trustworthy
 than what it replaced, so nobody returns to check. A shrinking item
-count is a finding, not a tidiness win. One-liner that does it:
+count is a finding, not a tidiness win. **Since 2026-10-28 the
+pre-commit hook enforces this** (`scripts/check-rollup-reconcile.mjs`,
+tests in `checkRollupReconcile.test.ts`): a commit is refused if any
+`###` item in HEAD's board or archive is in neither once staged. Items
+match by number, so retitling one is fine. The by-hand one-liner,
+still useful mid-rewrite:
 
 ```bash
 git show <pre-rewrite-rev>:docs/ATTENTION-ROLLUP.md | grep '^### '
@@ -890,7 +895,11 @@ npm run build:native && npx cap sync ios
 
 ### Code Quality Standards
 
-- **TypeScript**: Strict mode enabled, minimize `any` types
+- **TypeScript**: `strict` and `noImplicitAny` are OFF in
+  `tsconfig.app.json` (checked 2026-10-28; this line used to say strict
+  was on). App code already passes `noImplicitAny`; 26 errors remain,
+  all in tests. Minimize `any`, and annotate an empty array (`[]` is
+  `any[]` with the flag off).
 - **React**: Functional components with hooks, proper dependency arrays
 - **Python** (`?remote` only): Type hints encouraged, follow FastAPI patterns
 - **Mobile-First**: All UI changes must be tested on mobile device

@@ -20,6 +20,10 @@
 # scripts/check-log-drain.mjs.
 node scripts/check-log-drain.mjs || exit 1
 
+# Guard 3 (2026-10-28): no board item leaves the board unaccounted for
+# (CLAUDE.md rollup rule 3). See scripts/check-rollup-reconcile.mjs.
+node scripts/check-rollup-reconcile.mjs || exit 1
+
 staged_deletions=$(git diff --cached --name-only --diff-filter=D | wc -l | tr -d ' ')
 [ "$staged_deletions" = "0" ] && exit 0
 
