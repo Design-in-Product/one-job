@@ -1,0 +1,17 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-10-28T15:02:17.174Z",
+  "tasks": [
+    {
+      "id": "5279491f-9164-4a30-90eb-b4111d34c659",
+      "title": "UX walk, step 3: add two cards. What feels right and what doesn't?",
+      "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Start with the + button. If anything makes you hesitate, that's the thing to tell me.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-28 · waiting 76 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-28T15:02:17.174Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}

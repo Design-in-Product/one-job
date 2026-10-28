@@ -97,6 +97,16 @@ Janus). Build 44 was attached to Pilot and submitted for Beta App
 Review on 10-16; Apple approved it within minutes. Builds 41–43 never
 went to Pilot.
 
+### ✅ 49. Todoist write-back: turn it on? (answered and built 2026-10-28)
+Asked 10-27: the one-way week xian set on 10-12 had ended 10-20 with
+nothing asking him. His answer, relayed by Janus on 10-28: "Please let
+Coral know they are approved to work on the Todoist write-back." No
+conditions. Built the same morning, tests first: a card done here
+closes its task at the next sync, and one undone here reopens it. Only
+for a card both sides had agreed on, so nothing done during the
+one-way week is closed now, and a task reopened in Todoist is not
+closed again. Alpha only. Detail: `docs/TODOIST-INTEGRATION-DESIGN-2026-10.md`.
+
 ### ✅ 48. Markdown in a description: render it (answered and built 2026-10-16)
 Text from GitHub and Todoist showed Markdown marks as typed. xian:
 "render it please, just as you say. make sure we are documenting these

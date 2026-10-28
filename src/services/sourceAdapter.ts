@@ -42,9 +42,20 @@ export interface SourceAdapter {
       is not mistaken for a finished one. Optional: without it a sync
       completes nothing. Still a read. */
   fetchClosed?(externalIds: string[]): Promise<string[]>;
-  // Write access (close/complete upstream) arrives in R3.4, earned —
-  // deliberately absent from the read-only contract.
+  /** Write-back (R3.4, earned: xian approved it 2026-10-28 after the
+      one-way week). Close or reopen one task upstream. A task that is
+      gone upstream is not an error. Optional: an adapter without them
+      stays one way. */
+  closeUpstream?(externalId: string): Promise<void>;
+  reopenUpstream?(externalId: string): Promise<void>;
 }
+
+/** What both sides last agreed each card's state was, by externalId.
+    Write-back acts only on a card that changed HERE since then, so a
+    task reopened in the service is never closed again, and a card done
+    before the two sides agreed on it is never written. Device-local:
+    the caller keeps it beside the link. */
+export type AgreedState = Record<string, 'open' | 'closed'>;
 
 export interface ImportResult {
   imported: number;
@@ -161,26 +172,40 @@ export interface SyncResult {
   held: number;
   reordered: boolean;
   deckId: string;
+  /** Write-back counts; zero when the caller passed no agreement. */
+  closedUpstream: number;
+  reopenedUpstream: number;
+  writeFailed: number;
+  /** The agreement after this sync, for the caller to keep. Present
+      only when the caller passed one. */
+  agreed?: AgreedState;
 }
 
 /**
- * Bring a connected deck up to date with its source. One way: nothing
- * is written upstream (that is R3.4). xian's rulings, 2026-10-12:
- * a new task lands on top; a task closed upstream goes to Done; the
- * order follows the service only when the user chose that ('source').
- * Everything is read first and applied in ONE save, so a failed
- * request changes nothing. A list not yet connected is imported.
+ * Bring a connected deck up to date with its source. xian's rulings,
+ * 2026-10-12: a new task lands on top; a task closed upstream goes to
+ * Done, "and vice versa on sync"; the order follows the service only
+ * when the user chose that ('source').
+ *
+ * Everything is read first, so a failed read changes nothing on either
+ * side. Then write-back, only when the caller passes `agreed` and the
+ * adapter can write: a card done here since the last agreement closes
+ * its task, one undone here reopens it. A failed write is counted and
+ * left for the next sync. Then the local changes, in ONE save. A list
+ * not yet connected is imported.
  */
 export async function syncFromSource(
   store: TaskStore,
   adapter: SourceAdapter,
-  opts: { order: 'onejob' | 'source' },
+  opts: { order: 'onejob' | 'source'; agreed?: AgreedState },
 ): Promise<SyncResult> {
   if (!store.getDecks) throw new Error('This store has no root decks — source sync needs them');
+  const noWrites = { closedUpstream: 0, reopenedUpstream: 0, writeFailed: 0 };
   const deck = (await store.getDecks()).find(d => d.source === adapter.service);
   if (!deck) {
     const first = await importFromSource(store, adapter);
-    return { added: first.imported, completed: 0, held: 0, reordered: false, deckId: first.deckId };
+    const agreed = opts.agreed && agreedNow(await store.getDecks(), adapter.service);
+    return { added: first.imported, completed: 0, held: 0, reordered: false, deckId: first.deckId, ...noWrites, ...(agreed ? { agreed } : {}) };
   }
   if (!store.syncSourceDeck) throw new Error('This store cannot sync source decks');
 
@@ -199,14 +224,71 @@ export async function syncFromSource(
   // Open here, absent from the open list upstream: ask, don't assume.
   const stillOpen = new Set(external.map(e => e.externalId));
   const missing = mine.filter(c => !c.completed && !stillOpen.has(c.externalId!)).map(c => c.externalId!);
-  const closed = missing.length > 0 && adapter.fetchClosed ? await adapter.fetchClosed(missing) : [];
+  const closed = new Set(
+    (missing.length > 0 && adapter.fetchClosed ? await adapter.fetchClosed(missing) : [])
+      .filter(id => missing.includes(id)),
+  );
+
+  // Write-back. Agreed open, done here, still open there: close it.
+  // Agreed closed, open here, closed there: the user undid it here, so
+  // reopen it (and do NOT complete it here below).
+  const writes = { ...noWrites };
+  const agreed: AgreedState | undefined = opts.agreed && { ...opts.agreed };
+  const reopened = new Set<string>();
+  if (agreed && (adapter.closeUpstream || adapter.reopenUpstream)) {
+    for (const c of mine) {
+      const id = c.externalId!;
+      const write =
+        c.completed && stillOpen.has(id) && agreed[id] === 'open' ? adapter.closeUpstream
+        : !c.completed && closed.has(id) && agreed[id] === 'closed' ? adapter.reopenUpstream
+        : undefined;
+      if (!write) continue;
+      try {
+        await write.call(adapter, id);
+        if (c.completed) { writes.closedUpstream++; agreed[id] = 'closed'; }
+        else { writes.reopenedUpstream++; agreed[id] = 'open'; reopened.add(id); }
+      } catch (err) {
+        writes.writeFailed++;
+        console.error(`sourceSync: could not write "${c.title}" back to ${adapter.service}:`, (err as Error).message);
+      }
+    }
+  }
 
   const outcome = await store.syncSourceDeck(deck.id, {
     add,
-    completeIds: closed.filter(id => missing.includes(id)).map(id => localId.get(id)!),
+    completeIds: [...closed].filter(id => !reopened.has(id) && agreed?.[id] !== 'closed').map(id => localId.get(id)!),
     ...(opts.order === 'source' ? { order: external.map(e => localId.get(e.externalId)!) } : {}),
   });
-  return { ...outcome, deckId: deck.id };
+
+  if (agreed) {
+    // Record what the two sides now agree on. A card where they still
+    // differ keeps its old entry: a failed write, a held card, or a
+    // task reopened there after One Job closed it (left alone). A card
+    // never agreed on takes its state here, so it is never written.
+    const after = (await store.getDecks()).find(d => d.id === deck.id)!;
+    const seen = new Set<string>();
+    for (const c of after.cards) {
+      if (c.source !== adapter.service || !c.externalId) continue;
+      const id = c.externalId;
+      seen.add(id);
+      const there = stillOpen.has(id) || reopened.has(id) ? 'open' : 'closed';
+      const here = c.completed ? 'closed' : 'open';
+      if (here === there) agreed[id] = here;
+      else if (!(id in agreed) && here === 'closed') agreed[id] = 'closed';
+    }
+    for (const id of Object.keys(agreed)) if (!seen.has(id)) delete agreed[id];
+  }
+  return { ...outcome, deckId: deck.id, ...writes, ...(agreed ? { agreed } : {}) };
+}
+
+/** A freshly imported deck: every card's state is what both sides have. */
+function agreedNow(decks: InteriorDeck[], service: string): AgreedState {
+  const deck = decks.find(d => d.source === service);
+  const out: AgreedState = {};
+  for (const c of deck?.cards ?? []) {
+    if (c.source === service && c.externalId) out[c.externalId] = c.completed ? 'closed' : 'open';
+  }
+  return out;
 }
 
 /** The seam's proof: a fake service with local, controllable upstream. */

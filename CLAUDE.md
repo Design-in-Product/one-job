@@ -381,8 +381,9 @@ architecture.
 ### Integration Points
 
 - **Current**: GitHub issue import (`src/services/githubAdapter.ts`, a
-  token the user supplies), Todoist one-way sync (alpha since
-  2026-10-13: dev server or `?alpha=on` only, never store builds;
+  token the user supplies), Todoist sync (alpha since 2026-10-13:
+  dev server or `?alpha=on` only, never store builds; completion
+  write-back since 2026-10-28;
   `src/services/todoistAdapter.ts`, stage in `featureStages.ts`), the
   Siri / Shortcuts "Add Card" intent
   (`native/ios/AddCardIntent.swift` → `src/services/shortcutsInbox.ts`),

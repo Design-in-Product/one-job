@@ -1,14 +1,15 @@
 // src/services/todoistSync.ts
 // Keeps connected Todoist lists up to date: when the app opens, when
-// it comes back to the front, and from "Sync now". One way (xian,
-// 2026-10-12: one-way for the first week): everything here is a read.
-// The rules a sync follows live in `syncFromSource`.
+// it comes back to the front, and from "Sync now". One way for the
+// first week (xian, 2026-10-12); since 2026-10-28 (his approval) a
+// card done or undone here closes or reopens its task in Todoist. The
+// rules a sync follows live in `syncFromSource`.
 
 import { getTaskStore } from './taskStore';
 import type { TaskStore } from './taskStore';
 import { syncFromSource, type SyncResult } from './sourceAdapter';
 import { TodoistSourceAdapter, getTodoistToken } from './todoistAdapter';
-import { getTodoistLinks, type TodoistLink } from './todoistLinks';
+import { getTodoistLinks, getTodoistAgreed, saveTodoistAgreed, type TodoistLink } from './todoistLinks';
 import { featureOn } from './featureStages';
 import { INBOX_LANDED_EVENT } from './shortcutsInbox';
 
@@ -29,7 +30,11 @@ export async function syncTodoistLinks(
   for (const link of links) {
     try {
       const adapter = new TodoistSourceAdapter(token, link);
-      const result = await syncFromSource(store, adapter, { order: link.order === 'todoist' ? 'source' : 'onejob' });
+      const result = await syncFromSource(store, adapter, {
+        order: link.order === 'todoist' ? 'source' : 'onejob',
+        agreed: getTodoistAgreed(link.service),
+      });
+      if (result.agreed) saveTodoistAgreed(link.service, result.agreed);
       reports.push({ link, result });
     } catch (err) {
       reports.push({ link, error: (err as Error).message });

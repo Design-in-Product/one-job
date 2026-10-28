@@ -3,6 +3,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   getTodoistLinks, saveTodoistLink, setTodoistLinkOrder, removeTodoistLink, serviceKeyFor, DEFAULT_ORDER,
+  getTodoistAgreed, saveTodoistAgreed,
 } from '../todoistLinks';
 
 beforeEach(() => localStorage.clear());
@@ -61,5 +62,26 @@ describe('todoistLinks', () => {
     saveTodoistLink({ projectId: 'p2', name: 'Home' });
     removeTodoistLink('todoist:project:p1');
     expect(getTodoistLinks().map(l => l.name)).toEqual(['Home']);
+  });
+
+  it('keeps what each list last agreed with Todoist, per list', () => {
+    saveTodoistAgreed('todoist:project:p1', { a: 'closed' });
+    saveTodoistAgreed('todoist:project:p2', { b: 'open' });
+    expect(getTodoistAgreed('todoist:project:p1')).toEqual({ a: 'closed' });
+    expect(getTodoistAgreed('todoist:project:p3')).toEqual({});
+  });
+
+  it('reads a damaged agreement as none, keeping only good entries', () => {
+    localStorage.setItem('oneJobTodoistAgreed', '{"todoist:project:p1":{"a":"closed","b":7},"x":3}');
+    expect(getTodoistAgreed('todoist:project:p1')).toEqual({ a: 'closed' });
+    localStorage.setItem('oneJobTodoistAgreed', 'not json');
+    expect(getTodoistAgreed('todoist:project:p1')).toEqual({});
+  });
+
+  it('detaching a list forgets its agreement, so reconnecting writes nothing old', () => {
+    saveTodoistLink({ projectId: 'p1', name: 'Work' });
+    saveTodoistAgreed('todoist:project:p1', { a: 'open' });
+    removeTodoistLink('todoist:project:p1');
+    expect(getTodoistAgreed('todoist:project:p1')).toEqual({});
   });
 });

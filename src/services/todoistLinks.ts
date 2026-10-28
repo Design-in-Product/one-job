@@ -10,6 +10,7 @@
 // dedupes.
 
 import { serviceKeyFor, type TodoistTarget } from './todoistAdapter';
+import type { AgreedState } from './sourceAdapter';
 
 export { serviceKeyFor };
 
@@ -85,7 +86,53 @@ export const setTodoistLinkOrder = (service: string, order: TodoistOrder): void 
 
 /** Stop syncing a list. The deck and its cards are not touched, and
     the deck keeps its binding, so connecting the list again resumes
-    with the same deck instead of making a second one. */
+    with the same deck instead of making a second one. Nothing is
+    written to Todoist for it after this. */
 export const removeTodoistLink = (service: string): void => {
   write(getTodoistLinks().filter(l => l.service !== service));
+  // Forget what the list had agreed with Todoist: a card done while it
+  // was detached must not close a task when it is connected again.
+  const all = readAgreed();
+  delete all[service];
+  writeAgreed(all);
+};
+
+// ---- Write-back agreement (R3.4, 2026-10-28) ------------------------
+// Per list, what One Job and Todoist last agreed each task's state was
+// (see AgreedState). Settings, like the links: losing it writes
+// nothing, because a card with no agreement is never written back.
+
+const AGREED_KEY = 'oneJobTodoistAgreed';
+
+const readAgreed = (): Record<string, AgreedState> => {
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem(AGREED_KEY) ?? '{}');
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+    const out: Record<string, AgreedState> = {};
+    for (const [service, entries] of Object.entries(raw as Record<string, unknown>)) {
+      if (!entries || typeof entries !== 'object' || Array.isArray(entries)) continue;
+      const good: AgreedState = {};
+      for (const [id, v] of Object.entries(entries as Record<string, unknown>)) {
+        if (v === 'open' || v === 'closed') good[id] = v;
+      }
+      out[service] = good;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+};
+
+const writeAgreed = (all: Record<string, AgreedState>): void => {
+  try {
+    localStorage.setItem(AGREED_KEY, JSON.stringify(all));
+  } catch {
+    /* storage unavailable: write-back just starts over, writing nothing old */
+  }
+};
+
+export const getTodoistAgreed = (service: string): AgreedState => readAgreed()[service] ?? {};
+
+export const saveTodoistAgreed = (service: string, agreed: AgreedState): void => {
+  writeAgreed({ ...readAgreed(), [service]: agreed });
 };

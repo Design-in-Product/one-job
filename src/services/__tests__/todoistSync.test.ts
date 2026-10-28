@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LocalTaskStore } from '../localTaskStore';
 import { syncTodoistLinks, changed } from '../todoistSync';
-import type { TodoistLink } from '../todoistLinks';
+import { getTodoistAgreed, type TodoistLink } from '../todoistLinks';
 
 const link = (id: string, order: TodoistLink['order'] = 'onejob'): TodoistLink =>
   ({ service: `todoist:project:${id}`, projectId: id, name: id, order });
@@ -27,4 +27,22 @@ describe('syncTodoistLinks', () => {
     expect(decks.find(d => d.source === 'todoist:project:good')!.cards.map(c => c.title)).toEqual(['t1', 't2']);
     expect(decks.some(d => d.source === 'todoist:project:bad')).toBe(false);
   });
+
+  it('closes in Todoist a card done here, and keeps the agreement between syncs', async () => {
+    const writes: string[] = [];
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+      if (init?.method === 'POST') { writes.push(url.split('/v1/')[1]); return new Response(null, { status: 204 }); }
+      return new Response(JSON.stringify({ results: [task('t1', 1), task('t2', 2)], next_cursor: null }), { status: 200 });
+    }));
+    const store = new LocalTaskStore('todoistsync');
+    await syncTodoistLinks(store, 'tok', [link('p')]);
+    expect(getTodoistAgreed('todoist:project:p')).toEqual({ t1: 'open', t2: 'open' });
+    const deck = (await store.getDecks()).find(d => d.source === 'todoist:project:p')!;
+    await store.completeTask(deck.cards.find(c => c.title === 't1')!.id);
+    const [report] = await syncTodoistLinks(store, 'tok', [link('p')]);
+    expect(writes).toEqual(['tasks/t1/close']);
+    expect(report.result).toMatchObject({ closedUpstream: 1 });
+    expect(getTodoistAgreed('todoist:project:p').t1).toBe('closed');
+  });
 });
+

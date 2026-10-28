@@ -26,7 +26,7 @@ interface TodoistIntegrationProps {
   onImported?: () => void;
 }
 
-// Todoist, read-only (design: docs/TODOIST-INTEGRATION-DESIGN-2026-10.md).
+// Todoist: one list becomes a deck, synced both ways for completion only (design: docs/TODOIST-INTEGRATION-DESIGN-2026-10.md).
 // The flow xian ruled on 2026-10-12: paste a token, pick ONE project or
 // section, answer the order question (One Job's order is the default),
 // import. The list becomes a deck named after it. Nothing here writes
@@ -104,9 +104,17 @@ const TodoistIntegration: React.FC<TodoistIntegrationProps> = ({ onImported }) =
       }
       const r = report.result;
       // Observed counts only. "held" = closed there, but unfinished cards inside here.
-      toast.success(t(r.held > 0 ? 'todoist.syncedHeld' : 'todoist.synced', {
+      const said = [t(r.held > 0 ? 'todoist.syncedHeld' : 'todoist.synced', {
         name: link.name, added: r.added, completed: r.completed, held: r.held,
-      }));
+      })];
+      if (r.closedUpstream + r.reopenedUpstream > 0) {
+        said.push(t('todoist.syncedWrites', { closed: r.closedUpstream, reopened: r.reopenedUpstream }));
+      }
+      if (r.writeFailed > 0) {
+        toast.error([...said, t('todoist.syncedWriteFailed', { count: r.writeFailed })].join(' '));
+      } else {
+        toast.success(said.join(' '));
+      }
       onImported?.();
     } finally {
       setBusy(null);

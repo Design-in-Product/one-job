@@ -29,7 +29,7 @@ extension 2026-07-28 with no client yet implementing it.
 | P0 | **Submit 1.0 to the App Store from the native build** | ✅ **APPROVED 2026-09-08** (submitted 09-05, three-day review). Manual release — live when Xian presses the button. External TestFlight now available: un-gates the 50-user cohort on native builds, no PWA fix required. |
 | P1 | **R1.5 Local instrumentation** (new) — opt-in, on-device, pre-registered metrics; instrument BEFORE anyone is invited. Full design: `docs/plans/2026-08-28-instrumentation-plan.md` (plan approved by Xian 2026-08-29, "looks good") | Designed; 4 open questions pending his answers, then build |
 | P2 | **R4.2-lite fleet probe** (new) — the crudest thing that works: this repo's own ATTENTION-ROLLUP items land as cards in a One Job deck; Xian answers from the deck for two weeks. NO MCP, no protocol, no adapter seam — if it grows an architecture it has failed. Scope: EVERYTHING on the rollup (his call, 2026-08-28). Likely zero new app code (script emits backup-import-shaped JSON) | Not started |
-| P3 | **Todoist integration — now a 1.1 RELEASE FEATURE** (Xian, 2026-09-04: "prioritize the todoist integration asap as a 1.1 release feature"). One designated list, read-only first, earning write-back after a proven week. Rides the R3.1 seam the GitHub import already proves. **Precondition: fix or flag-hide the GitHub import** (pulls every assigned issue across every repo — "a thousand cards… overflow the buffer"); shipping a second source while the first embarrasses is how integrations get a reputation | **ALPHA 2026-10-13** — one-way sync built; behind the `?alpha=on` flag, not in store builds. Write-back waits on xian's word after a week (see the 10-13 note below) |
+| P3 | **Todoist integration — now a 1.1 RELEASE FEATURE** (Xian, 2026-09-04: "prioritize the todoist integration asap as a 1.1 release feature"). One designated list, read-only first, earning write-back after a proven week. Rides the R3.1 seam the GitHub import already proves. **Precondition: fix or flag-hide the GitHub import** (pulls every assigned issue across every repo — "a thousand cards… overflow the buffer"); shipping a second source while the first embarrasses is how integrations get a reputation | **ALPHA 2026-10-13** — sync built; behind the `?alpha=on` flag, not in store builds. **Completion write-back 2026-10-28** on xian's approval (see the 10-28 note below) |
 | P4 | **The 50-user cohort** — ~10 agent-heavy users recruited FIRST, then ~40 ordinary. Gated on P1 (instrument before inviting) and the PWA white-screen fix (no invitation into a known white-screen — the standing HARD GATE discipline, same reason) | Blocked on P1 + SW fix |
 | P5 | **Economic-buyer conversations** — ask the ten agent-heavy users what a reliable human-review queue is worth; a week of calendar, not a quarter of engineering | After P4 recruiting starts |
 
@@ -158,7 +158,7 @@ read-only before any source earns write access.
 | R3.1 | **Source adapter seam** — formalize `SourceAdapter` on top of the TaskStore seam; provenance carries `{service, externalId, mapping}` | Item 11 |
 | R3.2 | **First import (one service, read-only)** — pick the one Xian actually uses; imported cards land in a source deck on the canvas | Item 11.1 |
 | R3.3 | **Mapping store** — bidirectional id/field mapping as a first-class, inspectable artifact | Item 11.3 |
-| R3.4 | **Two-way sync (one service)** — complete-in-One-Job closes the source task; the One Job overlay (deck order, interior structure, history, lifecycle placement) never flattens into the source | Item 11.2 |
+| R3.4 | **Two-way sync (one service)** — complete-in-One-Job closes the source task; the One Job overlay (deck order, interior structure, history, lifecycle placement) never flattens into the source. **Completion write-back built for Todoist, 2026-10-28 (alpha)** | Item 11.2 |
 | R3.5 | **Multi-source federation** — Asana + Trello + Todoist side by side, normalized into the one paradigm | Item 11.4 |
 | R3.6 | **Import as merge, with conflict resolution** — the OS file-move model: on import, detect cards already present (by id/provenance) and ask per-conflict *keep both / replace / skip*, instead of always landing a fresh copy. Supersedes the rc-era "import-N container" once we have real identity/provenance to compare on (Xian, 2026-07-26) | testing |
 
@@ -413,6 +413,13 @@ deck, sync one way (new tasks on top, closed tasks to Done, the
 user's order rule), disconnect. Build log and known limits:
 `TODOIST-INTEGRATION-DESIGN-2026-10.md`. Write-back (R3.4) is next,
 on xian's word after a week.
+
+*Todoist write-back, 2026-10-28 (R3.4, alpha):* xian approved it
+(board item 49). A card done here closes its task in Todoist on the
+next sync; one undone here reopens it. Only completion is written,
+and only for a card both sides had agreed on, so a card done during
+the one-way week, or a task reopened in Todoist after One Job closed
+it, is left alone. Still `?alpha=on` only. Detail in the design doc.
 
 *Decks, 2026-10-13 (xian, items 46 and 47):* a deck is deleted only
 when empty; "Move all cards to another deck…" empties it into a deck

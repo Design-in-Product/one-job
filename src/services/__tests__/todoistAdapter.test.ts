@@ -125,3 +125,32 @@ describe('TodoistSourceAdapter.fetchClosed', () => {
     await expect(adapter().fetchClosed(['x'])).rejects.toThrow('401');
   });
 });
+
+describe('TodoistSourceAdapter write-back (R3.4)', () => {
+  // Observed live on 2026-10-28: close and reopen answer 204 and can be
+  // repeated; an id Todoist doesn't know answers 400.
+  const adapter = () => new TodoistSourceAdapter('tok', { projectId: 'p1', name: 'P' });
+  const status = (s: number) => new Response(s === 204 ? null : JSON.stringify({ error: 'x' }), { status: s });
+
+  it('closes and reopens with a POST to the task', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => status(204)));
+    await adapter().closeUpstream('a1');
+    await adapter().reopenUpstream('a1');
+    expect(calls().map(c => [c[0], c[1].method, c[1].headers.Authorization])).toEqual([
+      ['https://api.todoist.com/api/v1/tasks/a1/close', 'POST', 'Bearer tok'],
+      ['https://api.todoist.com/api/v1/tasks/a1/reopen', 'POST', 'Bearer tok'],
+    ]);
+  });
+
+  it('a task that is gone is not an error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => status(400)));
+    await expect(adapter().closeUpstream('gone')).resolves.toBeUndefined();
+    vi.stubGlobal('fetch', vi.fn(async () => status(404)));
+    await expect(adapter().reopenUpstream('gone')).resolves.toBeUndefined();
+  });
+
+  it('throws on any other failure, so the sync tries again later', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => status(401)));
+    await expect(adapter().closeUpstream('a1')).rejects.toThrow('401');
+  });
+});

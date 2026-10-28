@@ -181,5 +181,32 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
   - After the first import, changes to a task's title, description
     or sub-tasks in Todoist do not come across. Only new top-level
     tasks, closures and order do.
-  - Nothing reopens a card when a task is reopened in Todoist.
-- **Later:** completion write-back (R3.4), when xian says.
+  - Nothing reopens a card when a task is reopened in Todoist
+    (write-back, 10-28, goes the other way only).
+- **2026-10-28, write-back (done), R3.4.** xian, via Janus: "Please
+  let Coral know they are approved to work on the Todoist write-back"
+  (board item 49; no conditions). Red zone, tests first
+  (`syncFromSource` in the seam, `closeUpstream` and `reopenUpstream`
+  on the adapter, the agreement in `todoistLinks.ts`).
+  - A card done here closes its task in Todoist on the next sync. A
+    card undone here (Undo, or Un-done from Done) reopens it. Done and
+    undone before a sync writes nothing.
+  - Each list keeps, on the device, what the two sides last agreed
+    each task's state was. A write happens only for a card that
+    changed HERE since then. So a card done during the one-way week
+    is not closed now, and a task reopened in Todoist after One Job
+    closed it is left alone rather than closed again.
+  - Reads first: a failed read writes nothing. A failed write is
+    counted in the message and tried again next sync.
+  - Detaching a list forgets its agreement, so connecting it again
+    writes nothing from before.
+  - Only top-level cards are written, as only they are read; closing
+    a parent in Todoist closes its sub-tasks.
+  - Observed live first (2026-10-28): close and reopen answer 204 and
+    can be repeated; an unknown id answers 400.
+  - Walked at phone size against the test account, with a temporary
+    task in Coral's section, closed afterwards: swiped Done, then a
+    reload: one POST, closed in Todoist. Un-done from Done, then a
+    reload: one POST, reopened, and the card stayed open here. "Sync
+    now" says "Sent to Todoist: 0 closed, 1 reopened." No requests
+    other than those, and no console errors.

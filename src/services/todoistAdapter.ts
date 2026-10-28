@@ -1,8 +1,9 @@
 // src/services/todoistAdapter.ts
-// Todoist, READ-ONLY: the first real integration (xian, 2026-10-12).
+// Todoist: the first real integration (xian, 2026-10-12).
 // Design and his answers: docs/TODOIST-INTEGRATION-DESIGN-2026-10.md.
-// Rides the R3.1 seam like the GitHub adapter. Nothing here writes to
-// Todoist; closing a task from One Job is R3.4 and comes later.
+// Rides the R3.1 seam like the GitHub adapter. Read-only for its
+// first week; since 2026-10-28 (xian's approval) it can also close and
+// reopen a task (R3.4). It writes nothing else.
 //
 // The mapping is "loose but simple" (his words): a deck is tied to ONE
 // project or ONE section, whichever the user picks. A sub-project is a
@@ -160,5 +161,25 @@ export class TodoistSourceAdapter implements SourceAdapter {
       if (t.checked && !t.is_deleted) closed.push(id);
     }
     return closed;
+  }
+
+  closeUpstream(externalId: string): Promise<void> {
+    return this.post(externalId, 'close');
+  }
+
+  reopenUpstream(externalId: string): Promise<void> {
+    return this.post(externalId, 'reopen');
+  }
+
+  /** Both answer 204 and can be repeated (observed 2026-10-28). A task
+      that is gone (404, or 400 for an id Todoist doesn't know) has
+      nothing to close or reopen, so it is not an error. */
+  private async post(externalId: string, action: 'close' | 'reopen'): Promise<void> {
+    const res = await fetch(`${API}/tasks/${encodeURIComponent(externalId)}/${action}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${this.token}` },
+    });
+    if (res.ok || res.status === 404 || res.status === 400) return;
+    throw new Error(`Todoist refused the request: ${res.status} ${res.statusText}`);
   }
 }

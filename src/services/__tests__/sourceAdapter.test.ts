@@ -350,3 +350,146 @@ describe('syncFromSource', () => {
     expect(await openTitles(store)).toEqual(['a', 'b']);
   });
 });
+
+describe('syncFromSource write-back (R3.4, xian 2026-10-28)', () => {
+  // An upstream that can be written to, and records every write.
+  class Writable implements SourceAdapter {
+    readonly service = 'svc:list:w';
+    readonly deckName = 'Writable';
+    open: ExternalCard[] = [];
+    closed = new Set<string>();
+    writes: string[] = [];
+    failNext = false;
+    async fetchCards() { return [...this.open]; }
+    async fetchClosed(ids: string[]) { return ids.filter(i => this.closed.has(i)); }
+    async closeUpstream(id: string) {
+      if (this.failNext) { this.failNext = false; throw new Error('Todoist refused the request: 503'); }
+      this.writes.push(`close ${id}`);
+      this.open = this.open.filter(e => e.externalId !== id);
+      this.closed.add(id);
+    }
+    async reopenUpstream(id: string) {
+      this.writes.push(`reopen ${id}`);
+      this.closed.delete(id);
+      this.open = [{ externalId: id, title: id, completed: false }, ...this.open];
+    }
+  }
+  const ext = (id: string): ExternalCard => ({ externalId: id, title: id, completed: false });
+  const cardOf = async (store: LocalTaskStore, title: string) =>
+    (await store.getDecks()).find(d => d.source === 'svc:list:w')!.cards.find(c => c.title === title)!;
+
+  // Connected, then one sync so both sides have agreed on every card.
+  const connected = async (ids: string[]) => {
+    localStorage.clear();
+    const store = new LocalTaskStore('writetest');
+    const up = new Writable();
+    up.open = ids.map(ext);
+    let agreed = (await syncFromSource(store, up, { order: 'onejob', agreed: {} })).agreed!;
+    const sync = async () => {
+      const r = await syncFromSource(store, up, { order: 'onejob', agreed });
+      agreed = r.agreed!;
+      return r;
+    };
+    await sync();
+    return { store, up, sync, agreed: () => agreed };
+  };
+
+  it('the first sync of a list records every card as agreed open', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore('writetest');
+    const up = new Writable(); up.open = [ext('a'), ext('b')];
+    const r = await syncFromSource(store, up, { order: 'onejob', agreed: {} });
+    expect(r.agreed).toEqual({ a: 'open', b: 'open' });
+  });
+
+  it('a card done here closes its task upstream on the next sync', async () => {
+    const { store, up, sync, agreed } = await connected(['a', 'b']);
+    await store.completeTask((await cardOf(store, 'a')).id);
+    const r = await sync();
+    expect(up.writes).toEqual(['close a']);
+    expect(r.closedUpstream).toBe(1);
+    expect(agreed().a).toBe('closed');
+    // and only once
+    await sync();
+    expect(up.writes).toEqual(['close a']);
+  });
+
+  it('done then undone before a sync writes nothing', async () => {
+    const { store, up, sync } = await connected(['a']);
+    const id = (await cardOf(store, 'a')).id;
+    await store.completeTask(id);
+    await store.undoLast();
+    await sync();
+    expect(up.writes).toEqual([]);
+  });
+
+  it('undone after the close reopens the task upstream, and the card stays open here', async () => {
+    const { store, up, sync } = await connected(['a']);
+    const id = (await cardOf(store, 'a')).id;
+    await store.completeTask(id);
+    await sync();
+    await store.uncompleteTask(id);
+    const r = await sync();
+    expect(up.writes).toEqual(['close a', 'reopen a']);
+    expect(r.reopenedUpstream).toBe(1);
+    expect((await cardOf(store, 'a')).completed).toBe(false);
+  });
+
+  it('a task reopened in Todoist after One Job closed it is not closed again', async () => {
+    const { store, up, sync } = await connected(['a']);
+    await store.completeTask((await cardOf(store, 'a')).id);
+    await sync();
+    await up.reopenUpstream('a'); up.writes = [];
+    await sync();
+    await sync();
+    expect(up.writes).toEqual([]);
+  });
+
+  it('a card done before the two sides agreed on it is not closed upstream', async () => {
+    localStorage.clear();
+    const store = new LocalTaskStore('writetest');
+    const up = new Writable(); up.open = [ext('a')];
+    await importFromSource(store, up); // connected during the one-way week
+    await store.completeTask((await cardOf(store, 'a')).id);
+    const r = await syncFromSource(store, up, { order: 'onejob', agreed: {} });
+    expect(up.writes).toEqual([]);
+    expect(r.agreed).toEqual({ a: 'closed' });
+  });
+
+  it('a caller that passes no agreement writes nothing (one way, as before)', async () => {
+    const { store, up } = await connected(['a']);
+    await store.completeTask((await cardOf(store, 'a')).id);
+    await syncFromSource(store, up, { order: 'onejob' });
+    expect(up.writes).toEqual([]);
+  });
+
+  it('a failed write is counted and tried again on the next sync', async () => {
+    const { store, up, sync, agreed } = await connected(['a', 'b']);
+    await store.completeTask((await cardOf(store, 'a')).id);
+    await store.completeTask((await cardOf(store, 'b')).id);
+    up.failNext = true;
+    const r = await sync();
+    expect(r.writeFailed).toBe(1);
+    expect(r.closedUpstream).toBe(1);
+    expect(Object.values(agreed()).filter(v => v === 'open')).toHaveLength(1);
+    await sync();
+    expect(up.writes.sort()).toEqual(['close a', 'close b']);
+  });
+
+  it('a failed read writes nothing', async () => {
+    const { store, up } = await connected(['a']);
+    await store.completeTask((await cardOf(store, 'a')).id);
+    up.fetchCards = async () => { throw new Error('Todoist refused the request: 401'); };
+    await expect(syncFromSource(store, up, { order: 'onejob', agreed: { a: 'open' } })).rejects.toThrow('401');
+    expect(up.writes).toEqual([]);
+  });
+
+  it('a task closed in Todoist still goes to Done here, and nothing is written back', async () => {
+    const { store, up, sync, agreed } = await connected(['a']);
+    up.open = []; up.closed.add('a');
+    const r = await sync();
+    expect(r.completed).toBe(1);
+    expect(up.writes).toEqual([]);
+    expect(agreed().a).toBe('closed');
+  });
+});
