@@ -1,0 +1,27 @@
+{
+  "app": "one-job",
+  "version": 2,
+  "exportedAt": "2026-10-28T00:50:42.202Z",
+  "tasks": [
+    {
+      "id": "35b67f31-6199-45ec-b659-d3bdadb7de04",
+      "title": "UX walk, step 3: add two cards. What feels right and what doesn't?",
+      "description": "🟡 #22 · UX walk, step 3: add a card. What works and what doesn't?\n\nCoral's rec: Start with the + button. If anything makes you hesitate, that's the thing to tell me.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-27 · waiting 75 days (since 2026-08-13)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-28T00:50:42.202Z",
+      "sortOrder": 1,
+      "source": "coral/attention-rollup"
+    },
+    {
+      "id": "e367234c-89ca-49ea-a379-84cb8cf8fba5",
+      "title": "Todoist's one-way week is up. Turn on write-back?",
+      "description": "🟢 #49 · Todoist: the one-way week is up. Turn on write-back?\n\nCoral's rec: Only if you've used the Todoist decks this week. The week was meant as use, not as time; if you haven't, keep it one-way and say so.\n\nFull context: docs/ATTENTION-ROLLUP.md\n— dealt by Coral · 2026-10-27 · waiting 0 days (since 2026-10-27)",
+      "completed": false,
+      "status": "todo",
+      "createdAt": "2026-10-28T00:50:42.202Z",
+      "sortOrder": 2,
+      "source": "coral/attention-rollup"
+    }
+  ]
+}

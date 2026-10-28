@@ -1,6 +1,6 @@
-# One Job — what needs xian · v115 (2026-10-16)
+# One Job — what needs xian · v116 (2026-10-27)
 
-**Cite as "Coral rollup v115".** One file, one URL:
+**Cite as "Coral rollup v116".** One file, one URL:
 https://github.com/Design-in-Product/one-job/blob/main/docs/ATTENTION-ROLLUP.md
 Older items, settled decisions and history:
 [`docs/archive/ATTENTION-ROLLUP-ARCHIVE.md`](archive/ATTENTION-ROLLUP-ARCHIVE.md).
@@ -8,10 +8,12 @@ The narrative is in `development/coral-logs/`.
 
 ## Where things stand
 
-One thing is open for you:
+Two things are open for you:
 
 - **UX walk (22):** step 3, adding a card. You said you'd come back to
   it "after a bit"; the question is in this item.
+- **Todoist write-back (49):** the one-way week you set on 10-12 ended
+  10-20. Write-back waits on your word, so the question is now here.
 
 Done on 10-16: build 1.1.1 (44) is in the Pilot group on your "Pilot
 44, yes" (36, archived), and Apple has approved it for outside
@@ -24,8 +26,8 @@ In progress, mine, nothing needed from you:
 
 - **Todoist:** built to the end of the one-way design, at the alpha
   stage (https://onejob.co/app/?alpha=on). Known limits are in the
-  design doc; Markdown is no longer one of them. Write-back waits for
-  your word after the first week.
+  design doc; Markdown is no longer one of them. Write-back is now
+  asked as 49.
 
 ## Open
 
@@ -41,6 +43,18 @@ https://github.com/Design-in-Product/one-job/blob/main/docs/UX-WALK-NOTES-2026-1
 **Ask:** UX walk, step 3: add two cards. What feels right and what doesn't?
 **Rec:** Start with the + button. If anything makes you hesitate,
 that's the thing to tell me.
+
+### 🟢 49. Todoist: the one-way week is up. Turn on write-back?
+On 10-12 you said Todoist stays one-way for the first week ("gall's
+law approach"). The alpha has synced one way since 10-13, so the week
+ended 10-20. Write-back means a Done swipe here closes the task in
+Todoist. Nothing changes until you say. Design and known limits:
+https://github.com/Design-in-Product/one-job/blob/main/docs/TODOIST-INTEGRATION-DESIGN-2026-10.md
+**Where to act:** tell Coral in session, or reply through Janus.
+**Since:** 2026-10-27
+**Ask:** Todoist's one-way week is up. Turn on write-back?
+**Rec:** Only if you've used the Todoist decks this week. The week was
+meant as use, not as time; if you haven't, keep it one-way and say so.
 
 ## Recorded, final (not re-asked)
 
