@@ -279,7 +279,7 @@ architecture.
 
 **MAY develop architecture with tests for:**
 - New UI components and views
-- A new source adapter, read-only (Todoist is next)
+- A new source adapter, read-only (Todoist was the first, 2026-10-12)
 - New animation or gesture patterns
 - Native (Swift) additions
 
@@ -381,7 +381,10 @@ architecture.
 ### Integration Points
 
 - **Current**: GitHub issue import (`src/services/githubAdapter.ts`, a
-  token the user supplies), the Siri / Shortcuts "Add Card" intent
+  token the user supplies), Todoist one-way sync (alpha since
+  2026-10-13: dev server or `?alpha=on` only, never store builds;
+  `src/services/todoistAdapter.ts`, stage in `featureStages.ts`), the
+  Siri / Shortcuts "Add Card" intent
   (`native/ios/AddCardIntent.swift` → `src/services/shortcutsInbox.ts`),
   and demo mode.
 - **Retired**: the Zapier export and the Asana and Todoist stubs
