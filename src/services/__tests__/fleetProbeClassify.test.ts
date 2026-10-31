@@ -12,7 +12,7 @@
 // return EVERY verdict, not just the happy one.
 
 import { describe, it, expect } from 'vitest';
-import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays, strandedAsks } from '../../../scripts/fleet-probe.mjs';
+import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays, strandedAsks, openItemsOutsideOpen } from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
   it('ranks the three open markers, blocking first', () => {
@@ -127,3 +127,30 @@ describe('fleet probe: an Ask outside any item', () => {
   });
 });
 
+
+// Sixth guard (2026-10-30 brief: a map keyed on one state can't see
+// members in another). The probe reads only Open, so an item marked
+// open but filed elsewhere is dealt to nobody. The Ask guard misses it
+// when the item has no Ask yet; this one keys on the marker instead.
+describe('fleet probe: an open item outside Open', () => {
+  const board = (rest: string) =>
+    `## Open\n\n### 🟡 22. UX walk\n**Ask:** add two cards.\n\n${rest}`;
+
+  it('finds an open-marked item filed under another section', () => {
+    const full = board('## Recorded, final\n\n### 🔴 50. Pilot build\nNo ask yet.\n');
+    const open = full.split(/^## Open$/m)[1].split(/^## /m)[0];
+    expect(openItemsOutsideOpen(full, open)).toEqual(['🔴 50. Pilot build']);
+  });
+
+  it('ignores closed items outside Open', () => {
+    const full = board('## Recorded, final\n\n### ✅ 49. Todoist write-back\n');
+    const open = full.split(/^## Open$/m)[1].split(/^## /m)[0];
+    expect(openItemsOutsideOpen(full, open)).toEqual([]);
+  });
+
+  it('finds none when every open item is in Open', () => {
+    const full = board('');
+    const open = full.split(/^## Open$/m)[1].split(/^## /m)[0];
+    expect(openItemsOutsideOpen(full, open)).toEqual([]);
+  });
+});

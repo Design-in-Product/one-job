@@ -37,7 +37,10 @@ This mirrors how every other agent in the constellation already does it (Piper M
 - **Every memo's frontmatter carries `reply-to: one-job:docs/mail/`**
   (baseline since 2026-10-08), alongside `from`, `to`, `cc`, `date`
   (`YYYY-MM-DD HH:MM PT`, read from the clock), `subject`, and
-  `in-reply-to` on replies. **A reply goes to the original memo's
+  `in-reply-to` on replies. Write `date: now` and send through
+  `~/Development/mediajunkie/scripts/mail-deliver.sh <repo-dir>
+  <path-in-repo> < memo.md`: it stamps the clock and adds the session
+  trailers (Janus to every seat, 2026-10-30). **A reply goes to the original memo's
   `reply-to` path.** If that's missing, use the dispatch routing table;
   never guess. Standard: `designinproduct:docs/conventions/mail-frontmatter.md`.
 - **Deliver into a sibling repo through a scratchpad clone** (or an
@@ -99,7 +102,9 @@ probe script refuses to write a deck if any heading lacks a recognized
 status marker (🔴/🟡/🟢/✅) or any open item lacks an Ask, naming what
 to fix. It also refuses when an `**Ask:**` sits outside any `###` item
 (2026-10-23), because a mis-headed item would otherwise vanish and the
-deck would read "0 open items". This is deliberate: a card that doesn't say what it wants, or
+deck would read "0 open items". It also refuses a 🔴/🟡/🟢 item filed
+outside Open (2026-10-30), which the Ask guard misses while the item has
+no Ask yet. This is deliberate: a card that doesn't say what it wants, or
 that shouldn't exist at all, is the exact failure mode the format
 exists to prevent, so it is made impossible rather than discouraged.
 Regression tests in `src/services/__tests__/fleetProbeClassify.test.ts`

@@ -148,6 +148,31 @@ if (unclassified.length) {
   process.exit(1);
 }
 
+// Sixth structural guard (2026-10-30, cross-pollination brief: a map
+// keyed on one state is blind to members in another, from the day it is
+// filed). The Ask guard above keys on the **Ask:** line, so an item
+// marked open but filed outside Open BEFORE its Ask is written slips
+// past it, and the deck never shows it. Key on the marker instead: any
+// 🔴/🟡/🟢 heading outside Open is misfiled.
+export function openItemsOutsideOpen(fullText, openText) {
+  const rest = fullText.replace(openText, '');
+  return [...rest.matchAll(/^### (.+)$/gm)]
+    .map(m => m[1].trim())
+    .filter(h => classifyHeading(h).kind === 'open');
+}
+{
+  const stray = openItemsOutsideOpen(rollup, open);
+  if (stray.length) {
+    console.error(
+      `\nRefusing to deal: ${stray.length} item(s) marked open sit outside ` +
+      `the Open section, so no card would carry them:\n` +
+      stray.map(h => `  ### ${h}`).join('\n') +
+      `\n\nMove each into Open, or mark it ✅ with its answer, then re-run.\n`
+    );
+    process.exit(1);
+  }
+}
+
 const openItems = items.filter(i => i.status.kind === 'open');
 // Status ordering: blocking first, FYI last — the deck's initial order.
 openItems.sort((a, b) => a.status.rank - b.status.rank);
