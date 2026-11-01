@@ -58,6 +58,24 @@ describe('coral-log Drain line guard', () => {
     expect(problems[0]).toMatch(/without a Drain line/);
   });
 
+  // 2026-10-31: the third wording ("## Fire: 17:49 PDT (duty cycle)",
+  // used from 10-28) has no "duty fire" in it, so the guard checked none
+  // of those entries. Found by committing a known-bad entry through the
+  // real hook (10-31 brief: run the check on a case that should fail).
+  // Every heading form the logs have used is pinned here.
+  it.each([
+    '## 17:49 PDT — duty fire',
+    '## 17:49 PT — duty fire',
+    '## 17:49 PDT · duty fire (first entry today)',
+    '## Fire: 17:49 PDT (duty cycle)',
+    '## Duty-cycle fire #9 — 2026-10-10 17:49 PDT',
+    '## Duty-cycle fire (out of band) #6 — 2026-10-08 17:49 PDT: the drain rule',
+  ])('treats "%s" as a fire', heading => {
+    expect(findDrainProblems([heading, '- **Sync:** ok'])).toEqual([
+      `fire entry without a Drain line: ${heading}`,
+    ]);
+  });
+
   it('does not treat a mail wake or a session as a fire', () => {
     expect(findDrainProblems(['## 18:05 PT — mail wake (Janus)', '- read it'])).toEqual([]);
     expect(findDrainProblems(['## 15:2x — xian in session: fire the old build?', '- no'])).toEqual([]);

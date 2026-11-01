@@ -13,8 +13,11 @@ import { pathToFileURL } from 'node:url';
 
 // Any heading naming a duty fire, in either wording ("Duty-cycle fire #9",
 // "17:49 PDT — duty fire"). Until 2026-10-18 this matched only the first,
-// so from 10-11 it checked no fire at all and passed every commit.
-const FIRE_HEADING = /^## .*\bduty(?:-cycle)? fire\b/i;
+// so from 10-11 it checked no fire at all and passed every commit. It
+// happened again from 10-28: "## Fire: 17:49 PDT (duty cycle)" has no
+// "duty fire" in it. "duty cycle" now counts with or without "fire";
+// every form the logs have used is pinned in the tests.
+const FIRE_HEADING = /^## .*\b(duty[- ]cycle|duty fire)\b/i;
 const DRAIN_LINE = /^\s*(-\s*)?\**Drain:?\**/i;
 // Every form of the word (defers, deferring, deferral), not two exact
 // spellings (widened 2026-10-21 after Janus found the same gap in theirs).
