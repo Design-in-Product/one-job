@@ -669,7 +669,10 @@ Canonical text: `mediajunkie/designinproduct` →
    week — because failure emails go to an agent identity with no inbox.
    A green local suite proves nothing about the deploy; the workflow's
    ci-red-beacon job now files an issue on failure, but the check costs
-   five seconds and the beacon could itself break.)
+   five seconds and the beacon could itself break.) Then
+   `scripts/ci-warnings.sh`: a green run can carry a warning that no
+   step reads (2026-11-01: a Node 20 deprecation sat on every deploy).
+   The reader is me, every fire, here.
 5. Create TodoWrite list for session tasks
 6. Verify development environment if implementing
 7. Check docs/ROADMAP.md and the board for current status (REQUIREMENTS.md is retired)

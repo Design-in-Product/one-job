@@ -33,10 +33,10 @@ jobs:
         node-version: ['22', '26']
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -57,10 +57,10 @@ jobs:
       bundle: ${{ steps.hash.outputs.bundle }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
@@ -111,10 +111,10 @@ jobs:
         run: echo "bundle=$(grep -o 'index-[A-Za-z0-9_-]*\.js' deploy/app/index.html | head -1)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: './deploy'
 
@@ -131,7 +131,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   # Green here means the LIVE site serves the freshly built bundle —
   # "deploy succeeded" is observed, never assumed (lesson of 2026-07-04,
