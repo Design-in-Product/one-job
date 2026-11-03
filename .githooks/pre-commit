@@ -24,7 +24,16 @@ node scripts/check-log-drain.mjs || exit 1
 # (CLAUDE.md rollup rule 3). See scripts/check-rollup-reconcile.mjs.
 node scripts/check-rollup-reconcile.mjs || exit 1
 
-staged_deletions=$(git diff --cached --name-only --diff-filter=D | wc -l | tr -d ' ')
+# Refusals go to stderr, the channel Claude Code shows (11-02 brief). Git
+# already routes a hook's stdout there; this keeps it true when the hook is
+# run by hand.
+exec 1>&2
+
+# --no-renames (2026-11-02): with rename detection on (git's default), a
+# stale deletion plus a similar added file shows as R, not D, and was not
+# counted. Proven in a scratch clone: a stale `git mv` committed. Without
+# renames it is a D and an A, and the D is counted.
+staged_deletions=$(git diff --cached --no-renames --name-only --diff-filter=D | wc -l | tr -d ' ')
 [ "$staged_deletions" = "0" ] && exit 0
 
 # Only fetch when there ARE deletions — keeps normal commits offline-fast.
@@ -44,7 +53,7 @@ echo "Files added to origin since your last pull look like deletions to a stale 
 echo "That is how 1,683 files were lost in a sibling repo on 2026-09-15."
 echo
 echo "  1. git pull --rebase origin main"
-echo "  2. re-check: git diff --cached --name-only --diff-filter=D"
+echo "  2. re-check: git diff --cached --no-renames --name-only --diff-filter=D"
 echo "  3. commit again"
 echo
 echo "If the deletions are genuinely intended, commit with --no-verify."
