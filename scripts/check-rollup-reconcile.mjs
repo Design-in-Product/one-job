@@ -39,7 +39,11 @@ const show = ref => {
 };
 
 function main() {
-  const staged = execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n');
+  // --no-renames (2026-11-03, the 11-03 brief on our own 11-02 finding):
+  // with rename detection on, `git mv` of the board lists only the NEW
+  // path, so this returned early and a board moved away committed. Proven
+  // in a scratch clone for the board and the archive.
+  const staged = execSync('git diff --cached --name-only --no-renames', { encoding: 'utf8' }).split('\n');
   if (!staged.includes(BOARD) && !staged.includes(ARCHIVE)) return;
   const lost = findLostItems(
     { board: show(`HEAD:${BOARD}`), archive: show(`HEAD:${ARCHIVE}`) },
