@@ -105,6 +105,15 @@ Starts at `alpha` in `featureStages.ts`, like any new feature, then
    second list as you say."
 4. **Token on the device: "yes for now… likely we support oauth
    ultimately".**
+   *For whoever designs that (Coral, 2026-11-05, from PM's #2281 via the
+   brief):* a valid `state` proves the exchange; it doesn't prove the
+   callback reached the one who started it. PM's servers check the
+   signed-in session too. One Job has no session: the device that
+   started the Connect is the person. So the callback is accepted only
+   when this device holds a matching pending `state` and PKCE
+   verifier. Anything else stores nothing and says so. Test it with
+   two devices (start on one, finish on the other: no grant on
+   either).
 5. **Coral may write to the One Job project in Todoist** (his words
    in session). Coral adds tasks to both sections and closes only its
    own.
