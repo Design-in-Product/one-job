@@ -223,3 +223,63 @@ describe('deck targeting at drain time', () => {
     expect(first.cards.map(c => c.title)).not.toContain('Where do I go');
   });
 });
+
+// 2026-11-08 (cross-pollination brief: "unreachable" is a claim about
+// tests; build the race). The drain reads the queue, lands each card
+// (several awaits), then cleared the WHOLE key. A card the intent
+// appends inside that window (a second Siri card while the first drain
+// is running) was erased with it. Built here: the append happens while
+// the first card is being created.
+describe('a card queued while a drain is running', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    prefs.clear();
+    resetTaskStoreForTests();
+  });
+
+  const appendDuringFirstCreate = () => {
+    const store = getTaskStore();
+    const real = store.createTask.bind(store);
+    let appended = false;
+    vi.spyOn(store, 'createTask').mockImplementation(async (...args) => {
+      if (!appended) {
+        appended = true;
+        const now = JSON.parse(prefs.get(PENDING_KEY) ?? '[]');
+        prefs.set(PENDING_KEY, JSON.stringify([...now, { title: 'Said mid-drain' }]));
+      }
+      return real(...args);
+    });
+    return store;
+  };
+
+  it('is not erased when the drain clears what it landed', async () => {
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'First' }]));
+    appendDuringFirstCreate();
+    expect(await drainShortcutsInbox()).toBe(1);
+    expect(parseQueue(prefs.get(PENDING_KEY) ?? null).map(c => c.title)).toEqual(['Said mid-drain']);
+    // ...and the next drain lands it.
+    expect(await drainShortcutsInbox()).toBe(1);
+    expect((await getTaskStore().getAllTasks()).map(t => t.title)).toEqual(
+      expect.arrayContaining(['First', 'Said mid-drain']),
+    );
+    expect(prefs.has(PENDING_KEY)).toBe(false);
+  });
+
+  it('is kept alongside a card that failed and stays queued', async () => {
+    prefs.set(PENDING_KEY, JSON.stringify([{ title: 'First' }, { title: 'Breaks' }, { title: 'Second' }]));
+    const store = getTaskStore();
+    const real = store.createTask.bind(store);
+    let appended = false;
+    vi.spyOn(store, 'createTask').mockImplementation(async (title, ...rest) => {
+      if (!appended) {
+        appended = true;
+        const now = JSON.parse(prefs.get(PENDING_KEY) ?? '[]');
+        prefs.set(PENDING_KEY, JSON.stringify([...now, { title: 'Said mid-drain' }]));
+      }
+      if (title === 'Breaks') throw new Error('store refused');
+      return real(title, ...rest);
+    });
+    expect(await drainShortcutsInbox()).toBe(2);
+    expect(parseQueue(prefs.get(PENDING_KEY) ?? null).map(c => c.title)).toEqual(['Breaks', 'Said mid-drain']);
+  });
+});

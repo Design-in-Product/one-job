@@ -61,6 +61,17 @@ export const parseQueue = (raw: string | null): PendingCard[] => {
   }
 };
 
+/** The queue's raw entries, unfiltered (so positions match what the
+    intent wrote); anything unreadable is []. */
+const rawEntries = (raw: string | null): unknown[] => {
+  try {
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
 let draining = false;
 
 /** Drain the pending queue into the deck. Returns how many cards
@@ -106,8 +117,16 @@ export async function drainShortcutsInbox(): Promise<number> {
       }
     }
 
-    if (survivors.length) {
-      await Preferences.set({ key: PENDING_KEY, value: JSON.stringify(survivors) });
+    // Re-read before writing: the intent may have appended while the
+    // cards above were landing (2026-11-08: clearing the whole key
+    // erased a card said mid-drain; test-proven). The intent only
+    // appends, so what this drain read is a prefix of the queue now;
+    // drop that prefix and keep everything after it.
+    const { value: now } = await Preferences.get({ key: PENDING_KEY });
+    const arrived = rawEntries(now).slice(rawEntries(value).length);
+    const remaining = [...survivors, ...arrived];
+    if (remaining.length) {
+      await Preferences.set({ key: PENDING_KEY, value: JSON.stringify(remaining) });
     } else {
       await Preferences.remove({ key: PENDING_KEY });
     }
