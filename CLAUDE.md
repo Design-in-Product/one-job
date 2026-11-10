@@ -108,7 +108,8 @@ no Ask yet. This is deliberate: a card that doesn't say what it wants, or
 that shouldn't exist at all, is the exact failure mode the format
 exists to prevent, so it is made impossible rather than discouraged.
 Regression tests in `src/services/__tests__/fleetProbeClassify.test.ts`
-assert both guards can actually fire.
+assert each guard can actually fire. A guard with no test there is a
+gap (2026-11-09: the Ask-outside-Open guard had gone two months without one).
 
 **The probe's ceiling stays intact** (roadmap memo, 2026-08-26): no
 MCP, no protocol, no adapter seam. It emits a v2-backup-shaped JSON

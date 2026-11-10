@@ -12,7 +12,7 @@
 // return EVERY verdict, not just the happy one.
 
 import { describe, it, expect } from 'vitest';
-import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays, strandedAsks, openItemsOutsideOpen } from '../../../scripts/fleet-probe.mjs';
+import { classifyHeading, parseAsk, OPEN_RANK, CLOSED_MARKERS, ageInDays, strandedAsks, openItemsOutsideOpen, asksOutsideOpen } from '../../../scripts/fleet-probe.mjs';
 
 describe('fleet probe heading classification', () => {
   it('ranks the three open markers, blocking first', () => {
@@ -152,5 +152,27 @@ describe('fleet probe: an open item outside Open', () => {
     const full = board('');
     const open = full.split(/^## Open$/m)[1].split(/^## /m)[0];
     expect(openItemsOutsideOpen(full, open)).toEqual([]);
+  });
+});
+
+// Fourth guard (2026-09-10). Exported since then, but no test called it
+// until 2026-11-09, when a census for the day's brief (counts and claims
+// pinned elsewhere drift) found CLAUDE.md saying "both guards" of six.
+describe('fleet probe: an Ask outside Open', () => {
+  const openOf = (full: string) => full.split(/^## Open$/m)[1].split(/^## /m)[0];
+
+  it('finds an item that grew an Ask in another section', () => {
+    const full = "## Open\n\n### 🟡 22. UX walk\n**Ask:** add two cards.\n\n## What I'm carrying\n\n### 🟢 30. Notes\n**Ask:** read this?\n";
+    expect(asksOutsideOpen(full, openOf(full))).toEqual(['🟢 30. Notes']);
+  });
+
+  it('lets a Settled item keep its old Ask', () => {
+    const full = '## Open\n\n### 🟡 22. UX walk\n**Ask:** add two cards.\n\n## Settled\n\n### ✅ 28. Icons\n**Ask:** which icon?\n';
+    expect(asksOutsideOpen(full, openOf(full))).toEqual([]);
+  });
+
+  it('finds none when every Ask is in Open', () => {
+    const full = '## Open\n\n### 🟡 22. UX walk\n**Ask:** add two cards.\n\n## Recorded, final\n\n### ✅ 49. Write-back\nApproved.\n';
+    expect(asksOutsideOpen(full, openOf(full))).toEqual([]);
   });
 });
