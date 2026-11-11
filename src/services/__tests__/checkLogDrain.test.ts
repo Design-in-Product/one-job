@@ -76,6 +76,28 @@ describe('coral-log Drain line guard', () => {
     ]);
   });
 
+  // 2026-11-10 (brief: a derived list needs a named empty branch). The
+  // guard derives its fire entries from the headings it recognises, so a
+  // new wording yields an empty list and the commit passes unchecked. It
+  // happened twice (10-11, 10-28). A heading that reads as a fire ("fire"
+  // as the first or second word after an optional time) but that the
+  // guard does not recognise is now refused by name.
+  it.each([
+    '## Fire: 17:49 PST',
+    '## 17:49 PST — Fire',
+    '## 17:49 PST — cycle fire',
+    '## Fire #12 — 2026-11-10',
+  ])('refuses "%s": reads as a fire but the guard does not recognise it', heading => {
+    const problems = findDrainProblems([heading, '- **Drain:** nothing unblocked after two checks.']);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/looks like a fire/);
+  });
+
+  it('does not take "fire" later in a heading as a fire wording', () => {
+    expect(findDrainProblems(["## Step 2.4 didn't fire — memo #2 to Janus", '- x'])).toEqual([]);
+    expect(findDrainProblems(['## The record healed: Step 2.4 fired, both corrections published', '- x'])).toEqual([]);
+  });
+
   it('does not treat a mail wake or a session as a fire', () => {
     expect(findDrainProblems(['## 18:05 PT — mail wake (Janus)', '- read it'])).toEqual([]);
     expect(findDrainProblems(['## 15:2x — xian in session: fire the old build?', '- no'])).toEqual([]);

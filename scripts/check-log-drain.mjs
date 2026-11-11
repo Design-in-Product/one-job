@@ -18,6 +18,13 @@ import { pathToFileURL } from 'node:url';
 // "duty fire" in it. "duty cycle" now counts with or without "fire";
 // every form the logs have used is pinned in the tests.
 const FIRE_HEADING = /^## .*\b(duty[- ]cycle|duty fire)\b/i;
+// A heading that READS as a fire: "fire" as the first or second word,
+// after an optional time ("## Fire: 17:49", "## 17:49 PST — cycle fire").
+// The fire list above is derived from headings, so a wording it misses
+// gives an empty list and a silent pass (2026-11-10 brief; it happened on
+// 10-11 and 10-28). Such a heading is refused by name instead. "fire"
+// later in a heading ("Step 2.4 didn't fire") is not a fire wording.
+const LOOKS_LIKE_FIRE = /^## (?:[\dx:]+(?:\s+[A-Z]{2,4})?\s*[—·:-]\s*)?(?:[\w-]+\s+)?fire\b/i;
 const DRAIN_LINE = /^\s*(-\s*)?\**Drain:?\**/i;
 // Every form of the word (defers, deferring, deferral), not two exact
 // spellings (widened 2026-10-21 after Janus found the same gap in theirs).
@@ -27,14 +34,18 @@ const NAMES_BLOCKER = /(blocked on|blocker:|waits? on|waiting on|needs .* from|o
 /** Pure over its input (added log lines). Returns one message per problem. */
 export function findDrainProblems(lines) {
   const blocks = [];
+  const unrecognised = [];
   for (const line of lines) {
     if (/^## /.test(line)) {
+      if (!FIRE_HEADING.test(line) && LOOKS_LIKE_FIRE.test(line)) unrecognised.push(line);
       blocks.push(FIRE_HEADING.test(line) ? { head: line, lines: [] } : null);
     } else if (blocks.length && blocks[blocks.length - 1]) {
       blocks[blocks.length - 1].lines.push(line);
     }
   }
-  const problems = [];
+  const problems = unrecognised.map(h =>
+    `heading looks like a fire but the guard does not recognise it, so it would go unchecked: ${h}` +
+    ' (use a pinned form such as "## Fire: 17:49 PST (duty cycle)", or add yours to FIRE_HEADING and its tests)');
   for (const b of blocks.filter(Boolean)) {
     // A Drain entry is its whole paragraph: the Drain line plus the lines
     // after it, up to a blank line or the next list item at its own depth. Until 2026-10-21
