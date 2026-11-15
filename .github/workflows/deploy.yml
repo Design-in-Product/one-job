@@ -113,10 +113,18 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
+      # Named per run attempt (2026-11-14, from Globe via the brief): with
+      # one fixed name, re-running all jobs uploads a second "github-pages"
+      # artifact and deploy-pages refuses ("Multiple artifacts named
+      # github-pages"), so the obvious recovery fails. Globe also added a
+      # sleep-and-retry for a 330ms listing race; ours has never happened
+      # (deploy is its own job, so it starts tens of seconds after upload),
+      # so that part is not copied.
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: './deploy'
+          name: github-pages-${{ github.run_attempt }}
 
   deploy:
     # Never deploy from pull_request builds. Exclusion, not push-only:
@@ -132,6 +140,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
 
   # Green here means the LIVE site serves the freshly built bundle —
   # "deploy succeeded" is observed, never assumed (lesson of 2026-07-04,
