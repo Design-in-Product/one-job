@@ -6,6 +6,14 @@ can run together in any order without sharing state or leaving .db files
 on disk.
 """
 
+import os
+
+# Before main is imported (2026-11-15): main builds its engine and runs
+# create_all at import, from DATABASE_URL. Forced, not setdefault, so
+# neither a developer's environment nor a .env pointing at a real
+# database can leak in. See test_isolation.py.
+os.environ["DATABASE_URL"] = "sqlite://"
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
