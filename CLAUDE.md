@@ -621,6 +621,12 @@ my agenda. After the fire's checklist (sync, mail, push, log):
    two checks` is valid. The pre-commit hook enforces it
    (`scripts/check-log-drain.mjs`; tests in
    `src/services/__tests__/checkLogDrain.test.ts`).
+5. **Log times come from the clock.** Read `date`; never estimate a
+   heading's time. The hook refuses a heading time later than the
+   clock and a log file dated after today (`scripts/check-log-clock.mjs`,
+   2026-11-19, after 6 guessed headings and 1 UTC-dated file turned up
+   in the history). A guess rounded down still passes, so the habit
+   matters too.
 
 Canonical text: `mediajunkie/designinproduct` →
 `docs/conventions/duty-cycle-drain.md`.

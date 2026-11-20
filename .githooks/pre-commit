@@ -20,6 +20,13 @@
 # scripts/check-log-drain.mjs.
 node scripts/check-log-drain.mjs || exit 1
 
+# Guard 2b (2026-11-19): no coral-log heading carries a time that hasn't
+# happened yet, and no log file is dated after today (read the clock,
+# don't estimate it). See scripts/check-log-clock.mjs. Replayed over 174
+# log commits since 09-01: 7 refusals, all real (6 guessed headings, 1
+# file dated from the UTC clock), none false.
+node scripts/check-log-clock.mjs || exit 1
+
 # Guard 3 (2026-10-28): no board item leaves the board unaccounted for
 # (CLAUDE.md rollup rule 3). See scripts/check-rollup-reconcile.mjs.
 node scripts/check-rollup-reconcile.mjs || exit 1
