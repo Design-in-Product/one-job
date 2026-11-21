@@ -45,7 +45,7 @@ function arm(opts?: { healAttempts?: number; controlled?: boolean }) {
     },
   };
   const fakeLocation = { reload: reloads };
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  // Deliberate: run the watchdog's real inline source from index.html.
   new Function('navigator', 'location', 'caches', watchdogSrc)(
     fakeNavigator,
     fakeLocation,

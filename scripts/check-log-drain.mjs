@@ -25,7 +25,10 @@ const FIRE_HEADING = /^## .*\b(duty[- ]cycle|duty fire)\b/i;
 // 10-11 and 10-28). Such a heading is refused by name instead. "fire"
 // later in a heading ("Step 2.4 didn't fire") is not a fire wording.
 const LOOKS_LIKE_FIRE = /^## (?:[\dx:]+(?:\s+[A-Z]{2,4})?\s*[—·:-]\s*)?(?:[\w-]+\s+)?fire\b/i;
-const DRAIN_LINE = /^\s*(-\s*)?\**Drain:?\**/i;
+// \b after "Drain" (2026-11-20 brief, Klatch's GUARDED/UNGUARDED): with
+// the colon and bold optional, "Drain" matched the start of "Drained"
+// and "Drainage", so "- Drained the inbox" passed as a Drain line.
+const DRAIN_LINE = /^\s*(-\s*)?\**Drain\b:?\**/i;
 // Every form of the word (defers, deferring, deferral), not two exact
 // spellings (widened 2026-10-21 after Janus found the same gap in theirs).
 const DEFERS = /\b(defer\w*|postpon\w*|on hold|later|next fire|tomorrow|next session|working session|by \d{1,2}:\d{2})\b/i;

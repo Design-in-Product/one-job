@@ -98,6 +98,19 @@ describe('coral-log Drain line guard', () => {
     expect(findDrainProblems(['## The record healed: Step 2.4 fired, both corrections published', '- x'])).toEqual([]);
   });
 
+  // 2026-11-20 (brief: a label that is a substring of another word reads
+  // the wrong line). "Drain" with optional colon and bold matched the
+  // start of "Drained" and "Drainage", so a fire whose only line said
+  // "Drained the inbox" passed as if it carried a Drain line.
+  it.each([
+    '- Drained the inbox; nothing left.',
+    'Drainage of the queue went fine.',
+  ])('does not take "%s" for a Drain line', line => {
+    expect(findDrainProblems(fire(line))).toEqual([
+      'fire entry without a Drain line: ## Duty-cycle fire #9 — 2026-10-08 17:49 PDT',
+    ]);
+  });
+
   it('does not treat a mail wake or a session as a fire', () => {
     expect(findDrainProblems(['## 18:05 PT — mail wake (Janus)', '- read it'])).toEqual([]);
     expect(findDrainProblems(['## 15:2x — xian in session: fire the old build?', '- no'])).toEqual([]);
