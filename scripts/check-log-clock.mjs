@@ -15,6 +15,7 @@
 // (src/services/__tests__/checkLogClock.test.ts).
 import { execSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
+import { STAGED_LOG_DIFF } from './check-log-drain.mjs';
 
 const LOG_FILE = /coral-logs\/(\d{4}-\d{2}-\d{2})-coral-log\.md$/;
 const HEADING_TIME = /^## .*?\b(\d{1,2}):(\d{2})(?:\s*([AP])M\b)?/i;
@@ -56,7 +57,7 @@ export function findClockProblems(added, now) {
 function main() {
   const added = [];
   let file = null;
-  for (const l of execSync('git diff --cached -U0 -- development/coral-logs/', { encoding: 'utf8' }).split('\n')) {
+  for (const l of execSync(STAGED_LOG_DIFF, { encoding: 'utf8' }).split('\n')) {
     if (l.startsWith('+++ ')) file = l.slice(6);
     else if (l.startsWith('+') && file) added.push({ file, line: l.slice(1) });
   }

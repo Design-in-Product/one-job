@@ -82,8 +82,14 @@ export function findDrainProblems(lines) {
   return problems;
 }
 
+// The diff format is pinned, not inherited (2026-11-21): color.ui=always
+// or an external diff tool in anyone's git config made this read nothing
+// and pass a known-bad entry. Tests: logGuardsGitConfig.test.ts.
+export const STAGED_LOG_DIFF =
+  'git diff --cached --no-color --no-ext-diff --src-prefix=a/ --dst-prefix=b/ -U0 -- development/coral-logs/';
+
 function main() {
-  const added = execSync('git diff --cached -U0 -- development/coral-logs/', { encoding: 'utf8' })
+  const added = execSync(STAGED_LOG_DIFF, { encoding: 'utf8' })
     .split('\n')
     .filter(l => l.startsWith('+') && !l.startsWith('+++'))
     .map(l => l.slice(1));

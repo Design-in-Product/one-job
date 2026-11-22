@@ -27,6 +27,10 @@ node scripts/check-log-drain.mjs || exit 1
 # file dated from the UTC clock), none false.
 node scripts/check-log-clock.mjs || exit 1
 
+# Both log guards parse a diff whose format they pin (2026-11-21):
+# inherited color.ui=always or an external diff tool made them read
+# nothing and pass. src/services/__tests__/logGuardsGitConfig.test.ts.
+
 # Guard 3 (2026-10-28): no board item leaves the board unaccounted for
 # (CLAUDE.md rollup rule 3). See scripts/check-rollup-reconcile.mjs.
 node scripts/check-rollup-reconcile.mjs || exit 1
