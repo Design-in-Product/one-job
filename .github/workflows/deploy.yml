@@ -110,6 +110,16 @@ jobs:
         id: hash
         run: echo "bundle=$(grep -o 'index-[A-Za-z0-9_-]*\.js' deploy/app/index.html | head -1)" >> "$GITHUB_OUTPUT"
 
+      # A per-commit marker for verify (2026-11-22, Klatch via the brief:
+      # two measurements that agree prove nothing without a case that
+      # separates pass from fail). Most commits are logs and briefs, which
+      # leave the bundle hash unchanged, so the live site already served
+      # the "expected" bundle before deploy ran: the last 15 verify runs
+      # all matched on attempt 1 with the same hash, whether or not the
+      # deploy published. The commit sha differs on every run.
+      - name: Write deployed-sha marker
+        run: echo "$GITHUB_SHA" > deploy/deployed-sha.txt
+
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
@@ -169,6 +179,23 @@ jobs:
             sleep 15
           done
           echo "Live site never served the expected bundle within 5 minutes" >&2
+          exit 1
+
+      # The bundle check above cannot fail on a commit that leaves the
+      # bundle unchanged; this one can, on every commit. The query string
+      # gets past the Pages CDN cache.
+      - name: Confirm live site serves this commit
+        run: |
+          for i in $(seq 1 20); do
+            live=$(curl -fsSL --max-time 20 "https://onejob.co/deployed-sha.txt?v=$GITHUB_SHA" 2>/dev/null | tr -d '[:space:]' || true)
+            echo "Attempt $i: live marker ${live:-<fetch failed>}"
+            if [ "$live" = "$GITHUB_SHA" ]; then
+              echo "✓ Live site serves $GITHUB_SHA."
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Live site never served deployed-sha $GITHUB_SHA within 5 minutes" >&2
           exit 1
 
   # Added 2026-09-10, the morning after launch day surfaced a NINE-DAY
