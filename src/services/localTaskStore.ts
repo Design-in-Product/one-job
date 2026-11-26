@@ -525,9 +525,12 @@ export class LocalTaskStore implements TaskStore {
         }
       }
     }
-    localStorage.setItem(key, serialized);
-    const stale = this.listSnapshotKeys().reverse().slice(SNAPSHOT_RETENTION);
+    // Prune BEFORE writing (2026-11-25): today's snapshot is a new key, so
+    // pruning after the write needed room for retention + 1 copies, and a
+    // full store failed exactly here. Keep the newest RETENTION - 1 others.
+    const stale = this.listSnapshotKeys().filter(k => k !== key).reverse().slice(SNAPSHOT_RETENTION - 1);
     stale.forEach(k => localStorage.removeItem(k));
+    localStorage.setItem(key, serialized);
   }
 
   // ---- Undo history (Xian, 2026-07-29) ----------------------------------
@@ -593,13 +596,22 @@ export class LocalTaskStore implements TaskStore {
       this.redoStack = []; // a new user action ends the redo line
     }
     const serialized = this.serialize();
+    // The card is saved, or this throws and the caller says so. Everything
+    // after it is a safety copy and must not turn a saved change into a
+    // reported failure (2026-11-25: a full store failed on the snapshot,
+    // after the save, so the UI said "Add failed" for a saved card, a
+    // retry duplicated it, and the native mirror below was skipped).
+    // Tests: localTaskStoreQuota.test.ts.
     localStorage.setItem(this.storageKey, serialized);
-    localStorage.setItem(
+    mirrorToNativeStorage(this.storageKey, serialized);
+    const safely = (what: string, write: () => void) => {
+      try { write(); } catch (err) { console.warn(`LocalTaskStore: saved, but the ${what} could not be written:`, err); }
+    };
+    safely('meta', () => localStorage.setItem(
       this.metaKey(),
       JSON.stringify({ count: this.tasks.length, updatedAt: new Date().toISOString() })
-    );
-    this.writeSnapshot(serialized);
-    mirrorToNativeStorage(this.storageKey, serialized);
+    ));
+    safely('snapshot', () => this.writeSnapshot(serialized));
   }
 
   private findTask(id: string): Task {
