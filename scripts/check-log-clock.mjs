@@ -13,6 +13,13 @@
 // is indistinguishable from a reading and passes. Only a time in the
 // future is provably not read from the clock. Tests pin both sides
 // (src/services/__tests__/checkLogClock.test.ts).
+//
+// The limit's reach, measured (2026-11-26 brief, Klatch: a declared
+// blindspot is a floor until its reach is counted). Of the 8 timed
+// headings added from 11-19 to 11-25, each was committed 0-3 minutes
+// after the time it shows (`git log -L` on each heading line). So a
+// rounded-down guess could have hidden at most 3 minutes: in practice,
+// no reach. Count again if heading-to-commit gaps start to grow.
 import { execSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { STAGED_LOG_DIFF } from './check-log-drain.mjs';
