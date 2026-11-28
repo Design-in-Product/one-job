@@ -68,9 +68,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Set the VITE_API_URL repository variable (Settings → Secrets and
-      # variables → Actions → Variables) once the backend is deployed;
-      # while unset, the app ships in demo mode.
+      # VITE_API_URL is deliberately UNSET (0 Actions variables, checked
+      # 2026-11-27), so the live app is local-first: cards stay on the
+      # device. ANY non-empty value switches every visitor to the FastAPI
+      # store (src/config.ts), and their on-device decks would look empty.
+      # Don't set it without xian's decision. (This said "set it once the
+      # backend is deployed; unset ships demo mode", true before 07-02.)
       - name: Build
         run: npm run build
         env:
